@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: 4a91f2f2fa6c34023a979b7c09f122fb
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: '{"$type":"System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object,
+    mscorlib]], mscorlib","MATERIL_INFO_FLAG":"{\"MaterialGUID\":\"4a91f2f2fa6c34023a979b7c09f122fb\",\"ShaderName\":\"Legacy
+    Shaders/Transparent/VertexLit\"}"}'
+  assetBundleName: 
+  assetBundleVariant: 

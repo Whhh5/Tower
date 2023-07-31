@@ -1,0 +1,412 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67a8e6e5ffe4aa84bb914fa4e43d0b76, type: 3}
+  m_Name: QuadTreeData
+  m_EditorClassIdentifier: 
+  IndexList: 000000000100000008000000150000001600000017000000180000000200000009000000190000001a0000001b0000001c0000000a0000001d0000001e0000001f000000200000000b000000210000002200000023000000240000000c00000025000000260000002700000028000000030000000d000000290000002a0000002b0000002c0000000e0000002d0000002e0000002f000000300000000f00000031000000320000003300000034000000
+  NodeList:
+  - TopLeftIndex: -1
+    TopRightIndex: 1
+    BottomLeftIndex: 2
+    BottomRightIndex: 3
+    Index: 0
+    AreaID: 0
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: 8
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 1
+    AreaID: 0
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: 24
+    TopRightIndex: 21
+    BottomLeftIndex: 22
+    BottomRightIndex: 23
+    Index: 8
+    AreaID: 0
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 21
+    AreaID: 1
+    Position: {x: 609, y: 3494, z: 0}
+    Radius: 0.05
+    AreaBlend: 0.017
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 22
+    AreaID: 1
+    Position: {x: 1438, y: 1778, z: 0}
+    Radius: 0.05
+    AreaBlend: 0.017
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 23
+    AreaID: 1
+    Position: {x: 1509, y: 2329, z: 0}
+    Radius: 0.05
+    AreaBlend: 0.017
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 24
+    AreaID: 1
+    Position: {x: 919, y: 2261, z: 0}
+    Radius: 0.05
+    AreaBlend: 0.017
+  - TopLeftIndex: 12
+    TopRightIndex: 9
+    BottomLeftIndex: 10
+    BottomRightIndex: 11
+    Index: 2
+    AreaID: 0
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: 28
+    TopRightIndex: 25
+    BottomLeftIndex: 26
+    BottomRightIndex: 27
+    Index: 9
+    AreaID: 0
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 25
+    AreaID: 2
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.05
+    AreaBlend: 0.017
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 26
+    AreaID: 3
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 27
+    AreaID: 3
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 28
+    AreaID: 2
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: 32
+    TopRightIndex: 29
+    BottomLeftIndex: 30
+    BottomRightIndex: 31
+    Index: 10
+    AreaID: 0
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 29
+    AreaID: 4
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 30
+    AreaID: 4
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 31
+    AreaID: 4
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 32
+    AreaID: 4
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: 36
+    TopRightIndex: 33
+    BottomLeftIndex: 34
+    BottomRightIndex: 35
+    Index: 11
+    AreaID: 0
+    Position: {x: 2223, y: 1130, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 33
+    AreaID: 5
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 34
+    AreaID: 5
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 35
+    AreaID: 5
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 36
+    AreaID: 4
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: 40
+    TopRightIndex: 37
+    BottomLeftIndex: 38
+    BottomRightIndex: 39
+    Index: 12
+    AreaID: 0
+    Position: {x: 2663, y: 1845, z: 0}
+    Radius: 0.05
+    AreaBlend: 0.017
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 37
+    AreaID: 2
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 38
+    AreaID: 2
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 39
+    AreaID: 2
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 40
+    AreaID: 1
+    Position: {x: 683, y: 2520, z: 0}
+    Radius: 0.02
+    AreaBlend: 0.007999999
+  - TopLeftIndex: -1
+    TopRightIndex: 13
+    BottomLeftIndex: 14
+    BottomRightIndex: 15
+    Index: 3
+    AreaID: 0
+    Position: {x: 1111, y: 617, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: 44
+    TopRightIndex: 41
+    BottomLeftIndex: 42
+    BottomRightIndex: 43
+    Index: 13
+    AreaID: 0
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 41
+    AreaID: 6
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 42
+    AreaID: 6
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 43
+    AreaID: 6
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 44
+    AreaID: 6
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: 48
+    TopRightIndex: 45
+    BottomLeftIndex: 46
+    BottomRightIndex: 47
+    Index: 14
+    AreaID: 0
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 45
+    AreaID: 7
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 46
+    AreaID: 7
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.28
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 47
+    AreaID: 8
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 48
+    AreaID: 7
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.82
+    AreaBlend: 0.05
+  - TopLeftIndex: 52
+    TopRightIndex: 49
+    BottomLeftIndex: 50
+    BottomRightIndex: 51
+    Index: 15
+    AreaID: 0
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 49
+    AreaID: 8
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 50
+    AreaID: 8
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 51
+    AreaID: 8
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05
+  - TopLeftIndex: -1
+    TopRightIndex: -1
+    BottomLeftIndex: -1
+    BottomRightIndex: -1
+    Index: 52
+    AreaID: 8
+    Position: {x: 0, y: 0, z: 0}
+    Radius: 0.2
+    AreaBlend: 0.05

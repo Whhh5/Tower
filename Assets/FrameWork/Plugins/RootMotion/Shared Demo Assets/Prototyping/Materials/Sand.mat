@@ -1,0 +1,110 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Sand
+  m_Shader: {fileID: 4800000, guid: 81965ba445d41c845966b24514436c01, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _EMISSION_OFF
+  - _NORMALMAP_OFF
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _BumpMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DissolveMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DistortionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FlowTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: f19ceb968bb2d4d739d0e63b6fb94eda, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MaskMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AlphaChannel: 0
+    - _AlphaTest: 0
+    - _BlendOp: 0
+    - _ColorMask: 15
+    - _Cull: 2
+    - _Cutoff: 0.5
+    - _DepthOffset: 0
+    - _Dissolve: 0
+    - _DissolveHardness: 0.51
+    - _DissolveLevel: 0
+    - _DissolveSpeedU: 0
+    - _DissolveSpeedV: 0
+    - _Distortion: 0
+    - _DistortionSpeedX: 0
+    - _DistortionSpeedY: 0
+    - _DistortionStrengthScaled: 0.1
+    - _DistortionStrengthX: 0
+    - _DistortionStrengthY: 0
+    - _DstBlend: 10
+    - _EdgeColorStrength: 1
+    - _EdgeWidth: 0.5
+    - _Either: 0
+    - _Emission: 0
+    - _FadeFact: 0
+    - _Flow: 0
+    - _FlowAlphaChannel: 0
+    - _FlowFresnelPower: 1
+    - _FlowFresnelStrength: 1
+    - _FlowSpeedU: 0
+    - _FlowSpeedV: 0
+    - _Fresnel: 0
+    - _FresnelPower: 1
+    - _InvFade: 1
+    - _MainPower: 1
+    - _Mask: 0
+    - _NormalMap: 0
+    - _Shininess: 0.7
+    - _SoftParticle: 0
+    - _SpeedU: 0
+    - _SpeedV: 0
+    - _SrcBlend: 1
+    - _UVAnim: 0
+    - _ZOffset: 0
+    - _ZWrite: 0
+    m_Colors:
+    - _ClipRect: {r: 0, g: 0, b: 1, a: 1}
+    - _Color: {r: 1, g: 0.922956, b: 0.7688679, a: 0.56078434}
+    - _EdgeColor: {r: 1, g: 1, b: 1, a: 1}
+    - _EmisColor: {r: 1, g: 1, b: 1, a: 1}
+    - _Emission: {r: 0.97761196, g: 0.80921054, b: 0.48151037, a: 0.011764706}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FlowColor: {r: 1, g: 1, b: 1, a: 1}
+    - _FresnelColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SpecColor: {r: 1, g: 1, b: 1, a: 0}
+    - _TintColor: {r: 0.89552236, g: 0.89552236, b: 0.89552236, a: 0.5019608}
+  m_BuildTextureStacks: []
