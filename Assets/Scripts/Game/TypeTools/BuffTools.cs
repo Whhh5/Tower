@@ -30,7 +30,7 @@ public class BuffMgr : Singleton<BuffMgr>
                 {
                     ID = index,
                     Name = "持续回血",
-                    BuffType = typeof(Buff_AddBlood),
+                    BuffType = typeof(Buff_AddBloodData),
                     Desc = "持续回血 + 持续回血"
                 }
             },
@@ -40,7 +40,7 @@ public class BuffMgr : Singleton<BuffMgr>
                 {
                     ID = index,
                     Name = "中毒",
-                    BuffType = typeof(Buff_Poison),
+                    BuffType = typeof(Buff_PoisonData),
                     Desc = "中毒 + 持续中毒"
                 }
             }
@@ -55,53 +55,54 @@ public class BuffMgr : Singleton<BuffMgr>
         }
         return result;
     }
-    public ResultData<BuffBase> GetBuff(ushort f_BuffID, Entity f_Target)
+    public ResultData<BuffData> GetBuff(ushort f_BuffID, EntityData f_Target)
     {
-        ResultData<BuffBase> result = new();
+        ResultData<BuffData> result = new();
         if (m_BuffMap.TryGetValue(f_BuffID, out var value))
         {
             var target = Activator.CreateInstance(value.BuffType, args:f_Target);
-            if (target is BuffBase)
+            if (target is BuffData)
             {
-                result.SetData(target as BuffBase);
+                result.SetData(target as BuffData);
             }
         }
 
             return result;
     }
 }
-public abstract class BuffBase : IExecute
+public abstract class BuffData : IExecute
 {
-    protected uint m_CurSupCount = 0;
-    protected uint m_SuperpositionCount = 0;
+    protected int m_CurSupCount = 0;
+    protected int m_SuperpositionCount = 0;
     protected float m_StartTime = 0;
-    public uint SuperpositionCount => m_SuperpositionCount;
+    public int SuperpositionCount => m_SuperpositionCount;
 
-    protected uint m_Id = 0;
-    public uint ID => m_Id;
+    protected int m_Id = 0;
+    public int ID => m_Id;
     protected string m_Name = "";
     public string Name => m_Name;
     protected ushort m_Level = 0;
     public ushort Level => m_Level;
-    protected uint m_HarmBase = 0;
-    public uint HarmBase => m_HarmBase;
+    protected int m_HarmBase = 0;
+    public int HarmBase => m_HarmBase;
 
     protected float m_IntervalTime = 0.0f;
     protected float m_UnitTime = 0;
 
-    protected Entity m_Target = null;
-    public Entity Target => m_Target;
+    protected EntityData m_Original = null;
+    protected EntityData m_Target = null;
+    public EntityData Target => m_Target;
 
 
     // 当前间隔时间
     public float CurIntervalTime => m_IntervalTime / Mathf.Clamp(m_SuperpositionCount * m_Level * 0.1f, 1, 3);
     // 当前伤害数值
-    public uint CurHarmValue => m_HarmBase * m_Level * (m_SuperpositionCount - m_CurSupCount);
+    public int CurHarmValue => m_HarmBase * m_Level * (m_SuperpositionCount - m_CurSupCount);
     // 当前 层 CommandQueue 持续时间进度
     public float CurSupRatio = 0.0f;
     // 当前 CommandQueue 持续时间总进度
     public float CurRatio = 0.0f;
-    public abstract UniTask ExecuteResultAsync(uint f_Value, float f_Ratio);
+    public abstract UniTask ExecuteResultAsync(int f_Value, float f_Ratio);
     public virtual async UniTask StartExecute()
     {
         m_StartTime = GTools.CurTime;
@@ -112,7 +113,7 @@ public abstract class BuffBase : IExecute
             await GTools.WaitSecondAsync(CurIntervalTime);
 
             var timed = GTools.CurTime - m_StartTime;
-            m_CurSupCount = (uint)Mathf.FloorToInt(timed / m_UnitTime);
+            m_CurSupCount = Mathf.FloorToInt(timed / m_UnitTime);
             CurSupRatio = timed % m_UnitTime / m_UnitTime;
             CurRatio = timed / (m_UnitTime * m_SuperpositionCount);
             await ExecuteResultAsync(CurHarmValue, CurSupRatio);
@@ -133,15 +134,17 @@ public abstract class BuffBase : IExecute
         CurRatio = 0;
     }
 
-    public BuffBase(Entity f_Target)
+    public BuffData(EntityData f_Original, EntityData f_Target)
     {
         m_Target = f_Target;
+        m_Original = f_Original;
     }
-    public async UniTask ReleaseAsync()
+    public void ReleaseAsync()
     {
         m_Target = null;
+        m_Original = null;
     }
-    public async UniTask AddAsync(ushort f_Level)
+    public async void AddAsync(ushort f_Level)
     {
         if (f_Level > m_Level)
         {
@@ -160,40 +163,38 @@ public abstract class BuffBase : IExecute
         }
     }
 
-    public async UniTask RemoveAsync()
+    public void RemoveAsync()
     {
-        m_SuperpositionCount = (uint)Mathf.Max(m_SuperpositionCount - 1, 0);
+        m_SuperpositionCount = Mathf.Max(m_SuperpositionCount - 1, 0);
     }
 
 }
 // 加血 CommandQueue
-public class Buff_AddBlood : BuffBase
+public class Buff_AddBloodData : BuffData
 {
-    public Buff_AddBlood(Entity f_Target) : base(f_Target)
+    public Buff_AddBloodData(EntityData f_Original, EntityData f_Target) : base(f_Original, f_Target)
     {
-        m_Target = f_Target;
         m_Id = 1;
         m_Name = "Add Blood";
     }
 
-    public override async UniTask ExecuteResultAsync(uint f_Value, float f_Ratio)
+    public override async UniTask ExecuteResultAsync(int f_Value, float f_Ratio)
     {
-        await m_Target.RediuceBlood(f_Value, EDamageType.AddBlood);
+        GTools.MathfMgr.EntityDamage(m_Original, m_Target, EDamageType.AddBlood, -f_Value);
     }
 }
 // 中毒 CommandQueue
-public class Buff_Poison : BuffBase
+public class Buff_PoisonData : BuffData
 {
-    public Buff_Poison(Entity f_Target) : base(f_Target)
+    public Buff_PoisonData(EntityData f_Original, EntityData f_Target) : base(f_Original, f_Target)
     {
-        m_Target = f_Target;
         m_Id = 2;
         m_Name = "Poison";
     }
 
-    public override async UniTask ExecuteResultAsync(uint f_Value, float f_Ratio)
+    public override async UniTask ExecuteResultAsync(int f_Value, float f_Ratio)
     {
-        await m_Target.RediuceBlood(f_Value, EDamageType.Magic);
+        GTools.MathfMgr.EntityDamage(m_Original, m_Target, EDamageType.Magic, -f_Value);
     }
 
 }

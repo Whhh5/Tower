@@ -67,36 +67,12 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels:
     - Prefab
-  - m_GUID: b0e938bf257f44549aed3e7e4eccf803
-    m_Address: EmitterElement_GuidedMissile
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   - m_GUID: 1ff0a21fc29ae7546b3079df9fbc4c04
     m_Address: Person_Enemty
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: 440d84f99168f9b4699a87af8ab6aa3a
-    m_Address: Person_Player
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   - m_GUID: 651f3d53973a9a64d88a51ab67a5eed9
     m_Address: TrailRender_Common
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 1b77a62b06b218d4fb5b379e9e9e158a
-    m_Address: EmitterElement_SwordLow
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: c503ed57a66fae0439c563ae55c7ef76
-    m_Address: Emitter_SwordLow
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 8f6358089a364b743828668774237f0e
-    m_Address: Emitter_GuidedMissileBaseCommon
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-  - m_GUID: 56e13d41e5d18344a81544bfe2adcfd7
-    m_Address: Emitter_SwordHeight
     m_ReadOnly: 0
     m_SerializedLabels: []
   - m_GUID: e553c7bb40c2ff848a4f5dbc7d738f03

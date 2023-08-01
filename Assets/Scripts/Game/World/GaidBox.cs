@@ -32,9 +32,9 @@ public class GaidBox : ObjectPoolBase
 
     public override void OnUpdate()
     {
-        var nearbyTarget = GTools.MathfMgr.GetTargets_Sphere<Person>(Position, f_Radius, m_LayerMask, (person) =>
-        {
-            return GTools.PlayerController.CurController == person;
-        });
+        //var nearbyTarget = GTools.MathfMgr.GetTargets_Sphere<PersonData>(Position, f_Radius, m_LayerMask, (person) =>
+        //{
+        //    return GTools.PlayerController.CurController == person;
+        //});
     }
 }

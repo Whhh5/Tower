@@ -56,7 +56,7 @@ public class Entity_Player_Default2Data : Person_EnemyData
                             return true;
                         }
 
-                        effData.EntityDamage(target, -HarmBase);
+                        effData.EntityDamage(target, EDamageType.Physical, -HarmBase);
                         return false;
                     });
                     m_DicEffect.Push(moveData);

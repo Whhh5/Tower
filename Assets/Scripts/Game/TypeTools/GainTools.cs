@@ -27,12 +27,12 @@ public class GainMgr : Singleton<GainMgr>
         }
         return EGainType.None;
     }
-    public GainBase GetGain(ushort f_ID, Person f_TargetPerson)
+    public GainBaseData GetGain(ushort f_ID, WorldObjectBaseData f_TargetPerson)
     {
         if (m_GainMap.TryGetValue(f_ID, out var result))
         {
             var ins = GTools.GetInsttance(result.tClassType);
-            var target = ins as GainBase;
+            var target = ins as GainBaseData;
             target.Initialization(f_ID, result.tGainType, f_TargetPerson);
             return target;
         }
@@ -49,15 +49,15 @@ public enum EGainType : ushort
     BeHit,
     EnumCount,
 }
-public abstract class GainBase : Base, IExecute
+public abstract class GainBaseData : Base, IExecute
 {
     public ushort ID { get; private set; }
     public EGainType GainType { get; private set; }
     protected ushort m_Level;
     protected ushort m_TierCount;
-    protected Person m_TargetPerson = null;
+    protected WorldObjectBaseData m_TargetPerson = null;
     protected int m_Probability = 0;
-    public virtual void Initialization(ushort f_ID, EGainType f_GainType, Person f_TargetPerson)
+    public virtual void Initialization(ushort f_ID, EGainType f_GainType, WorldObjectBaseData f_TargetPerson)
     {
         ID = f_ID;
         GainType = f_GainType;
@@ -96,9 +96,9 @@ public abstract class GainBase : Base, IExecute
     public abstract UniTask Execute(int f_CurProbability);
 }
 
-public class Gain_Launch1 : GainBase
+public class Gain_Launch1 : GainBaseData
 {
-    public override void Initialization(ushort f_ID, EGainType f_GainType, Person f_TargetPerson)
+    public override void Initialization(ushort f_ID, EGainType f_GainType, WorldObjectBaseData f_TargetPerson)
     {
         base.Initialization(f_ID, f_GainType, f_TargetPerson);
 
@@ -107,17 +107,18 @@ public class Gain_Launch1 : GainBase
 
     public override async UniTask Execute(int f_CurProbability)
     {
-        var wepon = await GTools.WeaponMgr.GetSetWeaponAsync(EAssetName.Emitter_GuidedMissileBaseCommon, m_TargetPerson);
-        await wepon.StartExecute();
-        await wepon.StopExecute();
-        await GTools.WeaponMgr.DestroyWeaponAsync(wepon);
+        var wepon = new Emitter_GuidedMissileBaseCommonData(0, m_TargetPerson);
+
+        wepon.StartExecute();
+        wepon.StopExecute();
+        GTools.WeaponMgr.DestroyWeaponAsync(wepon);
     }
 
 
 }
-public class Gain_Collect : GainBase
+public class Gain_Collect : GainBaseData
 {
-    public override void Initialization(ushort f_ID, EGainType f_GainType, Person f_TargetPerson)
+    public override void Initialization(ushort f_ID, EGainType f_GainType, WorldObjectBaseData f_TargetPerson)
     {
         base.Initialization(f_ID, f_GainType, f_TargetPerson);
 

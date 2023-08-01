@@ -62,7 +62,6 @@ public static class GTools
     #endregion
 
     #region Mono 静态类
-    public static PlayerController PlayerController => PlayerController.Ins;
     #endregion
 
     #region 功能函数
@@ -148,9 +147,9 @@ public static class GTools
             .SetEase(Ease.Linear)
             .SetId(doTweenID);
     }
-    public static bool GetEntityActively(Entity f_Entity)
+    public static bool GetEntityActively(EntityData f_Entity)
     {
-        return !RefIsNull(f_Entity) && f_Entity.IsActively;
+        return !RefIsNull(f_Entity);
     }
     #endregion
 
@@ -181,7 +180,7 @@ public static class GTools
 
 
 
-    public static async UniTask<WorldBuffHint> LoadWorldBuffHintAsync(BuffBase f_Buff)
+    public static async UniTask<WorldBuffHint> LoadWorldBuffHintAsync(BuffData f_Buff)
     {
         var target = await GTools.AssetsMgr.LoadPrefabPoolAsync<WorldBuffHint>();
         await target.SetTargetAsync(f_Buff);

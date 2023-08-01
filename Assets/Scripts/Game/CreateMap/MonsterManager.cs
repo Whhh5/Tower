@@ -7,7 +7,7 @@ using Cysharp.Threading.Tasks;
 
 public class CommandLevelQueue
 {
-    private Dictionary<int, ListQueue< Action>> m_Queue = new();
+    private Dictionary<int, ListQueue<Action>> m_Queue = new();
 
     public void Initialization()
     {
@@ -159,5 +159,20 @@ public class MonsterManager : MonoSingleton<MonsterManager>
                 await UniTask.Delay(1000);
             }
         });
+    }
+
+
+
+    public async void CreateHero()
+    {
+        var originalSpawnPoint = PlayerSpawnPoint[0];
+        var targetSpawnPoint = MonsterSpawnPoint[1];
+        var hero1 = new Entity_Player_Hero1Data(0, originalSpawnPoint.CurrentIndex, targetSpawnPoint);
+
+        var weapon = new Emitter_SwordHeightData(0, hero1); 
+        hero1.SetWeapon(weapon);
+
+        await ILoadPrefabAsync.LoadAsync(hero1);
+        await ILoadPrefabAsync.LoadAsync(weapon);
     }
 }

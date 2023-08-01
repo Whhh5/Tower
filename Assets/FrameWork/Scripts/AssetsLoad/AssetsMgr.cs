@@ -406,6 +406,7 @@ namespace B1
         private ObjectPoolBase GetIns(Transform f_Parent = null)
         {
             var obj = GameObject.Instantiate(Target, f_Parent ?? GTools.PoolRoot);
+            obj.SaveID = obj.GetInstanceID();
             obj.PoolKey = m_PoolKey;
             obj.AssetName = (int)m_AssetName;
             obj.AssetLable = (int)EAssetLable.Prefab;
@@ -419,7 +420,7 @@ namespace B1
             {
                 var obj = GetIns();
                 obj.gameObject.SetActive(false);
-                var key = obj.UpdateLevelID;
+                var key = obj.SaveID;
                 PoolList.Add(key, obj);
             }
         }
@@ -444,7 +445,7 @@ namespace B1
             retIns.gameObject.SetActive(f_Active);
             retIns.transform.localPosition = f_LocalPos ?? Vector3.zero;
 
-            var key = retIns.GetInstanceID();
+            var key = retIns.SaveID;
             UseList.Add(key, retIns);
             await retIns.OnLoadAsync();
 
@@ -470,7 +471,7 @@ namespace B1
             f_Obj.transform.SetParent(GTools.PoolRoot);
 
 
-            var key = f_Obj.UpdateLevelID;
+            var key = f_Obj.SaveID;
             if (UseList.ContainsKey(key))
             {
                 UseList.Remove(key);

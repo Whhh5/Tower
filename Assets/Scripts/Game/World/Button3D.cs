@@ -17,7 +17,7 @@ public class Button3D : MonoBehaviour
     [SerializeField]
     float m_ClickTime = 0.0f;
     [SerializeField]
-    float m_Click2Interval = 1;
+    float m_Click2Interval = 0.2f;
 
 
     List<IButton3DClick> m_ClickList = new();
@@ -52,12 +52,13 @@ public class Button3D : MonoBehaviour
         if (Mathf.Abs(curTime - m_ClickTime) > m_Click2Interval)
         {
             await GTools.ParallelTaskAsync(m_ClickList, async (value) => await value.OnClickAsync());
+            m_ClickTime = curTime;
         }
         else
         {
             await GTools.ParallelTaskAsync(m_ClickList2, async (value) => await value.OnClick2Async());
+            m_ClickTime = 0;
         }
-        m_ClickTime = curTime;
     }
 
     public void AddListener(IButton3DClick f_Func)
@@ -87,5 +88,23 @@ public class Button3D : MonoBehaviour
         {
             m_ClickList2.Remove(f_Func);
         }
+    }
+
+    private void OnEnable()
+    {
+        var coms = GetComponents<IButton3DClick>();
+        foreach (var item in coms)
+        {
+            if (!m_ClickList.Contains(item))
+            {
+                m_ClickList.Add(item);
+                m_ClickList2.Add(item);
+            }
+        }
+    }
+    private void OnDisable()
+    {
+        m_ClickList.Clear();
+        m_ClickList2.Clear();
     }
 }

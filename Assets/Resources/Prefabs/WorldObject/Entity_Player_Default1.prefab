@@ -158,6 +158,7 @@ GameObject:
   - component: {fileID: 3728535035421439866}
   - component: {fileID: 1881456638984551915}
   - component: {fileID: 2518830552679348540}
+  - component: {fileID: 1383432871814432855}
   m_Layer: 0
   m_Name: Entity_Player_Default1
   m_TagString: Untagged
@@ -225,12 +226,20 @@ MonoBehaviour:
   m_MainBody: {fileID: 4390362835891449528}
   m_MainObject: {fileID: 9157896395193380940}
   m_PointUp: {fileID: 1616244112736571639}
-  m_ImmuneBuffList: 
-  m_LayerMask: 256
-  m_AttackLayerMask: 128
-  m_HarmBase: 2
-  m_CurWeapon: {fileID: 0}
   TargetPosition: {x: 0, y: 0, z: 0}
+--- !u!65 &1383432871814432855
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1692375303170051810}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.5, y: 1.5, z: 1.5}
+  m_Center: {x: 0, y: 0.78, z: 0}
 --- !u!1 &2273183421443424338
 GameObject:
   m_ObjectHideFlags: 0

@@ -41,6 +41,13 @@ public enum AssetKey
     Entity_Player_Default2,
     TestTimeLine,
     WorldUIEntityHint,
+    Entity_Player_Hero1,
+    EmitterElement_GuidedMissile,
+    EmitterElement_SwordLow,
+
+    Emitter_SwordLow,
+    Emitter_SwordHeight,
+    Emitter_GuidedMissileBaseCommon,
 }
 public class TableMgr: Singleton<TableMgr>
 {
@@ -73,8 +80,21 @@ public class TableMgr: Singleton<TableMgr>
         { AssetKey.Entity_Monster_Default2, "Prefabs/WorldObject/Entity_Monster_Default2" },
         { AssetKey.Entity_Player_Default1, "Prefabs/WorldObject/Entity_Player_Default1" },
         { AssetKey.Entity_Player_Default2, "Prefabs/WorldObject/Entity_Player_Default2" },
+        { AssetKey.Entity_Player_Hero1, "Prefabs/WorldObject/Entity_Player_Hero1" },
+        
+        { AssetKey.EmitterElement_GuidedMissile, "Prefabs/WorldObject/EmitterElement_GuidedMissile" },
+        { AssetKey.EmitterElement_SwordLow, "Prefabs/WorldObject/EmitterElement_SwordLow" },
+
+        { AssetKey.Emitter_SwordLow, "Prefabs/WorldObject/Emitter_SwordLow" },
+        { AssetKey.Emitter_SwordHeight, "Prefabs/WorldObject/Emitter_SwordHeight" },
+        { AssetKey.Emitter_GuidedMissileBaseCommon, "Prefabs/WorldObject/Emitter_GuidedMissileBaseCommon" },
+
+
+
         { AssetKey.TestTimeLine, "Prefabs/TimeLine/TestTimeLine" },
         { AssetKey.WorldUIEntityHint, "Prefabs/WorldUI/WorldUIEntityHint" },
+
+
     };
     public bool GetAssetPath(AssetKey f_Key, out string f_Result)
     {

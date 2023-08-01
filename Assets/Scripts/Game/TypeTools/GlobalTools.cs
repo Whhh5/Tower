@@ -122,24 +122,21 @@ public enum EResult
 }
 public class ResultData<T>
 {
-    public ResultData()
+    public ResultData(EResult f_result = EResult.Defeated)
     {
-        Initialization();
+        Initialization(f_result);
     }
     public EResult Result { get; private set; }
     public T Value { get; private set; }
-    public void Initialization()
+    public void Initialization(EResult f_result)
     {
-        Result = EResult.Defeated;
+        Result = f_result;
         Value = default(T);
     }
-    public void SetData(T f_Value)
+    public void SetData(T f_Value, EResult f_result = EResult.Succeed)
     {
-        if (!GTools.RefIsNull(f_Value))
-        {
-            Result = EResult.Succeed;
-            Value = f_Value;
-        }
+        Result = f_result;
+        Value = f_Value;
     }
 }
 #endregion

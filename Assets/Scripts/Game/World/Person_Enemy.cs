@@ -38,7 +38,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
         CurStatus = EPersonStatusType.None;
         base.OnUnLoad();
     }
-    public override int ChangeBlood(int f_Increment)
+    public override int ChangeBlood(ChangeBloodData f_Increment)
     {
         var value = base.ChangeBlood(f_Increment);
         WorldWindowManager.Ins.UpdateBloodHint(this);
@@ -292,7 +292,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
         m_CurTarget = target;
         return target != null;
     }
-    // ��⹥��Ŀ������
+
     private bool GetAttackTargetCondition(int f_Index)
     {
         if (WorldMapManager.Ins.TryGetChunkData(f_Index, out var chunkData))
@@ -304,7 +304,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
         }
         return false;
     }
-    // ����һ��
+
     public void AttackTarget()
     {
 

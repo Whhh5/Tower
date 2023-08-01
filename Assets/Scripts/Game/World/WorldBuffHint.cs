@@ -20,7 +20,7 @@ public class WorldBuffHintData : UnityObjectData
 public class WorldBuffHint : ObjectPoolBase
 {
     [SerializeField]
-    private BuffBase m_Target = null;
+    private BuffData m_Target = null;
     public override async UniTask OnLoadAsync()
     {
         await base.OnLoadAsync();
@@ -44,7 +44,7 @@ public class WorldBuffHint : ObjectPoolBase
     }
 
 
-    public async UniTask SetTargetAsync(BuffBase f_Target)
+    public async UniTask SetTargetAsync(BuffData f_Target)
     {
         m_Target = f_Target;
     }

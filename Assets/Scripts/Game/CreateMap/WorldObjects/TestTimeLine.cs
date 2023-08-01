@@ -15,9 +15,9 @@ public class TestTimeLineData : EntityEffectBaseData
 
     public WorldObjectBaseData Original = null;
 
-    public void EntityDamage(EntityData f_Target, int f_Value)
+    public void EntityDamage(EntityData f_Target, EDamageType f_DamageType, int f_Value)
     {
-        GTools.MathfMgr.EntityDamage(Original, f_Target, f_Value);
+        GTools.MathfMgr.EntityDamage(Original, f_Target, f_DamageType, f_Value);
     }
 }
 public class TestTimeLine : EntityEffectBase

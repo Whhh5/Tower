@@ -4,8 +4,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EmitterElement_GuidedMissile : WeaponElementBase
+public class EmitterElement_GuidedMissileData : WeaponElementBaseData
 {
+    public EmitterElement_GuidedMissileData(int f_Index, WorldObjectBaseData f_Initiator) : base(f_Index, f_Initiator)
+    {
+
+    }
+    public override AssetKey AssetPrefabID => AssetKey.EmitterElement_GuidedMissile;
+
+    public override EWorldObjectType ObjectType => EWorldObjectType.Effect;
+
     [SerializeField]
     private TrailRender_Common m_Trail = null;
     [SerializeField]
@@ -15,52 +23,26 @@ public class EmitterElement_GuidedMissile : WeaponElementBase
         { 2, 1 },
     };
 
-    public override async UniTask OnLoadAsync()
+
+    public override void StopExecute()
     {
-        await base.OnLoadAsync();
-        m_Trail = await GTools.LoadTrailRenderAsync<TrailRender_Common>(TrailPoint.position);
-    }
+        base.StopExecute();
 
-    public override async UniTask OnStartAsync(params object[] f_Params)
-    {
-        
-    }
+        var targets = GTools.MathfMgr.GetTargets_Sphere(CentralPoint, 10, ELayer.Enemy);
 
-    public override async UniTask OnUnLoadAsync()
-    {
-        await base.OnUnLoadAsync();
-        await GTools.UnLoadTrailRenderAsync(m_Trail);
-    }
-
-    public override void OnUpdate()
-    {
-        base.OnUpdate();
-    }
-
-
-    public override void SetWorldPos(Vector3 f_WorldPos)
-    {
-        base.SetWorldPos(f_WorldPos);
-        m_Trail.SetWorldPos(TrailPoint.position);
-    }
-
-
-    public override async UniTask StopExecute()
-    {
-        await  base.StopExecute();
-
-        var targets = GTools.MathfMgr.GetTargets_Sphere(CentralPoint.position, 10, ELayer.Enemy);
-
-        await GTools.ParallelTaskAsync(targets, async (entity) =>
+        foreach (var entity in targets)
         {
-            await entity.BeHitAsync(m_Harm, EDamageType.PhCritical);
-
-            await GTools.ParallelTaskAsync(m_BuffList, async (key, value) =>
+            foreach (var item in m_BuffList)
             {
-                await (entity as Person).AddBuffAsync(key, value);
-            });
-        });
+                entity.AddBuffAsync(item.Key, item.Value);
+            }
+        }
 
-        await AssetsMgr.Ins.UnLoadPrefabPoolAsync(this);
+        ILoadPrefabAsync.UnLoad(this);
     }
+}
+public class EmitterElement_GuidedMissile : WeaponElementBase
+{
+
+
 }

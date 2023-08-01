@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8123541283007775801}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43,7 +43,7 @@ GameObject:
   - component: {fileID: 1239627132329685051}
   - component: {fileID: 480543251550939593}
   - component: {fileID: 5732887728541613702}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -124,7 +124,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8830629004387404860}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point_Up
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -157,7 +157,7 @@ GameObject:
   - component: {fileID: 4966629225846564906}
   - component: {fileID: 213314005235186687}
   - component: {fileID: 9133613183259566561}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -240,7 +240,7 @@ GameObject:
   - component: {fileID: 7294114057043336078}
   - component: {fileID: 422382851238228728}
   - component: {fileID: 4961222257861349762}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -321,7 +321,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2642303418902607361}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -355,7 +355,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6409672769730368403}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -390,7 +390,7 @@ GameObject:
   - component: {fileID: 6116969401255230635}
   - component: {fileID: 6070075174544362050}
   - component: {fileID: 2355885714437102602}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -486,7 +486,7 @@ GameObject:
   - component: {fileID: 1700797718736397829}
   - component: {fileID: 978051641563787179}
   - component: {fileID: 1013361754553512139}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -567,7 +567,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5789407836073646168}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -598,7 +598,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2754768785508415158}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -630,7 +630,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5487549711394010971}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -667,7 +667,7 @@ GameObject:
   - component: {fileID: 2826694953577177085}
   - component: {fileID: 3453404733072858458}
   - component: {fileID: 5261406210218159263}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -750,7 +750,7 @@ GameObject:
   - component: {fileID: 5478259002570188510}
   - component: {fileID: 7177617763543815370}
   - component: {fileID: 4732284429821571143}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -831,7 +831,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 305330019743628554}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -864,7 +864,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1766228682575759070}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -898,7 +898,8 @@ GameObject:
   - component: {fileID: 6871602305798220721}
   - component: {fileID: 8574565513890783520}
   - component: {fileID: 8574565513890783521}
-  m_Layer: 0
+  - component: {fileID: 2962084179735166918}
+  m_Layer: 8
   m_Name: Entity_Player_Default2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -965,10 +966,18 @@ MonoBehaviour:
   m_MainBody: {fileID: 5768843404739736179}
   m_MainObject: {fileID: 1438299197058837639}
   m_PointUp: {fileID: 8830629004387404860}
-  m_ImmuneBuffList: 
-  m_LayerMask: 256
-  m_AttackLayerMask: 128
-  m_HarmBase: 30
-  m_CurWeapon: {fileID: 0}
   TargetPosition: {x: 0, y: 0, z: 0}
   AttackPoint: {fileID: 2203873706533731500}
+--- !u!65 &2962084179735166918
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8907620200688865833}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 2.56, z: 1}
+  m_Center: {x: 0, y: 1.27, z: 0}

@@ -6,46 +6,60 @@ using B1;
 using DG.Tweening;
 using UnityEngine.EventSystems;
 
-public class Emitter_GuidedMissileBaseCommon : Emitter_GuidedMissileBase
-{
 
-    public override bool GetStopCondition(WeaponElementBase f_Buttle, Entity f_Target, float f_Ratio)
+public class Emitter_GuidedMissileBaseCommonData: Emitter_GuidedMissileBaseData
+{
+    public Emitter_GuidedMissileBaseCommonData(int f_Index, WorldObjectBaseData f_TargetEntity) : base(f_Index, f_TargetEntity)
+    {
+
+    }
+
+    public override AssetKey AssetPrefabID => AssetKey.Emitter_GuidedMissileBaseCommon;
+
+    public override EWorldObjectType ObjectType => EWorldObjectType.Effect;
+
+    public override void CollectStartAsync(WeaponElementBaseData f_Element, Vector3 f_Target)
+    {
+    }
+
+    public override void CollectStopAsync(WeaponElementBaseData f_Element, Vector3 f_Target)
+    {
+    }
+
+    public override void CollectUpdateAsync(WeaponElementBaseData f_Element, Vector3 f_TargetPoint, EntityData f_Target, float f_Ratio)
+    {
+    }
+
+    public override bool GetStopCondition(WeaponElementBaseData f_Buttle, EntityData f_Target, float f_Ratio)
     {
         return true;
     }
 
-
-
-
-
-    public override async UniTask LaunchStartAsync(WeaponElementBase f_Element, Entity f_Entity)
+    public override WeaponElementBaseData GetWeaponElementData()
     {
-        
+        var value = new EmitterElement_GuidedMissileData(0, Initiator as WorldObjectBaseData);
+        return value;
     }
 
-    public override async UniTask LaunchStopAsync(WeaponElementBase f_Element, Entity f_Entity)
+    public override void LaunchStartAsync(WeaponElementBaseData f_Element, EntityData f_Entity)
     {
-        
     }
 
-    public override async UniTask LaunchUpdateAsync(WeaponElementBase f_Element, Entity f_Entity, float f_Ratio)
+    public override void LaunchStopAsync(WeaponElementBaseData f_Element, EntityData f_Entity)
     {
-
     }
 
-    public override async UniTask CollectStartAsync(WeaponElementBase f_Element, Vector3 f_Target)
+    public override void LaunchUpdateAsync(WeaponElementBaseData f_Element, EntityData f_Entity, float f_Ratio)
     {
-        
     }
-    public override async UniTask CollectStopAsync(WeaponElementBase f_Element, Vector3 f_Target)
+}
+public class Emitter_GuidedMissileBaseCommon : Emitter_GuidedMissileBase
+{
+    public override async UniTask StartExecute()
     {
-        
-    }
-
-    public override async UniTask CollectUpdateAsync(WeaponElementBase f_Element, Vector3 f_TargetPoint, Entity f_Target, float f_Ratio)
-    {
-        
     }
 
-
+    public override async UniTask StopExecute()
+    {
+    }
 }

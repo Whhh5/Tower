@@ -31,8 +31,8 @@ public class WeaponBos3D : MonoBehaviour, IButton3DClick
     public async UniTask OnClickAsync()
     {
 
-        m_Target = await GTools.WeaponMgr.GetSetWeaponAsync(m_PrefabName, GTools.PlayerController.CurController);
-        await GTools.PlayerController.SetWeapon(m_Target);
+        //m_Target = await GTools.WeaponMgr.GetSetWeaponAsync(m_PrefabName, GTools.PlayerController.CurController);
+        //await GTools.PlayerController.SetWeapon(m_Target);
     }
 
     public async UniTask OnClick2Async()

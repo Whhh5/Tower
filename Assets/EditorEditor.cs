@@ -164,9 +164,9 @@ public class GameDebugerWindow : EditorWindow
             EditorGUILayout.EndHorizontal();
             EditorGUILayout.BeginHorizontal();
             {
-                if (GUILayout.Button("Test TimeLine", GUILayout.Width(150), GUILayout.Height(50)) && Application.isPlaying)
+                if (GUILayout.Button("Create Hero", GUILayout.Width(150), GUILayout.Height(50)) && Application.isPlaying)
                 {
-
+                    MonsterManager.Ins.CreateHero();
                 }
             }
             EditorGUILayout.EndHorizontal();
