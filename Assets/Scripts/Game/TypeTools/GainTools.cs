@@ -7,33 +7,31 @@ using B1;
 
 public class GainMgr : Singleton<GainMgr>
 {
-    public Dictionary<ushort, (EGainType tGainType, Type tClassType)> m_GainMap = null;
+    public Dictionary<EGainView, (EGainType tGainType, Func<WorldObjectBaseData, GainBaseData> tGetData)> m_GainMap = null;
 
     public GainMgr()
     {
-        ushort index = 0;
+        var index = 0;
         m_GainMap = new()
         {
-            { ++index, (EGainType.Launch, typeof(Gain_Launch1)) },
-            { ++index, (EGainType.Collect, typeof(Gain_Collect)) },
+            { (EGainView)(++index), (EGainType.Launch, (value) => new Gain_Launch1(value)) },
+            { (EGainView)(++index), (EGainType.Collect, (value) => new Gain_Collect1(value)) },
         };
     }
 
-    public EGainType GetGainType(ushort f_ID)
+    public EGainType GetGainType(EGainView f_GainView)
     {
-        if (m_GainMap.TryGetValue(f_ID, out var value))
+        if (m_GainMap.TryGetValue(f_GainView, out var value))
         {
             return value.tGainType;
         }
         return EGainType.None;
     }
-    public GainBaseData GetGain(ushort f_ID, WorldObjectBaseData f_TargetPerson)
+    public GainBaseData GetGain(EGainView f_GainView, WorldObjectBaseData f_TargetPerson)
     {
-        if (m_GainMap.TryGetValue(f_ID, out var result))
+        if (m_GainMap.TryGetValue(f_GainView, out var result))
         {
-            var ins = GTools.GetInsttance(result.tClassType);
-            var target = ins as GainBaseData;
-            target.Initialization(f_ID, result.tGainType, f_TargetPerson);
+            var target = result.tGetData(f_TargetPerson);
             return target;
         }
         return null;
@@ -49,18 +47,26 @@ public enum EGainType : ushort
     BeHit,
     EnumCount,
 }
+public enum EGainView : ushort
+{
+    None,
+
+    Launch1,
+    Collect1,
+
+    EnumCount,
+}
 public abstract class GainBaseData : Base, IExecute
 {
-    public ushort ID { get; private set; }
-    public EGainType GainType { get; private set; }
+    public abstract EGainView GainView { get; }
+    public abstract EGainType GainType { get; }
     protected ushort m_Level;
     protected ushort m_TierCount;
     protected WorldObjectBaseData m_TargetPerson = null;
     protected int m_Probability = 0;
-    public virtual void Initialization(ushort f_ID, EGainType f_GainType, WorldObjectBaseData f_TargetPerson)
+
+    public GainBaseData(WorldObjectBaseData f_TargetPerson)
     {
-        ID = f_ID;
-        GainType = f_GainType;
         m_TargetPerson = f_TargetPerson;
         m_Level = 1;
         m_TierCount = 1;
@@ -98,30 +104,32 @@ public abstract class GainBaseData : Base, IExecute
 
 public class Gain_Launch1 : GainBaseData
 {
-    public override void Initialization(ushort f_ID, EGainType f_GainType, WorldObjectBaseData f_TargetPerson)
-    {
-        base.Initialization(f_ID, f_GainType, f_TargetPerson);
+    public override EGainView GainView => EGainView.Launch1;
+    public override EGainType GainType => EGainType.Launch;
 
+
+    public Gain_Launch1(WorldObjectBaseData f_TargetPerson) : base(f_TargetPerson)
+    {
         m_Probability = 30;
     }
 
     public override async UniTask Execute(int f_CurProbability)
     {
         var wepon = new Emitter_GuidedMissileBaseCommonData(0, m_TargetPerson);
-
-        wepon.StartExecute();
-        wepon.StopExecute();
-        GTools.WeaponMgr.DestroyWeaponAsync(wepon);
+        await ILoadPrefabAsync.LoadAsync(wepon);
+        await wepon.StartExecute();
+        await wepon.StopExecute();
+        ILoadPrefabAsync.UnLoad(wepon);
     }
 
 
 }
-public class Gain_Collect : GainBaseData
+public class Gain_Collect1 : GainBaseData
 {
-    public override void Initialization(ushort f_ID, EGainType f_GainType, WorldObjectBaseData f_TargetPerson)
+    public override EGainView GainView => EGainView.Collect1;
+    public override EGainType GainType => EGainType.Collect;
+    public Gain_Collect1(WorldObjectBaseData f_TargetPerson) : base(f_TargetPerson)
     {
-        base.Initialization(f_ID, f_GainType, f_TargetPerson);
-
         m_Probability = 100;
     }
 

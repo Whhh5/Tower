@@ -113,7 +113,7 @@ public abstract class Emitter_SwordBaseData: WeaponBaseData
         }
     }
 
-    public override void StartExecute()
+    public override async UniTask StartExecute()
     {
         var target = GTools.MathfMgr.NearerTarget(WorldPosition, Radius, AttackLayer);
         if (GTools.RefIsNull(target))
@@ -122,12 +122,12 @@ public abstract class Emitter_SwordBaseData: WeaponBaseData
         }
 
         Targets = new() { target };
-        LaunchAsync(target);
+        await LaunchAsync(target);
     }
 
-    public override void StopExecute()
+    public override async UniTask StopExecute()
     {
-        CollectAsync(WorldPosition);
+        await CollectAsync(WorldPosition);
     }
 
     public virtual ResultData<WeaponElementBaseData> GetWeaponElementAsync()
@@ -149,7 +149,7 @@ public abstract class Emitter_SwordBaseData: WeaponBaseData
         m_AllSwordElements[f_ToStatus].Push(f_Target);
     }
 
-    public override async void LaunchAsync(EntityData f_Target)
+    public override async UniTask LaunchAsync(EntityData f_Target)
     {
         if (m_LaunchStatus == EStatus.Close) return;
         var targetPoint = (f_Target.CentralPoint - WorldPosition).normalized * Radius + WorldPosition;
@@ -173,7 +173,6 @@ public abstract class Emitter_SwordBaseData: WeaponBaseData
                 buttle.SetPosition(posValue);
             }, (value) =>
             {
-
                 var isExcute = GetStopCondition(buttle, f_Target, value);
                 return isExcute;
             });
@@ -181,11 +180,11 @@ public abstract class Emitter_SwordBaseData: WeaponBaseData
 
             buttle.StopExecute();
             LaunchStopAsync(buttle, f_Target);
-            await Initiator.ExecuteGainAsync(EGainType.Launch);
+            Initiator.ExecuteGainAsync(EGainType.Launch);
         }
     }
 
-    public override async void CollectAsync(Vector3 f_Point)
+    public override async UniTask CollectAsync(Vector3 f_Point)
     {
         if (m_CollectStatus == EStatus.Close) return;
         CollectAwakeAsync(f_Point);
@@ -215,7 +214,7 @@ public abstract class Emitter_SwordBaseData: WeaponBaseData
                 buttle.ClearTargets();
             }
 
-            await Initiator.ExecuteGainAsync(EGainType.Collect);
+            Initiator.ExecuteGainAsync(EGainType.Collect);
         }
 
         CollectSleepAsync(f_Point);

@@ -123,7 +123,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
     public Transform Parent { get; private set; } = null;
     public Vector3 WorldPosition { get; private set; } = new Vector3();
     public Vector3 Forward { get; private set; } = new Vector3(0, 0, 1);
-    public Quaternion LocalRotation { get; private set; } = new Quaternion();
+    public Vector3 LocalRotation { get; private set; } = new Vector3();
     public Vector3 LocalScale { get; private set; } = new Vector3(1, 1, 1);
 
     public Color Color { get; private set; } = Color.white;
@@ -132,7 +132,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
     public Transform Tran => PrefabTarget != null ? PrefabTarget.MainTran : null;
     public Vector3 PointUp => PrefabTarget != null && PrefabTarget.PointUp != null
         ? PrefabTarget.PointUp.position
-        : WorldPosition + new Vector3(0, 1, 0);
+        : WorldPosition;
 
     public void SetParent(Transform f_ToParent)
     {
@@ -152,7 +152,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
         }
     }
 
-    public void SetLocalRotation(Quaternion f_ToLocalRotation)
+    public void SetLocalRotation(Vector3 f_ToLocalRotation)
     {
         LocalRotation = f_ToLocalRotation;
         if (PrefabTarget != null)
@@ -490,7 +490,7 @@ public abstract class ObjectPoolBase : TransformBase, IObjectPoolBase
 
     public void SetLocalRotation()
     {
-        transform.localRotation = UnityObjectData.LocalRotation;
+        transform.localRotation = Quaternion.Euler(UnityObjectData.LocalRotation);
     }
 
     public void SetPosition()

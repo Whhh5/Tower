@@ -28,4 +28,12 @@ public class Entity_Player_Hero1 : Person_Enemy
             Data.CurWeapon.StartExecute();
         }
     }
+    public override async UniTask OnClick2Async()
+    {
+        await base.OnClick2Async();
+        if (Data.CurWeapon != null)
+        {
+            Data.CurWeapon.StopExecute();
+        }
+    }
 }

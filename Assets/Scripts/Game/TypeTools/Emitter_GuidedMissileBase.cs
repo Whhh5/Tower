@@ -41,7 +41,7 @@ public abstract class Emitter_GuidedMissileBaseData: WeaponBaseData
     }
 
 
-    public override async void StartExecute()
+    public override async UniTask StartExecute()
     {
         var targets = GTools.MathfMgr.GetTargets_Sphere(WorldPosition, Radius, AttackLayer);
         if (targets.Count <= 0)
@@ -71,7 +71,7 @@ public abstract class Emitter_GuidedMissileBaseData: WeaponBaseData
 
             for (int j = 0; j < fireNum; j++)
             {
-                tasks[taskIndex++] = UniTask.Create(async () => { LaunchAsync(item); });
+                tasks[taskIndex++] = UniTask.Create(async () => { await LaunchAsync(item); });
             }
         }
 
@@ -79,13 +79,13 @@ public abstract class Emitter_GuidedMissileBaseData: WeaponBaseData
         await UniTask.WhenAll(tasks);
     }
 
-    public override async void StopExecute()
+    public override async UniTask StopExecute()
     {
     }
 
 
     // Ŀ�����
-    public override async void LaunchAsync(EntityData f_Target)
+    public override async UniTask LaunchAsync(EntityData f_Target)
     {
         var targetPoint = f_Target.CentralPoint;
         var curMaxTime = Vector3.Distance(targetPoint, WorldPosition) / Radius;
@@ -131,7 +131,7 @@ public abstract class Emitter_GuidedMissileBaseData: WeaponBaseData
     }
 
 
-    public override void CollectAsync(Vector3 f_Point)
+    public override async UniTask CollectAsync(Vector3 f_Point)
     {
     }
 

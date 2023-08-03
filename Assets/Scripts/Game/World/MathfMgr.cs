@@ -91,7 +91,7 @@ public class MathfMgr : Singleton<MathfMgr>
         List<EntityData> entitys = new();
         foreach (var item in colliders)
         {
-            if (item.TryGetComponent<Entity>(out var icom))
+            if (item.TryGetComponent<Entity>(out var icom) && icom.EntityData != null && icom.EntityData.CurStatus != EPersonStatusType.Die)
             {
                 entitys.Add(icom.EntityData);
             }
@@ -104,15 +104,14 @@ public class MathfMgr : Singleton<MathfMgr>
         List<T> entitys = new();
         foreach (var item in colliders)
         {
-            if (item.TryGetComponent<T>(out var icom))
+            if (item.TryGetComponent<Entity>(out var icom) && icom.EntityData != null && icom.EntityData.CurStatus != EPersonStatusType.Die && icom.EntityData is T data)
             {
-                if (icom.CurStatus != EPersonStatusType.Die)
+
+                if (f_Condition.Invoke(data))
                 {
-                    if (f_Condition.Invoke(icom))
-                    {
-                        entitys.Add(icom);
-                    }
+                    entitys.Add(data);
                 }
+
             }
         }
         return entitys;
@@ -252,6 +251,8 @@ public class MathfMgr : Singleton<MathfMgr>
                 };
                 f_Target.ChangeBlood(data);
                 hintTex = $"{damageValue}";
+
+                f_Initiator.ExecuteGainAsync(EGainType.Collect);
             }
             else
             {

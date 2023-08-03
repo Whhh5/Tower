@@ -37,9 +37,8 @@ public class EmitterElement_GuidedMissileData : WeaponElementBaseData
                 entity.AddBuffAsync(item.Key, item.Value);
             }
         }
-
-        ILoadPrefabAsync.UnLoad(this);
     }
+
 }
 public class EmitterElement_GuidedMissile : WeaponElementBase
 {

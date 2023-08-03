@@ -71,7 +71,7 @@ public abstract class PersonData : EntityData
     {
         if (!GTools.RefIsNull(CurWeapon))
         {
-            GTools.WeaponMgr.DestroyWeaponAsync(CurWeapon);
+            ILoadPrefabAsync.UnLoad(CurWeapon);
         }
         CurWeapon = f_Weapon;
     }
@@ -95,9 +95,9 @@ public abstract class PersonData : EntityData
     //===============================----------------------========================================
     //--
     // Gain
-    protected Dictionary<EGainType, Dictionary<ushort, GainBaseData>> m_CurGainList = new();
+    protected Dictionary<EGainType, Dictionary<EGainView, GainBaseData>> m_CurGainList = new();
     // ´¥·¢ÔöÒæ
-    public async UniTask ExecuteGainAsync(EGainType f_GainType)
+    public async void ExecuteGainAsync(EGainType f_GainType)
     {
         await GTools.ParallelTaskAsync(m_CurGainList[f_GainType], async (key, value) =>
         {
@@ -105,32 +105,32 @@ public abstract class PersonData : EntityData
         });
     }
 
-    public async UniTask AddGainAsync(ushort f_ID)
+    public void AddGainAsync(EGainView f_GainView)
     {
-        var gainType = GTools.GainMgr.GetGainType(f_ID);
-        if (!m_CurGainList[gainType].ContainsKey(f_ID))
+        var gainType = GTools.GainMgr.GetGainType(f_GainView);
+        if (!m_CurGainList[gainType].ContainsKey(f_GainView))
         {
-            var ins = GTools.GainMgr.GetGain(f_ID, this as WorldObjectBaseData);
-            m_CurGainList[gainType].Add(f_ID, ins);
+            var ins = GTools.GainMgr.GetGain(f_GainView, this as WorldObjectBaseData);
+            m_CurGainList[gainType].Add(f_GainView, ins);
         }
     }
-    public async UniTask RemoveGainAsync(ushort f_ID)
+    public void RemoveGainAsync(EGainView f_GainView)
     {
-        var gainType = GTools.GainMgr.GetGainType(f_ID);
-        if (m_CurGainList[gainType].ContainsKey(f_ID))
+        var gainType = GTools.GainMgr.GetGainType(f_GainView);
+        if (m_CurGainList[gainType].ContainsKey(f_GainView))
         {
-            m_CurGainList[gainType].Remove(f_ID);
+            m_CurGainList[gainType].Remove(f_GainView);
         }
     }
-    public async UniTask SetGainLevelAsync(ushort f_ID, ushort f_Level)
+    public void SetGainLevelAsync(ushort f_ID, ushort f_Level)
     {
 
     }
-    public async UniTask AddGainTierAsync(ushort f_ID)
+    public void AddGainTierAsync(ushort f_ID)
     {
 
     }
-    public async UniTask RediusGainTierAsync(ushort f_ID)
+    public void RediusGainTierAsync(ushort f_ID)
     {
 
     }

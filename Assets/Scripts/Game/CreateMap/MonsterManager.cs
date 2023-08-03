@@ -172,7 +172,13 @@ public class MonsterManager : MonoSingleton<MonsterManager>
         var weapon = new Emitter_SwordHeightData(0, hero1); 
         hero1.SetWeapon(weapon);
 
+
+
         await ILoadPrefabAsync.LoadAsync(hero1);
         await ILoadPrefabAsync.LoadAsync(weapon);
+
+
+        hero1.AddGainAsync(EGainView.Launch1);
+        hero1.AddGainAsync(EGainView.Collect1);
     }
 }

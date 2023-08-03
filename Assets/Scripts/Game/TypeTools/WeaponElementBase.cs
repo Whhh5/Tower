@@ -15,7 +15,7 @@ public abstract class WeaponElementBaseData : EntityData
 
     public WorldObjectBaseData Initiator = null;
     public WeaponBaseData TargetEmttier = null;
-    public int Harm = 4;
+    public int Harm = 23;
     public ESwordStatus CurWeaponStatus = ESwordStatus.None;
     public float Radius = 1;
     public EDamageType DamegeType = EDamageType.None;
@@ -27,7 +27,7 @@ public abstract class WeaponElementBaseData : EntityData
     public Vector3 BosSize => ElementTarget != null ? BosSize : Vector3.one;
 
     /// <summary>
-    /// �Ƿ��赲
+    /// 是否被阻挡
     /// </summary>
     public bool IsBeResist = false;
 

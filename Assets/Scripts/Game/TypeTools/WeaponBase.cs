@@ -17,7 +17,7 @@ public abstract class WeaponBaseData : VirtualEntityData
     public PersonData Initiator = null;
     public float UnitTime = 1;
     public int Count = 10;
-    public float Radius = 10;
+    public float Radius = 30;
     public float LaunchSpeed = 1;
     public float CollectSpeed = 3;
     public float Harm = 6;
@@ -26,14 +26,14 @@ public abstract class WeaponBaseData : VirtualEntityData
     public List<EntityData> Targets = new();
     public ELayer LayerMask = ELayer.Default;
     public ELayer AttackLayer = ELayer.Default;
-    public abstract void StartExecute();
-    public abstract void StopExecute();
+    public abstract UniTask StartExecute();
+    public abstract UniTask StopExecute();
 
     public abstract WeaponElementBaseData GetWeaponElementData();
 
-    public abstract void LaunchAsync(EntityData f_Target);
+    public abstract UniTask LaunchAsync(EntityData f_Target);
 
-    public abstract void CollectAsync(Vector3 f_Point);
+    public abstract UniTask CollectAsync(Vector3 f_Point);
 
     public void SetWeaponElementAsync(EAssetName f_WeaponElement)
     {

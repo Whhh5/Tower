@@ -11,7 +11,7 @@ public class Emitter_GuidedMissileBaseCommonData: Emitter_GuidedMissileBaseData
 {
     public Emitter_GuidedMissileBaseCommonData(int f_Index, WorldObjectBaseData f_TargetEntity) : base(f_Index, f_TargetEntity)
     {
-
+        SetPosition(f_TargetEntity.WeaponPoint);
     }
 
     public override AssetKey AssetPrefabID => AssetKey.Emitter_GuidedMissileBaseCommon;
@@ -47,6 +47,7 @@ public class Emitter_GuidedMissileBaseCommonData: Emitter_GuidedMissileBaseData
 
     public override void LaunchStopAsync(WeaponElementBaseData f_Element, EntityData f_Entity)
     {
+        DestroyWeaponElementAsync(f_Element);
     }
 
     public override void LaunchUpdateAsync(WeaponElementBaseData f_Element, EntityData f_Entity, float f_Ratio)

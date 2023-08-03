@@ -166,18 +166,6 @@ public static class GTools
         return false;
     }
 
-    public static T GetInsttance<T>() where T : class, new()
-    {
-        var type = typeof(T);
-        var target = GetInsttance(type) as T;
-        return target;
-    }
-    public static object GetInsttance(Type f_Type)
-    {
-        var target = Activator.CreateInstance(f_Type);
-        return target;
-    }
-
 
 
     public static async UniTask<WorldBuffHint> LoadWorldBuffHintAsync(BuffData f_Buff)
