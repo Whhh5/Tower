@@ -35,4 +35,19 @@ public class WorldWindowManager : MonoSingleton<WorldWindowManager>
             m_BloodData.Remove(key);
         }
     }
+
+    public void UpdateMagicHint(WorldObjectBaseData f_Target)
+    {
+        var key = f_Target.Index;
+
+        if (!m_BloodData.TryGetValue(key, out var value))
+        {
+            value = new(key, f_Target);
+            value.SetParent(m_Root);
+            value.SetLocalScale(Vector3.one * 0.01f);
+            m_BloodData.Add(key, value);
+            GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(value));
+        }
+        value.UpdateInfo();
+    }
 }

@@ -40,7 +40,9 @@ public class LoadAssetManager : B1.Singleton<LoadAssetManager>
             var assetPath = $"{path}";
             value = new();
             value.result = LoadAsyncResult.Loading;
+
             m_DicAsset.Add(f_ID, value);
+
             var asset = await Resources.LoadAsync<GameObject>(assetPath);
             if (asset != null && asset is GameObject targetObj)
             {

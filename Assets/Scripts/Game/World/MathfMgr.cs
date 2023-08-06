@@ -85,6 +85,71 @@ public class MathfMgr : Singleton<MathfMgr>
     }
 
 
+    public List<T> GetTargstsByForwardAngle<T>(Vector3 f_OriginPoint, Vector3 f_Forward, float f_StartAngle, float f_Radius = 1, ELayer f_Layer = ELayer.Default, float? f_EndAngle = null)
+        where T : EntityData
+    {
+        f_StartAngle = Mathf.Clamp(f_StartAngle, -180, 180);
+        float startAngle = f_StartAngle;
+        float endAngle = f_EndAngle ?? 0;
+        var forward = f_Forward.normalized;
+        var originPoint = f_OriginPoint;
+        originPoint.y = 0;
+        forward.y = 0;
+        if (f_EndAngle == null)
+        {
+            endAngle = Mathf.Abs(startAngle);
+            startAngle = -endAngle;
+        }
+        endAngle = Mathf.Clamp(endAngle, -180, 180);
+        startAngle = Mathf.Min(startAngle, endAngle);
+
+        List<T> result = new();
+        Collider[] colliders = Physics.OverlapSphere(f_OriginPoint, f_Radius, (int)f_Layer);
+
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            var item = colliders[i];
+            if (item.TryGetComponent<Entity>(out var icom) && icom.EntityData is T data && GTools.UnityObjectIsActive(data))
+            {
+                var targetDirection = (data.WorldPosition - originPoint).normalized;
+                targetDirection.y = 0;
+
+                var dot = Vector3.Dot(forward, targetDirection);
+
+                var temp1 = dot / Vector3.Distance(targetDirection, Vector3.zero);
+                var temp2 = Mathf.Acos(temp1);
+                var angle = temp2 * Mathf.Rad2Deg;
+
+                var coss = Vector3.Cross(forward, targetDirection);
+
+                var symbol = coss.y / Mathf.Abs(coss.y);
+
+                var targetAngle = angle * symbol;
+
+                if (targetAngle >= startAngle && targetAngle <= endAngle)
+                {
+                    result.Add(data);
+                }
+            }
+        }
+
+
+        return result;
+    }
+    public List<T> GetTargets_Sphere<T>(Vector3 f_FromPoint, float f_Radius, ELayer f_Layer)
+        where T : EntityData
+    {
+        Collider[] colliders = Physics.OverlapSphere(f_FromPoint, f_Radius, (int)f_Layer);
+        List<T> entitys = new();
+        foreach (var item in colliders)
+        {
+            if (item.TryGetComponent<Entity>(out var icom) && icom.EntityData is T data && GTools.UnityObjectIsActive(data))
+            {
+                entitys.Add(data);
+            }
+        }
+        return entitys;
+    }
     public List<EntityData> GetTargets_Sphere(Vector3 f_FromPoint, float f_Radius, ELayer f_Layer)
     {
         Collider[] colliders = Physics.OverlapSphere(f_FromPoint, f_Radius, (int)f_Layer);
@@ -252,12 +317,14 @@ public class MathfMgr : Singleton<MathfMgr>
                 f_Target.ChangeBlood(data);
                 hintTex = $"{damageValue}";
 
-                f_Initiator.ExecuteGainAsync(EGainType.Collect);
+
+                (f_Initiator as WorldObjectBaseData).ExecuteGainAsync(EGainType.Collect);
             }
             else
             {
                 hintTex = hitCondition.Value;
             }
+            f_Initiator.ChangeMagic(200);
 
             WorldMgr.Ins.DamageText(hintTex, f_DamageType, f_Target.CentralPoint);
         }

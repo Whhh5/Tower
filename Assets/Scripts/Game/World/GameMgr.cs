@@ -19,11 +19,11 @@ public class GameMgr : MonoSingleton<GameMgr>
 
     private async void Start()
     {
-        await AssetsMgr.Ins.LoadPrefabAsync<UGUISystem>(EAssetName.UGUISystem, null);
+        //await AssetsMgr.Ins.LoadPrefabAsync<UGUISystem>(EAssetName.UGUISystem, null);
 
 
-        await UIWindowManager.Ins.OpenPageAsync<UIAppPlanePage>();
-        await UIWindowManager.Ins.OpenPageAsync<UINavigationBarPage>();
+        //await UIWindowManager.Ins.OpenPageAsync<UIAppPlanePage>();
+        //await UIWindowManager.Ins.OpenPageAsync<UINavigationBarPage>();
 
 
         // ¿ªÆôÒ»¸ö page

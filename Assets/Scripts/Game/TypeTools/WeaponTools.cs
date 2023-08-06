@@ -13,7 +13,7 @@ public class WeaponMgr : Singleton<WeaponMgr>
 
     public void DestroyWeaponAsync(WeaponBaseData f_Weapon)
     {
-        ILoadPrefabAsync.UnLoad(f_Weapon);
+        
     }
 }
 

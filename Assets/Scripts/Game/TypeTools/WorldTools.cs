@@ -86,6 +86,8 @@ public interface ILoadPrefabAsync
 
     public void AfterLoad();
     public void OnUnLoad();
+
+
     public static async UniTask LoadAsync<TLoad>(TLoad f_Target)
         where TLoad : UnityObjectData
     {

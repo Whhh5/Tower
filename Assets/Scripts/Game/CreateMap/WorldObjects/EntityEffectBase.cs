@@ -6,9 +6,10 @@ using B1;
 
 public abstract class EntityEffectBaseData : UnityObjectData
 {
-    public EntityEffectBaseData(int f_Index, DirectorWrapMode f_WrapMode) : base(f_Index)
+    public EntityEffectBaseData(int f_Index, Vector3 f_StartPos, DirectorWrapMode f_WrapMode) : base(f_Index)
     {
         DirectorUpdateMode = f_WrapMode;
+        SetPosition(f_StartPos);
     }
     public EntityEffectBase Target => GetCom<EntityEffectBase>();
     public override bool IsUpdateEnable => true;
@@ -45,7 +46,6 @@ public abstract class EntityEffectBaseData : UnityObjectData
             CurPlaySchedule = Mathf.Clamp01(value);
             UpdateScheme();
         }
-        Log($"test timeline {CurPlayTime} {CurPlaySchedule} {Duration}");
     }
     public override void AfterLoad()
     {

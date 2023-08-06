@@ -63,8 +63,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
                 break;
             case EPersonStatusType.Idle:
                 {
-                    // �߼����˳��
-                    // �������
+                    // 攻击
                     if (TryGetAttackTarget() && m_CurTarget.CurStatus != EPersonStatusType.Die)
                     {
                         if (m_CurTarget.CurrentIndex != CurTargetIndex)
@@ -73,7 +72,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
                         }
                         SetPersonStatus(EPersonStatusType.Attack);
                     }
-                    // ����ƶ�
+                    // 行走
                     else if (MoveNext())
                     {
                         if (m_CurTarget != null && m_CurTarget.CurStatus != EPersonStatusType.Die)
@@ -105,17 +104,30 @@ public abstract class Person_EnemyData : WorldObjectBaseData
                 break;
             case EPersonStatusType.Attack:
                 {
-                    if (m_CurTarget == null || m_CurTarget.CurStatus == EPersonStatusType.Die || !WorldMapManager.Ins.IsInNearByIndex(CurrentIndex, m_CurTarget.CurrentIndex, AtkRange))
+                    if(m_CurTarget != null && m_CurTarget.CurStatus != EPersonStatusType.Die && WorldMapManager.Ins.IsInNearByIndex(CurrentIndex, m_CurTarget.CurrentIndex, AtkRange))
                     {
-                        SetPersonStatus(EPersonStatusType.Idle);
+                        if (MagicPercent >= 1)
+                        {
+                            SetPersonStatus(EPersonStatusType.Skill);
+                        }
+                        else
+                        {
+                            SetForward(m_CurTarget.WorldPosition - WorldPosition);
+                        }
                     }
                     else
                     {
-                        SetForward(m_CurTarget.WorldPosition - WorldPosition);
+                        SetPersonStatus(EPersonStatusType.Idle);
                     }
                 }
                 break;
             case EPersonStatusType.Skill:
+                {
+                    if (CurrentMagic == 0)
+                    {
+                        SetPersonStatus(EPersonStatusType.Idle);
+                    }
+                }
                 break;
             case EPersonStatusType.Die:
                 break;
@@ -124,6 +136,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
             default:
                 break;
         }
+        PlayerAnimation();
     }
     // -- 
     // ----------------------------------===============----------------------------------
@@ -158,7 +171,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
     {
         if (WorldMapManager.Ins.TryGetChunkData(f_Index, out var chunkData))
         {
-            if ((chunkData.CurObjectType & EWorldObjectType.Road) != 0 
+            if ((chunkData.CurObjectType & EWorldObjectType.Road) != 0
                 && ((chunkData.CurObjectType & EWorldObjectType.Construction) == 0)
                 )
             {
@@ -187,7 +200,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
         CurTargetIndex = f_TargetIndex;
         if (PathManager.Ins.TryGetAStarPath(CurrentIndex, f_TargetIndex, out m_PathPoint, m_PathPoint != null ? PathCondition1 : PathCondition2))
         {
-            
+
         }
     }
     // ��ȡ��һ��·����
@@ -210,7 +223,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
             }
             m_PathPoint.Push(pathData);
         }
-        
+
 
         return false;
     }

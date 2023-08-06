@@ -87,7 +87,7 @@ public static class EditorEditor
 public class GameDebugerWindow : EditorWindow
 {
     public Vector3 m_CurMousePosition = Vector3.zero;
-    
+
     public Vector3Int m_CreateRoadParams = Vector3Int.one;
     private void OnGUI()
     {
@@ -138,7 +138,7 @@ public class GameDebugerWindow : EditorWindow
                 }
                 if (GUILayout.Button("Create Road", GUILayout.Width(150), GUILayout.Height(50)) && Application.isPlaying)
                 {
-                    WorldMapManager.Ins.CreateRoadDataTest(m_CreateRoadParams.x,m_CreateRoadParams.y,m_CreateRoadParams.z);
+                    WorldMapManager.Ins.CreateRoadDataTest(m_CreateRoadParams.x, m_CreateRoadParams.y, m_CreateRoadParams.z);
                 }
                 if (GUILayout.Button("Extend Road", GUILayout.Width(150), GUILayout.Height(50)) && Application.isPlaying)
                 {
@@ -170,12 +170,55 @@ public class GameDebugerWindow : EditorWindow
                 }
             }
             EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.BeginHorizontal();
+            {
+                if (GUILayout.Button("Test Mathf", GUILayout.Width(150), GUILayout.Height(50)))
+                {
+
+                    var targetDirection = Vector3.right;
+
+                    var dot = Vector3.Dot(Vector3.forward, targetDirection);
+
+                    var temp1 = dot / Vector3.Distance(targetDirection, Vector3.zero);
+                    var temp2 = Mathf.Acos(temp1);
+                    var angle = temp2 * Mathf.Rad2Deg;
+
+                    var coss = Vector3.Cross(Vector3.forward, targetDirection);
+
+                    var symbol = coss.y / Mathf.Abs(coss.y);
+
+                    var targetAngle = angle * symbol;
+
+                }
+                if (GUILayout.Button("Test Crad Init", GUILayout.Width(150), GUILayout.Height(50)))
+                {
+                    MathfMgr.Ins.Initialization();
+                    HeroCardPoolMgr.Ins.Init();
+
+                }
+
+                if (GUILayout.Button("Test Crad Get", GUILayout.Width(150), GUILayout.Height(50)))
+                {
+                    if (HeroCardPoolMgr.Ins.TryGetGroupCrad(out var list))
+                    {
+                        foreach (var item in list)
+                        {
+                            Debug.Log(item);
+                        }
+                    }
+                }
+                if (GUILayout.Button("Test Crad Recycle", GUILayout.Width(150), GUILayout.Height(50)))
+                {
+                    HeroCardPoolMgr.Ins.RecycleGroupCrad(EHeroCradType.Hero1, 2);
+                }
+            }
+            EditorGUILayout.EndHorizontal();
         }
         EditorGUILayout.EndVertical();
     }
-    
-}
 
+}
 
 public class DebugerWindow : EditorWindow
 {

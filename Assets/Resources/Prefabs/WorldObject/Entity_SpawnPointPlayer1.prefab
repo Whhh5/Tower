@@ -460,6 +460,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UpdateInteractable: 0
+  m_CurAnim: {fileID: 0}
   m_CentralPoint: {fileID: 7064011514947503744}
   m_BeHitPoint: {fileID: 7064011514947503744}
   m_BuffPoint: {fileID: 7064011514947503744}
@@ -469,11 +470,6 @@ MonoBehaviour:
   m_MainBody: {fileID: 7064011514334956253}
   m_MainObject: {fileID: 7064011514610131538}
   m_PointUp: {fileID: 7064011514947503744}
-  m_ImmuneBuffList: 
-  m_LayerMask: 256
-  m_AttackLayerMask: 128
-  m_HarmBase: 5
-  m_CurWeapon: {fileID: 0}
 --- !u!1 &7064011514947503747
 GameObject:
   m_ObjectHideFlags: 0
@@ -498,7 +494,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7064011514947503747}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.547, z: 0.031}
+  m_LocalPosition: {x: 0, y: 1.812, z: 0.031}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

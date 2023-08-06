@@ -167,7 +167,7 @@ public class MonsterManager : MonoSingleton<MonsterManager>
     {
         var originalSpawnPoint = PlayerSpawnPoint[0];
         var targetSpawnPoint = MonsterSpawnPoint[1];
-        var hero1 = new Entity_Player_Hero1Data(0, originalSpawnPoint.CurrentIndex, targetSpawnPoint);
+        var hero1 = new Entity_Player_Hero2Data(0, targetSpawnPoint.CurrentIndex, originalSpawnPoint);
 
         var weapon = new Emitter_SwordHeightData(0, hero1); 
         hero1.SetWeapon(weapon);

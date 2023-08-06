@@ -131,15 +131,14 @@ public abstract class EntityData : UnityObjectData
     //--
     public int CurrentBlood { get; private set; } = 400;
     public int MaxBlood { get; private set; } = 523;
-    public int CurrentMagic { get; private set; } = 300;
+    public int CurrentMagic { get; protected set; } = 300;
     public int MaxMagic { get; private set; } = 653;
+    public float MagicPercent => (float)CurrentMagic / MaxMagic;
     public virtual int ChangeBlood(ChangeBloodData f_Data)
     {
         var value = CurrentBlood + f_Data.ChangeValue;
 
         CurrentBlood = Mathf.Clamp(value, 0, MaxBlood);
-
-
 
         return CurrentBlood;
     }

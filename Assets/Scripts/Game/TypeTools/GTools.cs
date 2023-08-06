@@ -184,4 +184,9 @@ public static class GTools
         await f_Task;
     }
 
+    public static bool UnityObjectIsActive(UnityObjectData f_UnityObject)
+    {
+        var result = f_UnityObject != null && f_UnityObject.CurStatus != EPersonStatusType.Die;
+        return result;
+    }
 }

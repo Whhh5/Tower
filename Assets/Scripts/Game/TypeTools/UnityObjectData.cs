@@ -30,8 +30,8 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
     public EPersonStatusType CurStatus { get; protected set; } = EPersonStatusType.Idle;
     public virtual void AfterLoad()
     {
-        SetPersonStatus(EPersonStatusType.Idle);
         InitAnimatorParams();
+        SetPersonStatus(EPersonStatusType.Idle);
         AnimaStatus = EAnimatorStatus.Loop;
         LastUpdateTime = Time.time;
         if (IsUpdateEnable)
@@ -194,6 +194,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
             CurAnimaNormalizedTime = 0;
             CurAnimaSpeed = 1;
             AnimaStatus = f_AnimaStatus;
+            UpdateCallbackStatus();
         }
     }
     //--
@@ -350,7 +351,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
         }
 
         // 更新进度
-        if (value > 1)
+        if (value >= 1)
         {
             CurAnimaNormalizedTime = AnimaStatus == EAnimatorStatus.Loop ? value - 1 : 1;
             UpdateCallbackStatus();
@@ -359,6 +360,10 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
         {
             CurAnimaNormalizedTime = value;
         }
+
+
+        //AnimationClip clip = 
+        //clip.events
     }
     public virtual void AnimatorCallback000()
     {
@@ -396,7 +401,9 @@ public abstract class ObjectPoolBase : TransformBase, IObjectPoolBase
 
     public EAssetName EAssetName => (EAssetName)AssetName;
     public EAssetLable EAssetLable => (EAssetLable)AssetLable;
-    public Animator CurAnim => GetComponent<Animator>();
+    [SerializeField]
+    private Animator m_CurAnim = null;
+    public Animator CurAnim => m_CurAnim != null ? m_CurAnim : GetComponent<Animator>();
     public virtual async UniTask OnUnLoadAsync()
     {
 
