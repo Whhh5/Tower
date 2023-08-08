@@ -54,6 +54,22 @@ public abstract class WorldObjectBaseData : PersonData
     }
 }
 
-public abstract class WorldObjectBase : Person
+public class WorldObjectBase : Person, IUpdateBase
 {
+    public override EUpdateLevel UpdateLevel => EUpdateLevel.Level1;
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+
+
+        if (Input.GetMouseButtonUp(0))
+        {
+
+        }
+    }
+
+    private void OnMouseDown()
+    {
+        
+    }
 }

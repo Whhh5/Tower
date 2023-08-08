@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6410361025242612073}
   - component: {fileID: 2327505698908372752}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: WorldUIEntityHint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,6 +52,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UpdateInteractable: 0
+  m_CurAnim: {fileID: 0}
   m_CentralPoint: {fileID: 0}
   m_BeHitPoint: {fileID: 0}
   m_BuffPoint: {fileID: 0}
@@ -78,7 +79,7 @@ GameObject:
   - component: {fileID: 8113119821854968889}
   - component: {fileID: 624657090635280710}
   - component: {fileID: 6436365589760255546}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Middle Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -168,7 +169,7 @@ GameObject:
   - component: {fileID: 8086291691657061069}
   - component: {fileID: 179162887379356088}
   - component: {fileID: 4437097309855256065}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Backgroud
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244,7 +245,7 @@ GameObject:
   - component: {fileID: 2597009928486574210}
   - component: {fileID: 7687762134471207510}
   - component: {fileID: 2152075216214257914}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Middle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -320,7 +321,7 @@ GameObject:
   - component: {fileID: 7336725181673474002}
   - component: {fileID: 9103770740457130991}
   - component: {fileID: 3349842249987863751}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Persent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -492,7 +493,7 @@ GameObject:
   - component: {fileID: 5132619389595787619}
   - component: {fileID: 5132619389595787645}
   - component: {fileID: 5132619389595787644}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Up
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -569,7 +570,7 @@ GameObject:
   - component: {fileID: 5132619390317407487}
   - component: {fileID: 5132619390317407486}
   - component: {fileID: 5132619390317407485}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Up Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -659,7 +660,7 @@ GameObject:
   - component: {fileID: 5132619390446885837}
   - component: {fileID: 5132619390446885839}
   - component: {fileID: 5132619390446885838}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Backgroud
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -735,7 +736,7 @@ GameObject:
   - component: {fileID: 5132619390787597450}
   - component: {fileID: 5132619390787597444}
   - component: {fileID: 5132619390787597451}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Persent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -905,7 +906,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5132619391139834653}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: MagicHint
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -946,7 +947,7 @@ GameObject:
   - component: {fileID: 4167847098849133846}
   - component: {fileID: 7851799541822910582}
   - component: {fileID: 5035283198364464625}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Up
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1023,7 +1024,7 @@ GameObject:
   - component: {fileID: 9015638134709359697}
   - component: {fileID: 8804846808804528856}
   - component: {fileID: 4241609411137602005}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: Up Slider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1111,7 +1112,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2703231192129252391}
-  m_Layer: 5
+  m_Layer: 10
   m_Name: BloodHint
   m_TagString: Untagged
   m_Icon: {fileID: 0}

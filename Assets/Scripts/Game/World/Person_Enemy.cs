@@ -262,6 +262,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
     // -- 
     // ������Χ
     protected virtual int AtkRange => 1;
+    protected virtual float AtkSpeed => 1;
     // ��ǰ����Ŀ��
     protected WorldObjectBaseData m_CurTarget = null;
     // ��ǰ��������ֵ ��λ 1

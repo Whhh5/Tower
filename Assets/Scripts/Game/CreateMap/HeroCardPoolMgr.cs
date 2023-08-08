@@ -19,6 +19,7 @@ public class HeroCradPoolInfo
     public HeroCradLevelInfo LevelInfo => TableMgr.Ins.TryGetHeroCradLevelInfo(Level, out var levelInfo) ? levelInfo : null;
     public HeroCradInfo CradInfo => TableMgr.Ins.TryGetHeroCradInfo(Type, out var cradInfo) ? cradInfo : null;
 
+
     public void Push(int f_Count = 1)
     {
         ResidueCount = Mathf.Clamp(ResidueCount + f_Count, 0, LevelInfo.MaxCount);
@@ -116,11 +117,11 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
             RecycleGroupCrad(f_CellTarget, recycleCount);
 
             value.Pop(recycleCount);
-            if(value.ResidueCount <= 0)
+            if (value.ResidueCount <= 0)
             {
                 m_CurCrad.Remove(f_CellTarget);
             }
-            
+
             m_MainWindow.UpdateCardInfo(f_CellTarget);
             m_MainWindow.UpdateHeroInfo(f_CellTarget);
         }
@@ -278,4 +279,9 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
     {
 
     }
+
+
+
+
+
 }

@@ -86,6 +86,7 @@ public enum AssetKey
     Emitter_GuidedMissileBaseCommon,
     Entity_Player_Hero2,
     Entity_Player_Hero3,
+    Hero3SkillEffect,
 }
 public class HeroCradInfo
 {
@@ -93,6 +94,7 @@ public class HeroCradInfo
     public string Name;
     public AssetKey AssetKet;
     public HeroCradLevelInfo QualityLevelInfo => TableMgr.Ins.TryGetHeroCradLevelInfo(QualityLevel, out var levelInfo) ? levelInfo : null;
+    public bool GetWorldObjectData(EHeroCradType f_HeroType, int f_TargetIndex, Entity_SpawnPointData f_SpawnPoint, out WorldObjectBaseData f_Result) => TableMgr.Ins.GetHeroDataByType(f_HeroType, f_TargetIndex, f_SpawnPoint, out f_Result);
 }
 public class HeroCradLevelInfo
 {
@@ -232,8 +234,9 @@ public class TableMgr : Singleton<TableMgr>
         { AssetKey.Emitter_GuidedMissileBaseCommon, "Prefabs/WorldObject/Emitter_GuidedMissileBaseCommon" },
 
 
-
+        
         { AssetKey.TestTimeLine, "Prefabs/TimeLine/TestTimeLine" },
+        { AssetKey.Hero3SkillEffect, "Prefabs/TimeLine/Hero3SkillEffect" },
         { AssetKey.WorldUIEntityHint, "Prefabs/WorldUI/WorldUIEntityHint" },
 
 
@@ -430,6 +433,39 @@ public class TableMgr : Singleton<TableMgr>
     //--
 
     public Dictionary<EHeroFetterType, HeroFetterInfo> m_HeroFetterType = new();
+
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- 英雄实例篇
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    private Dictionary<EHeroCradType, WorldObjectBaseData> m_HeroData = new()
+    {
+
+    };
+    public bool GetHeroDataByType(EHeroCradType f_HeroType, int f_TargetIndex, Entity_SpawnPointData f_SpawnPoint, out WorldObjectBaseData f_Result)
+    {
+        f_Result = null;
+        switch (f_HeroType)
+        {
+            case EHeroCradType.Hero1:
+                f_Result = new Entity_Player_Hero1Data(0, f_TargetIndex, f_SpawnPoint);
+                break;
+            case EHeroCradType.Hero2:
+                f_Result = new Entity_Player_Hero2Data(0, f_TargetIndex, f_SpawnPoint);
+                break;
+            case EHeroCradType.Hero3:
+                f_Result = new Entity_Player_Hero3Data(0, f_TargetIndex);
+                break;
+            case EHeroCradType.EnemyCount:
+                break;
+            default:
+                break;
+        }
+        return f_Result != null;
+    }
 }
 
 

@@ -163,6 +163,20 @@ public class MonsterManager : MonoSingleton<MonsterManager>
 
 
 
+    public bool TryGetMonsterSpawnPoints(out List<Entity_SpawnPointMonsterData> f_Result)
+    {
+        f_Result = new();
+        foreach (var item in MonsterSpawnPoint)
+        {
+            f_Result.Add(item.Value);
+        }
+        return f_Result.Count > 0;
+    }
+    public bool TryGetPlayerSpawnPoint(out Entity_SpawnPointPlayerData f_Result)
+    {
+        f_Result = PlayerSpawnPoint[0];
+        return f_Result != null;
+    }
     public async void CreateHero()
     {
         var originalSpawnPoint = PlayerSpawnPoint[0];

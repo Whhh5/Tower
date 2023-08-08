@@ -10,7 +10,7 @@ public class Entity_Player_Default2_AttackEffect<T> : EffectMoveBaseData
 {
     public Entity_Player_Default2_AttackEffect(T f_EffectData, float f_UnitSpeed = 1) : base(f_EffectData, f_EffectData.WorldPosition, f_EffectData.TargetEnemy.CentralPoint, f_UnitSpeed)
     {
-        m_Initiator = f_EffectData.Original;
+        m_Initiator = f_EffectData.Initiator;
         m_TargetEnemy = f_EffectData.TargetEnemy;
     }
     public T Effect = null;

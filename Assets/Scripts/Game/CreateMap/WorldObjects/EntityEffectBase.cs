@@ -6,10 +6,11 @@ using B1;
 
 public abstract class EntityEffectBaseData : UnityObjectData
 {
-    public EntityEffectBaseData(int f_Index, Vector3 f_StartPos, DirectorWrapMode f_WrapMode) : base(f_Index)
+    public EntityEffectBaseData(int f_Index, Vector3 f_StartPos, WorldObjectBaseData f_Initiator, DirectorWrapMode f_WrapMode) : base(f_Index)
     {
         DirectorUpdateMode = f_WrapMode;
         SetPosition(f_StartPos);
+        Initiator = f_Initiator;
     }
     public EntityEffectBase Target => GetCom<EntityEffectBase>();
     public override bool IsUpdateEnable => true;
@@ -17,6 +18,7 @@ public abstract class EntityEffectBaseData : UnityObjectData
     public float CurPlaySchedule = 0; // 0 - 1
     public float PlaySpeed = 1;
     public bool m_IsPlay = false;
+    public WorldObjectBaseData Initiator;
     public float Duration => Target != null ? (float)Target.Duration : 1.0f;
     public DirectorWrapMode DirectorUpdateMode;
      
@@ -66,6 +68,10 @@ public abstract class EntityEffectBaseData : UnityObjectData
         {
             Target.UpdateScheme();
         }
+    }
+    public virtual void ExecuteEffect(WorldObjectBaseData m_TargetEnemy)
+    {
+
     }
 }
 public abstract class EntityEffectBase : ObjectPoolBase

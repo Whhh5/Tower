@@ -37,6 +37,8 @@ public class PathElementData
     public int FormPrice { get; private set; }
     public float PriceCount => ToPrice + 1;
 
+    public Vector3 WorldPos => WorldMapManager.Ins.TryGetChunkData(ChunkIndex, out var data) ? data.PointUp : Vector3.zero;
+
     public PathElementData(int f_Index, PathElementData f_LastElement, int f_FormPrice, float f_Price)
     {
         Index = f_Index;
@@ -862,5 +864,22 @@ public class WorldMapManager : MonoSingleton<WorldMapManager>
         //     ? (f_Index1 + 1 == f_Index2 ? EDirection.Right : EDirection.Up)
         //     : (f_Index1 - 1 == f_Index2 ? EDirection.Left : EDirection.Bottom);
         return EDirection.Left;
+    }
+
+    //                                ------------------------------------------------
+    //                                --------------------Catalogue 当前鼠标触碰块相关
+    //                                ------------------------------------------------
+    private int m_CurMouseEnableIndex = -1;
+    public void SetCurMouseEnable(int f_Index)
+    {
+        m_CurMouseEnableIndex = f_Index;
+    }
+    public int GetCurMouseEnable()
+    {
+        return m_CurMouseEnableIndex;
+    }
+    public void ClearCurMouseEnable()
+    {
+        m_CurMouseEnableIndex = -1;
     }
 }

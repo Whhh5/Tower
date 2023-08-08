@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8184989265735324403}
   - component: {fileID: 4752272346772982289}
   - component: {fileID: 1684944879440209381}
-  - component: {fileID: 1673269343501153582}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -84,20 +83,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &1673269343501153582
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2381656469537455933}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &4628495636264019337
 GameObject:
   m_ObjectHideFlags: 0
@@ -240,6 +225,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UpdateInteractable: 0
+  m_CurAnim: {fileID: 0}
   m_CentralPoint: {fileID: 3295330137890878599}
   m_BeHitPoint: {fileID: 3295330137890878599}
   m_BuffPoint: {fileID: 3295330137890878599}
@@ -249,8 +235,3 @@ MonoBehaviour:
   m_MainBody: {fileID: 4628495636264019337}
   m_MainObject: {fileID: 2381656469537455933}
   m_PointUp: {fileID: 8405061028846308166}
-  m_ImmuneBuffList: 
-  m_LayerMask: 64
-  m_AttackLayerMask: 1
-  m_HarmBase: 0
-  m_CurWeapon: {fileID: 0}

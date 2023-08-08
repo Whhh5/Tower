@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UIBattleMainWindow : MonoBehaviour
@@ -317,6 +318,18 @@ public class UIBattleMainWindow : MonoBehaviour
 
             SetQuality();
             SetStarLevel();
+            var triggerDown = new EventTrigger.Entry();
+            var eventTrigger = m_Item.Find("Btn_Button").GetComponent<EventTrigger>();
+            triggerDown.eventID = EventTriggerType.PointerDown;
+            triggerDown.callback = new EventTrigger.TriggerEvent();
+            triggerDown.callback.AddListener(DownClick);
+            eventTrigger.triggers.Add(triggerDown);
+        }
+        public void DownClick(BaseEventData eventData)
+        {
+            var image = m_Item.Find("Img_Icon").GetComponent<Image>();
+            MoveCardMgr.Ins.SetTargetIcon(image.sprite);
+            MoveCardMgr.Ins.SetCurSelectHero(HeroCradType);
         }
         public void UnLoad()
         {

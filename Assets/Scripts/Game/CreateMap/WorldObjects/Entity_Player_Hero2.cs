@@ -29,6 +29,8 @@ public class Entity_Player_Hero2Data : Person_EnemyData
 
     public Vector3 AttackPoint => Target != null && Target.m_AttackPoint != null ? Target.m_AttackPoint.position : WorldPosition;
     public Vector3 SkillPoint2 => Target != null && Target.m_SkillPoint2 != null ? Target.m_SkillPoint2.position : WorldPosition;
+    protected override int AtkRange => 5;
+    protected override float AtkSpeed => 8;
     public override void AnimatorCallback050()
     {
         base.AnimatorCallback050();
@@ -38,7 +40,7 @@ public class Entity_Player_Hero2Data : Person_EnemyData
             case EPersonStatusType.Attack:
                 {
                     var eff = new TestTimeLineData(0, this, AttackPoint, m_CurTarget, -HarmBase, DirectorWrapMode.Loop);
-                    var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, 5);
+                    var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, AtkSpeed);
                     GTools.RunUniTask(data.StartExecute());
                 }
                 break;
@@ -118,18 +120,18 @@ public class Entity_Player_Hero2Data : Person_EnemyData
     public void SkillStage1()
     {
         var eff = new TestTimeLineData(0, this, AttackPoint, m_CurTarget, -Mathf.CeilToInt(HarmBase * 1.5f), DirectorWrapMode.Loop);
-        var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, 5);
+        var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, AtkSpeed);
         GTools.RunUniTask(data.StartExecute());
     }
 
     public async void SkillStage2()
     {
-        var targets = GTools.MathfMgr.GetTargstsByForwardAngle<WorldObjectBaseData>(SkillPoint2, Forward, 30, 5, ELayer.Enemy);
+        var targets = GTools.MathfMgr.GetTargstsByForwardAngle<WorldObjectBaseData>(SkillPoint2, Forward, 30, AtkRange + 3, ELayer.Enemy);
         for (int i = 0; i < 1; i++)
         {
             foreach (var item in targets)
             {
-                var rangeSpeed = GTools.MathfMgr.GetRandomValue(5, 8.0f);
+                var rangeSpeed = GTools.MathfMgr.GetRandomValue(6.0f, 10.0f);
                 var eff = new TestTimeLineData(0, this, SkillPoint2, item, -HarmBase * 3, DirectorWrapMode.Loop);
                 var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, rangeSpeed);
                 GTools.RunUniTask(data.StartExecute());
@@ -140,12 +142,12 @@ public class Entity_Player_Hero2Data : Person_EnemyData
     }
     public async void SkillStage3()
     {
-        var targets = GTools.MathfMgr.GetTargstsByForwardAngle<WorldObjectBaseData>(SkillPoint2, Forward, 30, 5, ELayer.Enemy);
+        var targets = GTools.MathfMgr.GetTargstsByForwardAngle<WorldObjectBaseData>(SkillPoint2, Forward, 30, AtkRange + 6, ELayer.Enemy);
         for (int i = 0; i < 5; i++)
         {
             foreach (var item in targets)
             {
-                var rangeSpeed = GTools.MathfMgr.GetRandomValue(5, 8.0f);
+                var rangeSpeed = GTools.MathfMgr.GetRandomValue(AtkSpeed - 2.0f, AtkSpeed + 3.0f);
                 var eff = new TestTimeLineData(0, this, SkillPoint2, item, -HarmBase * 3, DirectorWrapMode.Loop);
                 var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, rangeSpeed);
                 GTools.RunUniTask(data.StartExecute());

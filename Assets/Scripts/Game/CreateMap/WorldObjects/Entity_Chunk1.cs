@@ -159,9 +159,13 @@ public class Entity_Chunk1Data : WorldObjectBaseData
         UpdateColor();
     }
 
-    public bool IsAlreadyExitObject(EWorldObjectType f_ObjectType)
+    public bool IsAlreadyType(EWorldObjectType f_ObjectType)
     {
         return (CurObjectType & f_ObjectType) != 0;
+    }
+    public bool IsAlreadyLayer(ELayer f_Layer)
+    {
+        return m_AllObjectsLayer.ContainsKey(f_Layer);
     }
 }
 public class Entity_Chunk1 : WorldObjectBase
@@ -173,6 +177,10 @@ public class Entity_Chunk1 : WorldObjectBase
     private TextMeshPro m_TMPRowCol = null;
     [SerializeField]
     private TextMeshPro m_TMPHeight = null;
+    [SerializeField]
+    private Transform m_TargetRoot = null;
+
+    private List<Material> m_Materials = new();
 
     public Entity_Chunk1Data ChunkData => TryGetData<Entity_Chunk1Data>(out var data) ? data : null;
 
@@ -183,6 +191,15 @@ public class Entity_Chunk1 : WorldObjectBase
         m_TMPIndex.text = $"{ChunkData.Index}";
         m_TMPRowCol.text = $"{WorldMapManager.Ins.GetRowCol(ChunkData.Index)}";
         m_TMPHeight.text = $"H:{ChunkData.LocalScale.y:0.00}";
+
+        foreach (Transform item in m_TargetRoot)
+        {
+            if (item.TryGetComponent<MeshRenderer>(out var com))
+            {
+                m_Materials.Add(com.material);
+            }
+        }
+        OnMouseExit();
     }
     public override async UniTask StartExecute()
     {
@@ -194,4 +211,21 @@ public class Entity_Chunk1 : WorldObjectBase
         
     }
 
+    private void SetColor(Color f_Color)
+    {
+        foreach (var item in m_Materials)
+        {
+            item.color = f_Color;
+        }
+    }
+    private void OnMouseEnter()
+    {
+        SetColor(Color.yellow);
+        WorldMapManager.Ins.SetCurMouseEnable(ChunkData?.Index ?? -1);
+    }
+    private void OnMouseExit()
+    {
+        SetColor(Color.gray);
+        WorldMapManager.Ins.ClearCurMouseEnable();
+    }
 }

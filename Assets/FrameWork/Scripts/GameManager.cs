@@ -19,6 +19,7 @@ public class GameManager
 
         // ≥ı ºªØ
         GTools.MathfMgr.Initialization();
+        HeroCardPoolMgr.Ins.Init();
 
 
         await AssetsMgr.Ins.LoadPrefabAsync<GameMgr>(EAssetName.GameManager, null);
