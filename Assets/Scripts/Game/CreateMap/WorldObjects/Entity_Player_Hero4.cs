@@ -17,6 +17,30 @@ public class Entity_Player_Hero4Data : Entity_HeroBaseData
 
     public override int HarmBase => 1;
 
+    public override void AnimatorCallback000()
+    {
+        base.AnimatorCallback000();
+        switch (CurStatus)
+        {
+            case EPersonStatusType.None:
+                break;
+            case EPersonStatusType.Idle:
+                break;
+            case EPersonStatusType.Walk:
+                break;
+            case EPersonStatusType.Attack:
+                break;
+            case EPersonStatusType.Skill:
+                break;
+            case EPersonStatusType.Die:
+                break;
+            case EPersonStatusType.Control:
+                break;
+            default:
+                break;
+        }
+    }
+
     public override void AnimatorCallback050()
     {
         base.AnimatorCallback050();
@@ -52,7 +76,7 @@ public class Entity_Player_Hero4Data : Entity_HeroBaseData
         base.AttackTarget();
 
         var eff = new TestTimeLineData(0, this, AttackPoint, CurAttackTarget, -HarmBase, true, DirectorWrapMode.Loop);
-        var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, AtkSpeed);
+        var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, AtkSpeed * CurAnimaSpeed);
         GTools.RunUniTask(async () =>
         {
             await data.StartExecute();

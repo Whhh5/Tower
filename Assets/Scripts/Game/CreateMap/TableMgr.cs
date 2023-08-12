@@ -634,11 +634,11 @@ public class TableMgr : Singleton<TableMgr>
     private Dictionary<EGainType, GainInfo> m_GainInfo = new()
     {
         {
-            EGainType.Collect1,
+            EGainType.Launch1,
             new()
             {
-                GainType = EGainType.Collect1,
-                GainView = EGainView.Collect,
+                GainType = EGainType.Launch1,
+                GainView = EGainView.Launch,
             }
         },
     };

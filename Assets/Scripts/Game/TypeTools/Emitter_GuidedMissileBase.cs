@@ -17,7 +17,7 @@ public abstract class Emitter_GuidedMissileBaseData: WeaponBaseData
     [SerializeField] protected Vector2 m_FormBezierLength = Vector2.one;
     [SerializeField] protected Vector2 m_ToBezierLength = Vector2.one;
     [SerializeField] protected Vector2Int m_CountRandom = Vector2Int.one;
-    [SerializeField] protected ushort m_MaxAttactCount = 1;
+    [SerializeField] protected ushort m_MaxAttactCount = 5;
 
     public override bool IsUpdateEnable => true;
     public override void OnUpdate()
@@ -104,7 +104,7 @@ public abstract class Emitter_GuidedMissileBaseData: WeaponBaseData
             GTools.MathfMgr.GetRandomValue(m_OffsetValue.x, m_OffsetValue.y),
             GTools.MathfMgr.GetRandomValue(1, 1 + m_OffsetValue.y));
         // 起始点 bezier 方向偏移
-        var dirOffset = Tran.TransformDirection(direction.normalized);
+        var dirOffset = new Vector3(0, 1, 0);
         // 起始点 bezier 偏移
         var formLength = dirOffset * thisLength;
         // 目标点 bezier 方向

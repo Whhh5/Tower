@@ -6,11 +6,11 @@ using UnityEngine;
 
 public abstract class WeaponBaseData : VirtualEntityData
 {
-    protected WeaponBaseData(int f_Index, WorldObjectBaseData f_TargetEntity) : base(f_Index)
+    protected WeaponBaseData(int f_Index, WorldObjectBaseData f_Initiator) : base(f_Index)
     {
-        Initiator = f_TargetEntity;
-        LayerMask = f_TargetEntity.LayerMask;
-        AttackLayer = f_TargetEntity.AttackLayerMask;
+        Initiator = f_Initiator;
+        LayerMask = f_Initiator.LayerMask;
+        AttackLayer = f_Initiator.AttackLayerMask;
         SetForward(Vector3.up);
     }
 

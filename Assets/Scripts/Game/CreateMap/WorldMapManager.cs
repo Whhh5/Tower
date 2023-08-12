@@ -835,10 +835,6 @@ public class WorldMapManager : MonoSingleton<WorldMapManager>
             m_DicPlayerSpawnPoint.Add(key, spawnPointData);
         }
 
-        foreach (var VARIABLE in m_DicPlayerSpawnPoint)
-        {
-            await ILoadPrefabAsync.LoadAsync(VARIABLE.Value);
-        }
 
 
         // 生成怪物点
@@ -850,6 +846,11 @@ public class WorldMapManager : MonoSingleton<WorldMapManager>
             AddChunkElement(spawnPointData);
 
             m_DicMonsterSpawnPoint.Add(key, spawnPointData);
+        }
+
+        foreach (var VARIABLE in m_DicPlayerSpawnPoint)
+        {
+            await ILoadPrefabAsync.LoadAsync(VARIABLE.Value);
         }
 
         foreach (var VARIABLE in m_DicMonsterSpawnPoint)
