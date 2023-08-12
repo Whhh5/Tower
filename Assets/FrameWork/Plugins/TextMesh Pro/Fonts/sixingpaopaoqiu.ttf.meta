@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 65eaabe25c5850d44936b5d9a39aac62
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - HYTangMeiRen + FZCuYuan-M03 + Nowar Sans GB18030 + Nowar Sans GB18030 + Nowar
+    Sans GB18030 + Nowar Sans GB18030 + Nowar Sans GB18030 + Nowar Sans GB18030
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
