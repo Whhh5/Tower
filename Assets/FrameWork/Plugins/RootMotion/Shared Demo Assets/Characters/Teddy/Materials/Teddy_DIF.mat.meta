@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: ac9e81b9fcc2206488e4a6af9aafa8fa
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: '{"$type":"System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object,
+    mscorlib]], mscorlib","MATERIL_INFO_FLAG":"{\"MaterialGUID\":\"ac9e81b9fcc2206488e4a6af9aafa8fa\",\"ShaderName\":\"Legacy
+    Shaders/Bumped Specular\"}"}'
+  assetBundleName: 
+  assetBundleVariant: 

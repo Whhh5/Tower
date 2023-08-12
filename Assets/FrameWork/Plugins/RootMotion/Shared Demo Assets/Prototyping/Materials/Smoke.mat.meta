@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: c7cf1644632654b25826f171555081f1
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: '{"$type":"System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object,
+    mscorlib]], mscorlib","MATERIL_INFO_FLAG":"{\"MaterialGUID\":\"c7cf1644632654b25826f171555081f1\",\"ShaderName\":\"Legacy
+    Shaders/Particles/Multiply\"}"}'
+  assetBundleName: 
+  assetBundleVariant: 

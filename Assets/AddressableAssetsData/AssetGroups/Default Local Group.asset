@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Default Local Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Default Local Group
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 09a3cb1ea192e401497f6d08514b33ef
+  m_SerializeEntries:
+  - m_GUID: fc16562513c804ba3bd4385f8ef93285
+    m_Address: UGUISystem
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+  - m_GUID: b1455a6954cb84ea3877dec22c523d28
+    m_Address: UILogin
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+  - m_GUID: 7178d20c995c044ca93a72eea5428cff
+    m_Address: UILobby
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+  - m_GUID: 2e31a7835eeb04cffabdb3d0c1c01d5e
+    m_Address: UILobbyItemInfo
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+  - m_GUID: 0cc8aed9de7ae4e30825da1e7298f651
+    m_Address: UILobbyNavigationBar
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+  - m_GUID: d01f990b378e348448fb0356089e5a85
+    m_Address: UINavigationBar
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+  - m_GUID: c4cb704fb6500431aba93bc6942e5d7c
+    m_Address: UILobbySpriteAltas
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - SpriteAltas
+  - m_GUID: 0dafae0900bec46f1927caef67bdf8d2
+    m_Address: UIAppPlane
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+  - m_GUID: f16ff69f18ef4874f9eec96fbabfcb48
+    m_Address: TestPrefab
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+  - m_GUID: a0a0d9ad58865e34a9bd264f1557eb73
+    m_Address: WorldDamageText
+    m_ReadOnly: 0
+    m_SerializedLabels:
+    - Prefab
+  - m_GUID: 1ff0a21fc29ae7546b3079df9fbc4c04
+    m_Address: Person_Enemty
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 651f3d53973a9a64d88a51ab67a5eed9
+    m_Address: TrailRender_Common
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 2a69f85a668ed834181e5c5468088ca1
+    m_Address: UITest1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 056db3dee3486459a9eb7c3820ef1dcd, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 1868c1407e3234fa19228c0f5fce0fc7, type: 2}
+    - {fileID: 11400000, guid: 90454106c08dd4c7291314bd3bfac14c, type: 2}

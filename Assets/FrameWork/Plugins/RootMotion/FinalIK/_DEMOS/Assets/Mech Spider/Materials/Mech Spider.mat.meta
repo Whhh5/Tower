@@ -1,0 +1,10 @@
+fileFormatVersion: 2
+guid: d513bc147cb99443cac08125bc7b07a3
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: '{"$type":"System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[System.Object,
+    mscorlib]], mscorlib","MATERIL_INFO_FLAG":"{\"MaterialGUID\":\"d513bc147cb99443cac08125bc7b07a3\",\"ShaderName\":\"Legacy
+    Shaders/Self-Illumin/Specular\"}"}'
+  assetBundleName: 
+  assetBundleVariant: 

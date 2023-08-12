@@ -1,0 +1,62 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3633624548148195451
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3494842639225758734}
+  - component: {fileID: 592913852661059598}
+  m_Layer: 0
+  m_Name: Emitter_Sword3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3494842639225758734
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3633624548148195451}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 11.089373, y: 19.840471, z: -1.4165077}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &592913852661059598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3633624548148195451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15ed0b6c3544d334f934f85745552e4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UpdateInteractable: 0
+  m_UnitTime: 0
+  m_Count: 0
+  m_Radius: 0
+  m_LaunchSpeed: 0
+  m_CollectSpeed: 0
+  m_Harm: 0
+  m_WeaponElement: -2147483648
+  m_Targets: []
+  m_TargetPerson: {fileID: 0}
+  m_LayerMask: 1
+  m_AttackLayer: 1
+  m_ExcuteTimeOffset: 0
+  m_IsAotuMove: 1
+  m_LaunchStatus: 0
+  m_CollectStatus: 0
