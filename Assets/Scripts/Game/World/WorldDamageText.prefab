@@ -46,9 +46,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UpdateInteractable: 1
+  m_CurAnim: {fileID: 0}
+  CurAnimationTime: 1
+  m_CentralPoint: {fileID: 0}
+  m_BeHitPoint: {fileID: 0}
+  m_BuffPoint: {fileID: 0}
+  m_EffectPoint: {fileID: 0}
+  m_TrailPoint: {fileID: 0}
+  m_WeaponPoint: {fileID: 0}
+  m_MainBody: {fileID: 0}
+  m_MainObject: {fileID: 0}
+  m_PointUp: {fileID: 0}
   m_TextPro: {fileID: 4697160724536264759}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Time: 2
+  m_Time: 1
   m_Height: 2
   m_MoveCurveY:
     serializedVersion: 2
@@ -150,7 +161,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2264087395688879665, guid: 087df52b49c8df041afe2541b8ae9552, type: 2}
+  - {fileID: -201695004882424828, guid: 56e5f65ff9136034280b431634b50d5d, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -194,8 +205,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 123
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 087df52b49c8df041afe2541b8ae9552, type: 2}
-  m_sharedMaterial: {fileID: 2264087395688879665, guid: 087df52b49c8df041afe2541b8ae9552, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 56e5f65ff9136034280b431634b50d5d, type: 2}
+  m_sharedMaterial: {fileID: -201695004882424828, guid: 56e5f65ff9136034280b431634b50d5d, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -219,13 +230,13 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 12
-  m_fontSizeBase: 12
+  m_fontSize: 10
+  m_fontSizeBase: 10
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 2
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 1024
   m_textAlignment: 65535

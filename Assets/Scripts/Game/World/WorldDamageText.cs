@@ -55,6 +55,8 @@ public class WorldDamageText : ObjectPoolBase
             {
                 transform.position = m_StartPos + new Vector3(0, m_Height, 0) * curveValue;
                 m_TextPro.color = new Color(m_Color.r, m_Color.g, m_Color.b, m_Color.a * (1 - curveValue));
+                float scaleRange = Mathf.Clamp((1 - curveValue), 0.5f, 0.8f);
+                transform.localScale = Vector3.one * scaleRange;
             }
             transform.forward = -GTools.MainCamera.transform.forward;
         }

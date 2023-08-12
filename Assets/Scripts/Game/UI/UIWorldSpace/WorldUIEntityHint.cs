@@ -72,7 +72,9 @@ public class WorldUIEntityHintData : UnityObjectData
 
 
         SetPosition(Entity.PointUp);
-        SetForward(WorldPosition - GTools.MainCamera.transform.position);
+        Vector3 drector = WorldPosition - GTools.MainCamera.transform.position;
+        drector.x = 0;
+        SetForward(drector);
     }
 }
 public class WorldUIEntityHint : ObjectPoolBase
