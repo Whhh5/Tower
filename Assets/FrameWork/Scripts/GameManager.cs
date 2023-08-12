@@ -23,6 +23,12 @@ public class GameManager
 
 
         await AssetsMgr.Ins.LoadPrefabAsync<GameMgr>(EAssetName.GameManager, null);
+
+
+        WorldMapManager.Ins.CreateChunkTest();
+        WorldMapManager.Ins.InitMonsterSpawnPointData();
+        WorldMapManager.Ins.CreateRoadExtend();
+        MonsterManager.Ins.CreateEntityTest();
     }
 
 

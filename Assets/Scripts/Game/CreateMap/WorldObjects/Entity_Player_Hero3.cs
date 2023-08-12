@@ -74,7 +74,6 @@ public class Entity_Player_Hero3Data : Entity_HeroBaseData
                 switch (CurrentStage)
                 {
                     case ESkillStage3.Stage3:
-                        CurAnimaSpeed = 0.2f;
                         Skill3();
                         break;
                     default:
@@ -125,7 +124,6 @@ public class Entity_Player_Hero3Data : Entity_HeroBaseData
                 switch (CurrentStage)
                 {
                     case ESkillStage3.Stage3:
-                        CurAnimaSpeed = 1.0f;
                         break;
                     default:
                         break;

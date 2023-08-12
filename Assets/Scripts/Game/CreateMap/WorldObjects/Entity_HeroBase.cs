@@ -131,7 +131,7 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
                     var distance = Vector3.Magnitude(m_MoveToTarget - WorldPosition);
                     if (distance > 0.001f)
                     {
-                        var value = Vector3.MoveTowards(WorldPosition, m_MoveToTarget, m_MoveSpeed * Time.deltaTime);
+                        var value = Vector3.MoveTowards(WorldPosition, m_MoveToTarget, CurMoveSpeed * Time.deltaTime);
                         SetForward(value - WorldPosition);
                         SetPosition(value);
                     }
@@ -179,7 +179,6 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
     protected EMoveStatus m_CurMoveStatus = EMoveStatus.Stop;
     private ListStack<PathElementData> m_CurPathList = new("");
     private Vector3 m_MoveToTarget = Vector3.zero;
-    private float m_MoveSpeed = 1;
     public void SetPath(ListStack<PathElementData> f_CurPath)
     {
         m_CurPathList = f_CurPath;

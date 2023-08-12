@@ -192,7 +192,6 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
         {
             CurStatus = f_ToStatus;
             CurAnimaNormalizedTime = 0;
-            CurAnimaSpeed = 1;
             AnimaStatus = f_AnimaStatus;
             UpdateCallbackStatus();
         }
@@ -228,7 +227,23 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
     }
 
     // 当前动画播放速度
-    public float CurAnimaSpeed = 1;
+    protected virtual float m_BaseSpeed { get; set; } = 1;
+    protected float m_AddAnimaSpeed = 0;
+    public float CurAnimaSpeed => Mathf.Clamp(m_BaseSpeed + m_AddAnimaSpeed, 0.1f, 10);
+    public void ChangeReleaseSpeed(float f_Value)
+    {
+        var value = f_Value * m_BaseSpeed;
+        m_AddAnimaSpeed += value;
+    }
+    // 移动速度
+    protected virtual float m_BaseMoveSpeed { get; set; } = 1;
+    protected float m_AddMoveSpeed = 0;
+    public float CurMoveSpeed => Mathf.Clamp(m_BaseMoveSpeed + m_AddMoveSpeed, 0.1f, 10);
+    public void ChangeMoveSpeed(float f_Value)
+    {
+        var value = f_Value * m_BaseMoveSpeed;
+        m_AddMoveSpeed += value;
+    }
     // 动画状态
     public EAnimatorStatus AnimaStatus = EAnimatorStatus.None;
     private Dictionary<int, AnomatorCallback> m_DicAnimaCallBack = new();
@@ -340,7 +355,16 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
     private void UpdateCurAnimaNormalizedTime()
     {
         // 目标进度
-        var value = CurAnimaNormalizedTime + UpdateDelta * CurAnimaSpeed / CurAnimationTime;
+        var speed = 1.0f;
+        if (CurStatus is EPersonStatusType.Attack or EPersonStatusType.Skill)
+        {
+            speed = CurAnimaSpeed;
+        }
+        else if (CurStatus is EPersonStatusType.Walk)
+        {
+            speed = CurMoveSpeed;
+        }
+        var value = CurAnimaNormalizedTime + UpdateDelta * speed / CurAnimationTime;
 
         // 动画回调
         foreach (var item in m_DicAnimaCallBack)
