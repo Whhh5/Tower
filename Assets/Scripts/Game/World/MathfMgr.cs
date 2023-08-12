@@ -318,7 +318,7 @@ public class MathfMgr : Singleton<MathfMgr>
                 hintTex = $"{damageValue}";
 
 
-                f_Initiator.ExecuteGainAsync(EGainType.Collect);
+                f_Initiator.ExecuteGainAsync(EGainView.Collect);
             }
             else
             {

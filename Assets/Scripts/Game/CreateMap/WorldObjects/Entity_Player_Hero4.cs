@@ -31,26 +31,12 @@ public class Entity_Player_Hero4Data : Entity_HeroBaseData
                 break;
             case EPersonStatusType.Attack:
                 {
-                    var eff = new TestTimeLineData(0, this, AttackPoint, CurAttackTarget, -HarmBase, true, DirectorWrapMode.Loop);
-                    var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, AtkSpeed);
-                    GTools.RunUniTask(async ()=>
-                    {
-                        await data.StartExecute();
-                        var range = GTools.MathfMgr.GetRandomValue(0, 100);
-                        if (range > 50)
-                        {
-                            IBuffUtil.InflictionBuff(EBuffType.AddBlood, this, CurAttackTarget);
-                        }
-                        else
-                        {
-                            IBuffUtil.InflictionBuff(EBuffType.Poison, this, CurAttackTarget);
-                        }
-                    });
+                    AttackTarget();
                 }
                 break;
             case EPersonStatusType.Skill:
                 {
-
+                    IGainUtil.InflictionGain(EGainType.Launch1, this, this);
                 }
                 break;
             case EPersonStatusType.Die:
@@ -60,6 +46,26 @@ public class Entity_Player_Hero4Data : Entity_HeroBaseData
             default:
                 break;
         }
+    }
+    public override void AttackTarget()
+    { 
+        base.AttackTarget();
+
+        var eff = new TestTimeLineData(0, this, AttackPoint, CurAttackTarget, -HarmBase, true, DirectorWrapMode.Loop);
+        var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, AtkSpeed);
+        GTools.RunUniTask(async () =>
+        {
+            await data.StartExecute();
+            var range = GTools.MathfMgr.GetRandomValue(0, 100);
+            if (range > 50)
+            {
+                IBuffUtil.InflictionBuff(EBuffType.AddBlood, this, CurAttackTarget);
+            }
+            else
+            {
+                IBuffUtil.InflictionBuff(EBuffType.Poison, this, CurAttackTarget);
+            }
+        });
     }
 }
 public class Entity_Player_Hero4 : Entity_HeroBase

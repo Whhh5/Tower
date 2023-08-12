@@ -3,20 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BuffInfo
-{
-    public string Name = "";
-    public string Desc = "";
-    public EBuffType BuffType;
-    public Effect_BuffBaseData CreateBuffData(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
-    {
-        if (TableMgr.Ins.TryGetBuffData(BuffType, f_Initiator, f_Target, out var result))
-        {
-            result.Initialization(f_Initiator, f_Target);
-        }
-        return result;
-    }
-}
 public abstract class Effect_BuffBaseData : UnityObjectData
 {
     public Effect_BuffBaseData() : base(0)

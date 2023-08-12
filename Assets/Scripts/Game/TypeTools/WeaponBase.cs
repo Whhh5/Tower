@@ -14,7 +14,7 @@ public abstract class WeaponBaseData : VirtualEntityData
         SetForward(Vector3.up);
     }
 
-    public PersonData Initiator = null;
+    public WorldObjectBaseData Initiator = null;
     public float UnitTime = 1;
     public int Count = 10;
     public float Radius = 30;
@@ -45,7 +45,7 @@ public abstract class WeaponBaseData : VirtualEntityData
         var target = GetWeaponElementData();
         target.OnConstructed(LayerMask);
         target.SetPosition(WorldPosition);
-        ILoadPrefabAsync.LoadAsync(target);
+        GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(target));
         return target;
     }
     public override bool IsUpdateEnable => true;
