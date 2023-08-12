@@ -26,11 +26,11 @@ public class Emitter_GuidedMissileBaseCommonData: Emitter_GuidedMissileBaseData
     {
     }
 
-    public override void CollectUpdateAsync(WeaponElementBaseData f_Element, Vector3 f_TargetPoint, EntityData f_Target, float f_Ratio)
+    public override void CollectUpdateAsync(WeaponElementBaseData f_Element, Vector3 f_TargetPoint, WorldObjectBaseData f_Target, float f_Ratio)
     {
     }
 
-    public override bool GetStopCondition(WeaponElementBaseData f_Buttle, EntityData f_Target, float f_Ratio)
+    public override bool GetStopCondition(WeaponElementBaseData f_Buttle, WorldObjectBaseData f_Target, float f_Ratio)
     {
         return true;
     }
@@ -41,16 +41,16 @@ public class Emitter_GuidedMissileBaseCommonData: Emitter_GuidedMissileBaseData
         return value;
     }
 
-    public override void LaunchStartAsync(WeaponElementBaseData f_Element, EntityData f_Entity)
+    public override void LaunchStartAsync(WeaponElementBaseData f_Element, WorldObjectBaseData f_Entity)
     {
     }
 
-    public override void LaunchStopAsync(WeaponElementBaseData f_Element, EntityData f_Entity)
+    public override void LaunchStopAsync(WeaponElementBaseData f_Element, WorldObjectBaseData f_Entity)
     {
         DestroyWeaponElementAsync(f_Element);
     }
 
-    public override void LaunchUpdateAsync(WeaponElementBaseData f_Element, EntityData f_Entity, float f_Ratio)
+    public override void LaunchUpdateAsync(WeaponElementBaseData f_Element, WorldObjectBaseData f_Entity, float f_Ratio)
     {
     }
 }

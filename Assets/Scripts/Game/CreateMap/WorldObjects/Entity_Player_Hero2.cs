@@ -8,29 +8,24 @@ public class EffMoveData
 {
 
 }
-public class Entity_Player_Hero2Data : Person_EnemyData
+public class Entity_Player_Hero2Data : Entity_HeroBaseData
 {
-    public enum ESkillStage
-    {
-        Stage1,
-        Stage2,
-        Stage3,
-        EnumCount,
-    }
-    public Entity_Player_Hero2Data(int f_Index, int f_TargetIndex, Entity_SpawnPointData f_TargetSpawnPoint) : base(f_Index, f_TargetIndex, f_TargetSpawnPoint)
+    public Entity_Player_Hero2Data(int f_Index, int f_TargetIndex) : base(f_Index, f_TargetIndex)
     {
 
     }
-    public override ELayer LayerMask => ELayer.Player;
-    public override ELayer AttackLayerMask => ELayer.Enemy;
     public override AssetKey AssetPrefabID => AssetKey.Entity_Player_Hero2;
 
     private Entity_Player_Hero2 Target => GetCom<Entity_Player_Hero2>();
 
-    public Vector3 AttackPoint => Target != null && Target.m_AttackPoint != null ? Target.m_AttackPoint.position : WorldPosition;
     public Vector3 SkillPoint2 => Target != null && Target.m_SkillPoint2 != null ? Target.m_SkillPoint2.position : WorldPosition;
-    protected override int AtkRange => 5;
-    protected override float AtkSpeed => 8;
+    public override int AtkRange => 5;
+    public override float AtkSpeed => 8;
+    public ESkillStage3 CurrentStage => (ESkillStage3)CurStage;
+    public override int SkillStageCount => (int)ESkillStage3.EnumCount;
+
+    public override int HarmBase => 5;
+
     public override void AnimatorCallback050()
     {
         base.AnimatorCallback050();
@@ -39,23 +34,22 @@ public class Entity_Player_Hero2Data : Person_EnemyData
         {
             case EPersonStatusType.Attack:
                 {
-                    var eff = new TestTimeLineData(0, this, AttackPoint, m_CurTarget, -HarmBase, DirectorWrapMode.Loop);
+                    var eff = new TestTimeLineData(0, this, AttackPoint, CurAttackTarget, -HarmBase, true, DirectorWrapMode.Loop);
                     var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, AtkSpeed);
                     GTools.RunUniTask(data.StartExecute());
                 }
                 break;
             case EPersonStatusType.Skill:
                 {
-                    switch (m_CurStage)
+                    switch (CurrentStage)
                     {
-                        case ESkillStage.Stage1:
+                        case ESkillStage3.Stage1:
                             SkillStage1();
                             break;
-                        case ESkillStage.Stage2:
+                        case ESkillStage3.Stage2:
                             SkillStage2();
                             break;
-                            break;
-                        case ESkillStage.EnumCount:
+                        case ESkillStage3.EnumCount:
                             break;
                         default:
                             break;
@@ -74,9 +68,9 @@ public class Entity_Player_Hero2Data : Person_EnemyData
         {
             case EPersonStatusType.Skill:
                 {
-                    switch (m_CurStage)
+                    switch (CurrentStage)
                     {
-                        case ESkillStage.Stage3:
+                        case ESkillStage3.Stage3:
                             SkillStage3();
                             break;
                         default:
@@ -88,38 +82,10 @@ public class Entity_Player_Hero2Data : Person_EnemyData
                 break;
         }
     }
-    public int m_CurSkillCount = 0;
-    public ESkillStage m_CurStage => (ESkillStage)(m_CurSkillCount % (int)ESkillStage.EnumCount);
-    public override string GetCurrentAnimationName()
-    {
-        var curName = base.GetCurrentAnimationName();
-
-        if (CurStatus == EPersonStatusType.Skill)
-        {
-            curName = $"{curName}_{(int)m_CurStage + 1}";
-        }
-        return curName;
-    }
-    public override void AnimatorCallback100()
-    {
-        base.AnimatorCallback100();
-
-        switch (CurStatus)
-        {
-            case EPersonStatusType.Skill:
-                {
-                    CurrentMagic = 0;
-                    m_CurSkillCount++;
-                }
-                break;
-            default:
-                break;
-        }
-    }
 
     public void SkillStage1()
     {
-        var eff = new TestTimeLineData(0, this, AttackPoint, m_CurTarget, -Mathf.CeilToInt(HarmBase * 1.5f), DirectorWrapMode.Loop);
+        var eff = new TestTimeLineData(0, this, AttackPoint, CurAttackTarget, -Mathf.CeilToInt(HarmBase * 1), false, DirectorWrapMode.Loop);
         var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, AtkSpeed);
         GTools.RunUniTask(data.StartExecute());
     }
@@ -132,7 +98,7 @@ public class Entity_Player_Hero2Data : Person_EnemyData
             foreach (var item in targets)
             {
                 var rangeSpeed = GTools.MathfMgr.GetRandomValue(6.0f, 10.0f);
-                var eff = new TestTimeLineData(0, this, SkillPoint2, item, -HarmBase * 3, DirectorWrapMode.Loop);
+                var eff = new TestTimeLineData(0, this, SkillPoint2, item, -Mathf.CeilToInt(HarmBase * 1.5f), false, DirectorWrapMode.Loop);
                 var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, rangeSpeed);
                 GTools.RunUniTask(data.StartExecute());
             }
@@ -148,7 +114,7 @@ public class Entity_Player_Hero2Data : Person_EnemyData
             foreach (var item in targets)
             {
                 var rangeSpeed = GTools.MathfMgr.GetRandomValue(AtkSpeed - 2.0f, AtkSpeed + 3.0f);
-                var eff = new TestTimeLineData(0, this, SkillPoint2, item, -HarmBase * 3, DirectorWrapMode.Loop);
+                var eff = new TestTimeLineData(0, this, SkillPoint2, item, -HarmBase * 2, false, DirectorWrapMode.Loop);
                 var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, rangeSpeed);
                 GTools.RunUniTask(data.StartExecute());
             }
@@ -157,10 +123,8 @@ public class Entity_Player_Hero2Data : Person_EnemyData
         }
     }
 }
-public class Entity_Player_Hero2 : Person_Enemy
+public class Entity_Player_Hero2 : Entity_HeroBase
 {
-    [SerializeField]
-    public Transform m_AttackPoint = null;
     [SerializeField]
     public Transform m_SkillPoint1 = null;
     [SerializeField]

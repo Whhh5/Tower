@@ -84,40 +84,40 @@ public abstract class Emitter_GuidedMissileBaseData: WeaponBaseData
     }
 
 
-    // Ŀ�����
-    public override async UniTask LaunchAsync(EntityData f_Target)
+    // 发射
+    public override async UniTask LaunchAsync(WorldObjectBaseData f_Target)
     {
         var targetPoint = f_Target.CentralPoint;
         var curMaxTime = Vector3.Distance(targetPoint, WorldPosition) / Radius;
-        // �ƶ�ʱ��
+        // 获取移动时间
         var moveTime = (GTools.MathfMgr.GetRandomValue(m_MoveTimeOffset.x, m_MoveTimeOffset.y) + curMaxTime) /
                        LaunchSpeed;
-        // ��ʼ�� bezier ���Ʊ�����
+        // 起始点 bezier 曲线长度
         var thisLength = Random.Range(m_FormBezierLength.x, m_FormBezierLength.y);
-        // Ŀ��� bezier ���Ʊ�����
+        // 目标点 bezier 曲线长度
         var targetLength = Random.Range(m_ToBezierLength.x, m_ToBezierLength.y);
-        // ��ǰ���ӵ���ʼ����
+        // 起始点 方向
         var forward = Forward;
-        // ��ǰ�ӵ���ʼλ��
+        // 起始点
         var startPoint = WorldPosition;
         var direction = new Vector3(GTools.MathfMgr.GetRandomValue(m_OffsetValue.x, m_OffsetValue.y),
             GTools.MathfMgr.GetRandomValue(m_OffsetValue.x, m_OffsetValue.y),
             GTools.MathfMgr.GetRandomValue(1, 1 + m_OffsetValue.y));
-        // ��ǰ bezier ��ʼ����Ʊ�ƫ����
+        // 起始点 bezier 方向偏移
         var dirOffset = Tran.TransformDirection(direction.normalized);
-        // ��ǰ bezier ��ʼ����Ʊ�����
+        // 起始点 bezier 偏移
         var formLength = dirOffset * thisLength;
-        // ��ǰ bezier Ŀ�����Ʊ�����
+        // 目标点 bezier 方向
         var toLength = dirOffset * targetLength;
 
-        // ��ȡһ���ӵ�
+        // 创建子弹
         var buttle = CreateWeaponElementAsync(WorldPosition);
         buttle.SetPosition(startPoint);
         buttle.SetForward(forward);
 
         buttle.StartExecute();
         LaunchStartAsync(buttle, f_Target);
-        // �����ӵ��˶�
+        // 移动子弹
         await GTools.DoTweenAsync(moveTime, async (value) =>
         {
             var worldPos = GTools.MathfMgr.GetBezierValue(startPoint, targetPoint, formLength, toLength, value);
@@ -125,7 +125,7 @@ public abstract class Emitter_GuidedMissileBaseData: WeaponBaseData
             buttle.SetPosition(worldPos);
             LaunchUpdateAsync(buttle, f_Target, value);
         }, (value) => GetStopCondition(buttle, f_Target, value));
-        // �ӵ�����
+        // 停止移动子弹
         buttle.StopExecute();
         LaunchStopAsync(buttle, f_Target);
     }
@@ -135,16 +135,16 @@ public abstract class Emitter_GuidedMissileBaseData: WeaponBaseData
     {
     }
 
-    public abstract void LaunchStartAsync(WeaponElementBaseData f_Element, EntityData f_Entity);
-    public abstract void LaunchUpdateAsync(WeaponElementBaseData f_Element, EntityData f_Entity, float f_Ratio);
-    public abstract void LaunchStopAsync(WeaponElementBaseData f_Element, EntityData f_Entity);
+    public abstract void LaunchStartAsync(WeaponElementBaseData f_Element, WorldObjectBaseData f_Entity);
+    public abstract void LaunchUpdateAsync(WeaponElementBaseData f_Element, WorldObjectBaseData f_Entity, float f_Ratio);
+    public abstract void LaunchStopAsync(WeaponElementBaseData f_Element, WorldObjectBaseData f_Entity);
     public abstract void CollectStartAsync(WeaponElementBaseData f_Element, Vector3 f_Target);
 
-    public abstract void CollectUpdateAsync(WeaponElementBaseData f_Element, Vector3 f_TargetPoint, EntityData f_Target,
+    public abstract void CollectUpdateAsync(WeaponElementBaseData f_Element, Vector3 f_TargetPoint, WorldObjectBaseData f_Target,
         float f_Ratio);
 
     public abstract void CollectStopAsync(WeaponElementBaseData f_Element, Vector3 f_Target);
-    public abstract bool GetStopCondition(WeaponElementBaseData f_Buttle, EntityData f_Target, float f_Ratio);
+    public abstract bool GetStopCondition(WeaponElementBaseData f_Buttle, WorldObjectBaseData f_Target, float f_Ratio);
 }
 public abstract class Emitter_GuidedMissileBase : WeaponBase
 {

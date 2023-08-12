@@ -27,21 +27,35 @@ public abstract class Person_EnemyData : WorldObjectBaseData
     public override void AfterLoad()
     {
         base.AfterLoad();
+        Resurgence();
+    }
+    public override void OnUnLoad()
+    {
+        CurStatus = EPersonStatusType.None;
+        Death();
+        base.OnUnLoad();
+    }
+    // 复活
+    public void Resurgence()
+    {
         CurStatus = EPersonStatusType.Idle;
         UpdatePathPoint(TargetIndex);
 
         WorldWindowManager.Ins.UpdateBloodHint(this);
     }
-    public override void OnUnLoad()
+    public void Death()
     {
         WorldWindowManager.Ins.RemoveBloodHint(this);
-        CurStatus = EPersonStatusType.None;
-        base.OnUnLoad();
     }
     public override int ChangeBlood(ChangeBloodData f_Increment)
     {
         var value = base.ChangeBlood(f_Increment);
         WorldWindowManager.Ins.UpdateBloodHint(this);
+
+        if (value <= 0)
+        {
+            Death();
+        }
         return value;
     }
     public override int ChangeMagic(int f_Increment)
@@ -321,7 +335,10 @@ public abstract class Person_EnemyData : WorldObjectBaseData
 
     public void AttackTarget()
     {
-
+        if (GTools.UnityObjectIsActive(m_CurTarget))
+        {
+            GTools.MathfMgr.EntityDamage(this, m_CurTarget, EDamageType.Physical, -HarmBase, false);
+        }
     }
 
 }

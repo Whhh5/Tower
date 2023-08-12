@@ -14,13 +14,13 @@ public class WorldWindowManager : MonoSingleton<WorldWindowManager>
 
     public void UpdateBloodHint(WorldObjectBaseData f_Target)
     {
-        var key = f_Target.Index;
+        var key = f_Target.LoadKey;
 
         if (!m_BloodData.TryGetValue(key, out var value))
         {
             value = new(key, f_Target);
             value.SetParent(m_Root);
-            value.SetLocalScale(Vector3.one * 0.01f);
+            value.SetLocalScale(Vector3.one * 0.1f);
             m_BloodData.Add(key, value);
             GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(value));
         }
@@ -28,7 +28,7 @@ public class WorldWindowManager : MonoSingleton<WorldWindowManager>
     }
     public void RemoveBloodHint(WorldObjectBaseData f_Target)
     {
-        var key = f_Target.Index;
+        var key = f_Target.LoadKey;
 
         if (m_BloodData.ContainsKey(key))
         {
@@ -38,13 +38,13 @@ public class WorldWindowManager : MonoSingleton<WorldWindowManager>
 
     public void UpdateMagicHint(WorldObjectBaseData f_Target)
     {
-        var key = f_Target.Index;
+        var key = f_Target.LoadKey;
 
         if (!m_BloodData.TryGetValue(key, out var value))
         {
             value = new(key, f_Target);
             value.SetParent(m_Root);
-            value.SetLocalScale(Vector3.one * 0.01f);
+            value.SetLocalScale(Vector3.one * 0.1f);
             m_BloodData.Add(key, value);
             GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(value));
         }

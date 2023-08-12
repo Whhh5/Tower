@@ -21,9 +21,8 @@ public class Hero3SkillEffectData : EntityEffectBaseData
         base.ExecuteEffect(f_Target);
         GTools.MathfMgr.EntityDamage(Initiator, f_Target, EDamageType.AddBlood, m_HarmValue);
     }
-    public override async void OnUnLoad()
+    public override void OnUnLoad()
     {
-        await UniTask.Delay(2000);
         base.OnUnLoad();
     }
 }

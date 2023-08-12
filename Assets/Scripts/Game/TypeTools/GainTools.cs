@@ -7,18 +7,6 @@ using B1;
 
 public class GainMgr : Singleton<GainMgr>
 {
-    public Dictionary<EGainView, (EGainType tGainType, Func<WorldObjectBaseData, GainBaseData> tGetData)> m_GainMap = null;
-
-    public GainMgr()
-    {
-        var index = 0;
-        m_GainMap = new()
-        {
-            { (EGainView)(++index), (EGainType.Launch, (value) => new Gain_Launch1(value)) },
-            { (EGainView)(++index), (EGainType.Collect, (value) => new Gain_Collect1(value)) },
-        };
-    }
-
     public EGainType GetGainType(EGainView f_GainView)
     {
         if (m_GainMap.TryGetValue(f_GainView, out var value))
@@ -56,18 +44,27 @@ public enum EGainView : ushort
 
     EnumCount,
 }
+public interface IGainUtil
+{
+    public void InflictionGain(EGainView f_GainView, WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
+    {
+        f_Target.AddGainAsync(f_GainView)
+    }
+}
 public abstract class GainBaseData : Base, IExecute
 {
     public abstract EGainView GainView { get; }
     public abstract EGainType GainType { get; }
     protected ushort m_Level;
     protected ushort m_TierCount;
-    protected WorldObjectBaseData m_TargetPerson = null;
+    protected WorldObjectBaseData m_Recipient = null;
+    protected WorldObjectBaseData m_Initiator = null;
     protected int m_Probability = 0;
 
-    public GainBaseData(WorldObjectBaseData f_TargetPerson)
+    public virtual void Initialization(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Recipient)
     {
-        m_TargetPerson = f_TargetPerson;
+        m_Initiator = f_Initiator;
+        m_Recipient = f_Recipient;
         m_Level = 1;
         m_TierCount = 1;
         m_Probability = 30;
@@ -107,15 +104,15 @@ public class Gain_Launch1 : GainBaseData
     public override EGainView GainView => EGainView.Launch1;
     public override EGainType GainType => EGainType.Launch;
 
-
-    public Gain_Launch1(WorldObjectBaseData f_TargetPerson) : base(f_TargetPerson)
+    public override void Initialization(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Recipient)
     {
+        base.Initialization(f_Initiator, f_Recipient);
         m_Probability = 30;
     }
 
     public override async UniTask Execute(int f_CurProbability)
     {
-        var wepon = new Emitter_GuidedMissileBaseCommonData(0, m_TargetPerson);
+        var wepon = new Emitter_GuidedMissileBaseCommonData(0, m_Recipient);
         await ILoadPrefabAsync.LoadAsync(wepon);
         await wepon.StartExecute();
         await wepon.StopExecute();
@@ -128,8 +125,10 @@ public class Gain_Collect1 : GainBaseData
 {
     public override EGainView GainView => EGainView.Collect1;
     public override EGainType GainType => EGainType.Collect;
-    public Gain_Collect1(WorldObjectBaseData f_TargetPerson) : base(f_TargetPerson)
+
+    public override void Initialization(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Recipient)
     {
+        base.Initialization(f_Initiator, f_Recipient);
         m_Probability = 100;
     }
 

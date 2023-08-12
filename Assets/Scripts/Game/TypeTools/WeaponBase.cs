@@ -22,8 +22,8 @@ public abstract class WeaponBaseData : VirtualEntityData
     public float CollectSpeed = 3;
     public float Harm = 6;
     public EAssetName WeaponElement = EAssetName.None;
-    public Dictionary<uint, EntityData> Results = new();
-    public List<EntityData> Targets = new();
+    public Dictionary<uint, WorldObjectBaseData> Results = new();
+    public List<WorldObjectBaseData> Targets = new();
     public ELayer LayerMask = ELayer.Default;
     public ELayer AttackLayer = ELayer.Default;
     public abstract UniTask StartExecute();
@@ -31,7 +31,7 @@ public abstract class WeaponBaseData : VirtualEntityData
 
     public abstract WeaponElementBaseData GetWeaponElementData();
 
-    public abstract UniTask LaunchAsync(EntityData f_Target);
+    public abstract UniTask LaunchAsync(WorldObjectBaseData f_Target);
 
     public abstract UniTask CollectAsync(Vector3 f_Point);
 

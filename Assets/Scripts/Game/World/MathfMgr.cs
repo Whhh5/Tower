@@ -66,10 +66,10 @@ public class MathfMgr : Singleton<MathfMgr>
     /// <param name="f_Radius"></param>
     /// <param name="f_Layer"></param>
     /// <returns></returns>
-    public EntityData NearerTarget(Vector3 f_FromPoint, float f_Radius, ELayer f_Layer)
+    public WorldObjectBaseData NearerTarget(Vector3 f_FromPoint, float f_Radius, ELayer f_Layer)
     {
         var targets = GetTargets_Sphere(f_FromPoint, f_Radius, f_Layer);
-        EntityData result = null;
+        WorldObjectBaseData result = null;
         float curDistance = float.MaxValue;
         float dis;
         foreach (var item in targets)
@@ -86,7 +86,7 @@ public class MathfMgr : Singleton<MathfMgr>
 
 
     public List<T> GetTargstsByForwardAngle<T>(Vector3 f_OriginPoint, Vector3 f_Forward, float f_StartAngle, float f_Radius = 1, ELayer f_Layer = ELayer.Default, float? f_EndAngle = null)
-        where T : EntityData
+        where T : WorldObjectBaseData
     {
         f_StartAngle = Mathf.Clamp(f_StartAngle, -180, 180);
         float startAngle = f_StartAngle;
@@ -137,28 +137,28 @@ public class MathfMgr : Singleton<MathfMgr>
         return result;
     }
     public List<T> GetTargets_Sphere<T>(Vector3 f_FromPoint, float f_Radius, ELayer f_Layer)
-        where T : EntityData
+        where T : WorldObjectBaseData
     {
         Collider[] colliders = Physics.OverlapSphere(f_FromPoint, f_Radius, (int)f_Layer);
         List<T> entitys = new();
         foreach (var item in colliders)
         {
-            if (item.TryGetComponent<Entity>(out var icom) && icom.EntityData is T data && GTools.UnityObjectIsActive(data))
+            if (item.TryGetComponent<WorldObjectBase>(out var icom) && icom.EntityData is T data && GTools.UnityObjectIsActive(data))
             {
                 entitys.Add(data);
             }
         }
         return entitys;
     }
-    public List<EntityData> GetTargets_Sphere(Vector3 f_FromPoint, float f_Radius, ELayer f_Layer)
+    public List<WorldObjectBaseData> GetTargets_Sphere(Vector3 f_FromPoint, float f_Radius, ELayer f_Layer)
     {
         Collider[] colliders = Physics.OverlapSphere(f_FromPoint, f_Radius, (int)f_Layer);
-        List<EntityData> entitys = new();
+        List<WorldObjectBaseData> entitys = new();
         foreach (var item in colliders)
         {
-            if (item.TryGetComponent<Entity>(out var icom) && icom.EntityData != null && icom.EntityData.CurStatus != EPersonStatusType.Die)
+            if (item.TryGetComponent<WorldObjectBase>(out var icom) && icom.WorldObjectBaseData != null && icom.WorldObjectBaseData.CurStatus != EPersonStatusType.Die)
             {
-                entitys.Add(icom.EntityData);
+                entitys.Add(icom.WorldObjectBaseData);
             }
         }
         return entitys;
@@ -283,7 +283,7 @@ public class MathfMgr : Singleton<MathfMgr>
         }
         return isChange;
     }
-    public bool GetCriticalValue(EntityData f_Initiator, ref EDamageType f_DamageType, ref int f_DamageValue)
+    public bool GetCriticalValue(WorldObjectBaseData f_Initiator, ref EDamageType f_DamageType, ref int f_DamageValue)
     {
         var isCritica = false;
         var rangeNum = GTools.MathfMgr.GetRandomValue(0, 1.0f);
@@ -295,7 +295,7 @@ public class MathfMgr : Singleton<MathfMgr>
         }
         return isCritica;
     }
-    public void EntityDamage(EntityData f_Initiator, EntityData f_Target, EDamageType f_DamageType, int f_Value)
+    public void EntityDamage(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target, EDamageType f_DamageType, int f_Value, bool f_IsAddMagic = false)
     {
         if (f_Target != null && f_Target.CurStatus != EPersonStatusType.Die)
         {
@@ -318,15 +318,16 @@ public class MathfMgr : Singleton<MathfMgr>
                 hintTex = $"{damageValue}";
 
 
-                (f_Initiator as WorldObjectBaseData).ExecuteGainAsync(EGainType.Collect);
+                f_Initiator.ExecuteGainAsync(EGainType.Collect);
             }
             else
             {
                 hintTex = hitCondition.Value;
             }
-            f_Initiator.ChangeMagic(200);
+            f_Initiator.ChangeMagic(f_IsAddMagic ? 200 : 0);
 
             WorldMgr.Ins.DamageText(hintTex, f_DamageType, f_Target.CentralPoint);
         }
     }
+
 }

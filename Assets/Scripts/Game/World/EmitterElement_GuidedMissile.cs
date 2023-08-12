@@ -28,15 +28,15 @@ public class EmitterElement_GuidedMissileData : WeaponElementBaseData
     {
         base.StopExecute();
 
-        var targets = GTools.MathfMgr.GetTargets_Sphere(CentralPoint, 10, ELayer.Enemy);
+        //var targets = GTools.MathfMgr.GetTargets_Sphere(CentralPoint, 10, ELayer.Enemy);
 
-        foreach (var entity in targets)
-        {
-            foreach (var item in m_BuffList)
-            {
-                entity.AddBuffAsync(item.Key, item.Value);
-            }
-        }
+        //foreach (var entity in targets)
+        //{
+        //    foreach (var item in m_BuffList)
+        //    {
+        //        entity.AddBuffAsync(item.Key, item.Value);
+        //    }
+        //}
     }
 
 }

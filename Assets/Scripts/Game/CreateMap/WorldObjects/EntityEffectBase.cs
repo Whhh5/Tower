@@ -79,7 +79,7 @@ public abstract class EntityEffectBase : ObjectPoolBase
     public PlayableDirector TimeLine => GetComponent<PlayableDirector>();
     public EntityEffectBaseData EffData => GetData<EntityEffectBaseData>();
 
-    public double Duration => TimeLine.duration;
+    public double Duration => TimeLine != null ? TimeLine.duration : 0;
 
     public void UpdateScheme()
     {

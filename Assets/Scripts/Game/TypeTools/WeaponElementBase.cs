@@ -19,9 +19,9 @@ public abstract class WeaponElementBaseData : EntityData
     public ESwordStatus CurWeaponStatus = ESwordStatus.None;
     public float Radius = 1;
     public EDamageType DamegeType = EDamageType.None;
-    public EntityData Target = null;
+    public WorldObjectBaseData Target = null;
     public Vector3 ToTargetDistance = Vector3.zero;
-    public Dictionary<int, EntityData> Targets = new();
+    public Dictionary<int, WorldObjectBaseData> Targets = new();
     public Vector3 Size = Vector3.one;
 
     public Vector3 BosSize => ElementTarget != null ? BosSize : Vector3.one;
@@ -66,19 +66,19 @@ public abstract class WeaponElementBaseData : EntityData
     {
     }
 
-    public List<EntityData> GetTargets(ELayer m_AttackLayer)
+    public List<WorldObjectBaseData> GetTargets(ELayer m_AttackLayer)
     {
         var targets = GTools.MathfMgr.GetTargets_Sphere(CentralPoint, Radius, m_AttackLayer);
         return targets;
     }
 
-    public EntityData GetNearTarget(ELayer m_AttackLayer)
+    public WorldObjectBaseData GetNearTarget(ELayer m_AttackLayer)
     {
         var target = GTools.MathfMgr.NearerTarget(CentralPoint, Radius, m_AttackLayer);
         return target;
     }
 
-    public void SetTargetAsync(EntityData f_Target)
+    public void SetTargetAsync(WorldObjectBaseData f_Target)
     {
         if (f_Target == null) return;
         Target = f_Target;
@@ -90,7 +90,7 @@ public abstract class WeaponElementBaseData : EntityData
         return !GTools.RefIsNull(Target) && Target.CurStatus != EPersonStatusType.Die;
     }
 
-    public void AttackTargetAsync(EntityData f_Target)
+    public void AttackTargetAsync(WorldObjectBaseData f_Target)
     {
         if (!Targets.ContainsKey(f_Target.UpdateLevelID))
         {

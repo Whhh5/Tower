@@ -105,9 +105,10 @@ public class MoveCardMgr : MonoSingleton<MoveCardMgr>, IUpdateBase
     {
         if (TableMgr.Ins.TryGetHeroCradInfo(f_HeroType, out var heroInfo))
         {
-            if (MonsterManager.Ins.TryGetMonsterSpawnPoints(out var f_Mons) && MonsterManager.Ins.TryGetPlayerSpawnPoint(out var f_Player) && heroInfo.GetWorldObjectData(f_HeroType, f_Mons[0].CurrentIndex, f_Player, out var data))
+            var targetIndex = WorldMapManager.Ins.GetCurMouseEnable();
+            if (heroInfo.GetWorldObjectData(f_HeroType, targetIndex, out var data))
             {
-                data.SetCurrentChunkIndex(f_ChunkIndex);
+                WorldMapManager.Ins.MoveChunkElement(data, f_ChunkIndex);
                 GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(data))
 ;
             }

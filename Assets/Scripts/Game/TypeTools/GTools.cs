@@ -168,20 +168,15 @@ public static class GTools
 
 
 
-    public static async UniTask<WorldBuffHint> LoadWorldBuffHintAsync(BuffData f_Buff)
-    {
-        var target = await GTools.AssetsMgr.LoadPrefabPoolAsync<WorldBuffHint>();
-        await target.SetTargetAsync(f_Buff);
-        return target;
-    }
-    public static async UniTask UnLoadWorldBuffHintAsync(WorldBuffHint f_Target)
-    {
-        await GTools.AssetsMgr.UnLoadPrefabPoolAsync<WorldBuffHint>(f_Target);
-    }
+ 
 
     public static async void RunUniTask(UniTask f_Task)
     {
         await f_Task;
+    }
+    public static void RunUniTask(Action f_Task)
+    {
+        f_Task.Invoke();
     }
 
     public static bool UnityObjectIsActive(UnityObjectData f_UnityObject)

@@ -41,8 +41,9 @@ public class Entity_Player_Default2Data : Person_EnemyData
     protected override int AtkRange => base.AtkRange + 1;
 
     private Entity_Player_Default2 Target => GetCom<Entity_Player_Default2>();
+    public override int HarmBase => 15;
 
-    private float m_speed = 1.0f;
+    protected override float AtkSpeed => 8.0f;
 
     public override void AfterLoad()
     {
@@ -59,29 +60,14 @@ public class Entity_Player_Default2Data : Person_EnemyData
                 {
                     var startPos = Target != null && Target.AttackPoint != null ? Target.AttackPoint.position : WorldPosition;
 
-                    var eff = new TestTimeLineData(0, this, startPos, m_CurTarget, HarmBase, DirectorWrapMode.Loop);
-                    var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, m_speed);
+                    var eff = new TestTimeLineData(0, this, startPos, m_CurTarget, -HarmBase, false, DirectorWrapMode.Loop);
+                    var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, AtkSpeed);
                     GTools.RunUniTask(data.StartExecute());
                 }
                 break;
             default:
                 break;
         }
-    }
-    public override string GetCurrentAnimationName()
-    {
-        var name = base.GetCurrentAnimationName();
-
-        switch (CurStatus)
-        {
-            case EPersonStatusType.Attack:
-                break;
-            case EPersonStatusType.Skill:
-                break;
-            default:
-                break;
-        }
-        return name;
     }
 
     public override void OnUpdate()

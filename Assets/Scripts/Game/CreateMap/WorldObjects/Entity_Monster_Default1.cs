@@ -14,10 +14,37 @@ public class Entity_Monster_Default1Data : Person_EnemyData
     public override ELayer LayerMask => ELayer.Enemy;
 
     public override ELayer AttackLayerMask => ELayer.Player;
+    public override int HarmBase => 22;
 
     public override void AfterLoad()
     {
         base.AfterLoad();
+    }
+
+    public override void AnimatorCallback050()
+    {
+        base.AnimatorCallback050();
+
+        switch (CurStatus)
+        {
+            case EPersonStatusType.None:
+                break;
+            case EPersonStatusType.Idle:
+                break;
+            case EPersonStatusType.Walk:
+                break;
+            case EPersonStatusType.Attack:
+                AttackTarget();
+                break;
+            case EPersonStatusType.Skill:
+                break;
+            case EPersonStatusType.Die:
+                break;
+            case EPersonStatusType.Control:
+                break;
+            default:
+                break;
+        }
     }
 }
 public class Entity_Monster_Default1 : Person_Enemy

@@ -75,10 +75,6 @@ MonoBehaviour:
     m_Address: TrailRender_Common
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: e553c7bb40c2ff848a4f5dbc7d738f03
-    m_Address: WorldBuffHint
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   - m_GUID: 2a69f85a668ed834181e5c5468088ca1
     m_Address: UITest1
     m_ReadOnly: 0

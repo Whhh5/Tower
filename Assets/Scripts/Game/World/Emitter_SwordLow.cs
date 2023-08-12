@@ -22,7 +22,7 @@ public class Emitter_SwordLowData: Emitter_SwordBaseData
     }
 
     // ½áÊøÌõ¼þ
-    public override bool GetStopCondition(WeaponElementBaseData f_Buttle, EntityData f_Target, float f_Ratio)
+    public override bool GetStopCondition(WeaponElementBaseData f_Buttle, WorldObjectBaseData f_Target, float f_Ratio)
     {
         return f_Buttle.GetResistStatus() ? false : !f_Buttle.GetIsTarget();
     }
@@ -33,17 +33,17 @@ public class Emitter_SwordLowData: Emitter_SwordBaseData
         return posValue;
     }
 
-    public override void LaunchStartAsync(WeaponElementBaseData f_Element, EntityData f_Entity)
+    public override void LaunchStartAsync(WeaponElementBaseData f_Element, WorldObjectBaseData f_Entity)
     {
 
     }
 
-    public override void LaunchStopAsync(WeaponElementBaseData f_Element, EntityData f_Entity)
+    public override void LaunchStopAsync(WeaponElementBaseData f_Element, WorldObjectBaseData f_Entity)
     {
         f_Element.ClearTargets();
     }
 
-    public override void LaunchUpdateAsync(WeaponElementBaseData f_Element, EntityData f_Entity, float f_Ratio)
+    public override void LaunchUpdateAsync(WeaponElementBaseData f_Element, WorldObjectBaseData f_Entity, float f_Ratio)
     {
         var target = f_Element.GetNearTarget(AttackLayer);
         if (!GTools.RefIsNull(target) && target.CurStatus != EPersonStatusType.Die)

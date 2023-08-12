@@ -231,7 +231,8 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
     public float CurAnimaSpeed = 1;
     // 动画状态
     public EAnimatorStatus AnimaStatus = EAnimatorStatus.None;
-    private Dictionary<int, AnomatorCallback> m_DicAnimaCallBack = null;
+    private Dictionary<int, AnomatorCallback> m_DicAnimaCallBack = new();
+    private float CurAnimationTime => PrefabTarget != null ? PrefabTarget.CurAnimationTime : 1;
     public void InitAnimatorParams()
     {
         int index = 0;
@@ -339,7 +340,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
     private void UpdateCurAnimaNormalizedTime()
     {
         // 目标进度
-        var value = CurAnimaNormalizedTime + UpdateDelta * CurAnimaSpeed;
+        var value = CurAnimaNormalizedTime + UpdateDelta * CurAnimaSpeed / CurAnimationTime;
 
         // 动画回调
         foreach (var item in m_DicAnimaCallBack)
@@ -404,6 +405,7 @@ public abstract class ObjectPoolBase : TransformBase, IObjectPoolBase
     [SerializeField]
     private Animator m_CurAnim = null;
     public Animator CurAnim => m_CurAnim != null ? m_CurAnim : GetComponent<Animator>();
+    public float CurAnimationTime = 1;
     public virtual async UniTask OnUnLoadAsync()
     {
 
@@ -524,6 +526,8 @@ public abstract class ObjectPoolBase : TransformBase, IObjectPoolBase
             var animaState = CurAnim.GetCurrentAnimatorStateInfo(0);
 
             CurAnim.Play(animaName, 0, UnityObjectData.CurAnimaNormalizedTime);
+            var curArr = CurAnim.GetCurrentAnimatorClipInfo(0);
+            CurAnimationTime = curArr != null && curArr.Length > 0 ? curArr[0].clip.length : 1;
         }
     }
 

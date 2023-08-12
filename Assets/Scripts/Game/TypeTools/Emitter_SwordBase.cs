@@ -149,7 +149,7 @@ public abstract class Emitter_SwordBaseData: WeaponBaseData
         m_AllSwordElements[f_ToStatus].Push(f_Target);
     }
 
-    public override async UniTask LaunchAsync(EntityData f_Target)
+    public override async UniTask LaunchAsync(WorldObjectBaseData f_Target)
     {
         if (m_LaunchStatus == EStatus.Close) return;
         var targetPoint = (f_Target.CentralPoint - WorldPosition).normalized * Radius + WorldPosition;
@@ -231,9 +231,9 @@ public abstract class Emitter_SwordBaseData: WeaponBaseData
         RemoveWeaponElement(f_Target);
     }
 
-    public abstract void LaunchStartAsync(WeaponElementBaseData f_Element, EntityData f_Entity);
-    public abstract void LaunchUpdateAsync(WeaponElementBaseData f_Element, EntityData f_Entity, float f_Ratio);
-    public abstract void LaunchStopAsync(WeaponElementBaseData f_Element, EntityData f_Entity);
+    public abstract void LaunchStartAsync(WeaponElementBaseData f_Element, WorldObjectBaseData f_Entity);
+    public abstract void LaunchUpdateAsync(WeaponElementBaseData f_Element, WorldObjectBaseData f_Entity, float f_Ratio);
+    public abstract void LaunchStopAsync(WeaponElementBaseData f_Element, WorldObjectBaseData f_Entity);
     public abstract void CollectAwakeAsync(Vector3 f_Target);
     public abstract void CollectStartAsync(WeaponElementBaseData f_Element, Vector3 f_Target);
     public abstract void CollectUpdateAsync(WeaponElementBaseData f_Element, Vector3 f_TargetPoint, float f_Ratio);
@@ -243,7 +243,7 @@ public abstract class Emitter_SwordBaseData: WeaponBaseData
     public abstract Vector3 GetWorldPosition(Vector3 f_StartPoint, Vector3 f_EndPoint, Vector3 f_CurPoint,
         float f_Ratio);
 
-    public abstract bool GetStopCondition(WeaponElementBaseData f_Buttle, EntityData f_Target, float f_Ratio);
+    public abstract bool GetStopCondition(WeaponElementBaseData f_Buttle, WorldObjectBaseData f_Target, float f_Ratio);
 
 }
 public abstract class Emitter_SwordBase : WeaponBase

@@ -179,20 +179,6 @@ public class MonsterManager : MonoSingleton<MonsterManager>
     }
     public async void CreateHero()
     {
-        var originalSpawnPoint = PlayerSpawnPoint[0];
-        var targetSpawnPoint = MonsterSpawnPoint[1];
-        var hero1 = new Entity_Player_Hero2Data(0, targetSpawnPoint.CurrentIndex, originalSpawnPoint);
 
-        var weapon = new Emitter_SwordHeightData(0, hero1); 
-        hero1.SetWeapon(weapon);
-
-
-
-        await ILoadPrefabAsync.LoadAsync(hero1);
-        await ILoadPrefabAsync.LoadAsync(weapon);
-
-
-        hero1.AddGainAsync(EGainView.Launch1);
-        hero1.AddGainAsync(EGainView.Collect1);
     }
 }

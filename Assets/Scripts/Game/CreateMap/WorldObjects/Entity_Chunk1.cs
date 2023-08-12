@@ -96,7 +96,7 @@ public class Entity_Chunk1Data : WorldObjectBaseData
 
         if (list.TryAdd(f_ObjectData.Index, f_ObjectData))
         {
-            list2.Add(f_ObjectData.Index, f_ObjectData);
+            list2.TryAdd(f_ObjectData.Index, f_ObjectData);
             AddChunkObjectType(f_ObjectData.ObjectType);
             return true;
         }

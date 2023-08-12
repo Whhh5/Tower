@@ -31,6 +31,7 @@ public enum EHeroCradType
     Hero1,
     Hero2,
     Hero3,
+    Hero4,
     EnemyCount,
 }
 public enum EHeroQualityLevel
@@ -38,6 +39,7 @@ public enum EHeroQualityLevel
     Level1,
     Level2,
     Level3,
+    Level4,
     EnumCount,
 }
 public enum EHeroCradStarLevel
@@ -46,6 +48,7 @@ public enum EHeroCradStarLevel
     Level1,
     Level2,
     Level3,
+    Level4,
     EnumCount,
 }
 public enum EHeroFetterType
@@ -59,6 +62,25 @@ public enum EHeroFetterType
 
     EnumCount,
     None,
+}
+public enum EBuffType
+{
+    AddBlood, // 加血
+    Poison, // 中毒
+}
+public class WorldRandomEventInfo
+{
+    public string Describe = "";
+
+}
+public enum EWorldRandomEvent
+{
+    // 台风
+    Typhoon,
+    // 火山
+    Volcano,
+    // 洪水
+    Flood,
 }
 public enum AssetKey
 {
@@ -77,16 +99,23 @@ public enum AssetKey
     Entity_Player_Default3,
     TestTimeLine,
     WorldUIEntityHint,
-    Entity_Player_Hero1,
     EmitterElement_GuidedMissile,
     EmitterElement_SwordLow,
 
     Emitter_SwordLow,
     Emitter_SwordHeight,
     Emitter_GuidedMissileBaseCommon,
+    // 英雄
+    Entity_Player_Hero1,
     Entity_Player_Hero2,
     Entity_Player_Hero3,
+    Entity_Player_Hero4,
+
+
+    // 特效
     Hero3SkillEffect,
+    Effect_Buff_AddBlood,
+    Effect_Buff_Poison,
 }
 public class HeroCradInfo
 {
@@ -94,7 +123,7 @@ public class HeroCradInfo
     public string Name;
     public AssetKey AssetKet;
     public HeroCradLevelInfo QualityLevelInfo => TableMgr.Ins.TryGetHeroCradLevelInfo(QualityLevel, out var levelInfo) ? levelInfo : null;
-    public bool GetWorldObjectData(EHeroCradType f_HeroType, int f_TargetIndex, Entity_SpawnPointData f_SpawnPoint, out WorldObjectBaseData f_Result) => TableMgr.Ins.GetHeroDataByType(f_HeroType, f_TargetIndex, f_SpawnPoint, out f_Result);
+    public bool GetWorldObjectData(EHeroCradType f_HeroType, int f_TargetIndex, out WorldObjectBaseData f_Result) => TableMgr.Ins.GetHeroDataByType(f_HeroType, f_TargetIndex, out f_Result);
 }
 public class HeroCradLevelInfo
 {
@@ -225,6 +254,7 @@ public class TableMgr : Singleton<TableMgr>
         { AssetKey.Entity_Player_Hero1, "Prefabs/WorldObject/Entity_Player_Hero1" },
         { AssetKey.Entity_Player_Hero2, "Prefabs/WorldObject/Entity_Player_Hero2" },
         { AssetKey.Entity_Player_Hero3, "Prefabs/WorldObject/Entity_Player_Hero3" },
+        { AssetKey.Entity_Player_Hero4, "Prefabs/WorldObject/Entity_Player_Hero4" },
 
         { AssetKey.EmitterElement_GuidedMissile, "Prefabs/WorldObject/EmitterElement_GuidedMissile" },
         { AssetKey.EmitterElement_SwordLow, "Prefabs/WorldObject/EmitterElement_SwordLow" },
@@ -234,12 +264,14 @@ public class TableMgr : Singleton<TableMgr>
         { AssetKey.Emitter_GuidedMissileBaseCommon, "Prefabs/WorldObject/Emitter_GuidedMissileBaseCommon" },
 
 
-        
+
         { AssetKey.TestTimeLine, "Prefabs/TimeLine/TestTimeLine" },
         { AssetKey.Hero3SkillEffect, "Prefabs/TimeLine/Hero3SkillEffect" },
         { AssetKey.WorldUIEntityHint, "Prefabs/WorldUI/WorldUIEntityHint" },
 
-
+        // 特效
+        { AssetKey.Effect_Buff_Poison , "Prefabs/Effects/Effect_Buff_Poison" },
+        { AssetKey.Effect_Buff_AddBlood , "Prefabs/Effects/Effect_Buff_AddBlood" },
     };
     public bool GetAssetPath(AssetKey f_Key, out string f_Result)
     {
@@ -284,6 +316,15 @@ public class TableMgr : Singleton<TableMgr>
                 AssetKet = AssetKey.Entity_Player_Hero3,
             }
         },
+        {
+            EHeroCradType.Hero4,
+            new()
+            {
+                QualityLevel = EHeroQualityLevel.Level4,
+                Name = "Hero4",
+                AssetKet = AssetKey.Entity_Player_Hero4,
+            }
+        },
     };
     public bool TryGetHeroCradInfo(EHeroCradType f_EHeroCradType, out HeroCradInfo f_HeroCradInfo)
     {
@@ -323,6 +364,14 @@ public class TableMgr : Singleton<TableMgr>
                 Color = Color.red,
             }
         },
+        {
+            EHeroQualityLevel.Level4,
+            new()
+            {
+                MaxCount = 5,
+                Color = Color.cyan,
+            }
+        },
     };
     public bool TryGetHeroCradLevelInfo(EHeroQualityLevel f_EHeroCradLevel, out HeroCradLevelInfo f_HeroCradLevelInfo)
     {
@@ -350,38 +399,19 @@ public class TableMgr : Singleton<TableMgr>
                     },
                     {
                         EHeroQualityLevel.Level2,
+                        0.25f
+                    },
+                    {
+                        EHeroQualityLevel.Level3,
                         0.5f
                     },
                     {
-                        EHeroQualityLevel.Level3,
+                        EHeroQualityLevel.Level4,
                         1f
                     },
-
                 }
             }
         },
-        {
-            EPlayerLevel.Level2,
-            new()
-            {
-                DicCradProbability = new()
-                {
-                    {
-                        EHeroQualityLevel.Level1,
-                        0.25f
-                    },
-                    {
-                        EHeroQualityLevel.Level2,
-                        0.25f
-                    },
-                    {
-                        EHeroQualityLevel.Level3,
-                        1.0f
-                    },
-
-                }
-            }
-        }
     };
     public bool TryGetPlayerLevelInfo(EPlayerLevel f_Level, out PlayerLevelInfo f_PlayerLevelInfo)
     {
@@ -418,6 +448,13 @@ public class TableMgr : Singleton<TableMgr>
                 Color = Color.yellow,
             }
         },
+        {
+            EHeroCradStarLevel.Level4,
+            new()
+            {
+                Color = Color.cyan,
+            }
+        },
     };
     public bool TryGetGeroCardStarLevelInfo(EHeroCradStarLevel f_StarLevel, out HeroCardStarLevelInfo f_Info)
     {
@@ -445,19 +482,22 @@ public class TableMgr : Singleton<TableMgr>
     {
 
     };
-    public bool GetHeroDataByType(EHeroCradType f_HeroType, int f_TargetIndex, Entity_SpawnPointData f_SpawnPoint, out WorldObjectBaseData f_Result)
+    public bool GetHeroDataByType(EHeroCradType f_HeroType, int f_TargetIndex, out WorldObjectBaseData f_Result)
     {
         f_Result = null;
         switch (f_HeroType)
         {
             case EHeroCradType.Hero1:
-                f_Result = new Entity_Player_Hero1Data(0, f_TargetIndex, f_SpawnPoint);
+                f_Result = new Entity_Player_Hero1Data(0, f_TargetIndex, null);
                 break;
             case EHeroCradType.Hero2:
-                f_Result = new Entity_Player_Hero2Data(0, f_TargetIndex, f_SpawnPoint);
+                f_Result = new Entity_Player_Hero2Data(0, f_TargetIndex);
                 break;
             case EHeroCradType.Hero3:
                 f_Result = new Entity_Player_Hero3Data(0, f_TargetIndex);
+                break;
+            case EHeroCradType.Hero4:
+                f_Result = new Entity_Player_Hero4Data(0, f_TargetIndex);
                 break;
             case EHeroCradType.EnemyCount:
                 break;
@@ -466,6 +506,116 @@ public class TableMgr : Singleton<TableMgr>
         }
         return f_Result != null;
     }
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- 随机事件篇
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    private Dictionary<EWorldRandomEvent, WorldRandomEventInfo> m_WorldRandomEvent = new()
+    {
+        {
+            EWorldRandomEvent.Typhoon,
+            new()
+            {
+                Describe = "风起云涌",
+            }
+        },
+        {
+            EWorldRandomEvent.Volcano,
+            new()
+            {
+                Describe = "烈火燎原",
+            }
+        },
+        {
+            EWorldRandomEvent.Flood,
+            new()
+            {
+                Describe = "",
+            }
+        },
+    };
+    public bool GetWorldRandomEvent(EWorldRandomEvent f_Type, out WorldRandomEventInfo f_Result)
+    {
+        return m_WorldRandomEvent.TryGetValue(f_Type, out f_Result);
+    }
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- Buff 篇
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    private Dictionary<EBuffType, BuffInfo> m_BuffInfo = new()
+    {
+        {
+            EBuffType.AddBlood,
+            new BuffInfo()
+            {
+                BuffType = EBuffType.AddBlood,
+                Desc = "持续回血",
+                Name = "治疗",
+            }
+        },
+        {
+
+            EBuffType.Poison,
+            new BuffInfo()
+            {
+                BuffType = EBuffType.Poison,
+                Desc = "持续减血",
+                Name = "中毒",
+            }
+        },
+    };
+    public bool TryGetBuffInfo(EBuffType f_BuffType, out BuffInfo f_Result)
+    {
+        return m_BuffInfo.TryGetValue(f_BuffType, out f_Result);
+    }
+    public bool TryGetBuffData(EBuffType f_BuffType, WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target, out Effect_BuffBaseData f_Result)
+    {
+        f_Result = null;
+        switch (f_BuffType)
+        {
+            case EBuffType.AddBlood:
+                f_Result = IBuffUtil.CreateBuffData<Effect_Buff_AddBloodData>(f_Initiator, f_Target);
+                break;
+            case EBuffType.Poison:
+                f_Result = IBuffUtil.CreateBuffData<Effect_Buff_PoisonData>(f_Initiator, f_Target);
+                break;
+            default:
+                break;
+        }
+        return f_Result != null;
+    }
+
+
+
+
+
+
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- 增益 篇
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    private Dictionary<EGainView, GainBaseData> m_GainView = new()
+    {
+        {
+            EGainView.Collect1,
+            new()
+            {
+             GainView = Collect1,
+             GainType = EGainType.Collect,
+             
+            }
+        },
+    };
+
 }
 
 
