@@ -180,7 +180,7 @@ public abstract class Emitter_SwordBaseData: WeaponBaseData
 
             buttle.StopExecute();
             LaunchStopAsync(buttle, f_Target);
-            Initiator.ExecuteGainAsync(EGainType.Launch);
+            Initiator.ExecuteGainAsync(EGainView.Launch);
         }
     }
 
@@ -214,7 +214,7 @@ public abstract class Emitter_SwordBaseData: WeaponBaseData
                 buttle.ClearTargets();
             }
 
-            Initiator.ExecuteGainAsync(EGainType.Collect);
+            Initiator.ExecuteGainAsync(EGainView.Collect);
         }
 
         CollectSleepAsync(f_Point);

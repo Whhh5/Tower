@@ -7,26 +7,9 @@ using B1;
 
 public class GainMgr : Singleton<GainMgr>
 {
-    public EGainType GetGainType(EGainView f_GainView)
-    {
-        if (m_GainMap.TryGetValue(f_GainView, out var value))
-        {
-            return value.tGainType;
-        }
-        return EGainType.None;
-    }
-    public GainBaseData GetGain(EGainView f_GainView, WorldObjectBaseData f_TargetPerson)
-    {
-        if (m_GainMap.TryGetValue(f_GainView, out var result))
-        {
-            var target = result.tGetData(f_TargetPerson);
-            return target;
-        }
-        return null;
-    }
 }
 
-public enum EGainType : ushort
+public enum EGainView : ushort
 {
     None,
     Launch,
@@ -35,7 +18,7 @@ public enum EGainType : ushort
     BeHit,
     EnumCount,
 }
-public enum EGainView : ushort
+public enum EGainType : ushort
 {
     None,
 
@@ -46,15 +29,15 @@ public enum EGainView : ushort
 }
 public interface IGainUtil
 {
-    public void InflictionGain(EGainView f_GainView, WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
+    public static void InflictionGain(EGainType f_GainView, WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
     {
-        f_Target.AddGainAsync(f_GainView)
+        f_Target.AddGainAsync(f_GainView, f_Initiator);
     }
 }
-public abstract class GainBaseData : Base, IExecute
+public abstract class GainBaseData : Base
 {
-    public abstract EGainView GainView { get; }
-    public abstract EGainType GainType { get; }
+    public abstract EGainType GainView { get; }
+    public abstract EGainView GainType { get; }
     protected ushort m_Level;
     protected ushort m_TierCount;
     protected WorldObjectBaseData m_Recipient = null;
@@ -69,16 +52,16 @@ public abstract class GainBaseData : Base, IExecute
         m_TierCount = 1;
         m_Probability = 30;
     }
-    public async UniTask StartExecute()
+    public virtual void StartExecute()
     {
         var randomNum = GTools.MathfMgr.GetRandomValue(0, 100);
         if (randomNum <= m_Probability)
         {
-            await Execute(randomNum);
+            Execute(randomNum);
         }
     }
 
-    public virtual async UniTask StopExecute()
+    public virtual void StopExecute()
     {
         Log("StopExecute");
     }
@@ -95,14 +78,18 @@ public abstract class GainBaseData : Base, IExecute
     {
         m_Level = f_Level;
     }
+    public void Reset()
+    {
 
-    public abstract UniTask Execute(int f_CurProbability);
+    }
+
+    public abstract void Execute(int f_CurProbability);
 }
 
 public class Gain_Launch1 : GainBaseData
 {
-    public override EGainView GainView => EGainView.Launch1;
-    public override EGainType GainType => EGainType.Launch;
+    public override EGainType GainView => EGainType.Launch1;
+    public override EGainView GainType => EGainView.Launch;
 
     public override void Initialization(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Recipient)
     {
@@ -110,10 +97,10 @@ public class Gain_Launch1 : GainBaseData
         m_Probability = 30;
     }
 
-    public override async UniTask Execute(int f_CurProbability)
+    public override async void Execute(int f_CurProbability)
     {
         var wepon = new Emitter_GuidedMissileBaseCommonData(0, m_Recipient);
-        await ILoadPrefabAsync.LoadAsync(wepon);
+        GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(wepon));
         await wepon.StartExecute();
         await wepon.StopExecute();
         ILoadPrefabAsync.UnLoad(wepon);
@@ -123,8 +110,8 @@ public class Gain_Launch1 : GainBaseData
 }
 public class Gain_Collect1 : GainBaseData
 {
-    public override EGainView GainView => EGainView.Collect1;
-    public override EGainType GainType => EGainType.Collect;
+    public override EGainType GainView => EGainType.Collect1;
+    public override EGainView GainType => EGainView.Collect;
 
     public override void Initialization(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Recipient)
     {
@@ -132,7 +119,7 @@ public class Gain_Collect1 : GainBaseData
         m_Probability = 100;
     }
 
-    public override async UniTask Execute(int f_CurProbability)
+    public override void Execute(int f_CurProbability)
     {
 
     }

@@ -87,6 +87,15 @@ public abstract class WorldObjectBaseData : PersonData
         return result;
     }
 
+    public virtual void AttackTarget()
+    {
+        ExecuteGainAsync(EGainView.Launch); 
+    }
+    public virtual void SkillTarget()
+    {
+
+    }
+
 
 
     //--
@@ -172,6 +181,47 @@ public abstract class WorldObjectBaseData : PersonData
     public void UpdateBuff()
     {
 
+    }
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- 增益篇
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    // Gain
+    protected Dictionary<EGainView, Dictionary<EGainType, GainBaseData>> m_CurGainList = new();
+    // 触发增益
+    public void ExecuteGainAsync(EGainView f_GainType)
+    {
+        if (m_CurGainList.TryGetValue(f_GainType, out var list))
+        {
+            foreach (var item in list)
+            {
+                item.Value.StartExecute();
+            }
+        }
+    }
+
+    public void AddGainAsync(EGainType f_GainType, WorldObjectBaseData f_Initiator)
+    {
+        if (TableMgr.Ins.TryGetGainInfo(f_GainType, out var gainInfo))
+        {
+            if (!m_CurGainList.TryGetValue(gainInfo.GainView, out var list))
+            {
+                list = new();
+                m_CurGainList.Add(gainInfo.GainView, list);
+            }
+            if (list.TryGetValue(f_GainType, out var gain))
+            {
+                gain.Reset();
+            }
+            else
+            {
+                var gainData = gainInfo.CreateGain(f_Initiator, this);
+                list.Add(f_GainType, gainData);
+            }
+        }
     }
 }
 

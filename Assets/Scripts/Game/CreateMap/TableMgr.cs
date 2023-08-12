@@ -548,6 +548,20 @@ public class TableMgr : Singleton<TableMgr>
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
+    public class BuffInfo
+    {
+        public string Name = "";
+        public string Desc = "";
+        public EBuffType BuffType;
+        public Effect_BuffBaseData CreateBuffData(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
+        {
+            if (TableMgr.Ins.TryGetBuffData(BuffType, f_Initiator, f_Target, out var result))
+            {
+                result.Initialization(f_Initiator, f_Target);
+            }
+            return result;
+        }
+    }
     private Dictionary<EBuffType, BuffInfo> m_BuffInfo = new()
     {
         {
@@ -603,18 +617,55 @@ public class TableMgr : Singleton<TableMgr>
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
-    private Dictionary<EGainView, GainBaseData> m_GainView = new()
+    public class GainInfo
+    {
+        public EGainView GainView;
+        public EGainType GainType;
+        public GainBaseData CreateGain(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
+        {
+            if (Ins.TryGetGainData(GainType, out var result))
+            {
+                result.Initialization(f_Initiator, f_Target);
+                return result;
+            }
+            return null;
+        }
+    }
+    private Dictionary<EGainType, GainInfo> m_GainInfo = new()
     {
         {
-            EGainView.Collect1,
+            EGainType.Collect1,
             new()
             {
-             GainView = Collect1,
-             GainType = EGainType.Collect,
-             
+                GainType = EGainType.Collect1,
+                GainView = EGainView.Collect,
             }
         },
     };
+    public bool TryGetGainInfo(EGainType f_GainType, out GainInfo f_GainInfo)
+    {
+        return m_GainInfo.TryGetValue(f_GainType, out f_GainInfo);
+    }
+    public bool TryGetGainData(EGainType f_GainType, out GainBaseData f_Result)
+    {
+        f_Result = null;
+        switch (f_GainType)
+        {
+            case EGainType.None:
+                break;
+            case EGainType.Launch1:
+                f_Result = new Gain_Launch1();
+                break;
+            case EGainType.Collect1:
+                f_Result = new Gain_Collect1();
+                break;
+            case EGainType.EnumCount:
+                break;
+            default:
+                break;
+        }
+        return f_Result != null;
+    }
 
 }
 
