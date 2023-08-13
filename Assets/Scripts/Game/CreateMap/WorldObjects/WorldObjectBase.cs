@@ -182,6 +182,10 @@ public abstract class WorldObjectBaseData : PersonData
     {
 
     }
+    public Dictionary<EBuffType, Effect_BuffBaseData> GetBuff()
+    {
+        return m_BuffDic;
+    }
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------
@@ -243,5 +247,14 @@ public class WorldObjectBase : Person, IUpdateBase
     private void OnMouseDown()
     {
         
+    }
+    private void OnMouseEnter()
+    {
+        UISelectHeroInfo.Ins.SetData(WorldObjectBaseData);
+    }
+
+    private void OnMouseExit()
+    {
+        UISelectHeroInfo.Ins.SetData(null);
     }
 }

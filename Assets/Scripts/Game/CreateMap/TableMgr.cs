@@ -116,6 +116,10 @@ public enum AssetKey
     Hero3SkillEffect,
     Effect_Buff_AddBlood,
     Effect_Buff_Poison,
+
+    // buff图标路径
+    Buff_Poison,
+    Buff_AddBlood,
 }
 public class HeroCradInfo
 {
@@ -236,6 +240,7 @@ public class TableMgr : Singleton<TableMgr>
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
+    static string BuffIconParentPath = "Icons/BuffIcon";
     private static readonly Dictionary<AssetKey, string> m_DicIDToPath = new()
     {
         { AssetKey.Alp1, "Prefabs/WorldObject/Entity_Alt1" },
@@ -272,6 +277,10 @@ public class TableMgr : Singleton<TableMgr>
         // 特效
         { AssetKey.Effect_Buff_Poison , "Prefabs/Effects/Effect_Buff_Poison" },
         { AssetKey.Effect_Buff_AddBlood , "Prefabs/Effects/Effect_Buff_AddBlood" },
+
+        // icon 
+        { AssetKey.Buff_Poison, $"{BuffIconParentPath}/Poison" },
+        { AssetKey.Buff_AddBlood, $"{BuffIconParentPath}/AddBlood" },
     };
     public bool GetAssetPath(AssetKey f_Key, out string f_Result)
     {
@@ -552,6 +561,7 @@ public class TableMgr : Singleton<TableMgr>
     {
         public string Name = "";
         public string Desc = "";
+        public AssetKey IconPath ;
         public EBuffType BuffType;
         public Effect_BuffBaseData CreateBuffData(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
         {
@@ -571,6 +581,7 @@ public class TableMgr : Singleton<TableMgr>
                 BuffType = EBuffType.AddBlood,
                 Desc = "持续回血",
                 Name = "治疗",
+                IconPath = AssetKey.Buff_AddBlood
             }
         },
         {
@@ -581,6 +592,7 @@ public class TableMgr : Singleton<TableMgr>
                 BuffType = EBuffType.Poison,
                 Desc = "持续减血",
                 Name = "中毒",
+                IconPath = AssetKey.Buff_Poison
             }
         },
     };
