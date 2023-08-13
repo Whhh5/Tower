@@ -34,7 +34,7 @@ namespace B1
         {
             //消息接口处理
             var eventSystem = this as IMessageSystem;
-            if (!object.ReferenceEquals(eventSystem, null))
+            if (eventSystem != null)
             {
                 m_MsgDic = eventSystem.SubscribeList();
                 foreach (var item in m_MsgDic)

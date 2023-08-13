@@ -68,12 +68,7 @@ public enum EBuffType
     AddBlood, // 加血
     Poison, // 中毒
 }
-public class WorldRandomEventInfo
-{
-    public string Describe = "";
-
-}
-public enum EWorldRandomEvent
+public enum EWeatherType
 {
     // 台风
     Typhoon,
@@ -81,6 +76,23 @@ public enum EWorldRandomEvent
     Volcano,
     // 洪水
     Flood,
+    EnumCount,
+}
+public enum EWeatherEventType
+{
+    // 台风
+    Typhoon1,
+    Typhoon2,
+    Typhoon3,
+    // 火山
+    Volcano1,
+    Volcano2,
+    Volcano3,
+    // 洪水
+    Flood1,
+    Flood2,
+    Flood3,
+    EnumCount,
 }
 public enum AssetKey
 {
@@ -207,6 +219,41 @@ public class HeroCardStarLevelInfo
 {
     public Color Color;
 }
+public class WeatherInfoEventInfo
+{
+    public EWeatherEventType WeatherEventType;
+    // 触发概率
+    public float Probability;
+}
+public class WeatherInfo
+{
+    public string Describe = "";
+    public List<WeatherInfoEventInfo> EventList;
+    public EWeatherType WeatherType;
+    public WeatherBaseData CreateWeatherData(float f_DurationTime)
+    {
+        if (TableMgr.Ins.TryGetWeatherData(WeatherType, out var result))
+        {
+            result.Initialization(f_DurationTime);
+            return result;
+        }
+        return null;
+    }
+}
+public class WeatherEventInfo
+{
+    public string Describe = "";
+    public EWeatherEventType WeatherEventType;
+    public WeaterEventBaseData CreateWeatherData(float f_DurationTime)
+    {
+        if (TableMgr.Ins.TryGetWeatherEventData(WeatherEventType, out var result))
+        {
+            result.Initialization(f_DurationTime);
+            return result;
+        }
+        return null;
+    }
+}
 public class TableMgr : Singleton<TableMgr>
 {
 
@@ -275,8 +322,8 @@ public class TableMgr : Singleton<TableMgr>
         { AssetKey.WorldUIEntityHint, "Prefabs/WorldUI/WorldUIEntityHint" },
 
         // 特效
-        { AssetKey.Effect_Buff_Poison , "Prefabs/Effects/Effect_Buff_Poison" },
-        { AssetKey.Effect_Buff_AddBlood , "Prefabs/Effects/Effect_Buff_AddBlood" },
+        { AssetKey.Effect_Buff_Poison, "Prefabs/Effects/Effect_Buff_Poison" },
+        { AssetKey.Effect_Buff_AddBlood, "Prefabs/Effects/Effect_Buff_AddBlood" },
 
         // icon 
         { AssetKey.Buff_Poison, $"{BuffIconParentPath}/Poison" },
@@ -522,33 +569,170 @@ public class TableMgr : Singleton<TableMgr>
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
-    private Dictionary<EWorldRandomEvent, WorldRandomEventInfo> m_WorldRandomEvent = new()
+    private Dictionary<EWeatherType, WeatherInfo> m_WeatherInfo = new()
     {
         {
-            EWorldRandomEvent.Typhoon,
+            EWeatherType.Typhoon,
             new()
             {
                 Describe = "风起云涌",
+                WeatherType = EWeatherType.Typhoon,
+                EventList = new()
+                {
+                    new()
+                    {
+                        WeatherEventType = EWeatherEventType.Typhoon1,
+                        Probability = 0.3f,
+                    },
+                    new()
+                    {
+                        WeatherEventType = EWeatherEventType.Typhoon2,
+                        Probability = 0.5f,
+                    },
+                    new()
+                    {
+                        WeatherEventType = EWeatherEventType.Typhoon3,
+                        Probability = 1f,
+                    },
+                },
             }
         },
         {
-            EWorldRandomEvent.Volcano,
+            EWeatherType.Volcano,
             new()
             {
                 Describe = "烈火燎原",
+                WeatherType = EWeatherType.Volcano,
+                EventList = new()
+                {
+                    new()
+                    {
+                        WeatherEventType = EWeatherEventType.Volcano1,
+                        Probability = 0.3f,
+                    },
+                    new()
+                    {
+                        WeatherEventType = EWeatherEventType.Volcano2,
+                        Probability = 0.5f,
+                    },
+                    new()
+                    {
+                        WeatherEventType = EWeatherEventType.Volcano3,
+                        Probability = 1f,
+                    },
+                },
             }
         },
         {
-            EWorldRandomEvent.Flood,
+            EWeatherType.Flood,
             new()
             {
                 Describe = "",
+                WeatherType = EWeatherType.Flood,
+                EventList = new()
+                {
+                    new()
+                    {
+                        WeatherEventType = EWeatherEventType.Flood1,
+                        Probability = 0.3f,
+                    },
+                    new()
+                    {
+                        WeatherEventType = EWeatherEventType.Flood2,
+                        Probability = 0.5f,
+                    },
+                    new()
+                    {
+                        WeatherEventType = EWeatherEventType.Flood3,
+                        Probability = 1f,
+                    },
+                },
             }
         },
     };
-    public bool GetWorldRandomEvent(EWorldRandomEvent f_Type, out WorldRandomEventInfo f_Result)
+    public bool TryGetWeatherInfo(EWeatherType f_Type, out WeatherInfo f_Result)
     {
-        return m_WorldRandomEvent.TryGetValue(f_Type, out f_Result);
+        return m_WeatherInfo.TryGetValue(f_Type, out f_Result);
+    }
+
+    public bool TryGetWeatherData(EWeatherType f_Type, out WeatherBaseData f_Result)
+    {
+        f_Result = null;
+        switch (f_Type)
+        {
+            case EWeatherType.Typhoon:
+                break;
+            case EWeatherType.Volcano:
+                f_Result = new Weather_VolcanoData();
+                break;
+            case EWeatherType.Flood:
+                break;
+            default:
+                break;
+        }
+        return f_Result != null;
+    }
+    private Dictionary<EWeatherEventType, WeatherEventInfo> m_WeatherEventInfo = new()
+    {
+        {
+            EWeatherEventType.Volcano1,
+            new()
+            {
+                Describe = "小火",
+                WeatherEventType = EWeatherEventType.Volcano1,
+            }
+        },
+        {
+            EWeatherEventType.Volcano2,
+            new()
+            {
+                Describe = "中火",
+                WeatherEventType = EWeatherEventType.Volcano2,
+            }
+        },
+        {
+            EWeatherEventType.Volcano3,
+            new()
+            {
+                Describe = "大火",
+                WeatherEventType = EWeatherEventType.Volcano3,
+            }
+        },
+    };
+    public bool TryGetWeatherEventInfo(EWeatherEventType f_Type, out WeatherEventInfo f_Result)
+    {
+        return m_WeatherEventInfo.TryGetValue(f_Type, out f_Result);
+    }
+    public bool TryGetWeatherEventData(EWeatherEventType f_Type, out WeaterEventBaseData f_Result)
+    {
+        f_Result = null;
+        switch (f_Type)
+        {
+            case EWeatherEventType.Typhoon1:
+                break;
+            case EWeatherEventType.Typhoon2:
+                break;
+            case EWeatherEventType.Typhoon3:
+                break;
+            case EWeatherEventType.Volcano1:
+                f_Result = new WeatherEvent_Volcano1Data();
+                break;
+            case EWeatherEventType.Volcano2:
+                f_Result = new WeatherEvent_Volcano2Data();
+                break;
+            case EWeatherEventType.Volcano3:
+                f_Result = new WeatherEvent_Volcano3Data();
+                break;
+            case EWeatherEventType.Flood1:
+                break;
+            case EWeatherEventType.Flood2:
+                break;
+            case EWeatherEventType.Flood3:
+                break;
+            default:
+                break;
+        }
+        return f_Result != null;
     }
     //--
     //===============================----------------------========================================

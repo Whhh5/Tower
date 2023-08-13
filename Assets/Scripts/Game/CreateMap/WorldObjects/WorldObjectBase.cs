@@ -67,6 +67,7 @@ public abstract class WorldObjectBaseData : PersonData
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
+    public virtual int HarmBase => 12;
     // 暴击率 0 - 1
     public float CriticalChance { get; private set; } = 0.2f;
     // 暴击倍数, 相当于攻击的多少倍 1 - n

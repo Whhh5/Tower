@@ -117,7 +117,7 @@ public class ListStack<T> : Base
         f_Value = default(T);
         if (m_Pointer > 0)
         {
-            f_Value = m_List[(int)m_Pointer - 1];
+            f_Value = m_List[m_Pointer - 1];
             return true;
         }
         else

@@ -1,3 +1,4 @@
+using B1.Event;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ public class UIBattleMainWindow : MonoBehaviour
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
+    
 
     private void Awake()
     {
