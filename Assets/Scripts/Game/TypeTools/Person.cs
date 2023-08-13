@@ -8,7 +8,7 @@ public abstract class PersonData : EntityData
 {
     public abstract ELayer LayerMask { get; }
     public abstract ELayer AttackLayerMask { get; }
-    public virtual int HarmBase => 12;
+
     public WeaponBaseData CurWeaponData { get; protected set; }
 
     protected PersonData(int f_index) : base(f_index)

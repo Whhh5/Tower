@@ -27,6 +27,10 @@ namespace B1.Event
             {
                 LogWarning($"当前事件未注册 event name = {f_EEvent}");
             }
+
+
+
+
         }
         public void Subscribe<T>(EEvent f_EEvent, T f_EventReception, object f_UserData, string f_SubDesc)
             where T : IMessageSystem
