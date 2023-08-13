@@ -87,6 +87,22 @@ public interface ILoadPrefabAsync
     public void AfterLoad();
     public void OnUnLoad();
 
+
+
+
+
+    private static int m_LoadKey = int.MinValue;
+    private static ListStack<int> m_LoadKeyList = new("load key", 200);
+    private static int GetLoadKey()
+    {
+        if (!m_LoadKeyList.TryPop(out var key))
+        {
+            key = ++m_LoadKey;
+        }
+        return key;
+    }
+
+    private static Dictionary<EWorldObjectType, Dictionary<int, UnityObjectData>> m_DicEntity = new();
     public static async UniTask LoadAsync<TLoad>(TLoad f_Target)
         where TLoad : UnityObjectData
     {
@@ -94,7 +110,7 @@ public interface ILoadPrefabAsync
         {
             return;
         }
-        var lastLoadKey = Random.Range(int.MinValue + 1, int.MaxValue);
+        var lastLoadKey = GetLoadKey();
         f_Target.LoadKey = lastLoadKey;
         f_Target.LoadResult = LoadAsyncResult.Loading;
         var result = await LoadAssetManager.Ins.LoadAsync<ObjectPoolBase>(f_Target.AssetPrefabID);
@@ -106,6 +122,15 @@ public interface ILoadPrefabAsync
             }
             else if (f_Target.LoadResult is LoadAsyncResult.Loading)
             {
+                if (!m_DicEntity.TryGetValue(f_Target.ObjectType, out var list))
+                {
+                    list = new();
+                    m_DicEntity.Add(f_Target.ObjectType, list);
+                }
+                if (!list.ContainsKey(lastLoadKey))
+                {
+                    list.Add(lastLoadKey, f_Target);
+                }
                 f_Target.LoadResult = LoadAsyncResult.Succeed;
                 f_Target.PrefabTarget = result;
                 result.SetUnityObjectData(f_Target);
@@ -126,12 +151,32 @@ public interface ILoadPrefabAsync
         f_Target.LoadKey = int.MinValue;
         if (f_Target.LoadResult == LoadAsyncResult.Succeed)
         {
+            if (m_DicEntity.TryGetValue(f_Target.ObjectType, out var list) && list.ContainsKey(f_Target.LoadKey))
+            {
+                list.Remove(f_Target.LoadKey);
+            }
+            m_LoadKeyList.Push(f_Target.LoadKey);
             LoadAssetManager.Ins.UnLoad(f_Target.PrefabTarget);
             f_Target.PrefabTarget = null;
         }
 
         f_Target.LoadResult = LoadAsyncResult.UnLoad;
 
+    }
+    public static bool TryGetEntityByType(EWorldObjectType f_ObjectType, out Dictionary<int, UnityObjectData> f_Result)
+    {
+        f_Result = new();
+        foreach (var item in m_DicEntity)
+        {
+            if ((item.Key & f_ObjectType) != 0)
+            {
+                foreach (var entity in item.Value)
+                {
+                    f_Result.Add(entity.Key, entity.Value);
+                }
+            }
+        }
+        return f_Result.Count > 0;
     }
 }
 
