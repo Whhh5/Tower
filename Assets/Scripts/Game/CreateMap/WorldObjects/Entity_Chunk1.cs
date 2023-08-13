@@ -170,6 +170,7 @@ public class Entity_Chunk1Data : WorldObjectBaseData
 }
 public class Entity_Chunk1 : WorldObjectBase
 {
+    private static Color whiteYellow = new Color(1.0f, 0.92f, 0.015f); 
     // 文字部分
     [SerializeField]
     private TextMeshPro m_TMPIndex = null;
@@ -220,12 +221,12 @@ public class Entity_Chunk1 : WorldObjectBase
     }
     private void OnMouseEnter()
     {
-        SetColor(Color.yellow);
+        SetColor(whiteYellow);
         WorldMapManager.Ins.SetCurMouseEnable(ChunkData?.Index ?? -1);
     }
     private void OnMouseExit()
     {
-        SetColor(Color.gray);
+        SetColor(Color.white);
         WorldMapManager.Ins.ClearCurMouseEnable();
     }
 }

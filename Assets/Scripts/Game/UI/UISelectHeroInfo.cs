@@ -18,7 +18,11 @@ public class UISelectHeroInfo : MonoBehaviour
     [SerializeField]
     public TextMeshProUGUI blood = null;
     [SerializeField]
+    public Slider bloodSlider = null;
+    [SerializeField]
     public TextMeshProUGUI magic = null;
+    [SerializeField]
+    public Slider magicSlider = null;
     [SerializeField]
     public TextMeshProUGUI speed = null;
 
@@ -72,10 +76,12 @@ public class UISelectHeroInfo : MonoBehaviour
 
     private void UpdatePropInfo()
     {
-        blood.text = t_targetData.CurrentBlood.ToString()+"/"+ t_targetData.MaxBlood.ToString();
-        attack.text=t_targetData.CurrentBlood.ToString();
-        magic.text = t_targetData.CurrentMagic.ToString() + "/" + t_targetData.MaxMagic.ToString();
-        speed.text = "100";
+        blood.text = $"{t_targetData.CurrentBlood}/{t_targetData.MaxBlood}";
+        bloodSlider.value = (float)t_targetData.CurrentBlood/ (float)t_targetData.MaxBlood;
+        attack.text= $"{t_targetData.HarmBase}";
+        magic.text = $"{t_targetData.CurrentMagic}/{ t_targetData.MaxMagic}";
+        magicSlider.value = (float)t_targetData.CurrentMagic / (float)t_targetData.MaxMagic;
+        speed.text = $"{t_targetData.CurAnimaSpeed}";
     }
 
     private void UpdateBuffInfo()
@@ -115,7 +121,6 @@ public class UISelectHeroInfo : MonoBehaviour
                Sprite sp = GetSprite(info.IconPath);
                icon.sprite = sp;
             }
-            Debug.LogError(info.IconPath);
         }
     }
 
@@ -134,7 +139,6 @@ public class UISelectHeroInfo : MonoBehaviour
         {
             if (TableMgr.Ins.GetAssetPath(assetKey,out var path))
             {
-                Debug.LogError("path = "+path);
                 Sprite sp = Resources.Load<Sprite>(path);
                 sprite_dir.Add(assetKey, new SpriteAsset<Sprite>(1, sp, assetKey));
                 return sp;
