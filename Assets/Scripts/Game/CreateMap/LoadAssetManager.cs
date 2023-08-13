@@ -8,7 +8,7 @@ using Object = System.Object;
 public class LoadAssetManager : B1.Singleton<LoadAssetManager>
 {
     class LoadData<T>
-        where T: Component
+        where T : Component
     {
         public UnityEngine.Object ass = null;
         public Dictionary<int, T> objs = new();
@@ -97,13 +97,5 @@ public class LoadAssetManager : B1.Singleton<LoadAssetManager>
 
 
 
-    Dictionary<AssetKey, LoadData<ObjectPoolBase>> m_DicWindow = new();
-    public async UniTask LoadWindowAsync()
-    {
-
-    }
-    public void UnLoadWindowAsync()
-    {
-
-    }
+    
 }

@@ -16,6 +16,7 @@ public class ChangeBloodData
 }
 public abstract class WorldObjectBaseData : PersonData
 {
+    public virtual string ObjectName { get; }
     protected WorldObjectBaseData(int f_index, int f_ChunkIndex) : base(f_index)
     {
         CurrentIndex = f_ChunkIndex;

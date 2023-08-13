@@ -16,6 +16,7 @@ public enum EGainView : ushort
     Collect,
     Hit,
     BeHit,
+    Interval,
     EnumCount,
 }
 public enum EGainType : ushort
@@ -25,13 +26,17 @@ public enum EGainType : ushort
     Launch1,
     Collect1,
 
+    Volccano1,
+    Volccano2,
+    Volccano3,
+
     EnumCount,
 }
 public interface IGainUtil
 {
     public static void InflictionGain(EGainType f_GainView, WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
     {
-        f_Target.AddGainAsync(f_GainView, f_Initiator);
+        f_Target.AddGainAsync(f_GainView, f_Initiator ?? MonsterManager.Ins.GodEntityData);
     }
 }
 public abstract class GainBaseData : Base

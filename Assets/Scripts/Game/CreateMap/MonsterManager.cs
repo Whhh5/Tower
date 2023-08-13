@@ -42,6 +42,8 @@ public class MonsterManager : MonoSingleton<MonsterManager>
     private Dictionary<int, Entity_SpawnPointMonsterData> MonsterSpawnPoint => WorldMapManager.Ins.MonsterSpawnPoint;
     private Dictionary<int, Entity_SpawnPointPlayerData> PlayerSpawnPoint => WorldMapManager.Ins.PlayerSpawnPoint;
     private int TargetIndex => WorldMapManager.Ins.HomeIndex;
+
+    public GodEntityData GodEntityData = new();
     // 初始化怪物生成点
     public void InitMonsterSpawnPoint()
     {
@@ -181,4 +183,23 @@ public class MonsterManager : MonoSingleton<MonsterManager>
     {
 
     }
+}
+
+
+public class GodEntityData : WorldObjectBaseData
+{
+    public GodEntityData() : base(0, -1)
+    {
+
+    }
+
+    public override string ObjectName => "上帝";
+
+    public override ELayer LayerMask => ELayer.All;
+
+    public override ELayer AttackLayerMask => ELayer.All;
+
+    public override AssetKey AssetPrefabID => AssetKey.None;
+
+    public override EWorldObjectType ObjectType => EWorldObjectType.EnumCount;
 }

@@ -96,6 +96,7 @@ public enum EWeatherEventType
 }
 public enum AssetKey
 {
+    None,
     Alp1,
     Alp2,
     Alp3,
@@ -227,6 +228,7 @@ public class WeatherInfoEventInfo
 }
 public class WeatherInfo
 {
+    public string Name = "";
     public string Describe = "";
     public List<WeatherInfoEventInfo> EventList;
     public EWeatherType WeatherType;
@@ -234,6 +236,7 @@ public class WeatherInfo
     {
         if (TableMgr.Ins.TryGetWeatherData(WeatherType, out var result))
         {
+            result.WeatherInfo = this;
             result.Initialization(f_DurationTime);
             return result;
         }
@@ -242,12 +245,14 @@ public class WeatherInfo
 }
 public class WeatherEventInfo
 {
+    public string Name = "";
     public string Describe = "";
     public EWeatherEventType WeatherEventType;
-    public WeaterEventBaseData CreateWeatherData(float f_DurationTime)
+    public WeatherEventBaseData CreateWeatherData(float f_DurationTime)
     {
         if (TableMgr.Ins.TryGetWeatherEventData(WeatherEventType, out var result))
         {
+            result.WeatherEventInfo = this;
             result.Initialization(f_DurationTime);
             return result;
         }
@@ -575,7 +580,8 @@ public class TableMgr : Singleton<TableMgr>
             EWeatherType.Typhoon,
             new()
             {
-                Describe = "风起云涌",
+                Name = "风起云涌",
+                Describe = "顺风而行",
                 WeatherType = EWeatherType.Typhoon,
                 EventList = new()
                 {
@@ -601,7 +607,8 @@ public class TableMgr : Singleton<TableMgr>
             EWeatherType.Volcano,
             new()
             {
-                Describe = "烈火燎原",
+                Name = "烈火燎原",
+                Describe = "燃烧大地上的生物",
                 WeatherType = EWeatherType.Volcano,
                 EventList = new()
                 {
@@ -627,7 +634,7 @@ public class TableMgr : Singleton<TableMgr>
             EWeatherType.Flood,
             new()
             {
-                Describe = "",
+                Name = "",
                 WeatherType = EWeatherType.Flood,
                 EventList = new()
                 {
@@ -661,6 +668,7 @@ public class TableMgr : Singleton<TableMgr>
         switch (f_Type)
         {
             case EWeatherType.Typhoon:
+                f_Result = new Weather_TyphoonData();
                 break;
             case EWeatherType.Volcano:
                 f_Result = new Weather_VolcanoData();
@@ -675,10 +683,38 @@ public class TableMgr : Singleton<TableMgr>
     private Dictionary<EWeatherEventType, WeatherEventInfo> m_WeatherEventInfo = new()
     {
         {
+            EWeatherEventType.Typhoon1,
+            new()
+            {
+                Name = "小风",
+                Describe = "微风",
+                WeatherEventType = EWeatherEventType.Typhoon1,
+            }
+        },
+        {
+            EWeatherEventType.Typhoon2,
+            new()
+            {
+                Name = "中风",
+                Describe = "是风",
+                WeatherEventType = EWeatherEventType.Typhoon2,
+            }
+        },
+        {
+            EWeatherEventType.Typhoon3,
+            new()
+            {
+                Name = "大风",
+                Describe = "狂风",
+                WeatherEventType = EWeatherEventType.Typhoon3,
+            }
+        },
+        {
             EWeatherEventType.Volcano1,
             new()
             {
-                Describe = "小火",
+                Name = "小火",
+                Describe = "微热",
                 WeatherEventType = EWeatherEventType.Volcano1,
             }
         },
@@ -686,7 +722,8 @@ public class TableMgr : Singleton<TableMgr>
             EWeatherEventType.Volcano2,
             new()
             {
-                Describe = "中火",
+                Name = "中火",
+                Describe = "狂热",
                 WeatherEventType = EWeatherEventType.Volcano2,
             }
         },
@@ -694,7 +731,8 @@ public class TableMgr : Singleton<TableMgr>
             EWeatherEventType.Volcano3,
             new()
             {
-                Describe = "大火",
+                Name = "大火",
+                Describe = "燃烧",
                 WeatherEventType = EWeatherEventType.Volcano3,
             }
         },
@@ -703,16 +741,19 @@ public class TableMgr : Singleton<TableMgr>
     {
         return m_WeatherEventInfo.TryGetValue(f_Type, out f_Result);
     }
-    public bool TryGetWeatherEventData(EWeatherEventType f_Type, out WeaterEventBaseData f_Result)
+    public bool TryGetWeatherEventData(EWeatherEventType f_Type, out WeatherEventBaseData f_Result)
     {
         f_Result = null;
         switch (f_Type)
         {
             case EWeatherEventType.Typhoon1:
+                f_Result = new WeatherEvent_Typhoon1Data();
                 break;
             case EWeatherEventType.Typhoon2:
+                f_Result = new WeatherEvent_Typhoon2Data();
                 break;
             case EWeatherEventType.Typhoon3:
+                f_Result = new WeatherEvent_Typhoon3Data();
                 break;
             case EWeatherEventType.Volcano1:
                 f_Result = new WeatherEvent_Volcano1Data();

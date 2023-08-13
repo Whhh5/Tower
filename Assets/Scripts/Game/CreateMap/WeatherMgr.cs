@@ -5,10 +5,14 @@ using B1;
 using UnityEngine.EventSystems;
 
 
-public abstract class WeaterEventBaseData
+public abstract class WeatherEventBaseData
 {
     public abstract EWeatherEventType WeatherEventType { get; }
+    public abstract EGainType GainType { get; }
     public float DurationTime { get; set; }
+
+    public WeatherEventInfo WeatherEventInfo;
+
 
     public void Initialization(float f_DurationTime)
     {
@@ -16,24 +20,57 @@ public abstract class WeaterEventBaseData
     }
     public virtual void StartExecute()
     {
-
+        if (ILoadPrefabAsync.TryGetEntityByType(EWorldObjectType.Preson, out var dic))
+        {
+            foreach (var item in dic)
+            {
+                if (item.Value is WorldObjectBaseData data)
+                {
+                    IGainUtil.InflictionGain(GainType, null, data);
+                }
+            }
+        }
     }
     public virtual void StopExecute()
     {
 
     }
 }
-public class WeatherEvent_Volcano1Data : WeaterEventBaseData
+public class WeatherEvent_Volcano1Data : WeatherEventBaseData
 {
     public override EWeatherEventType WeatherEventType => EWeatherEventType.Volcano1;
+
+    public override EGainType GainType => throw new System.NotImplementedException();
 }
-public class WeatherEvent_Volcano2Data : WeaterEventBaseData
+public class WeatherEvent_Volcano2Data : WeatherEventBaseData
 {
     public override EWeatherEventType WeatherEventType => EWeatherEventType.Volcano2;
+
+    public override EGainType GainType => throw new System.NotImplementedException();
 }
-public class WeatherEvent_Volcano3Data : WeaterEventBaseData
+public class WeatherEvent_Volcano3Data : WeatherEventBaseData
 {
     public override EWeatherEventType WeatherEventType => EWeatherEventType.Volcano3;
+
+    public override EGainType GainType => throw new System.NotImplementedException();
+}
+public class WeatherEvent_Typhoon1Data : WeatherEventBaseData
+{
+    public override EWeatherEventType WeatherEventType => EWeatherEventType.Typhoon1;
+
+    public override EGainType GainType => throw new System.NotImplementedException();
+}
+public class WeatherEvent_Typhoon2Data : WeatherEventBaseData
+{
+    public override EWeatherEventType WeatherEventType => EWeatherEventType.Typhoon2;
+
+    public override EGainType GainType => throw new System.NotImplementedException();
+}
+public class WeatherEvent_Typhoon3Data : WeatherEventBaseData
+{
+    public override EWeatherEventType WeatherEventType => EWeatherEventType.Typhoon3;
+
+    public override EGainType GainType => throw new System.NotImplementedException();
 }
 public interface IWeatherUtil
 {
@@ -50,6 +87,7 @@ public abstract class WeatherBaseData
 {
     public abstract EWeatherType WeatherType { get; }
     public float DurationTime { get; private set; }
+    public WeatherInfo WeatherInfo;
     public void Initialization(float f_DurationTime)
     {
         DurationTime = f_DurationTime;
@@ -66,6 +104,10 @@ public abstract class WeatherBaseData
 public class Weather_VolcanoData : WeatherBaseData
 {
     public override EWeatherType WeatherType => EWeatherType.Volcano;
+}
+public class Weather_TyphoonData : WeatherBaseData
+{
+    public override EWeatherType WeatherType => EWeatherType.Typhoon;
 }
 public class WeatherUpdateEventInfo
 {
@@ -131,13 +173,35 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
         var updateInfo = new WeatherUpdateInfo()
         {
             WeatherType = EWeatherType.Volcano,
-            DurationTime = 60.0f,
+            DurationTime = 40,
             EventList = new(""),
         };
         updateInfo.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano1, DurationTime = 10.0f });
         updateInfo.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano3, DurationTime = 6.0f });
         updateInfo.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano2, DurationTime = 20.0f });
         m_CurWeatherSystemList.Push(updateInfo);
+        var updateInfo2 = new WeatherUpdateInfo()
+        {
+            WeatherType = EWeatherType.Typhoon,
+            DurationTime = 22,
+            EventList = new(""),
+        };
+        updateInfo2.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Typhoon1, DurationTime = 5.0f });
+        updateInfo2.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Typhoon3, DurationTime = 6.0f });
+        updateInfo2.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Typhoon2, DurationTime = 10.0f });
+        m_CurWeatherSystemList.Push(updateInfo2);
+        var updateInfo3 = new WeatherUpdateInfo()
+        {
+            WeatherType = EWeatherType.Volcano,
+            DurationTime = 30,
+            EventList = new(""),
+        };
+        updateInfo3.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano1, DurationTime = 3 });
+        updateInfo3.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano3, DurationTime = 5 });
+        updateInfo3.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano2, DurationTime = 10 });
+
+
+        m_CurWeatherSystemList.Push(updateInfo3);
 
         GTools.LifecycleMgr.AddUpdate(this);
     }
@@ -147,8 +211,9 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
         m_TimeDelta = Time.time - m_LasteUpdateTime;
 
         // 天气刷新
-        if (m_WeatherEndTime == 0 || m_WeatherEndTime > Time.time)
+        if (m_WeatherEndTime == 0 || m_WeatherEndTime < Time.time)
         {
+            m_CurWeatherResidueTime = 0;
             if (ChangeWeatherSystem(out var weatherInfo))
             {
                 if (CurWeatherData != null)
@@ -167,8 +232,9 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
             m_CurWeatherResidueTime -= m_TimeDelta;
         }
         // 事件刷新
-        if (m_WeatherEventEndTime == 0 || m_WeatherEventEndTime > Time.time)
+        if (m_WeatherEventEndTime == 0 || m_WeatherEventEndTime < Time.time)
         {
+            m_CurWeatherEventResidueTime = 0;
             if (ChangeWeatherEvent(out var value))
             {
                 if (CurEventData != null)
@@ -225,7 +291,7 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
     private float m_WeatherEventTime = 0;
     private float m_WeatherEventEndTime = 0;
     private ListStack<WeatherUpdateEventInfo> m_EventList = new("天气事件", 10);
-    public WeaterEventBaseData CurEventData = null;
+    public WeatherEventBaseData CurEventData = null;
     public WeatherUpdateEventInfo CurEventInfo = null;
     private void InitCurEventData()
     {
@@ -234,7 +300,7 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
         m_WeatherEventEndTime = 0;
         m_CurWeatherEventResidueTime = 0;
     }
-    public bool ChangeWeatherEvent(out WeaterEventBaseData f_EventInfo)
+    public bool ChangeWeatherEvent(out WeatherEventBaseData f_EventInfo)
     {
         f_EventInfo = null;
         if (m_EventList.TryPop(out var eventInfo) && eventInfo.WeatherEventInfo != null)
