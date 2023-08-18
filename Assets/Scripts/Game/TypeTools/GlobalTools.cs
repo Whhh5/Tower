@@ -111,7 +111,14 @@ public enum ELayer : int
     Enemy = 1 << 7,
     Player = 1 << 8,
     FlyingProp = 1 << 9,
+    Tower = 1 << 10,
     All = int.MaxValue,
+}
+public enum ETowerStatus
+{
+    Start,
+    Stop,
+    Destriy,
 }
 
 #region 方法返回值结果

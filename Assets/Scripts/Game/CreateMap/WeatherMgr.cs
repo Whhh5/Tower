@@ -18,41 +18,24 @@ public abstract class WeatherEventBaseData
     {
         DurationTime = f_DurationTime;
     }
-    public virtual void StartExecute()
-    {
-        if (ILoadPrefabAsync.TryGetEntityByType(EWorldObjectType.Preson, out var dic))
-        {
-            foreach (var item in dic)
-            {
-                if (item.Value is WorldObjectBaseData data)
-                {
-                    IGainUtil.InflictionGain(GainType, null, data);
-                }
-            }
-        }
-    }
-    public virtual void StopExecute()
-    {
-
-    }
 }
 public class WeatherEvent_Volcano1Data : WeatherEventBaseData
 {
     public override EWeatherEventType WeatherEventType => EWeatherEventType.Volcano1;
 
-    public override EGainType GainType => throw new System.NotImplementedException();
+    public override EGainType GainType => EGainType.Volccano1;
 }
 public class WeatherEvent_Volcano2Data : WeatherEventBaseData
 {
     public override EWeatherEventType WeatherEventType => EWeatherEventType.Volcano2;
 
-    public override EGainType GainType => throw new System.NotImplementedException();
+    public override EGainType GainType => EGainType.Volccano2;
 }
 public class WeatherEvent_Volcano3Data : WeatherEventBaseData
 {
     public override EWeatherEventType WeatherEventType => EWeatherEventType.Volcano3;
 
-    public override EGainType GainType => throw new System.NotImplementedException();
+    public override EGainType GainType => EGainType.Volccano3;
 }
 public class WeatherEvent_Typhoon1Data : WeatherEventBaseData
 {
@@ -173,12 +156,12 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
         var updateInfo = new WeatherUpdateInfo()
         {
             WeatherType = EWeatherType.Volcano,
-            DurationTime = 40,
+            DurationTime = 180.0f,
             EventList = new(""),
         };
-        updateInfo.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano1, DurationTime = 10.0f });
-        updateInfo.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano3, DurationTime = 6.0f });
-        updateInfo.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano2, DurationTime = 20.0f });
+        updateInfo.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano1, DurationTime = 30.0f });
+        updateInfo.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano3, DurationTime = 30.0f });
+        updateInfo.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano2, DurationTime = 30.0f });
         m_CurWeatherSystemList.Push(updateInfo);
         var updateInfo2 = new WeatherUpdateInfo()
         {
@@ -186,22 +169,30 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
             DurationTime = 22,
             EventList = new(""),
         };
-        updateInfo2.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Typhoon1, DurationTime = 5.0f });
-        updateInfo2.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Typhoon3, DurationTime = 6.0f });
-        updateInfo2.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Typhoon2, DurationTime = 10.0f });
+        updateInfo2.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano1, DurationTime = 30.0f });
+        updateInfo2.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano3, DurationTime = 30.0f });
+        updateInfo2.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano2, DurationTime = 30.0f });
         m_CurWeatherSystemList.Push(updateInfo2);
         var updateInfo3 = new WeatherUpdateInfo()
         {
             WeatherType = EWeatherType.Volcano,
-            DurationTime = 30,
+            DurationTime = 92.0f,
             EventList = new(""),
         };
-        updateInfo3.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano1, DurationTime = 3 });
-        updateInfo3.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano3, DurationTime = 5 });
-        updateInfo3.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano2, DurationTime = 10 });
-
-
+        updateInfo3.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano1, DurationTime = 30.0f });
+        updateInfo3.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano3, DurationTime = 30.0f });
+        updateInfo3.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano2, DurationTime = 30.0f });
         m_CurWeatherSystemList.Push(updateInfo3);
+        var updateInfo4 = new WeatherUpdateInfo()
+        {
+            WeatherType = EWeatherType.Volcano,
+            DurationTime = 92.0f,
+            EventList = new(""),
+        };
+        updateInfo4.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano1, DurationTime = 30.0f });
+        updateInfo4.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano3, DurationTime = 30.0f });
+        updateInfo4.EventList.Push(new WeatherUpdateEventInfo() { EventType = EWeatherEventType.Volcano2, DurationTime = 30.0f });
+        m_CurWeatherSystemList.Push(updateInfo4);
 
         GTools.LifecycleMgr.AddUpdate(this);
     }
@@ -239,10 +230,10 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
             {
                 if (CurEventData != null)
                 {
-                    CurEventData.StopExecute();
+                    StopExecute();
                 }
-                value.StartExecute();
                 CurEventData = value;
+                StartExecute();
 
                 m_CurWeatherWindow.UpdateWeatherEvent();
             }
@@ -315,4 +306,33 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
         return false;
     }
 
+
+    // ∂‘Õ‚
+    public void InflictionGain(WorldObjectBaseData f_Recipient)
+    {
+        if (CurEventData != null)
+        {
+            IGainUtil.InflictionGain(CurEventData.GainType, null, f_Recipient);
+        }
+    }
+    public virtual void StartExecute()
+    {
+        if (ILoadPrefabAsync.TryGetEntityByType<WorldObjectBaseData>(EWorldObjectType.Preson, out var dic))
+        {
+            foreach (var item in dic)
+            {
+                InflictionGain(item.Value);
+            }
+        }
+    }
+    public virtual void StopExecute()
+    {
+        if (ILoadPrefabAsync.TryGetEntityByType<WorldObjectBaseData>(EWorldObjectType.Preson, out var dic))
+        {
+            foreach (var item in dic)
+            {
+                IGainUtil.RemoteGain(CurEventData.GainType, item.Value);
+            }
+        }
+    }
 }

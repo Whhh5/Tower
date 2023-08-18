@@ -21,6 +21,7 @@ public abstract class WorldObjectBaseData : PersonData
     {
         CurrentIndex = f_ChunkIndex;
         CurrentMapKey = WorldMapManager.Ins.CurrentMapKey;
+        WeatherMgr.Ins.InflictionGain(this);
     }
 
     public int CurrentMapKey { get; private set; }
@@ -60,6 +61,7 @@ public abstract class WorldObjectBaseData : PersonData
     {
         base.OnUpdate();
         UpdateBuff();
+        UpdateGain();
     }
     //--
     //===============================----------------------========================================
@@ -108,9 +110,9 @@ public abstract class WorldObjectBaseData : PersonData
     //===============================----------------------========================================
     //--
     public int CurrentBlood { get; private set; } = 400;
-    public int MaxBlood { get; private set; } = 523;
+    public virtual int MaxBlood { get; private set; } = 523;
     public int CurrentMagic { get; protected set; } = 300;
-    public int MaxMagic { get; private set; } = 653;
+    public virtual int MaxMagic { get; private set; } = 653;
     public float MagicPercent => (float)CurrentMagic / MaxMagic;
     public virtual int ChangeBlood(ChangeBloodData f_Data)
     {
@@ -196,7 +198,7 @@ public abstract class WorldObjectBaseData : PersonData
     //===============================----------------------========================================
     //--
     // Gain
-    protected Dictionary<EGainView, Dictionary<EGainType, GainBaseData>> m_CurGainList = new();
+    protected Dictionary<EGainView, Dictionary<EGainType, EntityGainBaseData>> m_CurGainList = new();
     // ´¥·¢ÔöÒæ
     public void ExecuteGainAsync(EGainView f_GainType)
     {
@@ -204,12 +206,12 @@ public abstract class WorldObjectBaseData : PersonData
         {
             foreach (var item in list)
             {
-                item.Value.StartExecute();
+                item.Value.Execute();
             }
         }
     }
 
-    public void AddGainAsync(EGainType f_GainType, WorldObjectBaseData f_Initiator)
+    public void AddGain(EGainType f_GainType, WorldObjectBaseData f_Initiator)
     {
         if (TableMgr.Ins.TryGetGainInfo(f_GainType, out var gainInfo))
         {
@@ -225,9 +227,31 @@ public abstract class WorldObjectBaseData : PersonData
             else
             {
                 var gainData = gainInfo.CreateGain(f_Initiator, this);
+                gainData.StartExecute();
                 list.Add(f_GainType, gainData);
             }
         }
+    }
+    public void RemoveGain(EGainType f_GainType)
+    {
+        if (!TableMgr.Ins.TryGetGainInfo(f_GainType, out var gainInfo))
+        {
+            return;
+        }
+        if (!m_CurGainList.TryGetValue(gainInfo.GainView, out var list))
+        {
+            return;
+        }
+        if (list.TryGetValue(f_GainType, out var gainData))
+        {
+            gainData.StopExecute();
+
+        }
+    }
+
+    public void UpdateGain()
+    {
+
     }
 }
 

@@ -154,12 +154,12 @@ public abstract class Person_EnemyData : WorldObjectBaseData
     }
     // -- 
     // ----------------------------------===============----------------------------------
-    // ------------------------------------- �ƶ�ƪ
+    // ------------------------------------- 移动篇
     // ----------------------------------===============----------------------------------
     // -- 
-    // Ŀ���
+    // 移动到目标点
     private Vector3 m_MoveToTarget = Vector3.zero;
-    // һ���ƶ�����
+    // 移动速度
     private float m_MoveSpeed = 1;
 
     public Func<int, bool> GetPathCondition
@@ -194,7 +194,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
         }
         return false;
     }
-    // ���ÿ�ʼ����
+    // 设置开始索引
     public void SetStartIndex(int f_StartIndex)
     {
         StartIndex = f_StartIndex;
@@ -204,7 +204,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
         m_MoveToTarget = point;
         SetPosition(point);
     }
-    // ���µ�ǰ·��
+    // 上一个目标地图快索引
     private int m_LastTargetIndex = -1;
     private float m_LastTime = 0;
     public void UpdatePathPoint(int f_TargetIndex)
@@ -217,7 +217,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
 
         }
     }
-    // ��ȡ��һ��·����
+    // 移动到下一个目标点
     public bool NextPathPoint(out Entity_Chunk1Data f_PathElement)
     {
         f_PathElement = null;
@@ -241,7 +241,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
 
         return false;
     }
-    // �ƶ�����һ����
+    // 尝试移动到下一个目标点
     public bool MoveNext(bool f_Force = false)
     {
         if (NextPathPoint(out var chunkData))
@@ -271,29 +271,29 @@ public abstract class Person_EnemyData : WorldObjectBaseData
 
     // -- 
     // ----------------------------------===============----------------------------------
-    // ------------------------------------- ����ƪ
+    // ------------------------------------- 攻击篇
     // ----------------------------------===============----------------------------------
     // -- 
-    // ������Χ
+    // 攻击范围
     protected virtual int AtkRange => 1;
     protected virtual float AtkSpeed => 1;
-    // ��ǰ����Ŀ��
+    // 当前攻击目标
     protected WorldObjectBaseData m_CurTarget = null;
-    // ��ǰ��������ֵ ��λ 1
+    // 当前技能需要消耗的能量值
     protected float m_CurrectSkillEnergy = 0;
-    // �����������ֵ
+    // 最大技能能量值
     protected float m_MaxSkillEnergy = 3.0f;
-    // ����������������
+    // 技能消耗的能量值
     protected float m_SkillEnergyExpend = 1.0f;
-    // �ϴμ���ʹ��ʱ��
+    // 上一次使用技能的时间
     protected float m_LastSkillTime = 0;
-    // ����ʹ��ʱ����
+    // 技能使用时间间隔
     protected float m_SkillTimeInterval = 2.0f;
-    // �ϴι���ʹ��ʱ��
+    // 上一次攻击的时间
     protected float m_LastAttackTime = 0;
-    // ����ʱ����
+    // 攻击间隔
     protected virtual float AttackTimeInterval => 0.5f;
-    // ��⹥��
+    // 尝试攻击目标
     public bool TryGetAttackTarget()
     {
         WorldObjectBaseData target = null;

@@ -30,104 +30,119 @@ public enum EGainType : ushort
     Volccano2,
     Volccano3,
 
+
+
     EnumCount,
 }
 public interface IGainUtil
 {
-    public static void InflictionGain(EGainType f_GainView, WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
+    public static void InflictionGain(EGainType f_GainView, WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Recipient)
     {
-        f_Target.AddGainAsync(f_GainView, f_Initiator ?? MonsterManager.Ins.GodEntityData);
+        f_Recipient.AddGain(f_GainView, f_Initiator ?? MonsterManager.Ins.GodEntityData);
+    }
+    public static void RemoteGain(EGainType f_GainView, WorldObjectBaseData f_Recipient)
+    {
+        f_Recipient.RemoveGain(f_GainView);
     }
 }
-public abstract class GainBaseData : Base
+public abstract class EntityGainBaseData : UnityObjectData
 {
-    public abstract EGainType GainView { get; }
-    public abstract EGainView GainType { get; }
-    protected ushort m_Level;
-    protected ushort m_TierCount;
+    protected EntityGainBaseData() : base(0)
+    {
+    }
+    public abstract EGainType GainType { get; }
+    public abstract EGainView GainView { get; }
     protected WorldObjectBaseData m_Recipient = null;
     protected WorldObjectBaseData m_Initiator = null;
     protected int m_Probability = 0;
+    protected abstract float DurationTime { get; }
+    protected virtual float IntervalTime { get; } = 1.0f;
 
+    public override EWorldObjectType ObjectType => EWorldObjectType.Effect;
+
+    protected float m_CurResidueTime = 0;
+    protected float m_EndTime = 0;
+
+    private bool m_IsExecute = false;
+    private float m_LastExecuteTime = 0;
     public virtual void Initialization(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Recipient)
     {
         m_Initiator = f_Initiator;
         m_Recipient = f_Recipient;
-        m_Level = 1;
-        m_TierCount = 1;
         m_Probability = 30;
+        Reset();
     }
     public virtual void StartExecute()
     {
-        var randomNum = GTools.MathfMgr.GetRandomValue(0, 100);
-        if (randomNum <= m_Probability)
-        {
-            Execute(randomNum);
-        }
+        m_IsExecute = true;
+        GTools.LifecycleMgr.AddUpdate(this);
+        GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(this));
     }
 
     public virtual void StopExecute()
     {
-        Log("StopExecute");
+        ILoadPrefabAsync.UnLoad(this);
+        m_IsExecute = false;
+        GTools.LifecycleMgr.RemoveUpdate(this);
     }
 
-    public void AddTier()
-    {
-        m_TierCount++;
-    }
-    public void RediusTier()
-    {
-        m_TierCount--;
-    }
-    public void SetLevel(ushort f_Level)
-    {
-        m_Level = f_Level;
-    }
     public void Reset()
     {
-
+        m_CurResidueTime = DurationTime;
+        m_EndTime = Time.time + DurationTime;
     }
 
-    public abstract void Execute(int f_CurProbability);
+    public void Execute()
+    {
+        if (!m_IsExecute)
+        {
+            Log("ÔöÒæÎ´Ö´ÐÐ");
+            return;
+        }
+        var randomNum = GTools.MathfMgr.GetRandomValue(0, 100);
+        if (randomNum <= m_Probability)
+        {
+            ExecuteContext(randomNum);
+        }
+    }
+    public abstract void ExecuteContext(int f_CurProbability);
+    public abstract Vector3 GetPosiion();
+
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- Update Æª
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+        if (DurationTime > 0 && Time.time > m_EndTime)
+        {
+            StopExecute();
+        }
+        switch (GainView)
+        {
+            case EGainView.Interval:
+                {
+                    if (Time.time - m_LastExecuteTime > IntervalTime)
+                    {
+                        Execute();
+                        m_LastExecuteTime = Time.time;
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        SetPosition(GetPosiion());
+    }
 }
 
-public class Gain_Launch1 : GainBaseData
+public abstract class EntityGainBase: ObjectPoolBase
 {
-    public override EGainType GainView => EGainType.Launch1;
-    public override EGainView GainType => EGainView.Launch;
 
-    public override void Initialization(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Recipient)
-    {
-        base.Initialization(f_Initiator, f_Recipient);
-        m_Probability = 30;
-    }
-
-    public override async void Execute(int f_CurProbability)
-    {
-        var wepon = new Emitter_GuidedMissileBaseCommonData(0, m_Recipient);
-        GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(wepon));
-        await wepon.StartExecute();
-        await wepon.StopExecute();
-        ILoadPrefabAsync.UnLoad(wepon);
-    }
-
-
-}
-public class Gain_Collect1 : GainBaseData
-{
-    public override EGainType GainView => EGainType.Collect1;
-    public override EGainView GainType => EGainView.Collect;
-
-    public override void Initialization(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Recipient)
-    {
-        base.Initialization(f_Initiator, f_Recipient);
-        m_Probability = 100;
-    }
-
-    public override void Execute(int f_CurProbability)
-    {
-
-    }
 }
 
 

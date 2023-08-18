@@ -118,7 +118,7 @@ public class PathElementData
     }
 }
 
-public class WorldMapManager : MonoSingleton<WorldMapManager>
+public class WorldMapManager : B1.Singleton<WorldMapManager>
 {
     //                                ------------------------------------------------
     //                                --------------------Catalogue 参考只读数据
@@ -151,10 +151,10 @@ public class WorldMapManager : MonoSingleton<WorldMapManager>
     private Vector4 ChunkSizeRandom = new Vector4(1, 2, 1, 2);
 
     [SerializeField] // 地图快行列
-    private Vector2Int m_RowCol = Vector2Int.zero;
+    private Vector2Int m_RowCol = new(10, 20);
 
     [SerializeField] // 地图快间隔
-    public Vector2 m_Interval = Vector2.zero;
+    public Vector2 m_Interval = new(0.2f, 0.2f);
 
     // 存放所有的快
     private Dictionary<int, Entity_Chunk1Data> m_DicChunk = new();
@@ -162,14 +162,14 @@ public class WorldMapManager : MonoSingleton<WorldMapManager>
     // 地图快总数
     public int ChunkCount => m_DicChunk.Count;
 
-    protected override void Awake()
-    {
-        base.Awake();
+    //protected override void Awake()
+    //{
+    //    base.Awake();
 
 
-        m_MapTexture = new Texture2D(m_WorldMapSize.x * m_UnityUnitToPixelRatio,
-            m_WorldMapSize.y * m_UnityUnitToPixelRatio, TextureFormat.RGBA64, false, true);
-    }
+    //    m_MapTexture = new Texture2D(m_WorldMapSize.x * m_UnityUnitToPixelRatio,
+    //        m_WorldMapSize.y * m_UnityUnitToPixelRatio, TextureFormat.RGBA64, false, true);
+    //}
 
     // 开始异步清除所有的块
     private async UniTask ClearAllChunkAsync()

@@ -25,6 +25,11 @@ public enum EWorldObjectType : int
 
     EnumCount = 6,
 }
+public enum ETowerType
+{
+    Light,
+    Dark,
+}
 public enum EHeroCradType
 {
 
@@ -92,6 +97,10 @@ public enum EWeatherEventType
     Flood1,
     Flood2,
     Flood3,
+    // 冰
+    Ice1,
+    Ice2,
+    Ice3,
     EnumCount,
 }
 public enum AssetKey
@@ -131,8 +140,20 @@ public enum AssetKey
     Effect_Buff_Poison,
 
     // buff图标路径
-    Buff_Poison,
-    Buff_AddBlood,
+    BuffIcon_Poison,
+    BuffIcon_AddBlood,
+
+    // 增益
+    Entity_Gain_Laubch1,
+    Entity_Gain_Collect1,
+    Effect_Gain_Volccano1,
+    Effect_Gain_Volccano2,
+    Effect_Gain_Volccano3,
+
+    // 防御塔
+    Entity_Tower_Light1,
+    Entity_Tower_Dark1,
+
 }
 public class HeroCradInfo
 {
@@ -313,9 +334,14 @@ public class TableMgr : Singleton<TableMgr>
         { AssetKey.Entity_Player_Hero3, "Prefabs/WorldObject/Entity_Player_Hero3" },
         { AssetKey.Entity_Player_Hero4, "Prefabs/WorldObject/Entity_Player_Hero4" },
 
+
+        // 防御塔
+        { AssetKey.Entity_Tower_Light1, "Prefabs/WorldObject/Entity_Tower_Light1" },
+        { AssetKey.Entity_Tower_Dark1, "Prefabs/WorldObject/Entity_Tower_Dark1" },
+
+        // 武器
         { AssetKey.EmitterElement_GuidedMissile, "Prefabs/WorldObject/EmitterElement_GuidedMissile" },
         { AssetKey.EmitterElement_SwordLow, "Prefabs/WorldObject/EmitterElement_SwordLow" },
-
         { AssetKey.Emitter_SwordLow, "Prefabs/WorldObject/Emitter_SwordLow" },
         { AssetKey.Emitter_SwordHeight, "Prefabs/WorldObject/Emitter_SwordHeight" },
         { AssetKey.Emitter_GuidedMissileBaseCommon, "Prefabs/WorldObject/Emitter_GuidedMissileBaseCommon" },
@@ -329,10 +355,15 @@ public class TableMgr : Singleton<TableMgr>
         // 特效
         { AssetKey.Effect_Buff_Poison, "Prefabs/Effects/Effect_Buff_Poison" },
         { AssetKey.Effect_Buff_AddBlood, "Prefabs/Effects/Effect_Buff_AddBlood" },
+        { AssetKey.Entity_Gain_Laubch1, "Prefabs/Effects/Entity_Gain_Laubch1" },
+        { AssetKey.Entity_Gain_Collect1, "Prefabs/Effects/Entity_Gain_Collect1" },
+        { AssetKey.Effect_Gain_Volccano1, "Prefabs/Effects/Effect_Gain_Volccano1" },
+        { AssetKey.Effect_Gain_Volccano2, "Prefabs/Effects/Effect_Gain_Volccano2" },
+        { AssetKey.Effect_Gain_Volccano3, "Prefabs/Effects/Effect_Gain_Volccano3" },
 
         // icon 
-        { AssetKey.Buff_Poison, $"{BuffIconParentPath}/Poison" },
-        { AssetKey.Buff_AddBlood, $"{BuffIconParentPath}/AddBlood" },
+        { AssetKey.BuffIcon_Poison, $"{BuffIconParentPath}/Poison" },
+        { AssetKey.BuffIcon_AddBlood, $"{BuffIconParentPath}/AddBlood" },
     };
     public bool GetAssetPath(AssetKey f_Key, out string f_Result)
     {
@@ -806,7 +837,7 @@ public class TableMgr : Singleton<TableMgr>
                 BuffType = EBuffType.AddBlood,
                 Desc = "持续回血",
                 Name = "治疗",
-                IconPath = AssetKey.Buff_AddBlood
+                IconPath = AssetKey.BuffIcon_AddBlood
             }
         },
         {
@@ -817,7 +848,7 @@ public class TableMgr : Singleton<TableMgr>
                 BuffType = EBuffType.Poison,
                 Desc = "持续减血",
                 Name = "中毒",
-                IconPath = AssetKey.Buff_Poison
+                IconPath = AssetKey.BuffIcon_Poison
             }
         },
     };
@@ -858,7 +889,7 @@ public class TableMgr : Singleton<TableMgr>
     {
         public EGainView GainView;
         public EGainType GainType;
-        public GainBaseData CreateGain(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
+        public EntityGainBaseData CreateGain(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
         {
             if (Ins.TryGetGainData(GainType, out var result))
             {
@@ -878,12 +909,36 @@ public class TableMgr : Singleton<TableMgr>
                 GainView = EGainView.Launch,
             }
         },
+        {
+            EGainType.Volccano1,
+            new()
+            {
+                GainType = EGainType.Volccano1,
+                GainView = EGainView.Interval,
+            }
+        },
+        {
+            EGainType.Volccano2,
+            new()
+            {
+                GainType = EGainType.Volccano2,
+                GainView = EGainView.Interval,
+            }
+        },
+        {
+            EGainType.Volccano3,
+            new()
+            {
+                GainType = EGainType.Volccano3,
+                GainView = EGainView.Interval,
+            }
+        },
     };
     public bool TryGetGainInfo(EGainType f_GainType, out GainInfo f_GainInfo)
     {
         return m_GainInfo.TryGetValue(f_GainType, out f_GainInfo);
     }
-    public bool TryGetGainData(EGainType f_GainType, out GainBaseData f_Result)
+    public bool TryGetGainData(EGainType f_GainType, out EntityGainBaseData f_Result)
     {
         f_Result = null;
         switch (f_GainType)
@@ -891,10 +946,19 @@ public class TableMgr : Singleton<TableMgr>
             case EGainType.None:
                 break;
             case EGainType.Launch1:
-                f_Result = new Gain_Launch1();
+                f_Result = new Entity_Gain_Laubch1Data();
                 break;
             case EGainType.Collect1:
-                f_Result = new Gain_Collect1();
+                f_Result = new Entity_Gain_Collect1Data();
+                break;
+            case EGainType.Volccano1:
+                f_Result = new Effect_Gain_Volccano1Data();
+                break;
+            case EGainType.Volccano2:
+                f_Result = new Effect_Gain_Volccano2Data();
+                break;
+            case EGainType.Volccano3:
+                f_Result = new Effect_Gain_Volccano3Data();
                 break;
             case EGainType.EnumCount:
                 break;

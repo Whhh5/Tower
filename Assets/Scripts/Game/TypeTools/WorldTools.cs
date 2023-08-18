@@ -163,7 +163,8 @@ public interface ILoadPrefabAsync
         f_Target.LoadResult = LoadAsyncResult.UnLoad;
 
     }
-    public static bool TryGetEntityByType(EWorldObjectType f_ObjectType, out Dictionary<int, UnityObjectData> f_Result)
+    public static bool TryGetEntityByType<T>(EWorldObjectType f_ObjectType, out Dictionary<int, T> f_Result)
+        where T: UnityObjectData
     {
         f_Result = new();
         foreach (var item in m_DicEntity)
@@ -172,7 +173,10 @@ public interface ILoadPrefabAsync
             {
                 foreach (var entity in item.Value)
                 {
-                    f_Result.Add(entity.Key, entity.Value);
+                    if (entity.Value is T target)
+                    {
+                        f_Result.Add(entity.Key, target);
+                    }
                 }
             }
         }
