@@ -121,19 +121,17 @@ public class PathElementData
 public class WorldMapManager : B1.Singleton<WorldMapManager>
 {
     //                                ------------------------------------------------
-    //                                --------------------Catalogue 参考只读数据
+    //                                --------------------Catalogue 生命周期函数
     //                                ------------------------------------------------
-
-
-    //                                ------------------------------------------------
-    //                                --------------------Catalogue 可视化的地图纹理
-    //                                ------------------------------------------------
-    private Texture2D m_MapTexture = null;
-
-    private void ReadPixel(Vector2Int f_Pos, Vector2Int f_Size)
+    public override void Awake()
     {
-        var startPos = f_Pos - f_Size / 2;
+        base.Awake();
+
+        CreateChunkTest();
+        InitMonsterSpawnPointData();
+        CreateRoadExtend();
     }
+
 
     //                                ------------------------------------------------
     //                                --------------------Catalogue 地图块相关

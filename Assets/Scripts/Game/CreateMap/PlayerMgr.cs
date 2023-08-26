@@ -7,7 +7,7 @@ public class PlayerData
 {
 
 }
-public class PlayerMgr : Singleton<PlayerMgr>, IInitialization, IUpdateBase
+public class PlayerMgr : Singleton<PlayerMgr>, IUpdateBase
 {
 
     //--
@@ -17,10 +17,16 @@ public class PlayerMgr : Singleton<PlayerMgr>, IInitialization, IUpdateBase
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
-    public override void Initialization()
+    public override void Awake()
     {
-        InitGold();
+        base.Awake();
         InitPlayerData();
+    }
+    public override void Start()
+    {
+        base.Start();
+
+        InitGold();
     }
 
     //--

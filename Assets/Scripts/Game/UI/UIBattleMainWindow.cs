@@ -16,14 +16,14 @@ public class UIBattleMainWindow : MonoBehaviour
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
-    
+
 
     private void Awake()
     {
         m_CardViewItem.gameObject.SetActive(false);
         m_ItemCard.gameObject.SetActive(false);
         m_ItemHero.gameObject.SetActive(false);
-        for (int i = 0; i < HeroCardPoolMgr.Ins.CardGroupCount; i++)
+        for (int i = 0; i < HeroIncubatorPoolMgr.Ins.CardGroupCount; i++)
         {
             var obj = GameObject.Instantiate(m_CardViewItem, m_CardViewItem.parent);
             m_ItemList.Add(obj);
@@ -134,30 +134,30 @@ public class UIBattleMainWindow : MonoBehaviour
         {
             item.gameObject.SetActive(false);
         }
-        if (HeroCardPoolMgr.Ins.TryGetGroupCrad(out var list))
+        if (HeroIncubatorPoolMgr.Ins.TryGetIncybatorGroup(out var list))
         {
             for (int i = 0; i < list.Count; i++)
             {
                 var data = list[i];
                 var item = m_ItemList[i];
-                if (TableMgr.Ins.TryGetHeroCradInfo(data, out var info))
+                if (GTools.TableMgr.TryGetHeroQualityInfo(data, out var info))
                 {
                     m_Content.GetComponent<HorizontalLayoutGroup>().enabled = true;
                     m_Content.GetComponent<ContentSizeFitter>().enabled = true;
                     item.gameObject.SetActive(true);
-                    item.Find("Txt_Name").GetComponent<TextMeshProUGUI>().text = info.Name;
-                    item.Find("Img_Quality").GetComponent<Image>().color = info.QualityLevelInfo.Color;
-                    item.Find("Tex_Expenditure").GetComponent<TextMeshProUGUI>().text = info.QualityLevelInfo.Expenditure.ToString();
+                    item.Find("Txt_Name").GetComponent<TextMeshProUGUI>().text = $"{(int)data}º∂∑ıªØ∆˜";
+                    item.Find("Img_Quality").GetComponent<Image>().color = info.Color;
+                    item.Find("Tex_Expenditure").GetComponent<TextMeshProUGUI>().text = info.Expenditure.ToString();
                     var btn = item.Find("Btn_Button").GetComponent<Button>();
                     btn.onClick.RemoveAllListeners();
                     btn.onClick.AddListener(() =>
                     {
                         m_Content.GetComponent<HorizontalLayoutGroup>().enabled = false;
                         m_Content.GetComponent<ContentSizeFitter>().enabled = false;
-                        if (HeroCardPoolMgr.Ins.BuyCard(data))
+                        if (HeroIncubatorPoolMgr.Ins.BuyIncubator(data))
                         {
                             item.gameObject.SetActive(false);
-                            AddHeroDebris(data);
+                            AddIncubaorDebris(data);
                         }
                         Debug.Log(data);
                     });
@@ -180,51 +180,21 @@ public class UIBattleMainWindow : MonoBehaviour
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
-    class CradListData
+    class IncubatorDebrisData
     {
-        public CradListData(EHeroCradType f_HeroCradType)
+        public IncubatorDebrisData(EHeroQualityLevel f_QualityLevel, Transform f_Item)
         {
-            HeroCradType = f_HeroCradType;
-            Count = 0;
+            QualityLevel = f_QualityLevel;
+            Load(f_Item);
         }
-        public EHeroCradType HeroCradType;
-        public int Count { get; private set; }
-        public EHeroCradStarLevel StarLevel()
-        {
-            EHeroCradStarLevel result = EHeroCradStarLevel.Level1;
-            var max = (int)EHeroCradStarLevel.EnumCount;
-            for (int i = max - 1; i > 0; i--)
-            {
-                if (Count >= Mathf.Pow(3, i - 1))
-                {
-                    result = (EHeroCradStarLevel)i;
-                    break;
-                }
-            }
-            return result;
-        }
-        public HeroCradInfo HeroCradInfo => GTools.TableMgr.TryGetHeroCradInfo(HeroCradType, out var info) ? info : null;
-        public void SetCount(int f_Count)
-        {
-            var curLevel = StarLevel();
-            Count = f_Count;
-            SetCount();
-            if (curLevel != StarLevel())
-            {
-                SetStarLevel();
-            }
-        }
-
         private Transform m_Item = null;
-        public void Load(Transform f_Item)
+        public EHeroQualityLevel QualityLevel;
+
+        private void Load(Transform f_Item)
         {
             UnLoad();
             m_Item = GameObject.Instantiate(f_Item, f_Item.parent);
             m_Item.gameObject.SetActive(true);
-            SetName();
-            SetCount();
-            SetStarLevel();
-            SetQuality();
         }
         public void UnLoad()
         {
@@ -234,33 +204,25 @@ public class UIBattleMainWindow : MonoBehaviour
                 m_Item = null;
             }
         }
-        private void SetName()
+        public void SetName(string f_Name)
         {
             var target = m_Item.Find("Txt_Name").GetComponent<TextMeshProUGUI>();
-            target.text = $"°¡{HeroCradInfo.Name}";
+            target.text = $"°¡{f_Name}";
         }
-        private void SetCount()
-        {
-            if (m_Item != null)
-            {
-                var target = m_Item.Find("Txt_Count").GetComponent<TextMeshProUGUI>();
-                target.text = $"°¡{Count}";
-            }
-        }
-        private void SetStarLevel()
+        public void SetStarLevel(int f_Star)
         {
             if (m_Item != null)
             {
                 var target = m_Item.Find("Txt_StarLevel").GetComponent<TextMeshProUGUI>();
-                target.text = $"{(int)StarLevel()} Star";
+                target.text = $"{f_Star} Star";
             }
         }
-        private void SetQuality()
+        public void SetQuality()
         {
             if (m_Item != null)
             {
                 var target = m_Item.Find("Img_Quality").GetComponent<Image>();
-                target.color = HeroCradInfo.QualityLevelInfo.Color;
+                target.color = GTools.TableMgr.TryGetHeroQualityInfo(QualityLevel, out var info) ? info.Color : Color.white;
             }
         }
     }
@@ -269,37 +231,51 @@ public class UIBattleMainWindow : MonoBehaviour
     [SerializeField]
     private Transform m_ItemCard = null;
 
-    private Dictionary<EHeroCradType, CradListData> m_CurCardInsList = new();
+    private Dictionary<EHeroQualityLevel, List<IncubatorDebrisData>> m_CurCardInsList = new();
 
 
     /// <summary>
     /// ÃÌº””¢–€ÀÈ∆¨
     /// </summary>
-    public void AddHeroDebris(EHeroCradType f_HeroCardType, int f_Count = 1)
+    public void AddIncubaorDebris(EHeroQualityLevel f_Quality, int f_Count = 1)
     {
-        if (HeroCardPoolMgr.Ins.TryGetCurCardInfo(f_HeroCardType, out var value))
+        if (!m_CurCardInsList.TryGetValue(f_Quality, out var info))
         {
-            if (!m_CurCardInsList.TryGetValue(f_HeroCardType, out var info))
-            {
-                info = new(f_HeroCardType);
-                info.SetCount(value.ResidueCount);
-                info.Load(m_ItemCard);
-                m_CurCardInsList.Add(f_HeroCardType, info);
-            }
-            else if (info.Count != value.ResidueCount)
-            {
-                info.SetCount(value.ResidueCount);
-            }
+            info = new();
+            m_CurCardInsList.Add(f_Quality, info);
         }
-        else if (m_CurCardInsList.TryGetValue(f_HeroCardType, out var info))
+        var item = new IncubatorDebrisData(f_Quality, m_ItemCard);
+        info.Add(item);
+        UpdateIncubatorInfo(f_Quality);
+    }
+    public void UpdateIncubatorInfo(EHeroQualityLevel f_Quality)
+    {
+        if (m_CurCardInsList.TryGetValue(f_Quality, out var list))
         {
-            info.UnLoad();
-            m_CurCardInsList.Remove(f_HeroCardType);
+            while (list.Count >= GTools.HeroIncubatorPoolMgr.ResultantQuanatity)
+            {
+                AddIncubator(f_Quality);
+
+                for (int i = 0; i < GTools.HeroIncubatorPoolMgr.ResultantQuanatity; i++)
+                {
+                    var item = list[0];
+                    item.UnLoad();
+                    list.Remove(item);
+                }
+                if (list.Count == 0)
+                {
+                    m_CurCardInsList.Remove(f_Quality);
+                }
+                else
+                {
+                    UpdateIncubatorInfo(f_Quality);
+                }
+            }
         }
     }
     public void UpdateCardInfo(EHeroCradType f_HeroCardType)
     {
-        if (HeroCardPoolMgr.Ins.TryGetCurCardInfo(f_HeroCardType, out var value))
+        if (HeroIncubatorPoolMgr.Ins.TryGetCurCardInfo(f_HeroCardType, out var value))
         {
             if (!m_CurCardInsList.TryGetValue(f_HeroCardType, out var info))
             {
@@ -399,13 +375,14 @@ public class UIBattleMainWindow : MonoBehaviour
 
     private Dictionary<EHeroCradType, HeroInfo> m_HeroInsList = new();
 
-    private void AddEgg(EHeroCradType f_HeroCardType, int f_Count = 1)
+    public void AddIncubator(EHeroQualityLevel f_Quality)
     {
 
     }
+
     public void UpdateHeroInfo(EHeroCradType f_HeroCardType)
     {
-        if (HeroCardPoolMgr.Ins.TryGetCurCardInfo(f_HeroCardType, out var value))
+        if (HeroIncubatorPoolMgr.Ins.TryGetCurCardInfo(f_HeroCardType, out var value))
         {
             if (!m_HeroInsList.TryGetValue(f_HeroCardType, out var info))
             {

@@ -156,7 +156,14 @@ public enum AssetKey
     Entity_Tower_Dark1,
 
     // 孵化蛋
-    Entity_Incubator,
+    Entity_Incubator1,
+    Entity_Incubator2,
+    Entity_Incubator3,
+    Entity_Incubator4,
+    Icon_Incubator1,
+    Icon_Incubator2,
+    Icon_Incubator3,
+    Icon_Incubator4,
 
 }
 public class HeroCradInfo
@@ -175,10 +182,19 @@ public class HeroCradInfo
 }
 public class HeroCradLevelInfo
 {
+    public string Name = "普通";
     public int MaxCount; // 最大数量
     public Color Color; // 等级颜色
     public float IncubatorTime; // 孵化时间
     public int Expenditure; // 花费
+    public AssetKey IncubatorPrefab;
+    public AssetKey IncubatorIcon;
+}
+public class HeroIncubatorInfo
+{
+    public string Name;
+    public EHeroQualityLevel QualityLevel;
+
 }
 public abstract class HeroFetterInfo : Base
 {
@@ -387,6 +403,7 @@ public class TableMgr : Singleton<TableMgr>
     //===============================----------------------========================================
     //--
     static string BuffIconParentPath = "Icons/BuffIcon";
+    static string IncubatorIconParentPath = "Icons/IncubatorIcon";
     private static readonly Dictionary<AssetKey, string> m_DicIDToPath = new()
     {
         { AssetKey.Alp1, "Prefabs/WorldObject/Entity_Alt1" },
@@ -418,7 +435,10 @@ public class TableMgr : Singleton<TableMgr>
         { AssetKey.Emitter_SwordLow, "Prefabs/WorldObject/Emitter_SwordLow" },
         { AssetKey.Emitter_SwordHeight, "Prefabs/WorldObject/Emitter_SwordHeight" },
         { AssetKey.Emitter_GuidedMissileBaseCommon, "Prefabs/WorldObject/Emitter_GuidedMissileBaseCommon" },
-        { AssetKey.Entity_Incubator, "Prefabs/WorldObject/Entity_Incubator" },
+        { AssetKey.Entity_Incubator1, "Prefabs/WorldObject/Entity_Incubator1" },
+        { AssetKey.Entity_Incubator2, "Prefabs/WorldObject/Entity_Incubator2" },
+        { AssetKey.Entity_Incubator3, "Prefabs/WorldObject/Entity_Incubator3" },
+        { AssetKey.Entity_Incubator4, "Prefabs/WorldObject/Entity_Incubator4" },
 
 
 
@@ -439,6 +459,10 @@ public class TableMgr : Singleton<TableMgr>
         // icon 
         { AssetKey.BuffIcon_Poison, $"{BuffIconParentPath}/Poison" },
         { AssetKey.BuffIcon_AddBlood, $"{BuffIconParentPath}/AddBlood" },
+        { AssetKey.Icon_Incubator1, $"{IncubatorIconParentPath}/Icon_Incubator1" },
+        { AssetKey.Icon_Incubator2, $"{IncubatorIconParentPath}/Icon_Incubator2" },
+        { AssetKey.Icon_Incubator3, $"{IncubatorIconParentPath}/Icon_Incubator3" },
+        { AssetKey.Icon_Incubator4, $"{IncubatorIconParentPath}/Icon_Incubator4" },
     };
     public bool GetAssetPath(AssetKey f_Key, out string f_Result)
     {
@@ -518,40 +542,52 @@ public class TableMgr : Singleton<TableMgr>
             EHeroQualityLevel.Level1,
             new()
             {
+                Name = "普通",
                 MaxCount = 30,
                 Color = Color.gray,
                 IncubatorTime = 10,
                 Expenditure = 2,
+                IncubatorPrefab = AssetKey.Entity_Incubator1,
+                IncubatorIcon = AssetKey.Icon_Incubator1,
             }
         },
         {
             EHeroQualityLevel.Level2,
             new()
             {
+                Name = "罕见",
                 MaxCount = 20,
                 Color = Color.yellow,
                 IncubatorTime = 20,
                 Expenditure = 4,
+                IncubatorPrefab = AssetKey.Entity_Incubator2,
+                IncubatorIcon = AssetKey.Icon_Incubator2,
             }
         },
         {
             EHeroQualityLevel.Level3,
             new()
             {
+                Name = "传说",
                 MaxCount = 10,
                 Color = Color.red,
                 IncubatorTime = 30,
                 Expenditure = 6,
+                IncubatorPrefab = AssetKey.Entity_Incubator3,
+                IncubatorIcon = AssetKey.Icon_Incubator3,
             }
         },
         {
             EHeroQualityLevel.Level4,
             new()
             {
+                Name = "史诗",
                 MaxCount = 5,
                 Color = Color.cyan,
                 IncubatorTime = 40,
                 Expenditure = 10,
+                IncubatorPrefab = AssetKey.Entity_Incubator4,
+                IncubatorIcon = AssetKey.Icon_Incubator4,
             }
         },
     };

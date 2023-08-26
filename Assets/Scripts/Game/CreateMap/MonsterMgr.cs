@@ -33,7 +33,7 @@ public class CommandLevelQueue
         }
     }
 }
-public class MonsterManager : MonoSingleton<MonsterManager>
+public class MonsterMgr : Singleton<MonsterMgr>
 {
     private bool m_IsPlay = false;
     private int MonsterKey = int.MinValue;
@@ -45,9 +45,10 @@ public class MonsterManager : MonoSingleton<MonsterManager>
 
     public GodEntityData GodEntityData = new();
     // 初始化怪物生成点
-    public void InitMonsterSpawnPoint()
+    public override void Awake()
     {
-
+        base.Awake();
+        CreateEntityTest();
     }
 
     CommandLevelQueue m_Queue = new();

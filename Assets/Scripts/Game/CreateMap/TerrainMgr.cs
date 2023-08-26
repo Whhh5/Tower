@@ -124,13 +124,20 @@ public class TerrainMgr : Singleton<TerrainMgr>
     };
     public Material Mat = null;
     public Transform SpriteTran = null;
-    public override void Initialization()
+    public override void Awake()
     {
+        base.Awake();
         Mat = Resources.Load<Material>("Shader/Custom_Terrain");
         var obj = new GameObject("_RoadTex");
         var sprite = obj.AddComponent<SpriteRenderer>();
         sprite.material = Mat;
         SpriteTran = obj.transform;
+
+    }
+    public override void Start()
+    {
+        base.Start();
+
 
         var chunkRowCol = WorldMapManager.Ins.RowCol;
 
@@ -146,7 +153,7 @@ public class TerrainMgr : Singleton<TerrainMgr>
 
 
         var worldPos2 = worldPos + new Vector3(0, 0.1f, 0);
-        var scale  = new Vector2(worldSize.x, worldSize.z) * 100 / new Vector2(rtHeight, rtWidth);
+        var scale = new Vector2(worldSize.x, worldSize.z) * 100 / new Vector2(rtHeight, rtWidth);
         var localScale = new Vector3(scale.x, scale.y, 1);
         var rotation = new Vector3(90, 0, 0);
 
@@ -157,8 +164,9 @@ public class TerrainMgr : Singleton<TerrainMgr>
             item.Value.SetScale(localScale);
             item.Value.SetRotation(rotation);
         }
-    }
 
+        SetColorTest();
+    }
 
 
     public void SetChunkColor(int x, int y, Color color)

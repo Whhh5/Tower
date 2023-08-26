@@ -198,11 +198,11 @@ public class GameDebugerWindow : EditorWindow
                 }
                 if (GUILayout.Button("Create Monster", GUILayout.Width(150), GUILayout.Height(50)) && Application.isPlaying)
                 {
-                    MonsterManager.Ins.CreateEntityTest();
+                    MonsterMgr.Ins.CreateEntityTest();
                 }
                 if (GUILayout.Button("Clear Monster", GUILayout.Width(150), GUILayout.Height(50)) && Application.isPlaying)
                 {
-                    MonsterManager.Ins.ClearEntity();
+                    MonsterMgr.Ins.ClearEntity();
                 }
             }
             EditorGUILayout.EndHorizontal();
@@ -243,17 +243,11 @@ public class GameDebugerWindow : EditorWindow
 
                 if (GUILayout.Button("Test Crad Get", GUILayout.Width(150), GUILayout.Height(50)))
                 {
-                    if (HeroCardPoolMgr.Ins.TryGetGroupCrad(out var list))
-                    {
-                        foreach (var item in list)
-                        {
-                            Debug.Log(item);
-                        }
-                    }
+
                 }
                 if (GUILayout.Button("Test Crad Recycle", GUILayout.Width(150), GUILayout.Height(50)))
                 {
-                    HeroCardPoolMgr.Ins.RecycleGroupCrad(EHeroCradType.Hero1, 2);
+                    
                 }
             }
             EditorGUILayout.EndHorizontal();

@@ -38,7 +38,7 @@ public class Entity_IncubatorData : WorldObjectBaseData
         GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(this));
     }
 
-    public override AssetKey AssetPrefabID => AssetKey.Entity_Incubator;
+    public override AssetKey AssetPrefabID => AssetKey.Entity_Incubator1;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.Preson;
 

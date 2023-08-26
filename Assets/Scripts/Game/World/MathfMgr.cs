@@ -9,10 +9,10 @@ using System.Linq;
 /// <summary>
 /// 目录
 /// <para />    
-/// <para />    <exception cref="Initialization"></exception>
+/// <para />    <exception cref="Awake"></exception>
 /// <para />    <paramref name="name"/>
 /// 
-/// <para />    <see cref="Initialization"/>
+/// <para />    <see cref="Awake"/>
 /// <para />    <see cref="GetSpherePoint"/>
 /// <para />    <see cref="NearerTarget"/>
 /// <para />    <see cref="GetTargets_Sphere"/>
@@ -33,7 +33,7 @@ public class MathfMgr : Singleton<MathfMgr>
     /// <summary>
     /// 初始化
     /// </summary>
-    public override void Initialization()
+    public override void Awake()
     {
         m_CurFloatIndex = 0;
 

@@ -10,9 +10,19 @@ namespace B1
     {
         public static T Ins = new();
 
-        public virtual void Initialization()
+        public virtual void Awake()
         {
             
+        }
+
+        public virtual void Start()
+        {
+
+        }
+
+        public virtual void Destroy()
+        {
+
         }
     }
 }

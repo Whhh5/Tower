@@ -8,14 +8,19 @@ public class CameraMgr : Singleton<CameraMgr>, IUpdateBase
     public int UpdateLevelID { get; set; }
     public EUpdateLevel UpdateLevel => EUpdateLevel.Level3;
 
-    public override void Initialization()
+    public override void Awake()
     {
-        base.Initialization();
+        base.Awake();
 
         ScreenSize = new Vector2(Screen.width, Screen.height);
         m_MainCamera = Camera.main;
         m_ToFieldOfViewValue = m_MainCamera.fieldOfView;
         m_ToViewPos = m_MainCamera.transform.position;
+    }
+    public override void Start()
+    {
+        base.Start();
+
         GTools.LifecycleMgr.AddUpdate(this);
     }
 

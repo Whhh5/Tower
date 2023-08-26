@@ -15,17 +15,21 @@ public enum EGameStatus
 }
 public interface IInitialization
 {
-    void Initialization();
+    void Awake();
+    void Start();
+    void Destroy();
 }
 public class GameManager
 {
     public static List<IInitialization> m_StaticSingleton = new()
     {
+        GTools.MathfMgr,
+        GTools.WorldMapMgr,
         GTools.WeatherMgr,
         GTools.TerrainMgr,
-        GTools.PlayerMgr,
+        GTools.MonsterMgr,
         GTools.CameraMgr,
-        GTools.HeroCardPoolMgr,
+        GTools.HeroIncubatorPoolMgr,
         GTools.PlayerMgr,
     };
 
@@ -38,35 +42,26 @@ public class GameManager
 
         Cursor.lockState = CursorLockMode.Confined;
 
-        await InitializationManager();
         CurGameStatus = EGameStatus.Playing;
 
-        // ≥ı ºªØ
-        GTools.MathfMgr.Initialization();
 
 
         await AssetsMgr.Ins.LoadPrefabAsync<GameMgr>(EAssetName.GameManager, null);
 
 
-        WorldMapManager.Ins.CreateChunkTest();
-        WorldMapManager.Ins.InitMonsterSpawnPointData();
-        WorldMapManager.Ins.CreateRoadExtend();
-        MonsterManager.Ins.CreateEntityTest();
+
+        foreach (var item in m_StaticSingleton)
+        {
+            item.Awake();
+        }
 
 
         foreach (var item in m_StaticSingleton)
         {
-            item.Initialization();
+            item.Start();
         }
-        GTools.TerrainMgr.SetColorTest();
     }
 
 
-
-
-    public static async UniTask InitializationManager()
-    {
-
-    }
 }
 

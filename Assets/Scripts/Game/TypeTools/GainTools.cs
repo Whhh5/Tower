@@ -38,7 +38,7 @@ public interface IGainUtil
 {
     public static void InflictionGain(EGainType f_GainView, WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Recipient)
     {
-        f_Recipient.AddGain(f_GainView, f_Initiator ?? MonsterManager.Ins.GodEntityData);
+        f_Recipient.AddGain(f_GainView, f_Initiator ?? MonsterMgr.Ins.GodEntityData);
     }
     public static void RemoteGain(EGainType f_GainView, WorldObjectBaseData f_Recipient)
     {
