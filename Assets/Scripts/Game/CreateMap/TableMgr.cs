@@ -185,16 +185,15 @@ public class HeroCradLevelInfo
     public string Name = "普通";
     public int MaxCount; // 最大数量
     public Color Color; // 等级颜色
-    public float IncubatorTime; // 孵化时间
-    public int Expenditure; // 花费
-    public AssetKey IncubatorPrefab;
-    public AssetKey IncubatorIcon;
 }
 public class HeroIncubatorInfo
 {
     public string Name;
     public EHeroQualityLevel QualityLevel;
-
+    public AssetKey IncubatorPrefab;
+    public AssetKey IncubatorIcon;
+    public float IncubatorTime; // 孵化时间
+    public int Expenditure; // 花费
 }
 public abstract class HeroFetterInfo : Base
 {
@@ -545,10 +544,6 @@ public class TableMgr : Singleton<TableMgr>
                 Name = "普通",
                 MaxCount = 30,
                 Color = Color.gray,
-                IncubatorTime = 10,
-                Expenditure = 2,
-                IncubatorPrefab = AssetKey.Entity_Incubator1,
-                IncubatorIcon = AssetKey.Icon_Incubator1,
             }
         },
         {
@@ -558,10 +553,6 @@ public class TableMgr : Singleton<TableMgr>
                 Name = "罕见",
                 MaxCount = 20,
                 Color = Color.yellow,
-                IncubatorTime = 20,
-                Expenditure = 4,
-                IncubatorPrefab = AssetKey.Entity_Incubator2,
-                IncubatorIcon = AssetKey.Icon_Incubator2,
             }
         },
         {
@@ -571,10 +562,6 @@ public class TableMgr : Singleton<TableMgr>
                 Name = "传说",
                 MaxCount = 10,
                 Color = Color.red,
-                IncubatorTime = 30,
-                Expenditure = 6,
-                IncubatorPrefab = AssetKey.Entity_Incubator3,
-                IncubatorIcon = AssetKey.Icon_Incubator3,
             }
         },
         {
@@ -584,10 +571,6 @@ public class TableMgr : Singleton<TableMgr>
                 Name = "史诗",
                 MaxCount = 5,
                 Color = Color.cyan,
-                IncubatorTime = 40,
-                Expenditure = 10,
-                IncubatorPrefab = AssetKey.Entity_Incubator4,
-                IncubatorIcon = AssetKey.Icon_Incubator4,
             }
         },
     };
@@ -678,421 +661,483 @@ public class TableMgr : Singleton<TableMgr>
     {
         return m_HeroCardStarLevelInfo.TryGetValue(f_StarLevel, out f_Info);
     }
-
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------
-    //                                catalogue -- 羁绊
+    //                                catalogue -- 孵化器信息篇
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
-
-    public Dictionary<EHeroFetterType, HeroFetterInfo> m_HeroFetterType = new();
-
-    //--
-    //===============================----------------------========================================
-    //-----------------------------                          --------------------------------------
-    //                                catalogue -- 英雄实例篇
-    //-----------------------------                          --------------------------------------
-    //===============================----------------------========================================
-    //--
-    private Dictionary<EHeroCradType, WorldObjectBaseData> m_HeroData = new()
-    {
-
-    };
-    public bool GetHeroDataByType(EHeroCradType f_HeroType, int f_TargetIndex, out WorldObjectBaseData f_Result)
-    {
-        f_Result = null;
-        switch (f_HeroType)
-        {
-            case EHeroCradType.Hero1:
-                f_Result = new Entity_Player_Hero1Data(0, f_TargetIndex, null);
-                break;
-            case EHeroCradType.Hero2:
-                f_Result = new Entity_Player_Hero2Data(0, f_TargetIndex);
-                break;
-            case EHeroCradType.Hero3:
-                f_Result = new Entity_Player_Hero3Data(0, f_TargetIndex);
-                break;
-            case EHeroCradType.Hero4:
-                f_Result = new Entity_Player_Hero4Data(0, f_TargetIndex);
-                break;
-            case EHeroCradType.EnemyCount:
-                break;
-            default:
-                break;
-        }
-        return f_Result != null;
-    }
-    //--
-    //===============================----------------------========================================
-    //-----------------------------                          --------------------------------------
-    //                                catalogue -- 随机事件篇
-    //-----------------------------                          --------------------------------------
-    //===============================----------------------========================================
-    //--
-    private Dictionary<EWeatherType, WeatherInfo> m_WeatherInfo = new()
+    private Dictionary<EHeroQualityLevel, HeroIncubatorInfo> m_IncubatorInfo = new()
     {
         {
-            EWeatherType.Typhoon,
+            EHeroQualityLevel.Level1,
             new()
             {
-                Name = "风起云涌",
-                Describe = "顺风而行",
-                WeatherType = EWeatherType.Typhoon,
-                EventList = new()
-                {
-                    new()
-                    {
-                        WeatherEventType = EWeatherEventType.Typhoon1,
-                        Probability = 0.3f,
-                    },
-                    new()
-                    {
-                        WeatherEventType = EWeatherEventType.Typhoon2,
-                        Probability = 0.5f,
-                    },
-                    new()
-                    {
-                        WeatherEventType = EWeatherEventType.Typhoon3,
-                        Probability = 1f,
-                    },
-                },
+                Name = "普通孵化器",
+                QualityLevel = EHeroQualityLevel.Level1,
+                IncubatorTime = 10,
+                Expenditure = 2,
+                IncubatorPrefab = AssetKey.Entity_Incubator1,
+                IncubatorIcon = AssetKey.Icon_Incubator1,
             }
         },
         {
-            EWeatherType.Volcano,
+            EHeroQualityLevel.Level2,
             new()
             {
-                Name = "烈火燎原",
-                Describe = "燃烧大地上的生物",
-                WeatherType = EWeatherType.Volcano,
-                EventList = new()
-                {
-                    new()
-                    {
-                        WeatherEventType = EWeatherEventType.Volcano1,
-                        Probability = 0.3f,
-                    },
-                    new()
-                    {
-                        WeatherEventType = EWeatherEventType.Volcano2,
-                        Probability = 0.5f,
-                    },
-                    new()
-                    {
-                        WeatherEventType = EWeatherEventType.Volcano3,
-                        Probability = 1f,
-                    },
-                },
+                Name = "罕见孵化器",
+                QualityLevel = EHeroQualityLevel.Level2,
+                IncubatorTime = 20,
+                Expenditure = 4,
+                IncubatorPrefab = AssetKey.Entity_Incubator2,
+                IncubatorIcon = AssetKey.Icon_Incubator2,
             }
         },
         {
-            EWeatherType.Flood,
+            EHeroQualityLevel.Level3,
             new()
             {
-                Name = "",
-                WeatherType = EWeatherType.Flood,
-                EventList = new()
-                {
-                    new()
-                    {
-                        WeatherEventType = EWeatherEventType.Flood1,
-                        Probability = 0.3f,
-                    },
-                    new()
-                    {
-                        WeatherEventType = EWeatherEventType.Flood2,
-                        Probability = 0.5f,
-                    },
-                    new()
-                    {
-                        WeatherEventType = EWeatherEventType.Flood3,
-                        Probability = 1f,
-                    },
-                },
+                Name = "传说孵化器",
+                QualityLevel = EHeroQualityLevel.Level3,
+                IncubatorTime = 30,
+                Expenditure = 6,
+                IncubatorPrefab = AssetKey.Entity_Incubator3,
+                IncubatorIcon = AssetKey.Icon_Incubator3,
+            }
+        },
+        {
+            EHeroQualityLevel.Level4,
+            new()
+            {
+                Name = "史诗孵化器",
+                QualityLevel = EHeroQualityLevel.Level4,
+                IncubatorTime = 40,
+                Expenditure = 10,
+                IncubatorPrefab = AssetKey.Entity_Incubator4,
+                IncubatorIcon = AssetKey.Icon_Incubator4,
             }
         },
     };
-    public bool TryGetWeatherInfo(EWeatherType f_Type, out WeatherInfo f_Result)
-    {
-        return m_WeatherInfo.TryGetValue(f_Type, out f_Result);
-    }
+public bool TryGetIncubatorInfo(EHeroQualityLevel f_QualityLevle, out HeroIncubatorInfo f_IncubatorInfo)
+{
+    return m_IncubatorInfo.TryGetValue(f_QualityLevle, out f_IncubatorInfo);
+}
 
-    public bool TryGetWeatherData(EWeatherType f_Type, out WeatherBaseData f_Result)
+//--
+//===============================----------------------========================================
+//-----------------------------                          --------------------------------------
+//                                catalogue -- 羁绊
+//-----------------------------                          --------------------------------------
+//===============================----------------------========================================
+//--
+
+public Dictionary<EHeroFetterType, HeroFetterInfo> m_HeroFetterType = new();
+
+//--
+//===============================----------------------========================================
+//-----------------------------                          --------------------------------------
+//                                catalogue -- 英雄实例篇
+//-----------------------------                          --------------------------------------
+//===============================----------------------========================================
+//--
+private Dictionary<EHeroCradType, WorldObjectBaseData> m_HeroData = new()
+{
+
+};
+public bool GetHeroDataByType(EHeroCradType f_HeroType, int f_TargetIndex, out WorldObjectBaseData f_Result)
+{
+    f_Result = null;
+    switch (f_HeroType)
     {
-        f_Result = null;
-        switch (f_Type)
+        case EHeroCradType.Hero1:
+            f_Result = new Entity_Player_Hero1Data(0, f_TargetIndex, null);
+            break;
+        case EHeroCradType.Hero2:
+            f_Result = new Entity_Player_Hero2Data(0, f_TargetIndex);
+            break;
+        case EHeroCradType.Hero3:
+            f_Result = new Entity_Player_Hero3Data(0, f_TargetIndex);
+            break;
+        case EHeroCradType.Hero4:
+            f_Result = new Entity_Player_Hero4Data(0, f_TargetIndex);
+            break;
+        case EHeroCradType.EnemyCount:
+            break;
+        default:
+            break;
+    }
+    return f_Result != null;
+}
+//--
+//===============================----------------------========================================
+//-----------------------------                          --------------------------------------
+//                                catalogue -- 随机事件篇
+//-----------------------------                          --------------------------------------
+//===============================----------------------========================================
+//--
+private Dictionary<EWeatherType, WeatherInfo> m_WeatherInfo = new()
+{
+    {
+        EWeatherType.Typhoon,
+        new()
         {
-            case EWeatherType.Typhoon:
-                f_Result = new Weather_TyphoonData();
-                break;
-            case EWeatherType.Volcano:
-                f_Result = new Weather_VolcanoData();
-                break;
-            case EWeatherType.Flood:
-                break;
-            default:
-                break;
+            Name = "风起云涌",
+            Describe = "顺风而行",
+            WeatherType = EWeatherType.Typhoon,
+            EventList = new()
+            {
+                new()
+                {
+                    WeatherEventType = EWeatherEventType.Typhoon1,
+                    Probability = 0.3f,
+                },
+                new()
+                {
+                    WeatherEventType = EWeatherEventType.Typhoon2,
+                    Probability = 0.5f,
+                },
+                new()
+                {
+                    WeatherEventType = EWeatherEventType.Typhoon3,
+                    Probability = 1f,
+                },
+            },
         }
-        return f_Result != null;
-    }
-    private Dictionary<EWeatherEventType, WeatherEventInfo> m_WeatherEventInfo = new()
+    },
     {
+        EWeatherType.Volcano,
+        new()
         {
-            EWeatherEventType.Typhoon1,
-            new()
+            Name = "烈火燎原",
+            Describe = "燃烧大地上的生物",
+            WeatherType = EWeatherType.Volcano,
+            EventList = new()
             {
-                Name = "小风",
-                Describe = "微风",
-                WeatherEventType = EWeatherEventType.Typhoon1,
-            }
-        },
-        {
-            EWeatherEventType.Typhoon2,
-            new()
-            {
-                Name = "中风",
-                Describe = "是风",
-                WeatherEventType = EWeatherEventType.Typhoon2,
-            }
-        },
-        {
-            EWeatherEventType.Typhoon3,
-            new()
-            {
-                Name = "大风",
-                Describe = "狂风",
-                WeatherEventType = EWeatherEventType.Typhoon3,
-            }
-        },
-        {
-            EWeatherEventType.Volcano1,
-            new()
-            {
-                Name = "小火",
-                Describe = "微热",
-                WeatherEventType = EWeatherEventType.Volcano1,
-            }
-        },
-        {
-            EWeatherEventType.Volcano2,
-            new()
-            {
-                Name = "中火",
-                Describe = "狂热",
-                WeatherEventType = EWeatherEventType.Volcano2,
-            }
-        },
-        {
-            EWeatherEventType.Volcano3,
-            new()
-            {
-                Name = "大火",
-                Describe = "燃烧",
-                WeatherEventType = EWeatherEventType.Volcano3,
-            }
-        },
-    };
-    public bool TryGetWeatherEventInfo(EWeatherEventType f_Type, out WeatherEventInfo f_Result)
-    {
-        return m_WeatherEventInfo.TryGetValue(f_Type, out f_Result);
-    }
-    public bool TryGetWeatherEventData(EWeatherEventType f_Type, out WeatherEventBaseData f_Result)
-    {
-        f_Result = null;
-        switch (f_Type)
-        {
-            case EWeatherEventType.Typhoon1:
-                f_Result = new WeatherEvent_Typhoon1Data();
-                break;
-            case EWeatherEventType.Typhoon2:
-                f_Result = new WeatherEvent_Typhoon2Data();
-                break;
-            case EWeatherEventType.Typhoon3:
-                f_Result = new WeatherEvent_Typhoon3Data();
-                break;
-            case EWeatherEventType.Volcano1:
-                f_Result = new WeatherEvent_Volcano1Data();
-                break;
-            case EWeatherEventType.Volcano2:
-                f_Result = new WeatherEvent_Volcano2Data();
-                break;
-            case EWeatherEventType.Volcano3:
-                f_Result = new WeatherEvent_Volcano3Data();
-                break;
-            case EWeatherEventType.Flood1:
-                break;
-            case EWeatherEventType.Flood2:
-                break;
-            case EWeatherEventType.Flood3:
-                break;
-            default:
-                break;
+                new()
+                {
+                    WeatherEventType = EWeatherEventType.Volcano1,
+                    Probability = 0.3f,
+                },
+                new()
+                {
+                    WeatherEventType = EWeatherEventType.Volcano2,
+                    Probability = 0.5f,
+                },
+                new()
+                {
+                    WeatherEventType = EWeatherEventType.Volcano3,
+                    Probability = 1f,
+                },
+            },
         }
-        return f_Result != null;
-    }
-    //--
-    //===============================----------------------========================================
-    //-----------------------------                          --------------------------------------
-    //                                catalogue -- Buff 篇
-    //-----------------------------                          --------------------------------------
-    //===============================----------------------========================================
-    //--
-    public class BuffInfo
+    },
     {
-        public string Name = "";
-        public string Desc = "";
-        public AssetKey IconPath;
-        public EBuffType BuffType;
-        public Effect_BuffBaseData CreateBuffData(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
+        EWeatherType.Flood,
+        new()
         {
-            if (TableMgr.Ins.TryGetBuffData(BuffType, f_Initiator, f_Target, out var result))
+            Name = "",
+            WeatherType = EWeatherType.Flood,
+            EventList = new()
             {
-                result.Initialization(f_Initiator, f_Target);
-            }
+                new()
+                {
+                    WeatherEventType = EWeatherEventType.Flood1,
+                    Probability = 0.3f,
+                },
+                new()
+                {
+                    WeatherEventType = EWeatherEventType.Flood2,
+                    Probability = 0.5f,
+                },
+                new()
+                {
+                    WeatherEventType = EWeatherEventType.Flood3,
+                    Probability = 1f,
+                },
+            },
+        }
+    },
+};
+public bool TryGetWeatherInfo(EWeatherType f_Type, out WeatherInfo f_Result)
+{
+    return m_WeatherInfo.TryGetValue(f_Type, out f_Result);
+}
+
+public bool TryGetWeatherData(EWeatherType f_Type, out WeatherBaseData f_Result)
+{
+    f_Result = null;
+    switch (f_Type)
+    {
+        case EWeatherType.Typhoon:
+            f_Result = new Weather_TyphoonData();
+            break;
+        case EWeatherType.Volcano:
+            f_Result = new Weather_VolcanoData();
+            break;
+        case EWeatherType.Flood:
+            break;
+        default:
+            break;
+    }
+    return f_Result != null;
+}
+private Dictionary<EWeatherEventType, WeatherEventInfo> m_WeatherEventInfo = new()
+{
+    {
+        EWeatherEventType.Typhoon1,
+        new()
+        {
+            Name = "小风",
+            Describe = "微风",
+            WeatherEventType = EWeatherEventType.Typhoon1,
+        }
+    },
+    {
+        EWeatherEventType.Typhoon2,
+        new()
+        {
+            Name = "中风",
+            Describe = "是风",
+            WeatherEventType = EWeatherEventType.Typhoon2,
+        }
+    },
+    {
+        EWeatherEventType.Typhoon3,
+        new()
+        {
+            Name = "大风",
+            Describe = "狂风",
+            WeatherEventType = EWeatherEventType.Typhoon3,
+        }
+    },
+    {
+        EWeatherEventType.Volcano1,
+        new()
+        {
+            Name = "小火",
+            Describe = "微热",
+            WeatherEventType = EWeatherEventType.Volcano1,
+        }
+    },
+    {
+        EWeatherEventType.Volcano2,
+        new()
+        {
+            Name = "中火",
+            Describe = "狂热",
+            WeatherEventType = EWeatherEventType.Volcano2,
+        }
+    },
+    {
+        EWeatherEventType.Volcano3,
+        new()
+        {
+            Name = "大火",
+            Describe = "燃烧",
+            WeatherEventType = EWeatherEventType.Volcano3,
+        }
+    },
+};
+public bool TryGetWeatherEventInfo(EWeatherEventType f_Type, out WeatherEventInfo f_Result)
+{
+    return m_WeatherEventInfo.TryGetValue(f_Type, out f_Result);
+}
+public bool TryGetWeatherEventData(EWeatherEventType f_Type, out WeatherEventBaseData f_Result)
+{
+    f_Result = null;
+    switch (f_Type)
+    {
+        case EWeatherEventType.Typhoon1:
+            f_Result = new WeatherEvent_Typhoon1Data();
+            break;
+        case EWeatherEventType.Typhoon2:
+            f_Result = new WeatherEvent_Typhoon2Data();
+            break;
+        case EWeatherEventType.Typhoon3:
+            f_Result = new WeatherEvent_Typhoon3Data();
+            break;
+        case EWeatherEventType.Volcano1:
+            f_Result = new WeatherEvent_Volcano1Data();
+            break;
+        case EWeatherEventType.Volcano2:
+            f_Result = new WeatherEvent_Volcano2Data();
+            break;
+        case EWeatherEventType.Volcano3:
+            f_Result = new WeatherEvent_Volcano3Data();
+            break;
+        case EWeatherEventType.Flood1:
+            break;
+        case EWeatherEventType.Flood2:
+            break;
+        case EWeatherEventType.Flood3:
+            break;
+        default:
+            break;
+    }
+    return f_Result != null;
+}
+//--
+//===============================----------------------========================================
+//-----------------------------                          --------------------------------------
+//                                catalogue -- Buff 篇
+//-----------------------------                          --------------------------------------
+//===============================----------------------========================================
+//--
+public class BuffInfo
+{
+    public string Name = "";
+    public string Desc = "";
+    public AssetKey IconPath;
+    public EBuffType BuffType;
+    public Effect_BuffBaseData CreateBuffData(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
+    {
+        if (TableMgr.Ins.TryGetBuffData(BuffType, f_Initiator, f_Target, out var result))
+        {
+            result.Initialization(f_Initiator, f_Target);
+        }
+        return result;
+    }
+}
+private Dictionary<EBuffType, BuffInfo> m_BuffInfo = new()
+{
+    {
+        EBuffType.AddBlood,
+        new BuffInfo()
+        {
+            BuffType = EBuffType.AddBlood,
+            Desc = "持续回血",
+            Name = "治疗",
+            IconPath = AssetKey.BuffIcon_AddBlood
+        }
+    },
+    {
+
+        EBuffType.Poison,
+        new BuffInfo()
+        {
+            BuffType = EBuffType.Poison,
+            Desc = "持续减血",
+            Name = "中毒",
+            IconPath = AssetKey.BuffIcon_Poison
+        }
+    },
+};
+public bool TryGetBuffInfo(EBuffType f_BuffType, out BuffInfo f_Result)
+{
+    return m_BuffInfo.TryGetValue(f_BuffType, out f_Result);
+}
+public bool TryGetBuffData(EBuffType f_BuffType, WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target, out Effect_BuffBaseData f_Result)
+{
+    f_Result = null;
+    switch (f_BuffType)
+    {
+        case EBuffType.AddBlood:
+            f_Result = IBuffUtil.CreateBuffData<Effect_Buff_AddBloodData>(f_Initiator, f_Target);
+            break;
+        case EBuffType.Poison:
+            f_Result = IBuffUtil.CreateBuffData<Effect_Buff_PoisonData>(f_Initiator, f_Target);
+            break;
+        default:
+            break;
+    }
+    return f_Result != null;
+}
+
+
+
+
+
+
+//--
+//===============================----------------------========================================
+//-----------------------------                          --------------------------------------
+//                                catalogue -- 增益 篇
+//-----------------------------                          --------------------------------------
+//===============================----------------------========================================
+//--
+public class GainInfo
+{
+    public EGainView GainView;
+    public EGainType GainType;
+    public EntityGainBaseData CreateGain(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
+    {
+        if (Ins.TryGetGainData(GainType, out var result))
+        {
+            result.Initialization(f_Initiator, f_Target);
             return result;
         }
+        return null;
     }
-    private Dictionary<EBuffType, BuffInfo> m_BuffInfo = new()
+}
+private Dictionary<EGainType, GainInfo> m_GainInfo = new()
+{
     {
+        EGainType.Launch1,
+        new()
         {
-            EBuffType.AddBlood,
-            new BuffInfo()
-            {
-                BuffType = EBuffType.AddBlood,
-                Desc = "持续回血",
-                Name = "治疗",
-                IconPath = AssetKey.BuffIcon_AddBlood
-            }
-        },
-        {
-
-            EBuffType.Poison,
-            new BuffInfo()
-            {
-                BuffType = EBuffType.Poison,
-                Desc = "持续减血",
-                Name = "中毒",
-                IconPath = AssetKey.BuffIcon_Poison
-            }
-        },
-    };
-    public bool TryGetBuffInfo(EBuffType f_BuffType, out BuffInfo f_Result)
-    {
-        return m_BuffInfo.TryGetValue(f_BuffType, out f_Result);
-    }
-    public bool TryGetBuffData(EBuffType f_BuffType, WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target, out Effect_BuffBaseData f_Result)
-    {
-        f_Result = null;
-        switch (f_BuffType)
-        {
-            case EBuffType.AddBlood:
-                f_Result = IBuffUtil.CreateBuffData<Effect_Buff_AddBloodData>(f_Initiator, f_Target);
-                break;
-            case EBuffType.Poison:
-                f_Result = IBuffUtil.CreateBuffData<Effect_Buff_PoisonData>(f_Initiator, f_Target);
-                break;
-            default:
-                break;
+            GainType = EGainType.Launch1,
+            GainView = EGainView.Launch,
         }
-        return f_Result != null;
-    }
-
-
-
-
-
-
-    //--
-    //===============================----------------------========================================
-    //-----------------------------                          --------------------------------------
-    //                                catalogue -- 增益 篇
-    //-----------------------------                          --------------------------------------
-    //===============================----------------------========================================
-    //--
-    public class GainInfo
+    },
     {
-        public EGainView GainView;
-        public EGainType GainType;
-        public EntityGainBaseData CreateGain(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
+        EGainType.Volccano1,
+        new()
         {
-            if (Ins.TryGetGainData(GainType, out var result))
-            {
-                result.Initialization(f_Initiator, f_Target);
-                return result;
-            }
-            return null;
+            GainType = EGainType.Volccano1,
+            GainView = EGainView.Interval,
         }
-    }
-    private Dictionary<EGainType, GainInfo> m_GainInfo = new()
+    },
     {
+        EGainType.Volccano2,
+        new()
         {
-            EGainType.Launch1,
-            new()
-            {
-                GainType = EGainType.Launch1,
-                GainView = EGainView.Launch,
-            }
-        },
-        {
-            EGainType.Volccano1,
-            new()
-            {
-                GainType = EGainType.Volccano1,
-                GainView = EGainView.Interval,
-            }
-        },
-        {
-            EGainType.Volccano2,
-            new()
-            {
-                GainType = EGainType.Volccano2,
-                GainView = EGainView.Interval,
-            }
-        },
-        {
-            EGainType.Volccano3,
-            new()
-            {
-                GainType = EGainType.Volccano3,
-                GainView = EGainView.Interval,
-            }
-        },
-    };
-    public bool TryGetGainInfo(EGainType f_GainType, out GainInfo f_GainInfo)
-    {
-        return m_GainInfo.TryGetValue(f_GainType, out f_GainInfo);
-    }
-    public bool TryGetGainData(EGainType f_GainType, out EntityGainBaseData f_Result)
-    {
-        f_Result = null;
-        switch (f_GainType)
-        {
-            case EGainType.None:
-                break;
-            case EGainType.Launch1:
-                f_Result = new Entity_Gain_Laubch1Data();
-                break;
-            case EGainType.Collect1:
-                f_Result = new Entity_Gain_Collect1Data();
-                break;
-            case EGainType.Volccano1:
-                f_Result = new Effect_Gain_Volccano1Data();
-                break;
-            case EGainType.Volccano2:
-                f_Result = new Effect_Gain_Volccano2Data();
-                break;
-            case EGainType.Volccano3:
-                f_Result = new Effect_Gain_Volccano3Data();
-                break;
-            case EGainType.EnumCount:
-                break;
-            default:
-                break;
+            GainType = EGainType.Volccano2,
+            GainView = EGainView.Interval,
         }
-        return f_Result != null;
+    },
+    {
+        EGainType.Volccano3,
+        new()
+        {
+            GainType = EGainType.Volccano3,
+            GainView = EGainView.Interval,
+        }
+    },
+};
+public bool TryGetGainInfo(EGainType f_GainType, out GainInfo f_GainInfo)
+{
+    return m_GainInfo.TryGetValue(f_GainType, out f_GainInfo);
+}
+public bool TryGetGainData(EGainType f_GainType, out EntityGainBaseData f_Result)
+{
+    f_Result = null;
+    switch (f_GainType)
+    {
+        case EGainType.None:
+            break;
+        case EGainType.Launch1:
+            f_Result = new Entity_Gain_Laubch1Data();
+            break;
+        case EGainType.Collect1:
+            f_Result = new Entity_Gain_Collect1Data();
+            break;
+        case EGainType.Volccano1:
+            f_Result = new Effect_Gain_Volccano1Data();
+            break;
+        case EGainType.Volccano2:
+            f_Result = new Effect_Gain_Volccano2Data();
+            break;
+        case EGainType.Volccano3:
+            f_Result = new Effect_Gain_Volccano3Data();
+            break;
+        case EGainType.EnumCount:
+            break;
+        default:
+            break;
     }
+    return f_Result != null;
+}
 
 }
 

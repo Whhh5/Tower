@@ -140,14 +140,14 @@ public class UIBattleMainWindow : MonoBehaviour
             {
                 var data = list[i];
                 var item = m_ItemList[i];
-                if (GTools.TableMgr.TryGetHeroQualityInfo(data, out var info))
+                if (GTools.TableMgr.TryGetHeroQualityInfo(data, out var qualityInfo) && GTools.TableMgr.TryGetIncubatorInfo(data, out var incubatorInfo))
                 {
                     m_Content.GetComponent<HorizontalLayoutGroup>().enabled = true;
                     m_Content.GetComponent<ContentSizeFitter>().enabled = true;
                     item.gameObject.SetActive(true);
-                    item.Find("Txt_Name").GetComponent<TextMeshProUGUI>().text = $"{(int)data}¼¶·õ»¯Æ÷";
-                    item.Find("Img_Quality").GetComponent<Image>().color = info.Color;
-                    item.Find("Tex_Expenditure").GetComponent<TextMeshProUGUI>().text = info.Expenditure.ToString();
+                    item.Find("Txt_Name").GetComponent<TextMeshProUGUI>().text = $"{incubatorInfo.Name}";
+                    item.Find("Img_Quality").GetComponent<Image>().color = qualityInfo.Color;
+                    item.Find("Tex_Expenditure").GetComponent<TextMeshProUGUI>().text = $"{incubatorInfo.Expenditure}";
                     var btn = item.Find("Btn_Button").GetComponent<Button>();
                     btn.onClick.RemoveAllListeners();
                     btn.onClick.AddListener(() =>
@@ -186,6 +186,7 @@ public class UIBattleMainWindow : MonoBehaviour
         {
             QualityLevel = f_QualityLevel;
             Load(f_Item);
+            SetQuality();
         }
         private Transform m_Item = null;
         public EHeroQualityLevel QualityLevel;

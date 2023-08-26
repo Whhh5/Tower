@@ -44,6 +44,7 @@ public class GameManager
 
         CurGameStatus = EGameStatus.Playing;
 
+        Time.timeScale = 1;
 
 
         await AssetsMgr.Ins.LoadPrefabAsync<GameMgr>(EAssetName.GameManager, null);

@@ -71,7 +71,7 @@ public class HeroIncubatorPoolMgr : Singleton<HeroIncubatorPoolMgr>
     /// </summary>
     public bool BuyIncubator(EHeroQualityLevel f_Quality)
     {
-        if (GTools.TableMgr.TryGetHeroQualityInfo(f_Quality, out var cardInfo))
+        if (GTools.TableMgr.TryGetIncubatorInfo(f_Quality, out var cardInfo))
         {
             if (GTools.PlayerMgr.TryExpenditure(cardInfo.Expenditure))
             {

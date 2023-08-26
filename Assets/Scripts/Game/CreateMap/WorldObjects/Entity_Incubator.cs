@@ -18,10 +18,11 @@ public class Entity_IncubatorData : WorldObjectBaseData
             SetPosition(chunkData.WorldPosition);
         }
         m_HeroType = f_HeroInfo;
-        if (TableMgr.Ins.TryGetHeroCradInfo(f_HeroInfo, out var heroInfo))
+        if (TableMgr.Ins.TryGetHeroCradInfo(f_HeroInfo, out var heroInfo)
+            && TableMgr.Ins.TryGetIncubatorInfo(heroInfo.QualityLevel, out var incubatorInfo))
         {
             m_QuelityLevel = heroInfo.QualityLevel;
-            m_IncubatorTime = heroInfo.QualityLevelInfo.IncubatorTime;
+            m_IncubatorTime = incubatorInfo.IncubatorTime;
             m_Size = Vector3.one * 1.2f * (int)m_QuelityLevel;
             m_IsFinish = false;
 
