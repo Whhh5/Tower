@@ -77,6 +77,18 @@ public enum LoadAsyncResult
     Defeated,
 }
 
+public interface ILoadSpriteAsync
+{
+    public static async UniTask<Sprite> LoadAsync(string f_Path)
+    {
+        var request = await Resources.LoadAsync<Sprite>(f_Path) as Sprite;
+        return request;
+    }
+    public static void UnLoad(Object f_Assets)
+    {
+        Resources.UnloadAsset(f_Assets);
+    }
+}
 public interface ILoadPrefabAsync
 {
     public int LoadKey { get; set; }
@@ -165,7 +177,7 @@ public interface ILoadPrefabAsync
 
     }
     public static bool TryGetEntityByType<T>(EWorldObjectType f_ObjectType, out Dictionary<int, T> f_Result)
-        where T: UnityObjectData
+        where T : UnityObjectData
     {
         f_Result = new();
         foreach (var item in m_DicEntity)

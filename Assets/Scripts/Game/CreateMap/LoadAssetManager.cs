@@ -85,17 +85,12 @@ public class LoadAssetManager : B1.Singleton<LoadAssetManager>
 
         if (f_Asset.UpdateInteractable) GTools.LifecycleMgr.RemoveUpdate(f_Asset);
 
-        f_Asset.OnUnLoadAsync();
+        GTools.RunUniTask(f_Asset.OnUnLoadAsync());
         value.objs.Remove(f_Asset.SaveID);
         GameObject.Destroy(f_Asset.gameObject);
-
-        // if (value.objs.Count > 0) return;
-        //
-        // Resources.UnloadAsset(value.ass);
-        // m_DicAsset.Remove(f_Asset.AssetKey);
     }
 
 
 
-    
+
 }

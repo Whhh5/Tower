@@ -14,18 +14,17 @@ public class ChangeBloodData
     public WorldObjectBaseData Target = null;
     public EDamageType EDamageType = EDamageType.Physical;
 }
-public abstract class WorldObjectBaseData : PersonData
+public abstract class WorldObjectBaseData : DependChunkData
 {
     public virtual string ObjectName { get; }
-    protected WorldObjectBaseData(int f_index, int f_ChunkIndex) : base(f_index)
+    protected WorldObjectBaseData(int f_index, int f_ChunkIndex) : base(f_index, f_ChunkIndex)
     {
-        CurrentIndex = f_ChunkIndex;
-        CurrentMapKey = WorldMapManager.Ins.CurrentMapKey;
+        CurrentMapKey = WorldMapMgr.Ins.CurrentMapKey;
         WeatherMgr.Ins.InflictionGain(this);
 
-        WorldMapManager.Ins.MoveChunkElement(this, f_ChunkIndex);
+        WorldMapMgr.Ins.MoveChunkElement(this, f_ChunkIndex);
 
-        if (WorldMapManager.Ins.TryGetChunkData(f_ChunkIndex, out var targetChunk))
+        if (WorldMapMgr.Ins.TryGetChunkData(f_ChunkIndex, out var targetChunk))
         {
             SetPosition(targetChunk.PointUp);
         }
@@ -42,11 +41,6 @@ public abstract class WorldObjectBaseData : PersonData
 
     public WorldObjectBase WorldObjectTarget => GetCom<WorldObjectBase>();
     public int CurrentMapKey { get; private set; }
-    public int CurrentIndex { get; protected set; }
-    public void SetCurrentChunkIndex(int f_ToIndex)
-    {
-        CurrentIndex = f_ToIndex;
-    }
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------
@@ -57,16 +51,29 @@ public abstract class WorldObjectBaseData : PersonData
     public override void AfterLoad()
     {
         base.AfterLoad();
+        Resurgence();
     }
     public override void OnUnLoad()
     {
         base.OnUnLoad();
+    }
+    // ¸´»î
+    public virtual void Resurgence()
+    {
+        SetPersonStatus(EPersonStatusType.Entrance);
+        WorldWindowManager.Ins.UpdateBloodHint(this);
     }
     public override void OnUpdate()
     {
         base.OnUpdate();
         UpdateBuff();
         UpdateGain();
+    }
+    public void Death()
+    {
+        m_BuffDic.Clear();
+        WorldMapMgr.Ins.RemoveChunkElement(this);
+        WorldWindowManager.Ins.RemoveBloodHint(this);
     }
     public override void AnimatorCallback000()
     {
@@ -75,8 +82,21 @@ public abstract class WorldObjectBaseData : PersonData
         {
             case EPersonStatusType.Die:
                 {
-                    m_BuffDic.Clear();
-                    WorldMapManager.Ins.RemoveChunkElement(this);
+                    Death();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    public override void AnimatorCallback100()
+    {
+        base.AnimatorCallback000();
+        switch (CurStatus)
+        {
+            case EPersonStatusType.Entrance:
+                {
+                    SetPersonStatus(EPersonStatusType.Idle);
                 }
                 break;
             default:
@@ -113,7 +133,7 @@ public abstract class WorldObjectBaseData : PersonData
 
     public virtual void AttackTarget()
     {
-        ExecuteGainAsync(EGainView.Launch); 
+        ExecuteGainAsync(EGainView.Launch);
     }
     public virtual void SkillTarget()
     {
@@ -144,6 +164,7 @@ public abstract class WorldObjectBaseData : PersonData
         {
             EntityDied();
         }
+        WorldWindowManager.Ins.UpdateBloodHint(this);
         return CurrentBlood;
     }
     public virtual int ChangeMagic(int f_Increment)
@@ -152,13 +173,13 @@ public abstract class WorldObjectBaseData : PersonData
 
         CurrentMagic = Mathf.Clamp(value, 0, MaxMagic);
 
+        WorldWindowManager.Ins.UpdateBloodHint(this);
 
         return CurrentMagic;
     }
     public virtual void EntityDied()
     {
         SetPersonStatus(EPersonStatusType.Die, EAnimatorStatus.Stop);
-        WorldMapManager.Ins.RemoveChunkElement(this);
     }
 
     //--
@@ -275,7 +296,7 @@ public abstract class WorldObjectBaseData : PersonData
     }
 }
 
-public class WorldObjectBase : Person, IUpdateBase
+public class WorldObjectBase : DependChunk, IUpdateBase
 {
     public override EUpdateLevel UpdateLevel => EUpdateLevel.Level1;
     public WorldObjectBaseData WorldObjectBaseData => GetData<WorldObjectBaseData>();
@@ -291,7 +312,7 @@ public class WorldObjectBase : Person, IUpdateBase
     }
     private void OnMouseDown()
     {
-        
+
     }
     private void OnMouseEnter()
     {

@@ -9,7 +9,7 @@ public class TerrainRenderData
 {
     public TerrainRenderData(string f_Flag, int? f_Width = null, int? f_Height = null)
     {
-        var size = WorldMapManager.Ins.RowCol;
+        var size = WorldMapMgr.Ins.RowCol;
         m_Width = f_Width ?? size.y * 2;
         m_Height = f_Height ?? size.x;
         m_Flag = f_Flag;
@@ -139,10 +139,10 @@ public class TerrainMgr : Singleton<TerrainMgr>
         base.Start();
 
 
-        var chunkRowCol = WorldMapManager.Ins.RowCol;
+        var chunkRowCol = WorldMapMgr.Ins.RowCol;
 
-        var chunk0 = WorldMapManager.Ins.GetChunkPoint(0);
-        var chunkEnd = WorldMapManager.Ins.GetChunkPoint(chunkRowCol.x * chunkRowCol.y - 1);
+        var chunk0 = WorldMapMgr.Ins.GetChunkPoint(0);
+        var chunkEnd = WorldMapMgr.Ins.GetChunkPoint(chunkRowCol.x * chunkRowCol.y - 1);
 
         var rtWidth = chunkRowCol.x;
         var rtHeight = chunkRowCol.y;
@@ -180,11 +180,11 @@ public class TerrainMgr : Singleton<TerrainMgr>
 
     public void SetColorTest()
     {
-        WorldMapManager.Ins.LoopChunk((item) =>
+        WorldMapMgr.Ins.LoopChunk((item) =>
         {
             if (item.Value.IsAlreadyType(EWorldObjectType.Road))
             {
-                var rowCol = WorldMapManager.Ins.GetRowCol(item.Value.Index);
+                var rowCol = WorldMapMgr.Ins.GetRowCol(item.Value.Index);
                 SetChunkColor(rowCol.x, rowCol.y, Color.gray);
             }
         });

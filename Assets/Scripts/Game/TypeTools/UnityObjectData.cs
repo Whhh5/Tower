@@ -91,6 +91,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
     //--
     public Transform Parent { get; private set; } = null;
     public Vector3 WorldPosition { get; private set; } = new Vector3();
+    public Vector3 LocalPosition { get; private set; } = new Vector3();
     public Vector3 Forward { get; private set; } = new Vector3(0, 0, 1);
     public Vector3 LocalRotation { get; private set; } = new Vector3();
     public Vector3 LocalScale { get; private set; } = new Vector3(1, 1, 1);
@@ -136,6 +137,14 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
         if (PrefabTarget != null)
         {
             PrefabTarget.SetPosition();
+        }
+    }
+    public void SetLocalPosition(Vector3 f_ToPosition)
+    {
+        LocalPosition = f_ToPosition;
+        if (PrefabTarget != null)
+        {
+            PrefabTarget.SetLocalPosition();
         }
     }
     public void SetForward(Vector3 f_ToForward)
@@ -485,6 +494,10 @@ public abstract class ObjectPoolBase : TransformBase, IObjectPoolBase
     public void SetPosition()
     {
         transform.position = UnityObjectData.WorldPosition;
+    }
+    public void SetLocalPosition()
+    {
+        transform.localPosition = UnityObjectData.LocalPosition;
     }
     public void SetForward()
     {

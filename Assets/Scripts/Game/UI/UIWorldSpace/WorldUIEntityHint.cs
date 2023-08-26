@@ -10,7 +10,7 @@ public class WorldUIEntityHintData : UnityObjectData
 {
     public WorldUIEntityHintData(int f_Index, WorldObjectBaseData f_Target) : base(f_Index)
     {
-        Entity = f_Target;
+        TargetEntity = f_Target;
     }
 
     public override AssetKey AssetPrefabID => AssetKey.WorldUIEntityHint;
@@ -18,20 +18,20 @@ public class WorldUIEntityHintData : UnityObjectData
     public override EWorldObjectType ObjectType => EWorldObjectType.None;
     public override bool IsUpdateEnable => true;
 
-    public int Key => Entity.Index;
+    public int Key => TargetEntity.Index;
     public float PersentBlood => CurBlood / (float)MaxBlood;
-    public int MaxBlood => Entity.MaxBlood;
-    public int CurBlood => Entity.CurrentBlood;
+    public int MaxBlood => TargetEntity.MaxBlood;
+    public int CurBlood => TargetEntity.CurrentBlood;
     public float CurPersentBlood = 0;
     public float CurPersentBloodTarget = 0;
     public string CurBloodHint = "";
 
     public float PersentMagic => CurMagic / (float)MaxMagic;
-    public int MaxMagic => Entity.MaxMagic;
-    public int CurMagic => Entity.CurrentMagic;
+    public int MaxMagic => TargetEntity.MaxMagic;
+    public int CurMagic => TargetEntity.CurrentMagic;
     public float CurPersentMagic = 0;
     public string CurMagicHint = "";
-    public WorldObjectBaseData Entity = null;
+    public WorldObjectBaseData TargetEntity = null;
     public WorldUIEntityHint Target => GetCom<WorldUIEntityHint>();
 
     public void UpdateInfo()
@@ -71,23 +71,22 @@ public class WorldUIEntityHintData : UnityObjectData
 
 
 
-        SetPosition(Entity.PointUp);
-        Vector3 drector = WorldPosition - GTools.MainCamera.transform.position;
-        drector.x = 0;
-        SetForward(drector);
+        var uguiPos = IUIUtil.GetUGUIPosByWorld(TargetEntity.PointUp, true);
+        var worldPos = IUIUtil.GetWorldPosBuyUGUIPos(uguiPos);
+        SetPosition(worldPos);
     }
 }
 public class WorldUIEntityHint : ObjectPoolBase
 {
     [SerializeField]
-    private TextMeshPro m_TxtBloodHint = null;
+    private TextMeshProUGUI m_TxtBloodHint = null;
     [SerializeField]
     private Image m_ImgBloodTarget = null;
     [SerializeField]
     private Image m_ImgCurBlood = null;
 
     [SerializeField]
-    private TextMeshPro m_TxtMagicHint = null;
+    private TextMeshProUGUI m_TxtMagicHint = null;
     [SerializeField]
     private Image m_ImgCurMagic = null;
 

@@ -31,6 +31,7 @@ public class GameManager
         GTools.CameraMgr,
         GTools.HeroIncubatorPoolMgr,
         GTools.PlayerMgr,
+        GTools.UIMgr,
     };
 
 

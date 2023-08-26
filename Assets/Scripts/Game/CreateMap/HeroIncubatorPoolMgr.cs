@@ -16,7 +16,7 @@ public class HeroCradPoolInfo
     public int ResidueCount { get; private set; }
 
     public EHeroQualityLevel Level => CradInfo.QualityLevel;
-    public HeroCradLevelInfo LevelInfo => TableMgr.Ins.TryGetHeroQualityInfo(Level, out var levelInfo) ? levelInfo : null;
+    public HeroCradLevelInfo LevelInfo => TableMgr.Ins.TryGetHeroCradLevelInfo(Level, out var levelInfo) ? levelInfo : null;
     public HeroCradInfo CradInfo => TableMgr.Ins.TryGetHeroCradInfo(Type, out var cradInfo) ? cradInfo : null;
 
 
@@ -100,7 +100,7 @@ public class HeroIncubatorPoolMgr : Singleton<HeroIncubatorPoolMgr>
     /// <returns></returns>
     public bool TryGetRandomCardByLevel(EHeroQualityLevel f_Level, out EHeroCradType f_HerpType)
     {
-        f_HerpType = EHeroCradType.EnemyCount;
+        f_HerpType = EHeroCradType.EnumCount;
         if (m_HeroCardList.TryGetValue(f_Level, out var list))
         {
             var index = GTools.MathfMgr.GetRandomValue(0, list.Count - 1);

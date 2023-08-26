@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 // 路面对象
-public sealed class WorldBaseObjectDataRoad : WorldObjectBaseData
+public sealed class WorldBaseObjectDataRoad : DependChunkData
 {
     public WorldBaseObjectDataRoad(int f_Index, int f_TargetChunk) : base(f_Index, f_TargetChunk)
     {
@@ -18,7 +18,7 @@ public sealed class WorldBaseObjectDataRoad : WorldObjectBaseData
 
     public override AssetKey AssetPrefabID => AssetKey.Road1;
 }
-public abstract class Entity_Road : WorldObjectBase
+public abstract class Entity_Road : DependChunk
 {
 
 }

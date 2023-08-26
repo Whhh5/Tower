@@ -140,7 +140,7 @@ public class UIBattleMainWindow : MonoBehaviour
             {
                 var data = list[i];
                 var item = m_ItemList[i];
-                if (GTools.TableMgr.TryGetHeroQualityInfo(data, out var qualityInfo) && GTools.TableMgr.TryGetIncubatorInfo(data, out var incubatorInfo))
+                if (GTools.TableMgr.TryGetHeroCradLevelInfo(data, out var qualityInfo) && GTools.TableMgr.TryGetIncubatorInfo(data, out var incubatorInfo))
                 {
                     m_Content.GetComponent<HorizontalLayoutGroup>().enabled = true;
                     m_Content.GetComponent<ContentSizeFitter>().enabled = true;
@@ -148,6 +148,14 @@ public class UIBattleMainWindow : MonoBehaviour
                     item.Find("Txt_Name").GetComponent<TextMeshProUGUI>().text = $"{incubatorInfo.Name}";
                     item.Find("Img_Quality").GetComponent<Image>().color = qualityInfo.Color;
                     item.Find("Tex_Expenditure").GetComponent<TextMeshProUGUI>().text = $"{incubatorInfo.Expenditure}";
+                    GTools.RunUniTask(async () =>
+                    {
+                        if (GTools.TableMgr.GetAssetPath(incubatorInfo.IncubatorDebrisIcon, out var path))
+                        {
+                            var sprite = await ILoadSpriteAsync.LoadAsync(path);
+                            item.Find("Img_Icon").GetComponent<Image>().sprite = sprite;
+                        }
+                    });
                     var btn = item.Find("Btn_Button").GetComponent<Button>();
                     btn.onClick.RemoveAllListeners();
                     btn.onClick.AddListener(() =>
@@ -188,42 +196,57 @@ public class UIBattleMainWindow : MonoBehaviour
             Load(f_Item);
             SetQuality();
         }
-        private Transform m_Item = null;
+        public Transform Item = null;
         public EHeroQualityLevel QualityLevel;
 
         private void Load(Transform f_Item)
         {
             UnLoad();
-            m_Item = GameObject.Instantiate(f_Item, f_Item.parent);
-            m_Item.gameObject.SetActive(true);
+            Item = GameObject.Instantiate(f_Item, f_Item.parent);
+            Item.gameObject.SetActive(true);
         }
         public void UnLoad()
         {
-            if (m_Item != null)
+            if (Item != null)
             {
-                GameObject.Destroy(m_Item.gameObject);
-                m_Item = null;
+                ILoadSpriteAsync.UnLoad(Item.Find("Img_Icon").GetComponent<Image>().sprite);
+                GameObject.Destroy(Item.gameObject);
+                Item = null;
+            }
+        }
+        public async void SetIcon(AssetKey f_AssetKey)
+        {
+            if (GTools.TableMgr.GetAssetPath(f_AssetKey, out var path))
+            {
+                var sprite = await ILoadSpriteAsync.LoadAsync(path);
+                if (Item == null)
+                {
+                    ILoadSpriteAsync.UnLoad(sprite);
+                    return;
+                }
+                var img = Item.Find("Img_Icon").GetComponent<Image>();
+                img.sprite = sprite;
             }
         }
         public void SetName(string f_Name)
         {
-            var target = m_Item.Find("Txt_Name").GetComponent<TextMeshProUGUI>();
+            var target = Item.Find("Txt_Name").GetComponent<TextMeshProUGUI>();
             target.text = $"¡Á{f_Name}";
         }
         public void SetStarLevel(int f_Star)
         {
-            if (m_Item != null)
+            if (Item != null)
             {
-                var target = m_Item.Find("Txt_StarLevel").GetComponent<TextMeshProUGUI>();
+                var target = Item.Find("Txt_StarLevel").GetComponent<TextMeshProUGUI>();
                 target.text = $"{f_Star} Star";
             }
         }
         public void SetQuality()
         {
-            if (m_Item != null)
+            if (Item != null)
             {
-                var target = m_Item.Find("Img_Quality").GetComponent<Image>();
-                target.color = GTools.TableMgr.TryGetHeroQualityInfo(QualityLevel, out var info) ? info.Color : Color.white;
+                var target = Item.Find("Img_Quality").GetComponent<Image>();
+                target.color = GTools.TableMgr.TryGetHeroCradLevelInfo(QualityLevel, out var info) ? info.Color : Color.white;
             }
         }
     }
@@ -233,7 +256,7 @@ public class UIBattleMainWindow : MonoBehaviour
     private Transform m_ItemCard = null;
 
     private Dictionary<EHeroQualityLevel, List<IncubatorDebrisData>> m_CurCardInsList = new();
-
+    private int ResultantQuanatity => GTools.HeroIncubatorPoolMgr.ResultantQuanatity;
 
     /// <summary>
     /// Ìí¼ÓÓ¢ÐÛËéÆ¬
@@ -246,6 +269,11 @@ public class UIBattleMainWindow : MonoBehaviour
             m_CurCardInsList.Add(f_Quality, info);
         }
         var item = new IncubatorDebrisData(f_Quality, m_ItemCard);
+        if (GTools.TableMgr.TryGetIncubatorInfo(f_Quality, out var incubationInfo))
+        {
+            item.SetName(incubationInfo.Name);
+            item.SetIcon(incubationInfo.IncubatorDebrisIcon);
+        }
         info.Add(item);
         UpdateIncubatorInfo(f_Quality);
     }
@@ -253,11 +281,11 @@ public class UIBattleMainWindow : MonoBehaviour
     {
         if (m_CurCardInsList.TryGetValue(f_Quality, out var list))
         {
-            while (list.Count >= GTools.HeroIncubatorPoolMgr.ResultantQuanatity)
+            while (list.Count >= ResultantQuanatity)
             {
                 AddIncubator(f_Quality);
 
-                for (int i = 0; i < GTools.HeroIncubatorPoolMgr.ResultantQuanatity; i++)
+                for (int i = 0; i < ResultantQuanatity; i++)
                 {
                     var item = list[0];
                     item.UnLoad();
@@ -280,67 +308,6 @@ public class UIBattleMainWindow : MonoBehaviour
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
-    class HeroInfo
-    {
-        public HeroInfo(EHeroCradType f_EHeroCradType)
-        {
-            HeroCradType = f_EHeroCradType;
-        }
-        public EHeroCradType HeroCradType;
-        public EHeroCradStarLevel CradStarLevel;
-        public HeroCradInfo HeroCradInfo => GTools.TableMgr.TryGetHeroCradInfo(HeroCradType, out var info) ? info : null;
-        public HeroCardStarLevelInfo HeroCardStarLevelInfo => TableMgr.Ins.TryGetGeroCardStarLevelInfo(CradStarLevel, out var info) ? info : null;
-
-
-        private Transform m_Item = null;
-        public void Load(Transform f_Item)
-        {
-            UnLoad();
-            m_Item = GameObject.Instantiate(f_Item, f_Item.parent);
-            m_Item.gameObject.SetActive(true);
-
-            SetQuality();
-            SetStarLevel();
-            var triggerDown = new EventTrigger.Entry();
-            var eventTrigger = m_Item.Find("Btn_Button").GetComponent<EventTrigger>();
-            triggerDown.eventID = EventTriggerType.PointerDown;
-            triggerDown.callback = new EventTrigger.TriggerEvent();
-            triggerDown.callback.AddListener(DownClick);
-            eventTrigger.triggers.Add(triggerDown);
-        }
-        public void DownClick(BaseEventData eventData)
-        {
-            var image = m_Item.Find("Img_Icon").GetComponent<Image>();
-            MoveCardMgr.Ins.SetTargetIcon(image.sprite);
-            MoveCardMgr.Ins.SetCurSelectHero(HeroCradType);
-        }
-        public void UnLoad()
-        {
-            if (m_Item != null)
-            {
-                GameObject.Destroy(m_Item.gameObject);
-                m_Item = null;
-            }
-        }
-        public void SetQuality()
-        {
-            if (m_Item != null)
-            {
-                var target = m_Item.Find("Img_Quality").GetComponent<Image>();
-                target.color = HeroCradInfo.QualityLevelInfo.Color;
-            }
-        }
-        public void SetStarLevel(EHeroCradStarLevel? f_CradStarLevel = null)
-        {
-            CradStarLevel = f_CradStarLevel ?? CradStarLevel;
-            if (m_Item != null)
-            {
-                var target = m_Item.Find("Txt_Star").GetComponent<TextMeshProUGUI>();
-                target.text = $"{(int)CradStarLevel}*";
-                target.color = HeroCardStarLevelInfo.Color;
-            }
-        }
-    }
     [SerializeField]
     private RectTransform m_CurHeroList = null;
     [SerializeField]
@@ -349,10 +316,58 @@ public class UIBattleMainWindow : MonoBehaviour
     [SerializeField]
     private Transform m_ItemHero = null;
 
-    private Dictionary<EHeroCradType, HeroInfo> m_HeroInsList = new();
+    private Dictionary<EHeroQualityLevel, Dictionary<EHeroCradStarLevel, List<IncubatorDebrisData>>> m_HeroInsList = new();
 
-    public void AddIncubator(EHeroQualityLevel f_Quality)
+    public void AddIncubator(EHeroQualityLevel f_Quality, EHeroCradStarLevel f_StarLevel = EHeroCradStarLevel.Level1)
     {
+        if (!m_HeroInsList.TryGetValue(f_Quality, out var list))
+        {
+            list = new();
+            m_HeroInsList.Add(f_Quality, list);
+        }
+        var item = GetIncubatorItem(f_Quality);
+        var starLevel = f_StarLevel;
+        item.SetStarLevel((int)starLevel);
+        if (GTools.TableMgr.TryGetIncubatorInfo(f_Quality, out var incubatorInfo))
+        {
+            item.SetName(incubatorInfo.Name);
+            item.SetIcon(incubatorInfo.IncubatorIcon);
+        }
 
+        if (!list.TryGetValue(starLevel, out var datas))
+        {
+            datas = new();
+            list.Add(starLevel, datas);
+        }
+        datas.Add(item);
+        if (datas.Count >= ResultantQuanatity)
+        {
+            for (int i = 0; i < ResultantQuanatity; i++)
+            {
+                var target = datas[0];
+                target.UnLoad();
+                datas.Remove(target);
+            }
+            AddIncubator(f_Quality, f_StarLevel + 1);
+        }
+    }
+    private IncubatorDebrisData GetIncubatorItem(EHeroQualityLevel f_Quality)
+    {
+        var item = new IncubatorDebrisData(f_Quality, m_ItemHero);
+
+        var triggerDown = new EventTrigger.Entry();
+        var eventTrigger = item.Item.Find("Btn_Button").GetComponent<EventTrigger>();
+        triggerDown.eventID = EventTriggerType.PointerDown;
+        triggerDown.callback = new EventTrigger.TriggerEvent();
+        triggerDown.callback.AddListener(DownClick);
+        eventTrigger.triggers.Add(triggerDown);
+
+        void DownClick(BaseEventData eventData)
+        {
+            var image = item.Item.Find("Img_Icon").GetComponent<Image>();
+            MoveCardMgr.Ins.SetTargetIcon(image.sprite);
+            MoveCardMgr.Ins.SetCurSelectHero(f_Quality);
+        }
+        return item;
     }
 }

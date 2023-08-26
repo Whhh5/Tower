@@ -5,7 +5,7 @@ using UnityEngine;
 
 
 // 山体对象
-public sealed class WorldObjectBaseObjectDataAlt : WorldObjectBaseData
+public sealed class WorldObjectBaseObjectDataAlt : DependChunkData
 {
     public float Height { get; private set; }
 
@@ -35,15 +35,6 @@ public sealed class WorldObjectBaseObjectDataAlt : WorldObjectBaseData
         }
     }
 }
-public class Entity_Alt : WorldObjectBase
+public class Entity_Alt : DependChunk
 {
-    public override async UniTask StartExecute()
-    {
-        
-    }
-
-    public override async UniTask StopExecute()
-    {
-        
-    }
 }

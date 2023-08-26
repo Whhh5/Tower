@@ -39,9 +39,9 @@ public class MonsterMgr : Singleton<MonsterMgr>
     private int MonsterKey = int.MinValue;
     private Dictionary<int, Dictionary<int, Person_EnemyData>> m_DicMonster = new();
 
-    private Dictionary<int, Entity_SpawnPointMonsterData> MonsterSpawnPoint => WorldMapManager.Ins.MonsterSpawnPoint;
-    private Dictionary<int, Entity_SpawnPointPlayerData> PlayerSpawnPoint => WorldMapManager.Ins.PlayerSpawnPoint;
-    private int TargetIndex => WorldMapManager.Ins.HomeIndex;
+    private Dictionary<int, Entity_SpawnPointMonsterData> MonsterSpawnPoint => WorldMapMgr.Ins.MonsterSpawnPoint;
+    private Dictionary<int, Entity_SpawnPointPlayerData> PlayerSpawnPoint => WorldMapMgr.Ins.PlayerSpawnPoint;
+    private int TargetIndex => WorldMapMgr.Ins.HomeIndex;
 
     public GodEntityData GodEntityData = new();
     // 初始化怪物生成点
@@ -147,7 +147,7 @@ public class MonsterMgr : Singleton<MonsterMgr>
         {
             foreach (var data in value)
             {
-                while (!WorldMapManager.Ins.TryGetRangeChunkByIndex(data.Value.SpawnPointData.CurrentIndex, out list, condition, true, 2))
+                while (!WorldMapMgr.Ins.TryGetRangeChunkByIndex(data.Value.SpawnPointData.CurrentIndex, out list, condition, true, 2))
                 {
                     if (!m_IsPlay)
                     {

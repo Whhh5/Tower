@@ -20,7 +20,6 @@ public class WorldWindowManager : MonoSingleton<WorldWindowManager>
         {
             value = new(key, f_Target);
             value.SetParent(m_Root);
-            value.SetLocalScale(Vector3.one * 0.01f);
             m_BloodData.Add(key, value);
             GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(value));
         }
@@ -44,7 +43,6 @@ public class WorldWindowManager : MonoSingleton<WorldWindowManager>
         {
             value = new(key, f_Target);
             value.SetParent(m_Root);
-            value.SetLocalScale(Vector3.one * 0.01f);
             m_BloodData.Add(key, value);
             GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(value));
         }

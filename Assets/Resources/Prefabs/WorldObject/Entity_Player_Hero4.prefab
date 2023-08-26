@@ -335,15 +335,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UpdateInteractable: 0
   m_CurAnim: {fileID: 845705523270963580}
+  CurAnimationTime: 1
+  m_MainBody: {fileID: 0}
+  m_MainObject: {fileID: 0}
+  m_PointUp: {fileID: 5273937697907252251}
   m_CentralPoint: {fileID: 0}
   m_BeHitPoint: {fileID: 0}
   m_BuffPoint: {fileID: 0}
   m_EffectPoint: {fileID: 0}
   m_TrailPoint: {fileID: 0}
   m_WeaponPoint: {fileID: 0}
-  m_MainBody: {fileID: 0}
-  m_MainObject: {fileID: 0}
-  m_PointUp: {fileID: 5273937697907252251}
   m_AttackPoint: {fileID: 8263330307149694627}
 --- !u!1 &7593884235775326835
 GameObject:
@@ -2738,7 +2739,7 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &8429188888472050821
+--- !u!114 &6765009943114880333
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2753,9 +2754,9 @@ MonoBehaviour:
   boneShape: 1
   drawBones: 1
   drawTripods: 0
-  boneSize: 2.94
+  boneSize: 1
   tripodSize: 1
-  boneColor: {r: 1, g: 0, b: 0.82385063, a: 0.5}
+  boneColor: {r: 0, g: 0, b: 1, a: 0.5}
   m_Transforms:
   - {fileID: 6324370675730316572}
   - {fileID: 4583027005032383584}

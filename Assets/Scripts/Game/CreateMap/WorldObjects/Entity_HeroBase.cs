@@ -60,45 +60,6 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
-    public override void AfterLoad()
-    {
-        base.AfterLoad();
-        SetPersonStatus(EPersonStatusType.Incubation);
-        WorldWindowManager.Ins.UpdateBloodHint(this);
-        StartIncubation();
-    }
-    public override void OnUnLoad()
-    {
-        Death();
-        base.OnUnLoad();
-    }
-    // ¸´»î
-    public void Resurgence()
-    {
-        SetPersonStatus(EPersonStatusType.Idle);
-        WorldWindowManager.Ins.UpdateBloodHint(this);
-    }
-    public void Death()
-    {
-        WorldWindowManager.Ins.RemoveBloodHint(this);
-    }
-    public override int ChangeBlood(ChangeBloodData f_Increment)
-    {
-        var value = base.ChangeBlood(f_Increment);
-        WorldWindowManager.Ins.UpdateBloodHint(this);
-
-        if (value <= 0)
-        {
-            Death();
-        }
-        return value;
-    }
-    public override int ChangeMagic(int f_Increment)
-    {
-        var value = base.ChangeMagic(f_Increment);
-        WorldWindowManager.Ins.UpdateBloodHint(this);
-        return value;
-    }
     public override bool IsUpdateEnable => true;
 
     public override void OnUpdate()
@@ -121,7 +82,7 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
                     }
                     else if (TryGetNextPoint(out var pathPoint))
                     {
-                        WorldMapManager.Ins.MoveChunkElement(this, pathPoint.ChunkIndex);
+                        WorldMapMgr.Ins.MoveChunkElement(this, pathPoint.ChunkIndex);
                         m_MoveToTarget = pathPoint.WorldPos;
                         SetPersonStatus(EPersonStatusType.Walk);
                     }
@@ -170,25 +131,6 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
                 break;
         }
     }
-
-    //--
-    //===============================----------------------========================================
-    //-----------------------------                          --------------------------------------
-    //                                catalogue -- ·õ»¯Æª
-    //-----------------------------                          --------------------------------------
-    //===============================----------------------========================================
-    //--
-    public HeroCradInfo HeroCradInfo => TableMgr.Ins.TryGetHeroCradInfo(HeroCradType, out var heroInfo) ? heroInfo : null;
-    public void StartIncubation()
-    {
-
-    }
-    public void StopIncubation()
-    {
-
-    }
-
-
 
 
     //--
@@ -241,12 +183,12 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
     public bool TryDetectionAttack(out WorldObjectBaseData f_AttackTarget)
     {
         f_AttackTarget = null;
-        if (WorldMapManager.Ins.TryGetRangeChunkByIndex(CurrentIndex, out var list, AttackTargetCondition, false, AtkRange))
+        if (WorldMapMgr.Ins.TryGetRangeChunkByIndex(CurrentIndex, out var list, AttackTargetCondition, false, AtkRange))
         {
             var minDis = float.MaxValue;
             foreach (var item in list.GetEnumerator())
             {
-                if (WorldMapManager.Ins.TryGetChunkData(item.Value, out var chunkData))
+                if (WorldMapMgr.Ins.TryGetChunkData(item.Value, out var chunkData))
                 {
                     if (chunkData.GetWorldObjectByLayer(AttackLayerMask, out var targets))
                     {
@@ -255,8 +197,11 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
                             var dis = Vector3.Magnitude(target.Value.WorldPosition - WorldPosition);
                             if (GTools.UnityObjectIsActive(target.Value) && minDis > dis)
                             {
-                                f_AttackTarget = target.Value;
-                                minDis = dis;
+                                if (target.Value is WorldObjectBaseData worldObj)
+                                {
+                                    f_AttackTarget = worldObj;
+                                    minDis = dis;
+                                }
                             }
                         }
                     }
@@ -267,7 +212,7 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
     }
     public bool AttackTargetCondition(int f_Index)
     {
-        if (WorldMapManager.Ins.TryGetChunkData(f_Index, out var chunkData))
+        if (WorldMapMgr.Ins.TryGetChunkData(f_Index, out var chunkData))
         {
             return chunkData.IsAlreadyLayer(AttackLayerMask);
         }

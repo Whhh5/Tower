@@ -39,18 +39,12 @@ public class Entity_Player_Hero1 : Person_Enemy
     {
         await base.OnClickAsync();
 
-        if (Data.CurWeapon != null)
-        {
-            Data.CurWeapon.StartExecute();
-        }
+
     }
     public override async UniTask OnClick2Async()
     {
         await base.OnClick2Async();
-        if (Data.CurWeapon != null)
-        {
-            Data.CurWeapon.StopExecute();
-        }
+
     }
 
 

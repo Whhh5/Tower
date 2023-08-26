@@ -7,8 +7,8 @@ using System;
 
 public class PathManager : Singleton<PathManager>
 {
-    private Vector2Int GetRowCol(int f_Index) => WorldMapManager.Ins.GetRowCol(f_Index);
-    private int ChunkCount => WorldMapManager.Ins.ChunkCount;
+    private Vector2Int GetRowCol(int f_Index) => WorldMapMgr.Ins.GetRowCol(f_Index);
+    private int ChunkCount => WorldMapMgr.Ins.ChunkCount;
 
     public bool TryGetAStarPath(int f_Start, int f_End, out ListStack<PathElementData> f_Result, Func<int, bool> f_ExtraCondition = null)
     {
@@ -62,7 +62,7 @@ public class PathManager : Singleton<PathManager>
 
             void AddList(EDirection f_Dir)
             {
-                var isNext = WorldMapManager.Ins.GetDirectionChunk(f_Target.Index, f_Dir, out var result);
+                var isNext = WorldMapMgr.Ins.GetDirectionChunk(f_Target.Index, f_Dir, out var result);
                 if (!isNext || backIndexDix.ContainsKey(result) ||
                     (!(result == f_End || (f_ExtraCondition?.Invoke(result) ?? true)))) return;
                 
@@ -89,8 +89,8 @@ public class PathManager : Singleton<PathManager>
 
         float GetPrice(Vector2Int f_RowCol)
         {
-            var pos1 = WorldMapManager.Ins.GetChunkPoint(f_RowCol);
-            var pos2 = WorldMapManager.Ins.GetChunkPoint(endRowCol);
+            var pos1 = WorldMapMgr.Ins.GetChunkPoint(f_RowCol);
+            var pos2 = WorldMapMgr.Ins.GetChunkPoint(endRowCol);
             return Mathf.Abs(f_RowCol.x - endRowCol.x) + Mathf.Abs(f_RowCol.y - endRowCol.y);
         }
     }
@@ -120,7 +120,7 @@ public static class PathCondition
     }
     public static bool Person_Enemy(int f_Index)
     {
-        if (WorldMapManager.Ins.TryGetChunkData(f_Index, out var chunkData))
+        if (WorldMapMgr.Ins.TryGetChunkData(f_Index, out var chunkData))
         {
             if (chunkData.CurObjectType == EWorldObjectType.Road)
             {

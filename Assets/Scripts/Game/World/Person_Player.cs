@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Person_Player : Person
+public class Person_Player : DependChunk
 {
 
 }

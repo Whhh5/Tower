@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class MoveCardMgr : MonoSingleton<MoveCardMgr>, IUpdateBase
 {
-    private EHeroCradType m_CurSelectHero = EHeroCradType.EnemyCount;
+    private EHeroQualityLevel m_CurSelectHero = EHeroQualityLevel.EnumCount;
     public int UpdateLevelID { get; set; }
     [SerializeField]
     private RectTransform m_TargetIcon = null;
@@ -26,16 +26,16 @@ public class MoveCardMgr : MonoSingleton<MoveCardMgr>, IUpdateBase
         m_TargetArrow.gameObject.SetActive(false);
     }
     private Vector2 m_MouseClickDownPos = Vector2.zero;
-    public void SetCurSelectHero(EHeroCradType f_HeroType)
+    public void SetCurSelectHero(EHeroQualityLevel f_Quality)
     {
-        if (f_HeroType != m_CurSelectHero)
+        if (f_Quality != m_CurSelectHero)
         {
             if (TryGetCurrentMousePos(out var pos))
             {
                 m_MouseClickDownPos = pos;
                 m_TargetArrow.anchoredPosition = pos;
             }
-            m_CurSelectHero = f_HeroType;
+            m_CurSelectHero = f_Quality;
             GTools.LifecycleMgr.AddUpdate(this);
             m_TargetIcon.gameObject.SetActive(true);
             m_TargetArrow.gameObject.SetActive(true);
@@ -58,15 +58,15 @@ public class MoveCardMgr : MonoSingleton<MoveCardMgr>, IUpdateBase
         m_TargetIcon.gameObject.SetActive(false);
         m_TargetArrow.gameObject.SetActive(false);
         m_CurSelectHeroEntity = null;
-        var curSelectChunk = WorldMapManager.Ins.GetCurMouseEnable();
-        if (WorldMapManager.Ins.TryGetChunkData(curSelectChunk, out var chunkData))
+        var curSelectChunk = WorldMapMgr.Ins.GetCurMouseEnable();
+        if (WorldMapMgr.Ins.TryGetChunkData(curSelectChunk, out var chunkData))
         {
             if (chunkData.CurObjectType == EWorldObjectType.Road)
             {
-                PlaceHero(m_CurSelectHero, chunkData.Index);
+                PlaceIncubator(m_CurSelectHero, chunkData.Index);
             }
         }
-        m_CurSelectHero = EHeroCradType.EnemyCount;
+        m_CurSelectHero = EHeroQualityLevel.EnumCount;
     }
     public void SetTargetIcon(Sprite f_Sprite)
     {
@@ -77,7 +77,7 @@ public class MoveCardMgr : MonoSingleton<MoveCardMgr>, IUpdateBase
     {
         if (TryGetCurrentMousePos(out var pos))
         {
-            if (m_CurSelectHero != EHeroCradType.EnemyCount)
+            if (m_CurSelectHero != EHeroQualityLevel.EnumCount)
             {
                 m_TargetIcon.anchoredPosition = pos;
             }
@@ -93,7 +93,7 @@ public class MoveCardMgr : MonoSingleton<MoveCardMgr>, IUpdateBase
         }
         if (Input.GetMouseButtonUp(0))
         {
-            if (m_CurSelectHeroEntity != null && PathManager.Ins.TryGetAStarPath(m_CurSelectHeroEntity.CurrentIndex, WorldMapManager.Ins.GetCurMouseEnable(), out var path))
+            if (m_CurSelectHeroEntity != null && PathManager.Ins.TryGetAStarPath(m_CurSelectHeroEntity.CurrentIndex, WorldMapMgr.Ins.GetCurMouseEnable(), out var path))
             {
                 m_CurSelectHeroEntity.SetPath(path);
             }
@@ -101,12 +101,10 @@ public class MoveCardMgr : MonoSingleton<MoveCardMgr>, IUpdateBase
             GTools.LifecycleMgr.RemoveUpdate(this);
         }
     }
-    private void PlaceHero(EHeroCradType f_HeroType, int f_ChunkIndex)
+    private void PlaceIncubator(EHeroQualityLevel f_IncubatorLevel, int f_ChunkIndex)
     {
-        if (TableMgr.Ins.TryGetHeroCradInfo(f_HeroType, out var heroInfo))
-        {
-            heroInfo.CreateHeroIncubator(f_HeroType, f_ChunkIndex);
-        }
+        var incubator = new Entity_Incubator1Data();
+        incubator.Initialization(0, f_ChunkIndex, f_IncubatorLevel);
     }
 
     [SerializeField]

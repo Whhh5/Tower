@@ -166,23 +166,23 @@ public class GameDebugerWindow : EditorWindow
             {
                 if (GUILayout.Button("Create Chunk", GUILayout.Width(150), GUILayout.Height(50)) && Application.isPlaying)
                 {
-                    WorldMapManager.Ins.CreateChunkTest();
+                    WorldMapMgr.Ins.CreateChunkTest();
                 }
                 if (GUILayout.Button("Clear Chunk", GUILayout.Width(150), GUILayout.Height(50)) && Application.isPlaying)
                 {
-                    WorldMapManager.Ins.CreateMapChunk_Clear();
+                    WorldMapMgr.Ins.CreateMapChunk_Clear();
                 }
                 if (GUILayout.Button("Create Alt", GUILayout.Width(150), GUILayout.Height(50)) && Application.isPlaying)
                 {
-                    WorldMapManager.Ins.CreateAltsData();
+                    WorldMapMgr.Ins.CreateAltsData();
                 }
                 if (GUILayout.Button("Create Road", GUILayout.Width(150), GUILayout.Height(50)) && Application.isPlaying)
                 {
-                    WorldMapManager.Ins.CreateRoadDataTest(m_CreateRoadParams.x, m_CreateRoadParams.y, m_CreateRoadParams.z);
+                    WorldMapMgr.Ins.CreateRoadDataTest(m_CreateRoadParams.x, m_CreateRoadParams.y, m_CreateRoadParams.z);
                 }
                 if (GUILayout.Button("Extend Road", GUILayout.Width(150), GUILayout.Height(50)) && Application.isPlaying)
                 {
-                    WorldMapManager.Ins.CreateRoadExtend();
+                    WorldMapMgr.Ins.CreateRoadExtend();
                 }
             }
             EditorGUILayout.EndHorizontal();
@@ -190,11 +190,11 @@ public class GameDebugerWindow : EditorWindow
             {
                 if (GUILayout.Button("Create Spawn Point", GUILayout.Width(150), GUILayout.Height(50)) && Application.isPlaying)
                 {
-                    WorldMapManager.Ins.InitMonsterSpawnPointData();
+                    WorldMapMgr.Ins.InitMonsterSpawnPointData();
                 }
                 if (GUILayout.Button("Create Spawn Point", GUILayout.Width(150), GUILayout.Height(50)) && Application.isPlaying)
                 {
-                    WorldMapManager.Ins.CreateTowerLight();
+                    WorldMapMgr.Ins.CreateTowerLight();
                 }
                 if (GUILayout.Button("Create Monster", GUILayout.Width(150), GUILayout.Height(50)) && Application.isPlaying)
                 {

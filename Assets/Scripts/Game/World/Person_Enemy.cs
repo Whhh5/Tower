@@ -24,41 +24,16 @@ public abstract class Person_EnemyData : WorldObjectBaseData
     public ListStack<PathElementData> m_PathPoint = null;
     public override bool IsUpdateEnable => true;
 
-    public override void AfterLoad()
-    {
-        base.AfterLoad();
-        Resurgence();
-    }
-    public override void OnUnLoad()
-    {
-        CurStatus = EPersonStatusType.None;
-        base.OnUnLoad();
-    }
+
     // 复活
-    public void Resurgence()
+    public override void Resurgence()
     {
-        CurStatus = EPersonStatusType.Idle;
+        base.Resurgence();
         UpdatePathPoint(TargetIndex);
-
-        WorldWindowManager.Ins.UpdateBloodHint(this);
-    }
-    public void Death()
-    {
-        WorldWindowManager.Ins.RemoveBloodHint(this);
     }
 
-    public override int ChangeBlood(ChangeBloodData f_Increment)
-    {
-        var value = base.ChangeBlood(f_Increment);
-        WorldWindowManager.Ins.UpdateBloodHint(this);
-        return value;
-    }
-    public override int ChangeMagic(int f_Increment)
-    {
-        var value = base.ChangeMagic(f_Increment);
-        WorldWindowManager.Ins.UpdateBloodHint(this);
-        return value;
-    }
+
+
     public override void OnUpdate()
     {
         base.OnUpdate();
@@ -113,7 +88,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
                 break;
             case EPersonStatusType.Attack:
                 {
-                    if(m_CurTarget != null && m_CurTarget.CurStatus != EPersonStatusType.Die && WorldMapManager.Ins.IsInNearByIndex(CurrentIndex, m_CurTarget.CurrentIndex, AtkRange))
+                    if(m_CurTarget != null && m_CurTarget.CurStatus != EPersonStatusType.Die && WorldMapMgr.Ins.IsInNearByIndex(CurrentIndex, m_CurTarget.CurrentIndex, AtkRange))
                     {
                         if (MagicPercent >= 1)
                         {
@@ -167,7 +142,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
     }
     public bool PathCondition1(int f_Index)
     {
-        if (WorldMapManager.Ins.TryGetChunkData(f_Index, out var chunkData))
+        if (WorldMapMgr.Ins.TryGetChunkData(f_Index, out var chunkData))
         {
             if (chunkData.CurObjectType == EWorldObjectType.Road)
             {
@@ -178,7 +153,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
     }
     public bool PathCondition2(int f_Index)
     {
-        if (WorldMapManager.Ins.TryGetChunkData(f_Index, out var chunkData))
+        if (WorldMapMgr.Ins.TryGetChunkData(f_Index, out var chunkData))
         {
             if ((chunkData.CurObjectType & EWorldObjectType.Road) != 0
                 && ((chunkData.CurObjectType & EWorldObjectType.Construction) == 0)
@@ -195,7 +170,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
         StartIndex = f_StartIndex;
         CurrentIndex = StartIndex = f_StartIndex;
 
-        var point = WorldMapManager.Ins.GetChunkPoint(f_StartIndex);
+        var point = WorldMapMgr.Ins.GetChunkPoint(f_StartIndex);
         m_MoveToTarget = point;
         SetPosition(point);
     }
@@ -219,7 +194,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
 
         Entity_Chunk1Data chunkData = null;
         PathElementData pathData = null;
-        while (m_PathPoint != null && m_PathPoint.TryPop(out pathData) && WorldMapManager.Ins.TryGetChunkData(pathData.ChunkIndex, out chunkData) && chunkData.Index == CurrentIndex)
+        while (m_PathPoint != null && m_PathPoint.TryPop(out pathData) && WorldMapMgr.Ins.TryGetChunkData(pathData.ChunkIndex, out chunkData) && chunkData.Index == CurrentIndex)
         {
 
         }
@@ -242,10 +217,10 @@ public abstract class Person_EnemyData : WorldObjectBaseData
         if (NextPathPoint(out var chunkData))
         {
             m_MoveToTarget = chunkData.PointUp;
-            WorldMapManager.Ins.MoveChunkElement(this, chunkData.Index);
+            WorldMapMgr.Ins.MoveChunkElement(this, chunkData.Index);
             return true;
         }
-        else if (CurrentIndex != CurTargetIndex && WorldMapManager.Ins.TryGetChunkData(CurTargetIndex, out chunkData))
+        else if (CurrentIndex != CurTargetIndex && WorldMapMgr.Ins.TryGetChunkData(CurTargetIndex, out chunkData))
         {
             if (m_LastTargetIndex == CurTargetIndex && Time.time - m_LastTime < 1.0f)
             {
@@ -293,20 +268,23 @@ public abstract class Person_EnemyData : WorldObjectBaseData
     {
         WorldObjectBaseData target = null;
         float curMinDis = float.MaxValue;
-        if (WorldMapManager.Ins.TryGetRangeChunkByIndex(CurrentIndex, out var result, GetAttackTargetCondition, false, AtkRange))
+        if (WorldMapMgr.Ins.TryGetRangeChunkByIndex(CurrentIndex, out var result, GetAttackTargetCondition, false, AtkRange))
         {
             // ��������Ŀ��
             while (result.TryPop(out var index))
             {
-                if (WorldMapManager.Ins.TryGetChunkObjectByLayer(index, AttackLayerMask, out var targetData))
+                if (WorldMapMgr.Ins.TryGetChunkObjectByLayer(index, AttackLayerMask, out var targetData))
                 {
                     foreach (var item in targetData)
                     {
                         var dis = Vector3.Magnitude(item.Value.WorldPosition - WorldPosition);
                         if (curMinDis > dis)
                         {
-                            curMinDis = dis;
-                            target = item.Value;
+                            if (item.Value is WorldObjectBaseData worldObj)
+                            {
+                                target = worldObj;
+                                curMinDis = dis;
+                            }
                         }
                     }
                 }
@@ -318,7 +296,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
 
     private bool GetAttackTargetCondition(int f_Index)
     {
-        if (WorldMapManager.Ins.TryGetChunkData(f_Index, out var chunkData))
+        if (WorldMapMgr.Ins.TryGetChunkData(f_Index, out var chunkData))
         {
             if (chunkData.GetWorldObjectByLayer(AttackLayerMask, out var result) && result.Count > 0)
             {
@@ -345,7 +323,6 @@ public abstract class Person_EnemyData : WorldObjectBaseData
             case EPersonStatusType.Die:
                 {
                     GTools.PlayerMgr.Increases(DiePrice);
-                    Death();
                 }
                 break;
             default:

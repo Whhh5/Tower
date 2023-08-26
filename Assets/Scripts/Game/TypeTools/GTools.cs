@@ -61,11 +61,12 @@ public static class GTools
     public static TableMgr TableMgr => TableMgr.Ins;
     public static TerrainMgr TerrainMgr => TerrainMgr.Ins;
     public static WeatherMgr WeatherMgr => WeatherMgr.Ins;
-    public static WorldMapManager WorldMapMgr  => WorldMapManager.Ins; 
+    public static WorldMapMgr WorldMapMgr  => WorldMapMgr.Ins; 
     public static PlayerMgr PlayerMgr => PlayerMgr.Ins; 
     public static CameraMgr CameraMgr => CameraMgr.Ins;
     public static HeroIncubatorPoolMgr HeroIncubatorPoolMgr => HeroIncubatorPoolMgr.Ins;
     public static MonsterMgr MonsterMgr => MonsterMgr.Ins;
+    public static UIMgr UIMgr => UIMgr.Ins;
     #endregion
 
     #region Mono 静态类

@@ -5,15 +5,13 @@ using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 
-public class Entity_Chunk1Data : WorldObjectBaseData
+public class Entity_Chunk1Data : UnityObjectData
 {
-    public Entity_Chunk1Data(int f_Index): base(f_Index, f_Index)
+    public Entity_Chunk1Data(int f_Index): base(f_Index)
     {
         CurObjectType = EWorldObjectType.None;
     }
     public override EWorldObjectType ObjectType => EWorldObjectType.None;
-    public override ELayer LayerMask => ELayer.Terrain;
-    public override ELayer AttackLayerMask => ELayer.Default;
 
     public override AssetKey AssetPrefabID => AssetKey.Chunk1;
     public override void AfterLoad()
@@ -42,15 +40,15 @@ public class Entity_Chunk1Data : WorldObjectBaseData
     public EWorldObjectType CurObjectType { get; private set; }
 
     // 当前块上的所有对象
-    private Dictionary<ELayer, Dictionary<int, WorldObjectBaseData>> m_AllObjectsLayer = new();
-    private Dictionary<EWorldObjectType, Dictionary<int, WorldObjectBaseData>> m_AllObjectsType = new();
+    private Dictionary<ELayer, Dictionary<int, DependChunkData>> m_AllObjectsLayer = new();
+    private Dictionary<EWorldObjectType, Dictionary<int, DependChunkData>> m_AllObjectsType = new();
 
 
-    public bool GetWorldObjectByLayer(ELayer f_ObjectType, out Dictionary<int, WorldObjectBaseData> f_Result)
+    public bool GetWorldObjectByLayer(ELayer f_ObjectType, out Dictionary<int, DependChunkData> f_Result)
     {
         return m_AllObjectsLayer.TryGetValue(f_ObjectType, out f_Result);
     }
-    public bool GetWorldObjectByType(EWorldObjectType f_ObjectType, out Dictionary<int, WorldObjectBaseData> f_Result)
+    public bool GetWorldObjectByType(EWorldObjectType f_ObjectType, out Dictionary<int, DependChunkData> f_Result)
     {
         return m_AllObjectsType.TryGetValue(f_ObjectType, out f_Result);
     }
@@ -75,7 +73,7 @@ public class Entity_Chunk1Data : WorldObjectBaseData
         
     }
 
-    public bool AddElement<T>(T f_ObjectData, bool f_IsForce = false) where T : WorldObjectBaseData
+    public bool AddElement<T>(T f_ObjectData, bool f_IsForce = false) where T : DependChunkData
     {
         if ((CurObjectType & f_ObjectData.ObjectType) != 0 && !f_IsForce)
         {
@@ -107,7 +105,7 @@ public class Entity_Chunk1Data : WorldObjectBaseData
         }
     }
 
-    public void RemoveElement(WorldObjectBaseData fObjectBaseData)
+    public void RemoveElement(DependChunkData fObjectBaseData)
     {
         if (m_AllObjectsType.TryGetValue(fObjectBaseData.ObjectType, out var list) && list.ContainsKey(fObjectBaseData.Index))
         {
@@ -168,7 +166,7 @@ public class Entity_Chunk1Data : WorldObjectBaseData
         return m_AllObjectsLayer.ContainsKey(f_Layer);
     }
 }
-public class Entity_Chunk1 : WorldObjectBase
+public class Entity_Chunk1 : ObjectPoolBase
 {
     private static Color whiteYellow = new Color(1.0f, 0.92f, 0.015f); 
     // 文字部分
@@ -190,7 +188,7 @@ public class Entity_Chunk1 : WorldObjectBase
         await base.OnStartAsync(f_Params);
 
         m_TMPIndex.text = $"{ChunkData.Index}";
-        m_TMPRowCol.text = $"{WorldMapManager.Ins.GetRowCol(ChunkData.Index)}";
+        m_TMPRowCol.text = $"{WorldMapMgr.Ins.GetRowCol(ChunkData.Index)}";
         m_TMPHeight.text = $"H:{ChunkData.LocalScale.y:0.00}";
 
         foreach (Transform item in m_TargetRoot)
@@ -222,11 +220,11 @@ public class Entity_Chunk1 : WorldObjectBase
     private void OnMouseEnter()
     {
         SetColor(whiteYellow);
-        WorldMapManager.Ins.SetCurMouseEnable(ChunkData?.Index ?? -1);
+        WorldMapMgr.Ins.SetCurMouseEnable(ChunkData?.Index ?? -1);
     }
     private void OnMouseExit()
     {
         SetColor(Color.white);
-        WorldMapManager.Ins.ClearCurMouseEnable();
+        WorldMapMgr.Ins.ClearCurMouseEnable();
     }
 }

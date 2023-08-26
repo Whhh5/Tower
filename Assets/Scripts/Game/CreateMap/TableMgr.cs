@@ -37,7 +37,7 @@ public enum EHeroCradType
     Hero2,
     Hero3,
     Hero4,
-    EnemyCount,
+    EnumCount,
 }
 public enum EHeroQualityLevel
 {
@@ -161,9 +161,13 @@ public enum AssetKey
     Entity_Incubator3,
     Entity_Incubator4,
     Icon_Incubator1,
+    Icon_IncubatorDebris1,
     Icon_Incubator2,
+    Icon_IncubatorDebris2,
     Icon_Incubator3,
+    Icon_IncubatorDebris3,
     Icon_Incubator4,
+    Icon_IncubatorDebris4,
 
 }
 public class HeroCradInfo
@@ -171,13 +175,8 @@ public class HeroCradInfo
     public EHeroQualityLevel QualityLevel;
     public string Name;
     public AssetKey AssetKet;
-    public HeroCradLevelInfo QualityLevelInfo => TableMgr.Ins.TryGetHeroQualityInfo(QualityLevel, out var levelInfo) ? levelInfo : null;
+    public HeroCradLevelInfo QualityLevelInfo => TableMgr.Ins.TryGetHeroCradLevelInfo(QualityLevel, out var levelInfo) ? levelInfo : null;
 
-    public void CreateHeroIncubator(EHeroCradType f_HeroType, int f_TargetIndex)
-    {
-        var incubatoe = new Entity_IncubatorData();
-        incubatoe.Initialization(0, f_TargetIndex, f_HeroType);
-    }
     public bool GetWorldObjectData(EHeroCradType f_HeroType, int f_TargetIndex, out WorldObjectBaseData f_Result) => TableMgr.Ins.GetHeroDataByType(f_HeroType, f_TargetIndex, out f_Result);
 }
 public class HeroCradLevelInfo
@@ -192,6 +191,7 @@ public class HeroIncubatorInfo
     public EHeroQualityLevel QualityLevel;
     public AssetKey IncubatorPrefab;
     public AssetKey IncubatorIcon;
+    public AssetKey IncubatorDebrisIcon;
     public float IncubatorTime; // 孵化时间
     public int Expenditure; // 花费
 }
@@ -459,9 +459,13 @@ public class TableMgr : Singleton<TableMgr>
         { AssetKey.BuffIcon_Poison, $"{BuffIconParentPath}/Poison" },
         { AssetKey.BuffIcon_AddBlood, $"{BuffIconParentPath}/AddBlood" },
         { AssetKey.Icon_Incubator1, $"{IncubatorIconParentPath}/Icon_Incubator1" },
+        { AssetKey.Icon_IncubatorDebris1, $"{IncubatorIconParentPath}/Icon_IncubatorDebris1" },
         { AssetKey.Icon_Incubator2, $"{IncubatorIconParentPath}/Icon_Incubator2" },
+        { AssetKey.Icon_IncubatorDebris2, $"{IncubatorIconParentPath}/Icon_IncubatorDebris2" },
         { AssetKey.Icon_Incubator3, $"{IncubatorIconParentPath}/Icon_Incubator3" },
+        { AssetKey.Icon_IncubatorDebris3, $"{IncubatorIconParentPath}/Icon_IncubatorDebris3" },
         { AssetKey.Icon_Incubator4, $"{IncubatorIconParentPath}/Icon_Incubator4" },
+        { AssetKey.Icon_IncubatorDebris4, $"{IncubatorIconParentPath}/Icon_IncubatorDebris4" },
     };
     public bool GetAssetPath(AssetKey f_Key, out string f_Result)
     {
@@ -574,7 +578,7 @@ public class TableMgr : Singleton<TableMgr>
             }
         },
     };
-    public bool TryGetHeroQualityInfo(EHeroQualityLevel f_EHeroCradLevel, out HeroCradLevelInfo f_HeroCradLevelInfo)
+    public bool TryGetHeroCradLevelInfo(EHeroQualityLevel f_EHeroCradLevel, out HeroCradLevelInfo f_HeroCradLevelInfo)
     {
         return m_HeroCradLevelInfo.TryGetValue(f_EHeroCradLevel, out f_HeroCradLevelInfo);
     }
@@ -680,6 +684,7 @@ public class TableMgr : Singleton<TableMgr>
                 Expenditure = 2,
                 IncubatorPrefab = AssetKey.Entity_Incubator1,
                 IncubatorIcon = AssetKey.Icon_Incubator1,
+                IncubatorDebrisIcon = AssetKey.Icon_IncubatorDebris1,
             }
         },
         {
@@ -692,6 +697,7 @@ public class TableMgr : Singleton<TableMgr>
                 Expenditure = 4,
                 IncubatorPrefab = AssetKey.Entity_Incubator2,
                 IncubatorIcon = AssetKey.Icon_Incubator2,
+                IncubatorDebrisIcon = AssetKey.Icon_IncubatorDebris2,
             }
         },
         {
@@ -704,6 +710,7 @@ public class TableMgr : Singleton<TableMgr>
                 Expenditure = 6,
                 IncubatorPrefab = AssetKey.Entity_Incubator3,
                 IncubatorIcon = AssetKey.Icon_Incubator3,
+                IncubatorDebrisIcon = AssetKey.Icon_IncubatorDebris3,
             }
         },
         {
@@ -716,6 +723,7 @@ public class TableMgr : Singleton<TableMgr>
                 Expenditure = 10,
                 IncubatorPrefab = AssetKey.Entity_Incubator4,
                 IncubatorIcon = AssetKey.Icon_Incubator4,
+                IncubatorDebrisIcon = AssetKey.Icon_IncubatorDebris4,
             }
         },
     };
@@ -762,7 +770,7 @@ public bool GetHeroDataByType(EHeroCradType f_HeroType, int f_TargetIndex, out W
         case EHeroCradType.Hero4:
             f_Result = new Entity_Player_Hero4Data(0, f_TargetIndex);
             break;
-        case EHeroCradType.EnemyCount:
+        case EHeroCradType.EnumCount:
             break;
         default:
             break;
