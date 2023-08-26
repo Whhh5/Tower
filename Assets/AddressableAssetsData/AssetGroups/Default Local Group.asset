@@ -79,6 +79,10 @@ MonoBehaviour:
     m_Address: UITest1
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: b2516a8a588a23444b542f7791606b86
+    m_Address: citywar_pannel_lose
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 056db3dee3486459a9eb7c3820ef1dcd, type: 2}
   m_SchemaSet:

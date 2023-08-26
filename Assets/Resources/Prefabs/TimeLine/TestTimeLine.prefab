@@ -69,12 +69,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UpdateInteractable: 0
-  m_CentralPoint: {fileID: 0}
-  m_BeHitPoint: {fileID: 0}
-  m_BuffPoint: {fileID: 0}
-  m_EffectPoint: {fileID: 0}
-  m_TrailPoint: {fileID: 0}
-  m_WeaponPoint: {fileID: 0}
+  m_CurAnim: {fileID: 0}
+  CurAnimationTime: 1
   m_MainBody: {fileID: 0}
   m_MainObject: {fileID: 0}
   m_PointUp: {fileID: 0}
@@ -5092,7 +5088,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 08a3af2fbc23c4bcaae0c29e0708051b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
