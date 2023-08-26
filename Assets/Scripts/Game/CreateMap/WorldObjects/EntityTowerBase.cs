@@ -20,9 +20,13 @@ public abstract class EntityTowerBaseData : WorldObjectBaseData
     protected WorldObjectBaseData m_AttackTarget = null;
     // ¹¥»÷¼ä¸ô
     protected abstract float AtkIntervalOriginal { get; }
-    protected float m_AddAtkinterval = 0;
+    private float m_AddAtkinterval = 0;
     public float AtkInterval => Mathf.Clamp(AtkIntervalOriginal + m_AddAtkinterval, 0.2f, 10f);
     private float m_LastAtkTime = 0;
+    protected virtual float BulletSpeed { get; } = 5;
+    protected float AtkSpeed => AtkInterval * BulletSpeed;
+    // ¹¥»÷·¶Î§
+    protected virtual int AtkRange { get; } = 6;
 
     // Æô¶¯×´Ì¬
     public ETowerStatus CurTowerStatus = ETowerStatus.Stop;
@@ -30,6 +34,9 @@ public abstract class EntityTowerBaseData : WorldObjectBaseData
     {
         switch (f_TowerStatus)
         {
+            case ETowerStatus.Idle:
+                SetPersonStatus(EPersonStatusType.None);
+                break;
             case ETowerStatus.Start:
                 SetPersonStatus(EPersonStatusType.Walk, EAnimatorStatus.Stop);
                 break;
@@ -44,6 +51,17 @@ public abstract class EntityTowerBaseData : WorldObjectBaseData
         }
         CurTowerStatus = f_TowerStatus;
     }
+    public override void AfterLoad()
+    {
+        base.AfterLoad();
+
+        WorldWindowManager.Ins.UpdateBloodHint(this);
+    }
+    public override void OnUnLoad()
+    {
+        base.OnUnLoad();
+        WorldWindowManager.Ins.RemoveBloodHint(this);
+    }
     // Update 
     public override bool IsUpdateEnable => true;
     public override void OnUpdate()
@@ -53,6 +71,14 @@ public abstract class EntityTowerBaseData : WorldObjectBaseData
         switch (CurStatus)
         {
             case EPersonStatusType.None: // ¾²Ö¹¶¯»­
+                {
+                    var targets = GTools.MathfMgr.GetTargets_Sphere<WorldObjectBaseData>(WorldPosition, AtkRange, AttackLayerMask);
+                    if (targets.Count > 0)
+                    {
+                        m_AttackTarget = targets[0];
+                        SetPersonStatus(EPersonStatusType.Attack);
+                    }
+                }
                 break;
             case EPersonStatusType.Idle: // Í£Ö¹¶¯»­
                 break;
@@ -66,7 +92,7 @@ public abstract class EntityTowerBaseData : WorldObjectBaseData
                         {
 
                         }
-                        else if (CurrentMagic == 1)
+                        else if (MagicPercent == 1)
                         {
                             SetPersonStatus(EPersonStatusType.Skill);
                         }
@@ -74,6 +100,10 @@ public abstract class EntityTowerBaseData : WorldObjectBaseData
                         {
                             m_LastAtkTime = Time.time;
                         }
+                    }
+                    else
+                    {
+                        SetTowerStatus(ETowerStatus.Idle);
                     }
                 }
                 break;
@@ -93,7 +123,10 @@ public abstract class EntityTowerBaseData : WorldObjectBaseData
         switch (CurStatus)
         {
             case EPersonStatusType.Attack:
-                AttackTarget();
+                if (GTools.UnityObjectIsActive(m_AttackTarget))
+                {
+                    AttackTarget();
+                }
                 break;
             default:
                 break;
@@ -105,15 +138,15 @@ public abstract class EntityTowerBaseData : WorldObjectBaseData
         switch (CurStatus)
         {
             case EPersonStatusType.Idle:
-                SetPersonStatus(EPersonStatusType.None);
+                SetPersonStatus(EPersonStatusType.None, EAnimatorStatus.Loop);
                 break;
             case EPersonStatusType.Walk:
-                SetPersonStatus(EPersonStatusType.Attack);
+                SetPersonStatus(EPersonStatusType.None);
                 break;
             case EPersonStatusType.Skill:
                 CurrentMagic = 0;
                 m_CurSkillCount++;
-                SetPersonStatus(EPersonStatusType.Attack);
+                SetPersonStatus(EPersonStatusType.None);
                 break;
             default:
                 break;

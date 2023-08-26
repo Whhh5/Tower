@@ -26,6 +26,8 @@ public class Entity_Player_Hero2Data : Entity_HeroBaseData
 
     public override int HarmBase => 5;
 
+    public override EHeroCradType HeroCradType => EHeroCradType.Hero2;
+
     public override void AnimatorCallback050()
     {
         base.AnimatorCallback050();
@@ -34,8 +36,8 @@ public class Entity_Player_Hero2Data : Entity_HeroBaseData
         {
             case EPersonStatusType.Attack:
                 {
-                    var eff = new TestTimeLineData(0, this, AttackPoint, CurAttackTarget, -HarmBase, true, DirectorWrapMode.Loop);
-                    var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, AtkSpeed);
+                    var eff = new TestTimeLineData( this, AttackPoint, CurAttackTarget, -HarmBase, true, DirectorWrapMode.Loop);
+                    var data = new Effect_Track_Line<TestTimeLineData>(eff, AtkSpeed);
                     GTools.RunUniTask(data.StartExecute());
                 }
                 break;
@@ -85,8 +87,8 @@ public class Entity_Player_Hero2Data : Entity_HeroBaseData
 
     public void SkillStage1()
     {
-        var eff = new TestTimeLineData(0, this, AttackPoint, CurAttackTarget, -Mathf.CeilToInt(HarmBase * 1), false, DirectorWrapMode.Loop);
-        var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, AtkSpeed);
+        var eff = new TestTimeLineData( this, AttackPoint, CurAttackTarget, -Mathf.CeilToInt(HarmBase * 1), false, DirectorWrapMode.Loop);
+        var data = new Effect_Track_Line<TestTimeLineData>(eff, AtkSpeed);
         GTools.RunUniTask(data.StartExecute());
     }
 
@@ -98,8 +100,8 @@ public class Entity_Player_Hero2Data : Entity_HeroBaseData
             foreach (var item in targets)
             {
                 var rangeSpeed = GTools.MathfMgr.GetRandomValue(6.0f, 10.0f);
-                var eff = new TestTimeLineData(0, this, SkillPoint2, item, -Mathf.CeilToInt(HarmBase * 1.5f), false, DirectorWrapMode.Loop);
-                var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, rangeSpeed);
+                var eff = new TestTimeLineData( this, SkillPoint2, item, -Mathf.CeilToInt(HarmBase * 1.5f), false, DirectorWrapMode.Loop);
+                var data = new Effect_Track_Line<TestTimeLineData>(eff, rangeSpeed);
                 GTools.RunUniTask(data.StartExecute());
             }
 
@@ -114,8 +116,8 @@ public class Entity_Player_Hero2Data : Entity_HeroBaseData
             foreach (var item in targets)
             {
                 var rangeSpeed = GTools.MathfMgr.GetRandomValue(AtkSpeed - 2.0f, AtkSpeed + 3.0f);
-                var eff = new TestTimeLineData(0, this, SkillPoint2, item, -HarmBase * 2, false, DirectorWrapMode.Loop);
-                var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, rangeSpeed);
+                var eff = new TestTimeLineData( this, SkillPoint2, item, -HarmBase * 2, false, DirectorWrapMode.Loop);
+                var data = new Effect_Track_Line<TestTimeLineData>(eff, rangeSpeed);
                 GTools.RunUniTask(data.StartExecute());
             }
 

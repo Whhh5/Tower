@@ -148,14 +148,15 @@ public interface ILoadPrefabAsync
         where TLoad : UnityObjectData
     {
         f_Target.OnUnLoad();
+        var loadKey = f_Target.LoadKey;
         f_Target.LoadKey = int.MinValue;
         if (f_Target.LoadResult == LoadAsyncResult.Succeed)
         {
-            if (m_DicEntity.TryGetValue(f_Target.ObjectType, out var list) && list.ContainsKey(f_Target.LoadKey))
+            if (m_DicEntity.TryGetValue(f_Target.ObjectType, out var list) && list.ContainsKey(loadKey))
             {
-                list.Remove(f_Target.LoadKey);
+                list.Remove(loadKey);
             }
-            m_LoadKeyList.Push(f_Target.LoadKey);
+            m_LoadKeyList.Push(loadKey);
             LoadAssetManager.Ins.UnLoad(f_Target.PrefabTarget);
             f_Target.PrefabTarget = null;
         }

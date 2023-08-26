@@ -5,28 +5,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Playables;
 
-public class Entity_Player_Default2_AttackEffect<T> : EffectMoveBaseData
-    where T : TestTimeLineData
-{
-    public Entity_Player_Default2_AttackEffect(T f_EffectData, float f_UnitSpeed = 1) : base(f_EffectData, f_EffectData.WorldPosition, f_EffectData.TargetEnemy.CentralPoint, f_UnitSpeed)
-    {
-        m_Initiator = f_EffectData.Initiator;
-        m_TargetEnemy = f_EffectData.TargetEnemy;
-    }
-    public T Effect = null;
-    private WorldObjectBaseData m_Initiator = null;
-    private WorldObjectBaseData m_TargetEnemy = null;
-    public override bool GetExecuteCondition()
-    {
-        var result = Vector3.Magnitude(TargetPosition - CurPosition) > 0.001f;
-        return result;
-    }
-
-    public override Vector3? GetPosition()
-    {
-        return m_TargetEnemy != null ? m_TargetEnemy.CentralPoint : TargetPosition;
-    }
-}
 public class Entity_Player_Default2Data : Person_EnemyData
 {
     public Entity_Player_Default2Data(int f_Index, int f_TargetIndex, Entity_SpawnPointPlayerData f_TargetSpawnPoint) : base(f_Index, f_TargetIndex, f_TargetSpawnPoint)
@@ -60,8 +38,8 @@ public class Entity_Player_Default2Data : Person_EnemyData
                 {
                     var startPos = Target != null && Target.AttackPoint != null ? Target.AttackPoint.position : WorldPosition;
 
-                    var eff = new TestTimeLineData(0, this, startPos, m_CurTarget, -HarmBase, false, DirectorWrapMode.Loop);
-                    var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, AtkSpeed);
+                    var eff = new TestTimeLineData( this, startPos, m_CurTarget, -HarmBase, false, DirectorWrapMode.Loop);
+                    var data = new Effect_Track_Line<TestTimeLineData>(eff, AtkSpeed);
                     GTools.RunUniTask(data.StartExecute());
                 }
                 break;

@@ -147,14 +147,14 @@ public class WorldMapManager : B1.Singleton<WorldMapManager>
     // 整个世界地图的长宽
     private Vector2Int m_WorldMapSize = new Vector2Int(100, 100);
 
-    [SerializeField] // scaleX: x-y, ScaleZ: z-w  块大小范围
+     // scaleX: x-y, ScaleZ: z-w  块大小范围
     private Vector4 ChunkSizeRandom = new Vector4(1, 2, 1, 2);
 
-    [SerializeField] // 地图快行列
-    private Vector2Int m_RowCol = new(10, 20);
+     // 地图快行列
+    public Vector2Int RowCol = new(10, 20);
 
-    [SerializeField] // 地图快间隔
-    public Vector2 m_Interval = new(0.2f, 0.2f);
+     // 地图快间隔
+    public Vector2 Interval = new(0.2f, 0.2f);
 
     // 存放所有的快
     private Dictionary<int, Entity_Chunk1Data> m_DicChunk = new();
@@ -191,8 +191,8 @@ public class WorldMapManager : B1.Singleton<WorldMapManager>
     [Button] // 初始化块数据
     public async void CreateChunkTest(Vector2Int? f_RowCol = null, Vector2? f_Interval = null)
     {
-        var rowCol = f_RowCol ?? m_RowCol;
-        var interval = f_Interval ?? m_Interval;
+        var rowCol = f_RowCol ?? RowCol;
+        var interval = f_Interval ?? Interval;
         UniTask[] tasks =
         {
             // 清楚数据
@@ -246,20 +246,20 @@ public class WorldMapManager : B1.Singleton<WorldMapManager>
             return -1 * Vector2Int.one;
         }
 
-        var x = f_Index / m_RowCol.y;
-        var y = f_Index % m_RowCol.y;
+        var x = f_Index / RowCol.y;
+        var y = f_Index % RowCol.y;
         return new Vector2Int(x, y);
     }
 
     // 根据行列获得索引
     public int GetIndex(Vector2Int f_RowCol)
     {
-        if (f_RowCol.x < 0 || f_RowCol.x >= m_RowCol.x || f_RowCol.y < 0 || f_RowCol.y >= m_RowCol.y)
+        if (f_RowCol.x < 0 || f_RowCol.x >= RowCol.x || f_RowCol.y < 0 || f_RowCol.y >= RowCol.y)
         {
             return -1;
         }
 
-        var index = f_RowCol.x * m_RowCol.y + f_RowCol.y;
+        var index = f_RowCol.x * RowCol.y + f_RowCol.y;
         return index;
     }
 
@@ -374,8 +374,8 @@ public class WorldMapManager : B1.Singleton<WorldMapManager>
         Dictionary<int, WorldObjectBaseData> data = new();
         LoopChunk(VARIABLE =>
         {
-            if (((f_IsInclude && (VARIABLE.Value.CurObjectType & f_ObjectType) == f_ObjectType) 
-                || (!f_IsInclude && (VARIABLE.Value.CurObjectType & f_ObjectType) != 0)) 
+            if (((f_IsInclude && (VARIABLE.Value.CurObjectType & f_ObjectType) == f_ObjectType)
+                || (!f_IsInclude && (VARIABLE.Value.CurObjectType & f_ObjectType) != 0))
                 && VARIABLE.Value.GetWorldObjectByType(f_ObjectType, out var list))
             {
                 data.AddRange(list);
@@ -472,7 +472,7 @@ public class WorldMapManager : B1.Singleton<WorldMapManager>
     }
     public bool IsInNearByIndex(int f_Index, int f_Target, int f_Range = 1)
     {
-        if (TryGetRangeChunkByIndex(f_Index, out var result, index=>true, false, f_Range))
+        if (TryGetRangeChunkByIndex(f_Index, out var result, index => true, false, f_Range))
         {
             return result.Contains(f_Target);
         }
@@ -537,7 +537,6 @@ public class WorldMapManager : B1.Singleton<WorldMapManager>
 
                 var height = 1 + range / 30.0f * 2;
                 var worldObject = new WorldObjectBaseObjectDataAlt(data.Key, data.Key, height);
-                AddChunkElement(worldObject);
             }
             await CreateAltsAsync();
         }
@@ -589,11 +588,12 @@ public class WorldMapManager : B1.Singleton<WorldMapManager>
     public async void CreateRoadData(ListStack<PathElementData> f_PathData)
     {
         if (f_PathData.Count <= 0) return;
-        while (f_PathData.TryPop(out var pathData))
+        foreach (var item in f_PathData.GetEnumerator())
         {
-            var roadData = new WorldBaseObjectDataRoad(pathData.Index, pathData.ChunkIndex);
-            if (AddChunkElement(roadData))
+            var pathData = item.Value;
+            if (TryGetChunkData(pathData.ChunkIndex, out var chunkData) && chunkData.CurObjectType == EWorldObjectType.None)
             {
+                var roadData = new WorldBaseObjectDataRoad(pathData.Index, pathData.ChunkIndex);
                 m_DicRoad.Add(pathData.ChunkIndex, pathData);
             }
         }
@@ -635,7 +635,6 @@ public class WorldMapManager : B1.Singleton<WorldMapManager>
             if (!TryGetChunkData(VARIABLE.Value, out var chunkData)) continue;
 
             var roadData2 = new WorldBaseObjectDataRoad(VARIABLE.Key, VARIABLE.Value);
-            AddChunkElement(roadData2);
         }
 
         await CreateRoadAsync();
@@ -648,7 +647,7 @@ public class WorldMapManager : B1.Singleton<WorldMapManager>
     // 设置当前主路线
     public void SaveCurrentToMainRoad()
     {
-        if (!TryGetChunkByType(EWorldObjectType.Road, out var dataList, true)) 
+        if (!TryGetChunkByType(EWorldObjectType.Road, out var dataList, true))
             return;
 
     }
@@ -693,7 +692,7 @@ public class WorldMapManager : B1.Singleton<WorldMapManager>
         }
 
         // 左侧行列
-        for (var i = 0; i < m_RowCol.x; i++)
+        for (var i = 0; i < RowCol.x; i++)
         {
             for (var j = 0; j < 2; j++)
             {
@@ -708,9 +707,9 @@ public class WorldMapManager : B1.Singleton<WorldMapManager>
         }
 
         // 右侧行列
-        for (var u = 0; u < m_RowCol.x; u++)
+        for (var u = 0; u < RowCol.x; u++)
         {
-            for (var v = m_RowCol.y - 2; v < m_RowCol.y; v++)
+            for (var v = RowCol.y - 2; v < RowCol.y; v++)
             {
                 var endPoint = GetIndex(new Vector2Int(u, v));
                 if (!Condition(endPoint))
@@ -830,7 +829,6 @@ public class WorldMapManager : B1.Singleton<WorldMapManager>
         {
             var key = SpawnPointIndex++;
             var spawnPointData = new Entity_SpawnPointPlayerData(key, VARIABLE.Key, VARIABLE.Value);
-            AddChunkElement(spawnPointData);
 
             m_DicPlayerSpawnPoint.Add(key, spawnPointData);
         }
@@ -843,7 +841,6 @@ public class WorldMapManager : B1.Singleton<WorldMapManager>
         {
             var key = SpawnPointIndex++;
             var spawnPointData = new Entity_SpawnPointMonsterData(key, VARIABLE.Key, VARIABLE.Value);
-            AddChunkElement(spawnPointData);
 
             m_DicMonsterSpawnPoint.Add(key, spawnPointData);
         }
@@ -882,5 +879,47 @@ public class WorldMapManager : B1.Singleton<WorldMapManager>
     public void ClearCurMouseEnable()
     {
         m_CurMouseEnableIndex = -1;
+    }
+
+
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- 防御塔 篇
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    private Dictionary<int, EntityTowerBaseData> m_DicTowers = new();
+    public void CreateTowerLight()
+    {
+        var interval = 10;
+        foreach (var item in m_DicMainRoad)
+        {
+            var count = Mathf.Max(item.Value.Count / interval - 1, 0);
+            for (int i = 0; i < count; i++)
+            {
+                var curIndex = (i + 1) * interval;
+                var pathInfo = item.Value[curIndex];
+                if (TryGetChunkData(pathInfo.ChunkIndex, out var chunkData) && chunkData.CurObjectType == EWorldObjectType.Road)
+                {
+                    var key = m_DicTowers.Count;
+                    var towerData = new Entity_Tower_Light1Data(key, chunkData.Index);
+                    m_DicTowers.Add(key, towerData);
+                }
+            }
+        }
+
+        CreateTowerLightAsync();
+    }
+    public async void CreateTowerLightAsync()
+    {
+        foreach (var item in m_DicTowers)
+        {
+            await ILoadPrefabAsync.LoadAsync(item.Value);
+            await UniTask.Delay(500);
+        }
+    }
+    public void CreateTowerDark()
+    {
     }
 }

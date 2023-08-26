@@ -27,7 +27,7 @@ public class Entity_Chunk1Data : WorldObjectBaseData
     }
 
     // 块索引
-    public Vector2 ChunkIndex { get; private set; }
+    public Vector2Int ChunkIndex { get; private set; }
 
     // 六边形边长
     public static readonly float ChunkRideLength = 1.0f;

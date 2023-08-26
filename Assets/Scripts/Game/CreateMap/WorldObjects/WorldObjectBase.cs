@@ -22,8 +22,25 @@ public abstract class WorldObjectBaseData : PersonData
         CurrentIndex = f_ChunkIndex;
         CurrentMapKey = WorldMapManager.Ins.CurrentMapKey;
         WeatherMgr.Ins.InflictionGain(this);
+
+        WorldMapManager.Ins.MoveChunkElement(this, f_ChunkIndex);
+
+        if (WorldMapManager.Ins.TryGetChunkData(f_ChunkIndex, out var targetChunk))
+        {
+            SetPosition(targetChunk.PointUp);
+        }
+
+        if (GTools.TableMgr.TryGetColorByObjectType(ObjectType, out var color))
+        {
+            SetColor(color);
+        }
+    }
+    public virtual void Initialization(int f_index, int f_ChunkIndex)
+    {
+
     }
 
+    public WorldObjectBase WorldObjectTarget => GetCom<WorldObjectBase>();
     public int CurrentMapKey { get; private set; }
     public int CurrentIndex { get; protected set; }
     public void SetCurrentChunkIndex(int f_ToIndex)
@@ -40,21 +57,9 @@ public abstract class WorldObjectBaseData : PersonData
     public override void AfterLoad()
     {
         base.AfterLoad();
-
-        if (WorldMapManager.Ins.TryGetChunkData(CurrentIndex, out var targetChunk))
-        {
-            SetPosition(targetChunk.PointUp);
-        }
-
-        if (GTools.TableMgr.TryGetColorByObjectType(ObjectType, out var color))
-        {
-            SetColor(color);
-        }
     }
     public override void OnUnLoad()
     {
-        m_BuffDic.Clear();
-        WorldMapManager.Ins.RemoveChunkElement(this);
         base.OnUnLoad();
     }
     public override void OnUpdate()
@@ -62,6 +67,21 @@ public abstract class WorldObjectBaseData : PersonData
         base.OnUpdate();
         UpdateBuff();
         UpdateGain();
+    }
+    public override void AnimatorCallback000()
+    {
+        base.AnimatorCallback000();
+        switch (CurStatus)
+        {
+            case EPersonStatusType.Die:
+                {
+                    m_BuffDic.Clear();
+                    WorldMapManager.Ins.RemoveChunkElement(this);
+                }
+                break;
+            default:
+                break;
+        }
     }
     //--
     //===============================----------------------========================================
@@ -269,7 +289,6 @@ public class WorldObjectBase : Person, IUpdateBase
 
         }
     }
-
     private void OnMouseDown()
     {
         

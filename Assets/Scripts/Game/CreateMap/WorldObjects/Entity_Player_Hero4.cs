@@ -16,6 +16,7 @@ public class Entity_Player_Hero4Data : Entity_HeroBaseData
     public override float AtkSpeed => 10;
 
     public override int HarmBase => 1;
+    public override EHeroCradType HeroCradType => EHeroCradType.Hero4;
 
     public override void AnimatorCallback000()
     {
@@ -75,8 +76,8 @@ public class Entity_Player_Hero4Data : Entity_HeroBaseData
     { 
         base.AttackTarget();
 
-        var eff = new TestTimeLineData(0, this, AttackPoint, CurAttackTarget, -HarmBase, true, DirectorWrapMode.Loop);
-        var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, AtkSpeed * CurAnimaSpeed);
+        var eff = new TestTimeLineData(this, AttackPoint, CurAttackTarget, -HarmBase, true, DirectorWrapMode.Loop);
+        var data = new Effect_Track_Line<TestTimeLineData>(eff, AtkSpeed * CurAnimaSpeed);
         GTools.RunUniTask(async () =>
         {
             await data.StartExecute();

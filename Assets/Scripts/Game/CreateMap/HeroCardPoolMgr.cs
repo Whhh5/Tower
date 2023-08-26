@@ -1,4 +1,4 @@
-using B1;
+ï»¿using B1;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,7 +16,7 @@ public class HeroCradPoolInfo
     public int ResidueCount { get; private set; }
 
     public EHeroQualityLevel Level => CradInfo.QualityLevel;
-    public HeroCradLevelInfo LevelInfo => TableMgr.Ins.TryGetHeroCradLevelInfo(Level, out var levelInfo) ? levelInfo : null;
+    public HeroCradLevelInfo LevelInfo => TableMgr.Ins.TryGetHeroQualityInfo(Level, out var levelInfo) ? levelInfo : null;
     public HeroCradInfo CradInfo => TableMgr.Ins.TryGetHeroCradInfo(Type, out var cradInfo) ? cradInfo : null;
 
 
@@ -50,7 +50,7 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
     private Dictionary<EHeroCradType, HeroCradPoolInfo> m_CurCrad = new();
     public int CardGroupCount => 5;
     private List<EHeroCradType> m_CurCradList = new();
-    public void Init()
+    public override void Initialization()
     {
         m_HeroCradPool.Clear();
         for (int i = 0; i < (int)EHeroCradType.EnemyCount; i++)
@@ -70,6 +70,8 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
         }
 
         m_MainWindow = GameObject.FindObjectOfType<UIBattleMainWindow>();
+
+        InitHeroCradList();
     }
 
     private UIBattleMainWindow m_MainWindow = null;
@@ -86,28 +88,38 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
         }
     }
     /// <summary>
-    /// Âò¿¨ÅÆ
+    /// ä¹°å¡ç‰Œ
     /// </summary>
     public bool BuyCard(EHeroCradType f_BuyTarget)
     {
-        if (m_CurCradList.Contains(f_BuyTarget))
+        if (GTools.TableMgr.TryGetHeroCradInfo(f_BuyTarget, out var cardInfo))
         {
-            if (!m_CurCrad.TryGetValue(f_BuyTarget, out var value))
+            if (GTools.PlayerMgr.TryExpenditure(cardInfo.QualityLevelInfo.Expenditure))
             {
-                value = new(f_BuyTarget, 0);
-                m_CurCrad.Add(f_BuyTarget, value);
-            }
-            value.Push();
+                if (m_CurCradList.Contains(f_BuyTarget))
+                {
+                    if (!m_CurCrad.TryGetValue(f_BuyTarget, out var value))
+                    {
+                        value = new(f_BuyTarget, 0);
+                        m_CurCrad.Add(f_BuyTarget, value);
+                    }
+                    value.Push();
 
-            m_CurCradList.Remove(f_BuyTarget);
-            m_MainWindow.UpdateCardInfo(f_BuyTarget);
-            m_MainWindow.UpdateHeroInfo(f_BuyTarget);
-            return true;
+                    m_CurCradList.Remove(f_BuyTarget);
+                    m_MainWindow.UpdateCardInfo(f_BuyTarget);
+                    m_MainWindow.UpdateHeroInfo(f_BuyTarget);
+                    return true;
+                }
+            }
+            else
+            {
+                GTools.FloaterHint("<color=#FF0000FF>é‡‘å¸ä¸è¶³!!!</color>");
+            }
         }
         return false;
     }
     /// <summary>
-    /// Âô¿¨ÅÆ
+    /// å–å¡ç‰Œ
     /// </summary>
     public void SellCard(EHeroCradType f_CellTarget, int f_Count = 1)
     {
@@ -127,12 +139,12 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
         }
     }
     /// <summary>
-    /// »ñÈ¡Ò»×é¿¨ÅÆ
+    /// è·å–ä¸€ç»„å¡ç‰Œ
     /// </summary>
     /// <returns></returns>
     public bool TryGetGroupCrad(out List<EHeroCradType> f_Result)
     {
-        // ÏëÒª»ñÈ¡µÄ¿¨ÅÆÊıÁ¿
+        // æƒ³è¦è·å–çš„å¡ç‰Œæ•°é‡
         var playerLevel = EPlayerLevel.Level1;
         f_Result = null;
         if (!GTools.TableMgr.TryGetPlayerLevelInfo(playerLevel, out var playerLevelInfo))
@@ -145,7 +157,7 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
             RecycleGroupCrad(item);
         }
 
-        // ÄÃÈ¡¹Ì¶¨ÊıÁ¿
+        // æ‹¿å–å›ºå®šæ•°é‡
         f_Result = new();
         for (int i = 0; i < CardGroupCount; i++)
         {
@@ -161,7 +173,7 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
 
         bool TryGetRangeCrad(out EHeroCradType f_HeroCradType)
         {
-            // É¸Ñ¡µ±Ç°¿ÉÓÃ
+            // ç­›é€‰å½“å‰å¯ç”¨
             Dictionary<EHeroQualityLevel, List<EHeroCradType>> curCradDic = new();
             foreach (var item in m_HeroCradPool)
             {
@@ -182,7 +194,7 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
 
 
 
-            // ¸ÅÂÊ·¶Î§
+            // æ¦‚ç‡èŒƒå›´
             Dictionary<EHeroQualityLevel, (float tMin, float tMax)> curLevelPro = new();
 
             foreach (var item in curCradDic)
@@ -240,7 +252,7 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
                 }
             }
 
-            // ¸ù¾İµ±Ç°µÈ¼¶É¸Ñ¡
+            // æ ¹æ®å½“å‰ç­‰çº§ç­›é€‰
             var curValue = GTools.MathfMgr.GetRandomValue(0.0f, 1.0f);
             EHeroCradType? resultOne = null;
             foreach (var item in curLevelPro)
@@ -260,7 +272,7 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
 
     }
     /// <summary>
-    /// »ØÊÕ¿¨ÅÆ
+    /// å›æ”¶å¡ç‰Œ
     /// </summary>
     public void RecycleGroupCrad(EHeroCradType f_EHeroCradType, int f_Count = 1)
     {
@@ -275,9 +287,71 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
             }
         }
     }
-    public void UpdateCurCardGroup()
-    {
 
+
+    private Dictionary<EHeroQualityLevel, ListStack<EHeroCradType>> m_HeroCardList = new();
+    private void InitHeroCradList()
+    {
+        GTools.TableMgr.LoopHeroCradInfo((type, info) =>
+        {
+            if (!m_HeroCardList.TryGetValue(info.QualityLevel, out var list))
+            {
+                list = new("", 20);
+                m_HeroCardList.Add(info.QualityLevel, list);
+            }
+            list.Push(type);
+        });
+    }
+
+    public bool TryGetRandomCardByLevel(EHeroQualityLevel f_Level, out EHeroCradType f_HerpType)
+    {
+        f_HerpType = EHeroCradType.EnemyCount;
+        if (m_HeroCardList.TryGetValue(f_Level, out var list))
+        {
+            var index = GTools.MathfMgr.GetRandomValue(0, list.Count - 1);
+            var heroType = list[index];
+            f_HerpType = heroType;
+            return true;
+        }
+
+        return false;
+    }
+
+    public bool TryGetCardGroup(out List<EHeroCradType> f_Result, int f_Count = 5, EPlayerLevel? f_PlayerLevel = null)
+    {
+        var result = f_Result = new();
+        var playerLevel = f_PlayerLevel ?? GTools.PlayerMgr.Level;
+
+        if (GTools.TableMgr.TryGetPlayerLevelInfo(playerLevel, out var playerInfo))
+        {
+            if (playerInfo.GetQualityRandom(out var qualityInfo))
+            {
+                for (int i = 0; i < f_Count; i++)
+                {
+                    // è·å–å“è´¨ç­‰çº§
+                    var qualityPro = GTools.MathfMgr.GetRandomValue(0.0f, 1.0f);
+                    var qualityLevel = EHeroQualityLevel.Level1;
+                    foreach (var item in qualityInfo)
+                    {
+                        if (qualityPro < item.Value.tMin || qualityPro > item.Value.tMax)
+                        {
+                            continue;
+                        }
+                        qualityLevel = item.Key;
+                        break;
+                    }
+
+                    // è·å–éšæœºè‹±é›„ç¢ç‰‡
+                    if (TryGetRandomCardByLevel(qualityLevel, out var heroType))
+                    {
+                        result.Add(heroType);
+                    }
+
+                }
+
+            }
+        }
+        return result.Count > 0;
     }
 
 

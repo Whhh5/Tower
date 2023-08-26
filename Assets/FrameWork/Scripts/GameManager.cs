@@ -13,20 +13,36 @@ public enum EGameStatus
     Pause,
     Finish,
 }
+public interface IInitialization
+{
+    void Initialization();
+}
 public class GameManager
 {
+    public static List<IInitialization> m_StaticSingleton = new()
+    {
+        GTools.WeatherMgr,
+        GTools.TerrainMgr,
+        GTools.PlayerMgr,
+        GTools.CameraMgr,
+        GTools.HeroCardPoolMgr,
+        GTools.PlayerMgr,
+    };
+
+
     public static EGameStatus CurGameStatus = EGameStatus.Begin;
     [RuntimeInitializeOnLoadMethod]
     public static async void StartGame()
     {
         Application.targetFrameRate = GTools.MaxFrameRate;
 
+        Cursor.lockState = CursorLockMode.Confined;
+
         await InitializationManager();
         CurGameStatus = EGameStatus.Playing;
 
         // ≥ı ºªØ
         GTools.MathfMgr.Initialization();
-        HeroCardPoolMgr.Ins.Init();
 
 
         await AssetsMgr.Ins.LoadPrefabAsync<GameMgr>(EAssetName.GameManager, null);
@@ -38,7 +54,11 @@ public class GameManager
         MonsterManager.Ins.CreateEntityTest();
 
 
-        WeatherMgr.Ins.Initialization();
+        foreach (var item in m_StaticSingleton)
+        {
+            item.Initialization();
+        }
+        GTools.TerrainMgr.SetColorTest();
     }
 
 

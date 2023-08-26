@@ -49,11 +49,51 @@ public static class EditorEditor
                 container.onGUIHandler += OnGuiBody;
                 parent.Add(container);
                 toolbarZone.Add(parent);
+
+
+                // left
+                VisualElement toolbarZoneLeft = concreteRoot.Q("ToolbarZoneLeftAlign");
+                VisualElement parentLeft = new()
+                {
+                    style = {
+                                flexGrow = 1,
+                                flexDirection = FlexDirection.RowReverse,
+                            }
+                };
+                IMGUIContainer container2 = new IMGUIContainer();
+                container2.onGUIHandler += OnGuiBody2;
+                parentLeft.Add(container2);
+
+
+
+                toolbarZoneLeft.Add(parentLeft);
             }
         }
 
     }
 
+    private static void OnGuiBody2()
+    {
+        //自定义按钮加在此处
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button(new GUIContent("×1", EditorGUIUtility.FindTexture("PlayButton"))))
+        {
+            Time.timeScale = 1;
+        }
+        if (GUILayout.Button(new GUIContent("×2", EditorGUIUtility.FindTexture("PlayButton"))))
+        {
+            Time.timeScale = 2;
+        }
+        if (GUILayout.Button(new GUIContent("×5", EditorGUIUtility.FindTexture("PlayButton"))))
+        {
+            Time.timeScale = 5;
+        }
+        if (GUILayout.Button(new GUIContent("×10", EditorGUIUtility.FindTexture("PlayButton"))))
+        {
+            Time.timeScale = 10;
+        }
+        GUILayout.EndHorizontal();
+    }
     private static void OnGuiBody()
     {
         //自定义按钮加在此处
@@ -152,6 +192,10 @@ public class GameDebugerWindow : EditorWindow
                 {
                     WorldMapManager.Ins.InitMonsterSpawnPointData();
                 }
+                if (GUILayout.Button("Create Spawn Point", GUILayout.Width(150), GUILayout.Height(50)) && Application.isPlaying)
+                {
+                    WorldMapManager.Ins.CreateTowerLight();
+                }
                 if (GUILayout.Button("Create Monster", GUILayout.Width(150), GUILayout.Height(50)) && Application.isPlaying)
                 {
                     MonsterManager.Ins.CreateEntityTest();
@@ -166,7 +210,7 @@ public class GameDebugerWindow : EditorWindow
             {
                 if (GUILayout.Button("Create Hero", GUILayout.Width(150), GUILayout.Height(50)) && Application.isPlaying)
                 {
-                    MonsterManager.Ins.CreateHero();
+                    
                 }
             }
             EditorGUILayout.EndHorizontal();
@@ -193,8 +237,7 @@ public class GameDebugerWindow : EditorWindow
                 }
                 if (GUILayout.Button("Test Crad Init", GUILayout.Width(150), GUILayout.Height(50)))
                 {
-                    MathfMgr.Ins.Initialization();
-                    HeroCardPoolMgr.Ins.Init();
+
 
                 }
 
@@ -212,6 +255,15 @@ public class GameDebugerWindow : EditorWindow
                 {
                     HeroCardPoolMgr.Ins.RecycleGroupCrad(EHeroCradType.Hero1, 2);
                 }
+            }
+            EditorGUILayout.EndHorizontal();
+            EditorGUILayout.BeginHorizontal();
+            {
+                if (GUILayout.Button("Test Terrain", GUILayout.Width(150), GUILayout.Height(50)))
+                {
+                    TerrainMgr.Ins.SetColorTest();
+                }
+
             }
             EditorGUILayout.EndHorizontal();
         }

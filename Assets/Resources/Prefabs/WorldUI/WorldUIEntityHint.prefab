@@ -53,12 +53,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UpdateInteractable: 0
   m_CurAnim: {fileID: 0}
-  m_CentralPoint: {fileID: 0}
-  m_BeHitPoint: {fileID: 0}
-  m_BuffPoint: {fileID: 0}
-  m_EffectPoint: {fileID: 0}
-  m_TrailPoint: {fileID: 0}
-  m_WeaponPoint: {fileID: 0}
+  CurAnimationTime: 1
   m_MainBody: {fileID: 0}
   m_MainObject: {fileID: 0}
   m_PointUp: {fileID: 0}
@@ -140,7 +135,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0.828
+  m_FillAmount: 0.72
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -631,7 +626,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0.345
+  m_FillAmount: 0.426
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -1085,7 +1080,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 0.345
+  m_FillAmount: 0.361
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0

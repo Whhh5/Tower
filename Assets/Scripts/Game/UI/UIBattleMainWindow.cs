@@ -147,14 +147,18 @@ public class UIBattleMainWindow : MonoBehaviour
                     item.gameObject.SetActive(true);
                     item.Find("Txt_Name").GetComponent<TextMeshProUGUI>().text = info.Name;
                     item.Find("Img_Quality").GetComponent<Image>().color = info.QualityLevelInfo.Color;
+                    item.Find("Tex_Expenditure").GetComponent<TextMeshProUGUI>().text = info.QualityLevelInfo.Expenditure.ToString();
                     var btn = item.Find("Btn_Button").GetComponent<Button>();
                     btn.onClick.RemoveAllListeners();
                     btn.onClick.AddListener(() =>
                     {
                         m_Content.GetComponent<HorizontalLayoutGroup>().enabled = false;
                         m_Content.GetComponent<ContentSizeFitter>().enabled = false;
-                        HeroCardPoolMgr.Ins.BuyCard(data);
-                        item.gameObject.SetActive(false);
+                        if (HeroCardPoolMgr.Ins.BuyCard(data))
+                        {
+                            item.gameObject.SetActive(false);
+                            AddHeroDebris(data);
+                        }
                         Debug.Log(data);
                     });
                 }
@@ -268,6 +272,31 @@ public class UIBattleMainWindow : MonoBehaviour
     private Dictionary<EHeroCradType, CradListData> m_CurCardInsList = new();
 
 
+    /// <summary>
+    /// ÃÌº””¢–€ÀÈ∆¨
+    /// </summary>
+    public void AddHeroDebris(EHeroCradType f_HeroCardType, int f_Count = 1)
+    {
+        if (HeroCardPoolMgr.Ins.TryGetCurCardInfo(f_HeroCardType, out var value))
+        {
+            if (!m_CurCardInsList.TryGetValue(f_HeroCardType, out var info))
+            {
+                info = new(f_HeroCardType);
+                info.SetCount(value.ResidueCount);
+                info.Load(m_ItemCard);
+                m_CurCardInsList.Add(f_HeroCardType, info);
+            }
+            else if (info.Count != value.ResidueCount)
+            {
+                info.SetCount(value.ResidueCount);
+            }
+        }
+        else if (m_CurCardInsList.TryGetValue(f_HeroCardType, out var info))
+        {
+            info.UnLoad();
+            m_CurCardInsList.Remove(f_HeroCardType);
+        }
+    }
     public void UpdateCardInfo(EHeroCradType f_HeroCardType)
     {
         if (HeroCardPoolMgr.Ins.TryGetCurCardInfo(f_HeroCardType, out var value))
@@ -370,6 +399,10 @@ public class UIBattleMainWindow : MonoBehaviour
 
     private Dictionary<EHeroCradType, HeroInfo> m_HeroInsList = new();
 
+    private void AddEgg(EHeroCradType f_HeroCardType, int f_Count = 1)
+    {
+
+    }
     public void UpdateHeroInfo(EHeroCradType f_HeroCardType)
     {
         if (HeroCardPoolMgr.Ins.TryGetCurCardInfo(f_HeroCardType, out var value))

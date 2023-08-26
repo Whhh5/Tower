@@ -24,6 +24,14 @@ namespace B1
         {
             Awake_Message();
         }
+        protected virtual void Update()
+        {
+
+        }
+        protected virtual void Start()
+        {
+
+        }
         protected virtual void OnDestroy()
         {
             Destroy_Message();

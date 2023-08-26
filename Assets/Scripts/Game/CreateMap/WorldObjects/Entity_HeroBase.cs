@@ -47,7 +47,7 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
     public override ELayer LayerMask => ELayer.Player;
 
     public override ELayer AttackLayerMask => ELayer.Enemy;
-
+    public abstract EHeroCradType HeroCradType { get; }
     public sealed override EWorldObjectType ObjectType => EWorldObjectType.Preson;
     public Entity_HeroBase HeroData => GetCom<Entity_HeroBase>();
 
@@ -63,7 +63,9 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
     public override void AfterLoad()
     {
         base.AfterLoad();
-        Resurgence();
+        SetPersonStatus(EPersonStatusType.Incubation);
+        WorldWindowManager.Ins.UpdateBloodHint(this);
+        StartIncubation();
     }
     public override void OnUnLoad()
     {
@@ -106,6 +108,10 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
         switch (CurStatus)
         {
             case EPersonStatusType.None:
+                break;
+            case EPersonStatusType.Incubation:
+                break;
+            case EPersonStatusType.Entrance:
                 break;
             case EPersonStatusType.Idle:
                 {
@@ -155,10 +161,6 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
                 }
                 break;
             case EPersonStatusType.Skill:
-                if (CurrentMagic == 0)
-                {
-                    SetPersonStatus(EPersonStatusType.Idle);
-                }
                 break;
             case EPersonStatusType.Die:
                 break;
@@ -168,6 +170,26 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
                 break;
         }
     }
+
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- ·õ»¯Æª
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    public HeroCradInfo HeroCradInfo => TableMgr.Ins.TryGetHeroCradInfo(HeroCradType, out var heroInfo) ? heroInfo : null;
+    public void StartIncubation()
+    {
+
+    }
+    public void StopIncubation()
+    {
+
+    }
+
+
+
 
     //--
     //===============================----------------------========================================
@@ -267,10 +289,16 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
         base.AnimatorCallback100();
         switch (CurStatus)
         {
+            case EPersonStatusType.Entrance:
+                {
+                    SetPersonStatus(EPersonStatusType.Idle);
+                }
+                break;
             case EPersonStatusType.Skill:
                 {
                     CurrentMagic = 0;
                     m_CurSkillCount++;
+                    SetPersonStatus(EPersonStatusType.Idle);
                 }
                 break;
             default:
@@ -287,6 +315,7 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
         }
         return curName;
     }
+
 }
 public abstract class Entity_HeroBase : WorldObjectBase
 {

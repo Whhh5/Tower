@@ -60,4 +60,5 @@ public abstract class TransformBase : MonoBase
     {
         transform.localRotation = Quaternion.Euler(f_Angle);
     }
+
 }

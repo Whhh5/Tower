@@ -137,7 +137,7 @@ public class Emitter_SwordHeightData: Emitter_SwordBaseData
                 var curWorldPos = element.WorldPosition;
 
                 var spherePoint = GTools.MathfMgr.GetSpherePoint(360.0f / allWeapon.Count * index + 360 * GTools.CurTime) * radius;
-                var worldPos = new Vector3(spherePoint.x, 0, spherePoint.y) + CentralPoint;
+                var worldPos = new Vector3(spherePoint.x, 0, spherePoint.y) + WorldPosition;
 
                 // ����λ��
                 {
@@ -155,7 +155,7 @@ public class Emitter_SwordHeightData: Emitter_SwordBaseData
                     allWeapon[index].SetForward(targetForward);
 
                     // �Ϸ��� + ����
-                    var centralPoint = CentralPoint;
+                    var centralPoint = WorldPosition;
                     Vector2 direction = new Vector2(element.WorldPosition.x - centralPoint.x, element.WorldPosition.z - centralPoint.z);
                     var dir = Vector2.Dot(direction.normalized, Vector2.right);
                     var angle = Mathf.Acos(dir) * Mathf.Rad2Deg + 90.0f;

@@ -116,6 +116,7 @@ public enum ELayer : int
 }
 public enum ETowerStatus
 {
+    Idle,
     Start,
     Stop,
     Destriy,

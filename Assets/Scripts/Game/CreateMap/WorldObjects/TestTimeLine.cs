@@ -6,7 +6,7 @@ using UnityEngine.Playables;
 
 public class TestTimeLineData : EntityEffectBaseData
 {
-    public TestTimeLineData(int f_Index, WorldObjectBaseData f_Initiator, Vector3 f_StartPosition, WorldObjectBaseData f_TargetEnemy, int f_DamageValue, bool f_IsChangeMagic, DirectorWrapMode f_WrapMode = DirectorWrapMode.None) : base(f_Index, f_StartPosition, f_Initiator, f_WrapMode)
+    public TestTimeLineData(WorldObjectBaseData f_Initiator, Vector3 f_StartPosition, WorldObjectBaseData f_TargetEnemy, int f_DamageValue, bool f_IsChangeMagic, DirectorWrapMode f_WrapMode = DirectorWrapMode.None) : base(f_StartPosition, f_Initiator, f_WrapMode)
     {
 
         DamageValue = f_DamageValue;

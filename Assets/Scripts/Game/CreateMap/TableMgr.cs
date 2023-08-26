@@ -138,6 +138,7 @@ public enum AssetKey
     Hero3SkillEffect,
     Effect_Buff_AddBlood,
     Effect_Buff_Poison,
+    Entity_Effect_Tower_Light1_Attack,
 
     // buff图标路径
     BuffIcon_Poison,
@@ -154,19 +155,30 @@ public enum AssetKey
     Entity_Tower_Light1,
     Entity_Tower_Dark1,
 
+    // 孵化蛋
+    Entity_Incubator,
+
 }
 public class HeroCradInfo
 {
     public EHeroQualityLevel QualityLevel;
     public string Name;
     public AssetKey AssetKet;
-    public HeroCradLevelInfo QualityLevelInfo => TableMgr.Ins.TryGetHeroCradLevelInfo(QualityLevel, out var levelInfo) ? levelInfo : null;
+    public HeroCradLevelInfo QualityLevelInfo => TableMgr.Ins.TryGetHeroQualityInfo(QualityLevel, out var levelInfo) ? levelInfo : null;
+
+    public void CreateHeroIncubator(EHeroCradType f_HeroType, int f_TargetIndex)
+    {
+        var incubatoe = new Entity_IncubatorData();
+        incubatoe.Initialization(0, f_TargetIndex, f_HeroType);
+    }
     public bool GetWorldObjectData(EHeroCradType f_HeroType, int f_TargetIndex, out WorldObjectBaseData f_Result) => TableMgr.Ins.GetHeroDataByType(f_HeroType, f_TargetIndex, out f_Result);
 }
 public class HeroCradLevelInfo
 {
-    public int MaxCount;
-    public Color Color;
+    public int MaxCount; // 最大数量
+    public Color Color; // 等级颜色
+    public float IncubatorTime; // 孵化时间
+    public int Expenditure; // 花费
 }
 public abstract class HeroFetterInfo : Base
 {
@@ -229,6 +241,67 @@ public class PlayerLevelInfo
             curResidue = 1 - max;
         }
         return (result.x, result.y);
+    }
+    public bool GetQualityRandom(out Dictionary<EHeroQualityLevel, (float tMin, float tMax)> f_Result)
+    {
+        // 概率范围
+        var curLevelPro = f_Result = new();
+
+        foreach (var item in DicCradProbability)
+        {
+            var range = GetRangeCradProbability(item.Key);
+            curLevelPro.Add(item.Key, range);
+        }
+
+        for (int i = 0; i < (int)EHeroQualityLevel.EnumCount; i++)
+        {
+            var level = (EHeroQualityLevel)i;
+            if (curLevelPro.ContainsKey(level))
+            {
+                continue;
+            }
+            var range = GetRangeCradProbability(level);
+            var halfRange = (range.tMAx - range.tMin) * 0.5f;
+            int? lastLevel = null;
+            int? latterLevel = null;
+            var tempI = i;
+            while (--tempI >= 0)
+            {
+                if (!curLevelPro.TryGetValue((EHeroQualityLevel)tempI, out var proValue))
+                {
+                    continue;
+                }
+                lastLevel = tempI;
+                proValue.tMax += halfRange;
+                curLevelPro[(EHeroQualityLevel)tempI] = proValue;
+                break;
+            }
+            tempI = i;
+            while (++tempI < (int)EHeroQualityLevel.EnumCount)
+            {
+                if (!curLevelPro.TryGetValue((EHeroQualityLevel)tempI, out var proValue))
+                {
+                    continue;
+                }
+                latterLevel = tempI;
+                proValue.tMin -= halfRange;
+                curLevelPro[(EHeroQualityLevel)tempI] = proValue;
+                break;
+            }
+            if (lastLevel == null && latterLevel != null)
+            {
+                var proValue = curLevelPro[(EHeroQualityLevel)latterLevel];
+                proValue.tMin -= halfRange;
+                curLevelPro[(EHeroQualityLevel)latterLevel] = proValue;
+            }
+            if (latterLevel == null && lastLevel != null)
+            {
+                var proValue = curLevelPro[(EHeroQualityLevel)lastLevel];
+                proValue.tMax += halfRange;
+                curLevelPro[(EHeroQualityLevel)lastLevel] = proValue;
+            }
+        }
+        return curLevelPro.Count > 0;
     }
 }
 public enum EPlayerLevel
@@ -345,6 +418,7 @@ public class TableMgr : Singleton<TableMgr>
         { AssetKey.Emitter_SwordLow, "Prefabs/WorldObject/Emitter_SwordLow" },
         { AssetKey.Emitter_SwordHeight, "Prefabs/WorldObject/Emitter_SwordHeight" },
         { AssetKey.Emitter_GuidedMissileBaseCommon, "Prefabs/WorldObject/Emitter_GuidedMissileBaseCommon" },
+        { AssetKey.Entity_Incubator, "Prefabs/WorldObject/Entity_Incubator" },
 
 
 
@@ -354,6 +428,7 @@ public class TableMgr : Singleton<TableMgr>
 
         // 特效
         { AssetKey.Effect_Buff_Poison, "Prefabs/Effects/Effect_Buff_Poison" },
+        { AssetKey.Entity_Effect_Tower_Light1_Attack, "Prefabs/Effects/Entity_Effect_Tower_Light1_Attack" },
         { AssetKey.Effect_Buff_AddBlood, "Prefabs/Effects/Effect_Buff_AddBlood" },
         { AssetKey.Entity_Gain_Laubch1, "Prefabs/Effects/Entity_Gain_Laubch1" },
         { AssetKey.Entity_Gain_Collect1, "Prefabs/Effects/Entity_Gain_Collect1" },
@@ -422,6 +497,13 @@ public class TableMgr : Singleton<TableMgr>
     {
         return m_HeroCradInfo.TryGetValue(f_EHeroCradType, out f_HeroCradInfo);
     }
+    public void LoopHeroCradInfo(Action<EHeroCradType, HeroCradInfo> f_LoopCallback)
+    {
+        foreach (var item in m_HeroCradInfo)
+        {
+            f_LoopCallback.Invoke(item.Key, item.Value);
+        }
+    }
 
     //--
     //===============================----------------------========================================
@@ -438,6 +520,8 @@ public class TableMgr : Singleton<TableMgr>
             {
                 MaxCount = 30,
                 Color = Color.gray,
+                IncubatorTime = 10,
+                Expenditure = 2,
             }
         },
         {
@@ -446,6 +530,8 @@ public class TableMgr : Singleton<TableMgr>
             {
                 MaxCount = 20,
                 Color = Color.yellow,
+                IncubatorTime = 20,
+                Expenditure = 4,
             }
         },
         {
@@ -454,6 +540,8 @@ public class TableMgr : Singleton<TableMgr>
             {
                 MaxCount = 10,
                 Color = Color.red,
+                IncubatorTime = 30,
+                Expenditure = 6,
             }
         },
         {
@@ -462,10 +550,12 @@ public class TableMgr : Singleton<TableMgr>
             {
                 MaxCount = 5,
                 Color = Color.cyan,
+                IncubatorTime = 40,
+                Expenditure = 10,
             }
         },
     };
-    public bool TryGetHeroCradLevelInfo(EHeroQualityLevel f_EHeroCradLevel, out HeroCradLevelInfo f_HeroCradLevelInfo)
+    public bool TryGetHeroQualityInfo(EHeroQualityLevel f_EHeroCradLevel, out HeroCradLevelInfo f_HeroCradLevelInfo)
     {
         return m_HeroCradLevelInfo.TryGetValue(f_EHeroCradLevel, out f_HeroCradLevelInfo);
     }
@@ -817,7 +907,7 @@ public class TableMgr : Singleton<TableMgr>
     {
         public string Name = "";
         public string Desc = "";
-        public AssetKey IconPath ;
+        public AssetKey IconPath;
         public EBuffType BuffType;
         public Effect_BuffBaseData CreateBuffData(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
         {
@@ -1017,8 +1107,4 @@ public class HeroFetterMgr : Singleton<HeroFetterMgr>
             value.ChangeCount(1);
         }
     }
-}
-public class GoldMgr : Singleton<GoldMgr>
-{
-    public int CurGold { get; private set; } = 100;
 }

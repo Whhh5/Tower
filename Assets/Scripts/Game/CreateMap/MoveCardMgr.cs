@@ -105,13 +105,7 @@ public class MoveCardMgr : MonoSingleton<MoveCardMgr>, IUpdateBase
     {
         if (TableMgr.Ins.TryGetHeroCradInfo(f_HeroType, out var heroInfo))
         {
-            var targetIndex = WorldMapManager.Ins.GetCurMouseEnable();
-            if (heroInfo.GetWorldObjectData(f_HeroType, targetIndex, out var data))
-            {
-                WorldMapManager.Ins.MoveChunkElement(data, f_ChunkIndex);
-                GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(data))
-;
-            }
+            heroInfo.CreateHeroIncubator(f_HeroType, f_ChunkIndex);
         }
     }
 

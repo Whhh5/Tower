@@ -6,7 +6,7 @@ using UnityEngine.Playables;
 
 public class Hero3SkillEffectData : EntityEffectBaseData
 {
-    public Hero3SkillEffectData(int f_Index, Vector3 f_StartPos, int f_HarmValue, WorldObjectBaseData f_Initiator) : base(f_Index, f_StartPos, f_Initiator, DirectorWrapMode.Loop)
+    public Hero3SkillEffectData(Vector3 f_StartPos, int f_HarmValue, WorldObjectBaseData f_Initiator) : base(f_StartPos, f_Initiator, DirectorWrapMode.Loop)
     {
         m_HarmValue = f_HarmValue;
     }

@@ -59,6 +59,12 @@ public static class GTools
     public static WeaponMgr WeaponMgr => WeaponMgr.Ins;
     public static BuffMgr BuffMgr => BuffMgr.Ins;
     public static TableMgr TableMgr => TableMgr.Ins;
+    public static TerrainMgr TerrainMgr => TerrainMgr.Ins;
+    public static WeatherMgr WeatherMgr => WeatherMgr.Ins;
+    public static WorldMapManager WorldMapMgr  => WorldMapManager.Ins; 
+    public static PlayerMgr PlayerMgr => PlayerMgr.Ins; 
+    public static CameraMgr CameraMgr => CameraMgr.Ins;
+    public static HeroCardPoolMgr HeroCardPoolMgr => HeroCardPoolMgr.Ins;
     #endregion
 
     #region Mono 静态类
@@ -183,5 +189,10 @@ public static class GTools
     {
         var result = f_UnityObject != null && f_UnityObject.CurStatus != EPersonStatusType.Die;
         return result;
+    }
+
+    public static void FloaterHint(string f_Context)
+    {
+        Debug.Log(f_Context);
     }
 }

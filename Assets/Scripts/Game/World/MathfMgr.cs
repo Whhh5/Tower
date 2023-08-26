@@ -33,7 +33,7 @@ public class MathfMgr : Singleton<MathfMgr>
     /// <summary>
     /// 初始化
     /// </summary>
-    public void Initialization()
+    public override void Initialization()
     {
         m_CurFloatIndex = 0;
 
@@ -297,7 +297,7 @@ public class MathfMgr : Singleton<MathfMgr>
     }
     public void EntityDamage(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target, EDamageType f_DamageType, int f_Value, bool f_IsAddMagic = false)
     {
-        if (f_Target != null && f_Target.CurStatus != EPersonStatusType.Die)
+        if (GTools.UnityObjectIsActive(f_Target))
         {
 
             var hitCondition = f_Target.IsHitConditoin();

@@ -132,7 +132,6 @@ public class MonsterManager : MonoSingleton<MonsterManager>
         }
 
         var entityKey = list.Count;
-        WorldMapManager.Ins.AddChunkElement(f_SpwawnPointData, true);
 
         list.Add(entityKey, f_SpwawnPointData);
 

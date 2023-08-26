@@ -45,7 +45,6 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
         {
             GTools.LifecycleMgr.RemoveUpdate(this);
         }
-        SetPersonStatus(EPersonStatusType.Die);
     }
     public T GetCom<T>()
         where T : Component
@@ -81,36 +80,6 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
     public int Index { get; private set; }
     public abstract EWorldObjectType ObjectType { get; }
 
-    //--
-    //===============================----------------------========================================
-    //-----------------------------                          --------------------------------------
-    //                                catalogue -- ²Î¿¼µãÆª
-    //-----------------------------                          --------------------------------------
-    //===============================----------------------========================================
-    //--
-    public Vector3 CentralPoint => PrefabTarget != null && PrefabTarget.CentralPoint != null
-        ? PrefabTarget.CentralPoint.position
-        : WorldPosition;
-
-    public Vector3 BeHitPoint => PrefabTarget != null && PrefabTarget.BeHitPoint != null
-        ? PrefabTarget.BeHitPoint.position
-        : WorldPosition;
-
-    public Vector3 BuffPoint => PrefabTarget != null && PrefabTarget.BuffPoint != null
-        ? PrefabTarget.BuffPoint.position
-        : WorldPosition;
-
-    public Vector3 EffectPoint => PrefabTarget != null && PrefabTarget.EffectPoint != null
-        ? PrefabTarget.EffectPoint.position
-        : WorldPosition;
-
-    public Vector3 TrailPoint => PrefabTarget != null && PrefabTarget.TrailPoint != null
-        ? PrefabTarget.TrailPoint.position
-        : WorldPosition;
-
-    public Vector3 WeaponPoint => PrefabTarget != null && PrefabTarget.WeaponPoint != null
-        ? PrefabTarget.WeaponPoint.position
-        : WorldPosition;
 
 
     //--
@@ -143,7 +112,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
         }
     }
 
-    public void SetLocalScale(Vector3 f_ToLocalScale)
+    public  void SetLocalScale(Vector3 f_ToLocalScale)
     {
         LocalScale = f_ToLocalScale;
         if (PrefabTarget != null)
@@ -186,7 +155,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
             PrefabTarget.SetColor();
         }
     }
-    public void SetPersonStatus(EPersonStatusType f_ToStatus, EAnimatorStatus f_AnimaStatus = EAnimatorStatus.Loop)
+    public virtual void SetPersonStatus(EPersonStatusType f_ToStatus, EAnimatorStatus f_AnimaStatus = EAnimatorStatus.Loop)
     {
         if (CurStatus != f_ToStatus)
         {
@@ -482,19 +451,6 @@ public abstract class ObjectPoolBase : TransformBase, IObjectPoolBase
     {
 
     }
-    // point
-    [SerializeField] private Transform m_CentralPoint = null;
-    public Transform CentralPoint => m_CentralPoint;
-    [SerializeField] private Transform m_BeHitPoint = null;
-    public Transform BeHitPoint => m_BeHitPoint;
-    [SerializeField] private Transform m_BuffPoint = null;
-    public Transform BuffPoint => m_BuffPoint;
-    [SerializeField] private Transform m_EffectPoint = null;
-    public Transform EffectPoint => m_EffectPoint;
-    [SerializeField] private Transform m_TrailPoint = null;
-    public Transform TrailPoint => m_TrailPoint;
-    [SerializeField] protected Transform m_WeaponPoint = null;
-    public Transform WeaponPoint => m_WeaponPoint;
 
 
 
@@ -555,4 +511,16 @@ public abstract class ObjectPoolBase : TransformBase, IObjectPoolBase
         }
     }
 
+    protected sealed override void Awake()
+    {
+        base.Awake();
+    }
+    protected sealed override void Start()
+    {
+        base.Start();
+    }
+    protected sealed override void Update()
+    {
+        base.Update();
+    }
 }

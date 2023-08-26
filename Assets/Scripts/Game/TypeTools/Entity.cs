@@ -10,8 +10,39 @@ public abstract class EntityData : UnityObjectData
 {
     protected EntityData(int f_index) : base(f_index)
     {
-        
+
     }
+    public Entity EntityTarget => GetCom<Entity>();
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- ²Î¿¼µãÆª
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    public Vector3 CentralPoint => EntityTarget != null && EntityTarget.CentralPoint != null
+        ? EntityTarget.CentralPoint.position
+        : WorldPosition;
+
+    public Vector3 BeHitPoint => EntityTarget != null && EntityTarget.BeHitPoint != null
+        ? EntityTarget.BeHitPoint.position
+        : WorldPosition;
+
+    public Vector3 BuffPoint => EntityTarget != null && EntityTarget.BuffPoint != null
+        ? EntityTarget.BuffPoint.position
+        : WorldPosition;
+
+    public Vector3 EffectPoint => EntityTarget != null && EntityTarget.EffectPoint != null
+        ? EntityTarget.EffectPoint.position
+        : WorldPosition;
+
+    public Vector3 TrailPoint => EntityTarget != null && EntityTarget.TrailPoint != null
+        ? EntityTarget.TrailPoint.position
+        : WorldPosition;
+
+    public Vector3 WeaponPoint => EntityTarget != null && EntityTarget.WeaponPoint != null
+        ? EntityTarget.WeaponPoint.position
+        : WorldPosition;
 }
 
 // base class
@@ -30,6 +61,20 @@ public abstract class Entity : ObjectPoolBase, IButton3DClick
         base.OnUpdate();
     }
 
+
+    // point
+    [SerializeField] private Transform m_CentralPoint = null;
+    public Transform CentralPoint => m_CentralPoint;
+    [SerializeField] private Transform m_BeHitPoint = null;
+    public Transform BeHitPoint => m_BeHitPoint;
+    [SerializeField] private Transform m_BuffPoint = null;
+    public Transform BuffPoint => m_BuffPoint;
+    [SerializeField] private Transform m_EffectPoint = null;
+    public Transform EffectPoint => m_EffectPoint;
+    [SerializeField] private Transform m_TrailPoint = null;
+    public Transform TrailPoint => m_TrailPoint;
+    [SerializeField] protected Transform m_WeaponPoint = null;
+    public Transform WeaponPoint => m_WeaponPoint;
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------

@@ -32,7 +32,6 @@ public abstract class Person_EnemyData : WorldObjectBaseData
     public override void OnUnLoad()
     {
         CurStatus = EPersonStatusType.None;
-        Death();
         base.OnUnLoad();
     }
     // 复活
@@ -47,15 +46,11 @@ public abstract class Person_EnemyData : WorldObjectBaseData
     {
         WorldWindowManager.Ins.RemoveBloodHint(this);
     }
+
     public override int ChangeBlood(ChangeBloodData f_Increment)
     {
         var value = base.ChangeBlood(f_Increment);
         WorldWindowManager.Ins.UpdateBloodHint(this);
-
-        if (value <= 0)
-        {
-            Death();
-        }
         return value;
     }
     public override int ChangeMagic(int f_Increment)
@@ -333,11 +328,28 @@ public abstract class Person_EnemyData : WorldObjectBaseData
         return false;
     }
 
-    public void AttackTarget()
+    public override void AttackTarget()
     {
+        base.AttackTarget();
         if (GTools.UnityObjectIsActive(m_CurTarget))
         {
             GTools.MathfMgr.EntityDamage(this, m_CurTarget, EDamageType.Physical, -HarmBase, false);
+        }
+    }
+    public virtual int DiePrice { get; } = 10;
+    public override void AnimatorCallback000()
+    {
+        base.AnimatorCallback000();
+        switch (CurStatus)
+        {
+            case EPersonStatusType.Die:
+                {
+                    GTools.PlayerMgr.Increases(DiePrice);
+                    Death();
+                }
+                break;
+            default:
+                break;
         }
     }
 

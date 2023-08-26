@@ -36,8 +36,8 @@ public class Entity_Monster_Default2Data : Person_EnemyData
                 {
                     var startPos = Target != null && Target.AttackPoint != null ? Target.AttackPoint.position : WorldPosition;
 
-                    var eff = new TestTimeLineData(0, this, startPos, m_CurTarget, -HarmBase, false, DirectorWrapMode.Loop);
-                    var data = new Entity_Player_Default2_AttackEffect<TestTimeLineData>(eff, AtkSpeed);
+                    var eff = new TestTimeLineData(this, startPos, m_CurTarget, -HarmBase, false, DirectorWrapMode.Loop);
+                    var data = new Effect_Track_Line<TestTimeLineData>(eff, AtkSpeed);
                     GTools.RunUniTask(data.StartExecute());
                 }
                 break;

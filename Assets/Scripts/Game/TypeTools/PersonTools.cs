@@ -18,6 +18,8 @@ public enum EMoveDirection
 public enum EPersonStatusType
 {
     None,
+    Incubation, // 孵化
+    Entrance, // 入场动画
     Idle,
     Walk,
     Attack,
