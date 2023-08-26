@@ -61,7 +61,7 @@ public abstract class WorldObjectBaseData : DependChunkData
     public virtual void Resurgence()
     {
         SetPersonStatus(EPersonStatusType.Entrance);
-        WorldWindowManager.Ins.UpdateBloodHint(this);
+        WorldWindowMgr.Ins.UpdateBloodHint(this);
     }
     public override void OnUpdate()
     {
@@ -73,7 +73,7 @@ public abstract class WorldObjectBaseData : DependChunkData
     {
         m_BuffDic.Clear();
         WorldMapMgr.Ins.RemoveChunkElement(this);
-        WorldWindowManager.Ins.RemoveBloodHint(this);
+        WorldWindowMgr.Ins.RemoveBloodHint(this);
     }
     public override void AnimatorCallback000()
     {
@@ -91,7 +91,7 @@ public abstract class WorldObjectBaseData : DependChunkData
     }
     public override void AnimatorCallback100()
     {
-        base.AnimatorCallback000();
+        base.AnimatorCallback100();
         switch (CurStatus)
         {
             case EPersonStatusType.Entrance:
@@ -164,7 +164,7 @@ public abstract class WorldObjectBaseData : DependChunkData
         {
             EntityDied();
         }
-        WorldWindowManager.Ins.UpdateBloodHint(this);
+        WorldWindowMgr.Ins.UpdateBloodHint(this);
         return CurrentBlood;
     }
     public virtual int ChangeMagic(int f_Increment)
@@ -173,7 +173,7 @@ public abstract class WorldObjectBaseData : DependChunkData
 
         CurrentMagic = Mathf.Clamp(value, 0, MaxMagic);
 
-        WorldWindowManager.Ins.UpdateBloodHint(this);
+        WorldWindowMgr.Ins.UpdateBloodHint(this);
 
         return CurrentMagic;
     }

@@ -121,6 +121,7 @@ public enum AssetKey
     Entity_Player_Default3,
     TestTimeLine,
     WorldUIEntityHint,
+    UISliderInfo,
     EmitterElement_GuidedMissile,
     EmitterElement_SwordLow,
 
@@ -177,7 +178,6 @@ public class HeroCradInfo
     public AssetKey AssetKet;
     public HeroCradLevelInfo QualityLevelInfo => TableMgr.Ins.TryGetHeroCradLevelInfo(QualityLevel, out var levelInfo) ? levelInfo : null;
 
-    public bool GetWorldObjectData(EHeroCradType f_HeroType, int f_TargetIndex, out WorldObjectBaseData f_Result) => TableMgr.Ins.GetHeroDataByType(f_HeroType, f_TargetIndex, out f_Result);
 }
 public class HeroCradLevelInfo
 {
@@ -444,6 +444,7 @@ public class TableMgr : Singleton<TableMgr>
         { AssetKey.TestTimeLine, "Prefabs/TimeLine/TestTimeLine" },
         { AssetKey.Hero3SkillEffect, "Prefabs/TimeLine/Hero3SkillEffect" },
         { AssetKey.WorldUIEntityHint, "Prefabs/WorldUI/WorldUIEntityHint" },
+        { AssetKey.UISliderInfo, "Prefabs/WorldUI/UISliderInfo" },
 
         // 特效
         { AssetKey.Effect_Buff_Poison, "Prefabs/Effects/Effect_Buff_Poison" },
@@ -753,7 +754,7 @@ private Dictionary<EHeroCradType, WorldObjectBaseData> m_HeroData = new()
 {
 
 };
-public bool GetHeroDataByType(EHeroCradType f_HeroType, int f_TargetIndex, out WorldObjectBaseData f_Result)
+public bool GetHeroDataByType(EHeroCradType f_HeroType, int f_TargetIndex, EHeroCradStarLevel f_StarLevel, out WorldObjectBaseData f_Result)
 {
     f_Result = null;
     switch (f_HeroType)
@@ -762,13 +763,13 @@ public bool GetHeroDataByType(EHeroCradType f_HeroType, int f_TargetIndex, out W
             f_Result = new Entity_Player_Hero1Data(0, f_TargetIndex, null);
             break;
         case EHeroCradType.Hero2:
-            f_Result = new Entity_Player_Hero2Data(0, f_TargetIndex);
+            f_Result = new Entity_Player_Hero2Data(0, f_TargetIndex, f_StarLevel);
             break;
         case EHeroCradType.Hero3:
-            f_Result = new Entity_Player_Hero3Data(0, f_TargetIndex);
+            f_Result = new Entity_Player_Hero3Data(0, f_TargetIndex, f_StarLevel);
             break;
         case EHeroCradType.Hero4:
-            f_Result = new Entity_Player_Hero4Data(0, f_TargetIndex);
+            f_Result = new Entity_Player_Hero4Data(0, f_TargetIndex, f_StarLevel);
             break;
         case EHeroCradType.EnumCount:
             break;

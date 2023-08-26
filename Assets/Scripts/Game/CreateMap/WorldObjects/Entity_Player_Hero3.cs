@@ -6,7 +6,7 @@ using UnityEngine.Playables;
 
 public class Entity_Player_Hero3Data : Entity_HeroBaseData
 {
-    public Entity_Player_Hero3Data(int f_index, int f_ChunkIndex) : base(f_index, f_ChunkIndex)
+    public Entity_Player_Hero3Data(int f_Index, int f_ChunkIndex, EHeroCradStarLevel f_HeroStarLvevl) : base(f_Index, f_ChunkIndex, f_HeroStarLvevl)
     {
 
     }

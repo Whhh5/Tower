@@ -63,7 +63,7 @@ public class MoveCardMgr : MonoSingleton<MoveCardMgr>, IUpdateBase
         {
             if (chunkData.CurObjectType == EWorldObjectType.Road)
             {
-                PlaceIncubator(m_CurSelectHero, chunkData.Index);
+                
             }
         }
         m_CurSelectHero = EHeroQualityLevel.EnumCount;
@@ -100,11 +100,6 @@ public class MoveCardMgr : MonoSingleton<MoveCardMgr>, IUpdateBase
             EndCurSelectHero();
             GTools.LifecycleMgr.RemoveUpdate(this);
         }
-    }
-    private void PlaceIncubator(EHeroQualityLevel f_IncubatorLevel, int f_ChunkIndex)
-    {
-        var incubator = new Entity_Incubator1Data();
-        incubator.Initialization(0, f_ChunkIndex, f_IncubatorLevel);
     }
 
     [SerializeField]

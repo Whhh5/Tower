@@ -67,6 +67,7 @@ public static class GTools
     public static HeroIncubatorPoolMgr HeroIncubatorPoolMgr => HeroIncubatorPoolMgr.Ins;
     public static MonsterMgr MonsterMgr => MonsterMgr.Ins;
     public static UIMgr UIMgr => UIMgr.Ins;
+    public static WorldWindowMgr WorldWindowMgr => WorldWindowMgr.Ins;
     #endregion
 
     #region Mono 静态类

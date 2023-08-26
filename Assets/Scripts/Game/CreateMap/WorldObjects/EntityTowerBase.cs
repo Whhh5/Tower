@@ -55,12 +55,12 @@ public abstract class EntityTowerBaseData : WorldObjectBaseData
     {
         base.AfterLoad();
 
-        WorldWindowManager.Ins.UpdateBloodHint(this);
+        WorldWindowMgr.Ins.UpdateBloodHint(this);
     }
     public override void OnUnLoad()
     {
         base.OnUnLoad();
-        WorldWindowManager.Ins.RemoveBloodHint(this);
+        WorldWindowMgr.Ins.RemoveBloodHint(this);
     }
     // Update 
     public override bool IsUpdateEnable => true;

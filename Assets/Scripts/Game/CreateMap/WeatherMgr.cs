@@ -135,7 +135,7 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
         m_CurWeatherWindow = f_Window;
         f_Window.Initialization();
     }
-    public void Initialization()
+    public override void Start()
     {
         m_StartIntervalTime = 10;
         m_StartEventIntervalTime = 5;

@@ -1,0 +1,89 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using B1;
+using B1.UI;
+using System;
+
+public class WorldWindowMgr : Singleton<WorldWindowMgr>
+{
+
+    [SerializeField]
+    private RectTransform m_Root = null;
+
+    public override void Awake()
+    {
+        base.Awake();
+
+        var obj = new GameObject("Hint Root");
+        var tran = obj.AddComponent<RectTransform>();
+        tran.SetParent(GTools.UIMgr.UICanvasRect);
+        tran.SetSiblingIndex(0);
+        tran.localPosition = Vector3.zero;
+        tran.localScale = Vector3.one;
+        tran.localRotation = Quaternion.Euler(Vector3.zero);
+        m_Root = tran;
+    }
+
+
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- 生命值显示 篇
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    public Dictionary<int, WorldUIEntityHintData> m_BloodData = new();
+    public void UpdateBloodHint(WorldObjectBaseData f_Target)
+    {
+
+        var key = f_Target.LoadKey;
+
+        if (!m_BloodData.TryGetValue(key, out var value))
+        {
+            value = new(key, f_Target);
+            value.SetParent(m_Root);
+            m_BloodData.Add(key, value);
+            GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(value));
+        }
+        value.UpdateInfo();
+    }
+    public void RemoveBloodHint(WorldObjectBaseData f_Target)
+    {
+        var key = f_Target.LoadKey;
+
+        if (m_BloodData.TryGetValue(key, out var value))
+        {
+            ILoadPrefabAsync.UnLoad(value);
+            m_BloodData.Remove(key);
+        }
+    }
+
+    public void UpdateMagicHint(WorldObjectBaseData f_Target)
+    {
+        var key = f_Target.LoadKey;
+
+        if (!m_BloodData.TryGetValue(key, out var value))
+        {
+            value = new(key, f_Target);
+            value.SetParent(m_Root);
+            m_BloodData.Add(key, value);
+            GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(value));
+        }
+        value.UpdateInfo();
+    }
+
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- 进度条 篇
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    public void CreateWorldSlider(WorldObjectBaseData f_Target, Func<float> f_Update, Func<bool> f_Condition)
+    {
+        var sliderData = new UISliderInfoData();
+        sliderData.Initialization(f_Target, f_Update, f_Condition);
+        sliderData.SetParent(m_Root);
+    }
+}

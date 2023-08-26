@@ -10,7 +10,7 @@ public class EffMoveData
 }
 public class Entity_Player_Hero2Data : Entity_HeroBaseData
 {
-    public Entity_Player_Hero2Data(int f_Index, int f_TargetIndex) : base(f_Index, f_TargetIndex)
+    public Entity_Player_Hero2Data(int f_Index, int f_TargetIndex, EHeroCradStarLevel f_HeroStarLvevl) : base(f_Index, f_TargetIndex, f_HeroStarLvevl)
     {
 
     }

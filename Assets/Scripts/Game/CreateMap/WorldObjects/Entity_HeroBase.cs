@@ -39,7 +39,7 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
         Pause,
         Stop,
     }
-    public Entity_HeroBaseData(int f_index, int f_ChunkIndex) : base(f_index, f_ChunkIndex)
+    public Entity_HeroBaseData(int f_index, int f_ChunkIndex, EHeroCradStarLevel f_HeroStarLvevl) : base(f_index, f_ChunkIndex)
     {
 
     }

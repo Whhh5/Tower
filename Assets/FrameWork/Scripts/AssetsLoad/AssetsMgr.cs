@@ -370,7 +370,7 @@ namespace B1
                 var curTime = GTools.CurTime;
                 await UniTask.WaitUntil(() =>
                 {
-                    if (GTools.CurTime - curTime > 1.0f)
+                    if (GTools.CurTime - curTime > 3.0f)
                     {
                         LogError($"等待加载超时 请检查 对象池 {f_EPrefab}");
                         return true;

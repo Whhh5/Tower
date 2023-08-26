@@ -10,7 +10,7 @@ public class Entity_Incubator1Data : WorldObjectBaseData
     {
     }
 
-    public void Initialization(int f_index, int f_ChunkIndex, EHeroQualityLevel f_Quality)
+    public void Initialization(int f_index, int f_ChunkIndex, EHeroQualityLevel f_Quality, EHeroCradStarLevel f_HeroStarLevl)
     {
         SetCurrentChunkIndex(f_ChunkIndex);
         if (WorldMapMgr.Ins.TryGetChunkData(CurrentIndex, out var chunkData))
@@ -22,6 +22,7 @@ public class Entity_Incubator1Data : WorldObjectBaseData
             return;
         }
         m_HeroType = heroType;
+        m_HeroStarLevel = f_HeroStarLevl;
         if (TableMgr.Ins.TryGetHeroCradInfo(heroType, out var heroInfo)
             && TableMgr.Ins.TryGetIncubatorInfo(heroInfo.QualityLevel, out var incubatorInfo))
         {
@@ -35,10 +36,18 @@ public class Entity_Incubator1Data : WorldObjectBaseData
     }
     public void StartIncubator()
     {
-        WorldMapMgr.Ins.MoveChunkElement(this, CurrentIndex);
+        GTools.WorldMapMgr.MoveChunkElement(this, CurrentIndex);
         SetPersonStatus(EPersonStatusType.Entrance, EAnimatorStatus.Stop);
         m_EndTime = m_IncubatorTime + Time.time;
         GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(this));
+
+        GTools.WorldWindowMgr.CreateWorldSlider(this, () =>
+         {
+             return IncubatorSchedule;
+         }, () =>
+         {
+             return true;
+         });
     }
 
     public override AssetKey AssetPrefabID => AssetKey.Entity_Incubator1;
@@ -51,6 +60,7 @@ public class Entity_Incubator1Data : WorldObjectBaseData
 
 
     protected EHeroCradType m_HeroType = EHeroCradType.EnumCount;
+    private EHeroCradStarLevel m_HeroStarLevel;
     private EHeroQualityLevel m_QuelityLevel = EHeroQualityLevel.EnumCount;
     private float m_IncubatorTime = 0;
     private float m_EndTime = 1;
@@ -128,7 +138,7 @@ public class Entity_Incubator1Data : WorldObjectBaseData
     }
     public virtual void IncubatorFinish()
     {
-        if (TableMgr.Ins.GetHeroDataByType(m_HeroType, CurrentIndex, out var worldObjData))
+        if (TableMgr.Ins.GetHeroDataByType(m_HeroType, CurrentIndex, m_HeroStarLevel, out var worldObjData))
         {
             GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(worldObjData));
         }

@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class UIBattleMainWindow : MonoBehaviour
+public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
 {
     //--
     //===============================----------------------========================================
@@ -23,6 +23,8 @@ public class UIBattleMainWindow : MonoBehaviour
         m_CardViewItem.gameObject.SetActive(false);
         m_ItemCard.gameObject.SetActive(false);
         m_ItemHero.gameObject.SetActive(false);
+        m_TargetIcon.gameObject.SetActive(false);
+        m_TargetArrow.gameObject.SetActive(false);
         for (int i = 0; i < HeroIncubatorPoolMgr.Ins.CardGroupCount; i++)
         {
             var obj = GameObject.Instantiate(m_CardViewItem, m_CardViewItem.parent);
@@ -325,8 +327,8 @@ public class UIBattleMainWindow : MonoBehaviour
             list = new();
             m_HeroInsList.Add(f_Quality, list);
         }
-        var item = GetIncubatorItem(f_Quality);
         var starLevel = f_StarLevel;
+        var item = GetIncubatorItem(f_Quality, starLevel);
         item.SetStarLevel((int)starLevel);
         if (GTools.TableMgr.TryGetIncubatorInfo(f_Quality, out var incubatorInfo))
         {
@@ -351,7 +353,18 @@ public class UIBattleMainWindow : MonoBehaviour
             AddIncubator(f_Quality, f_StarLevel + 1);
         }
     }
-    private IncubatorDebrisData GetIncubatorItem(EHeroQualityLevel f_Quality)
+    private void RemoveIncubator(IncubatorDebrisData f_Item, EHeroCradStarLevel f_StarLevel)
+    {
+        if (m_HeroInsList.TryGetValue(f_Item.QualityLevel, out var list))
+        {
+            if (list.TryGetValue(f_StarLevel, out var datas))
+            {
+                f_Item.UnLoad();
+                datas.Remove(f_Item);
+            }
+        }
+    }
+    private IncubatorDebrisData GetIncubatorItem(EHeroQualityLevel f_Quality, EHeroCradStarLevel f_StarLevel)
     {
         var item = new IncubatorDebrisData(f_Quality, m_ItemHero);
 
@@ -365,9 +378,95 @@ public class UIBattleMainWindow : MonoBehaviour
         void DownClick(BaseEventData eventData)
         {
             var image = item.Item.Find("Img_Icon").GetComponent<Image>();
-            MoveCardMgr.Ins.SetTargetIcon(image.sprite);
-            MoveCardMgr.Ins.SetCurSelectHero(f_Quality);
+            m_CurIncubatorItem = item;
+            SetTargetIcon(image.sprite);
+            SetCurSelectHero(f_Quality, f_StarLevel);
         }
         return item;
+    }
+
+    private EHeroQualityLevel m_CurSelectHero = EHeroQualityLevel.EnumCount;
+    private EHeroCradStarLevel m_StarLevel = EHeroCradStarLevel.None;
+    private IncubatorDebrisData m_CurIncubatorItem = null;
+    public int UpdateLevelID { get; set; }
+    [SerializeField]
+    private RectTransform m_TargetIcon = null;
+    [SerializeField]
+    private RectTransform m_TargetArrow = null;
+
+
+    [SerializeField]
+    private Entity_HeroBaseData m_CurSelectHeroEntity = null;
+    public EUpdateLevel UpdateLevel => EUpdateLevel.Level1;
+    private Vector2 m_MouseClickDownPos = Vector2.zero;
+    public void SetCurSelectHero(EHeroQualityLevel f_Quality, EHeroCradStarLevel f_StarLevel)
+    {
+        if (f_Quality != m_CurSelectHero)
+        {
+            var pos = IUIUtil.GetMouseUGUIPosition();
+            m_MouseClickDownPos = pos;
+            m_TargetArrow.anchoredPosition = pos;
+
+            m_CurSelectHero = f_Quality;
+            m_StarLevel = f_StarLevel;
+            GTools.LifecycleMgr.AddUpdate(this);
+            m_TargetIcon.gameObject.SetActive(true);
+            m_TargetArrow.gameObject.SetActive(true);
+        }
+    }
+    private void EndCurSelectHero()
+    {
+        m_TargetIcon.gameObject.SetActive(false);
+        m_TargetArrow.gameObject.SetActive(false);
+        m_CurSelectHeroEntity = null;
+        var curSelectChunk = WorldMapMgr.Ins.GetCurMouseEnable();
+        if (WorldMapMgr.Ins.TryGetChunkData(curSelectChunk, out var chunkData))
+        {
+            if (chunkData.CurObjectType == EWorldObjectType.Road)
+            {
+                PlaceIncubator(m_CurSelectHero, chunkData.Index);
+            }
+        }
+        m_CurSelectHero = EHeroQualityLevel.EnumCount;
+        m_StarLevel = EHeroCradStarLevel.None;
+        m_CurIncubatorItem = null;
+    }
+    public void SetTargetIcon(Sprite f_Sprite)
+    {
+        m_TargetIcon.GetComponent<Image>().sprite = f_Sprite;
+    }
+
+    public void OnUpdate()
+    {
+        var pos = IUIUtil.GetMouseUGUIPosition();
+        if (m_CurSelectHero != EHeroQualityLevel.EnumCount)
+        {
+            m_TargetIcon.anchoredPosition = pos;
+        }
+        if (m_CurSelectHeroEntity != null)
+        {
+
+        }
+        var forward = pos - m_MouseClickDownPos;
+        m_TargetArrow.up = forward.normalized;
+        var size = m_TargetArrow.sizeDelta;
+        size.y = Vector2.Distance(forward, Vector2.zero);
+        m_TargetArrow.sizeDelta = size;
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (m_CurSelectHeroEntity != null && PathManager.Ins.TryGetAStarPath(m_CurSelectHeroEntity.CurrentIndex, WorldMapMgr.Ins.GetCurMouseEnable(), out var path))
+            {
+                m_CurSelectHeroEntity.SetPath(path);
+            }
+            EndCurSelectHero();
+            GTools.LifecycleMgr.RemoveUpdate(this);
+        }
+    }
+    private void PlaceIncubator(EHeroQualityLevel f_IncubatorLevel, int f_ChunkIndex)
+    {
+        var incubator = new Entity_Incubator1Data();
+        incubator.Initialization(0, f_ChunkIndex, f_IncubatorLevel, m_StarLevel);
+        RemoveIncubator(m_CurIncubatorItem, m_StarLevel);
     }
 }
