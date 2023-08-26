@@ -265,34 +265,9 @@ public class UIBattleMainWindow : MonoBehaviour
                 if (list.Count == 0)
                 {
                     m_CurCardInsList.Remove(f_Quality);
-                }
-                else
-                {
-                    UpdateIncubatorInfo(f_Quality);
+                    break;
                 }
             }
-        }
-    }
-    public void UpdateCardInfo(EHeroCradType f_HeroCardType)
-    {
-        if (HeroIncubatorPoolMgr.Ins.TryGetCurCardInfo(f_HeroCardType, out var value))
-        {
-            if (!m_CurCardInsList.TryGetValue(f_HeroCardType, out var info))
-            {
-                info = new(f_HeroCardType);
-                info.SetCount(value.ResidueCount);
-                info.Load(m_ItemCard);
-                m_CurCardInsList.Add(f_HeroCardType, info);
-            }
-            else if (info.Count != value.ResidueCount)
-            {
-                info.SetCount(value.ResidueCount);
-            }
-        }
-        else if (m_CurCardInsList.TryGetValue(f_HeroCardType, out var info))
-        {
-            info.UnLoad();
-            m_CurCardInsList.Remove(f_HeroCardType);
         }
     }
 
@@ -378,28 +353,5 @@ public class UIBattleMainWindow : MonoBehaviour
     public void AddIncubator(EHeroQualityLevel f_Quality)
     {
 
-    }
-
-    public void UpdateHeroInfo(EHeroCradType f_HeroCardType)
-    {
-        if (HeroIncubatorPoolMgr.Ins.TryGetCurCardInfo(f_HeroCardType, out var value))
-        {
-            if (!m_HeroInsList.TryGetValue(f_HeroCardType, out var info))
-            {
-                info = new(f_HeroCardType);
-                info.SetStarLevel(value.StarLevel());
-                info.Load(m_ItemHero);
-                m_HeroInsList.Add(f_HeroCardType, info);
-            }
-            else if (value.StarLevel() != info.CradStarLevel)
-            {
-                info.SetStarLevel(value.StarLevel());
-            }
-        }
-        else if (m_CurCardInsList.TryGetValue(f_HeroCardType, out var info))
-        {
-            info.UnLoad();
-            m_HeroInsList.Remove(f_HeroCardType);
-        }
     }
 }
