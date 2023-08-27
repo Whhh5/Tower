@@ -24,8 +24,8 @@ public class GameManager
     public static List<IInitialization> m_StaticSingleton = new()
     {
         GTools.MathfMgr,
-        GTools.WorldMapMgr,
         GTools.WeatherMgr,
+        GTools.WorldMapMgr,
         GTools.TerrainMgr,
         GTools.MonsterMgr,
         GTools.CameraMgr,

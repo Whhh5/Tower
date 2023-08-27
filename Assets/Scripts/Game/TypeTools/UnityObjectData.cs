@@ -4,8 +4,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-
+using UnityEngine.Animations;
+using UnityEngine.Playables;
 
 public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
 {
@@ -113,7 +113,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
         }
     }
 
-    public  void SetLocalScale(Vector3 f_ToLocalScale)
+    public void SetLocalScale(Vector3 f_ToLocalScale)
     {
         LocalScale = f_ToLocalScale;
         if (PrefabTarget != null)
@@ -172,6 +172,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
             CurAnimaNormalizedTime = 0;
             AnimaStatus = f_AnimaStatus;
             UpdateCallbackStatus();
+            PlayerAnimation();
         }
     }
     //--
@@ -298,6 +299,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
     }
     private void UpdateAnimator()
     {
+        PlayerAnimation();
         switch (AnimaStatus)
         {
             case EAnimatorStatus.None:
@@ -327,7 +329,6 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
             default:
                 break;
         }
-        PlayerAnimation();
     }
 
     private void UpdateCurAnimaNormalizedTime()
@@ -343,7 +344,10 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
             speed = CurMoveSpeed;
         }
         var value = CurAnimaNormalizedTime + UpdateDelta * speed / CurAnimationTime;
-
+        if (CurStatus == EPersonStatusType.Die && GetType() == typeof(Entity_Incubator1Data))
+        {
+            Log("");
+        }
         // 动画回调
         foreach (var item in m_DicAnimaCallBack)
         {
@@ -407,7 +411,19 @@ public abstract class ObjectPoolBase : TransformBase, IObjectPoolBase
     [SerializeField]
     private Animator m_CurAnim = null;
     public Animator CurAnim => m_CurAnim != null ? m_CurAnim : GetComponent<Animator>();
-    public float CurAnimationTime = 1;
+    public float CurAnimationTime
+    {
+        get
+        {
+            var value = 1.0f;
+            if (CurAnim != null)
+            {
+                var curArr = CurAnim.GetCurrentAnimatorClipInfo(0);
+                value = curArr != null && curArr.Length > 0 ? curArr[0].clip.length : 1;
+            }
+            return value;
+        }
+    }
     public virtual async UniTask OnUnLoadAsync()
     {
 
@@ -415,7 +431,11 @@ public abstract class ObjectPoolBase : TransformBase, IObjectPoolBase
     // 加载完成之后调用  queue 1
     public virtual async UniTask OnLoadAsync()
     {
-
+        if (CurAnim != null)
+        {
+            CurAnim.StopPlayback();
+        }
+        m_AnimatorGraph = PlayableGraph.Create();
     }
     // 加载完成之后调用  queue 2
     public virtual void OnUpdate()
@@ -510,18 +530,58 @@ public abstract class ObjectPoolBase : TransformBase, IObjectPoolBase
             meshRenderer.material.color = UnityObjectData.Color;
         }
     }
+    private string m_LastAnimaClipName = "";
+    private PlayableGraph m_AnimatorGraph;
     public void PlayerAnimation()
     {
         var animaName = UnityObjectData.GetCurrentAnimationName();
         if (CurAnim != null)
         {
-            var animaClip = CurAnim.GetCurrentAnimatorClipInfo(0);
-            var animaState = CurAnim.GetCurrentAnimatorStateInfo(0);
 
             CurAnim.Play(animaName, 0, UnityObjectData.CurAnimaNormalizedTime);
-            var curArr = CurAnim.GetCurrentAnimatorClipInfo(0);
-            CurAnimationTime = curArr != null && curArr.Length > 0 ? curArr[0].clip.length : 1;
+
+
+            //if (m_LastAnimaClipName != "" && m_LastAnimaClipName != animaName
+            //    && TryGetAnimationClip(m_LastAnimaClipName, out var lastAnim) 
+            //    && TryGetAnimationClip(animaName, out var curAnima))
+            //{
+            //    var animOutput = AnimationPlayableOutput.Create(m_AnimatorGraph, "AnimationOutout", CurAnim);
+
+            //    var mixerPlayable = AnimationMixerPlayable.Create(m_AnimatorGraph, 2);
+
+            //    var clipPlayableA = AnimationClipPlayable.Create(m_AnimatorGraph, lastAnim);
+            //    var clipPlayableB = AnimationClipPlayable.Create(m_AnimatorGraph, curAnima);
+
+
+            //    m_AnimatorGraph.Connect(clipPlayableA, 0, mixerPlayable, 0);
+            //    m_AnimatorGraph.Connect(clipPlayableB, 0, mixerPlayable, 1);
+
+            //    animOutput.SetSourcePlayable(mixerPlayable);
+
+            //    mixerPlayable.SetInputWeight(0, 1);
+            //    mixerPlayable.SetInputWeight(1, 1);
+
+            //    m_AnimatorGraph.Play();
+
+            //}
+            m_LastAnimaClipName = animaName;
         }
+    }
+    private bool TryGetAnimationClip(string f_Name, out AnimationClip f_Clip, int f_Layer = 0)
+    {
+        var clips = CurAnim.runtimeAnimatorController.animationClips;
+        f_Clip = null;
+        foreach (var item in clips)
+        {
+            var hashCode = item.GetHashCode();
+            if (!item.name.Contains(f_Name))
+            {
+                continue;
+            }
+            //f_Clip = item;
+            break;
+        }
+        return f_Clip != null;
     }
 
     protected sealed override void Awake()

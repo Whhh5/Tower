@@ -20,7 +20,6 @@ public abstract class WorldObjectBaseData : DependChunkData
     protected WorldObjectBaseData(int f_index, int f_ChunkIndex) : base(f_index, f_ChunkIndex)
     {
         CurrentMapKey = WorldMapMgr.Ins.CurrentMapKey;
-        WeatherMgr.Ins.InflictionGain(this);
 
         WorldMapMgr.Ins.MoveChunkElement(this, f_ChunkIndex);
 
@@ -285,8 +284,12 @@ public abstract class WorldObjectBaseData : DependChunkData
         }
         if (list.TryGetValue(f_GainType, out var gainData))
         {
+            list.Remove(f_GainType);
             gainData.StopExecute();
-
+            if (list.Count == 0)
+            {
+                m_CurGainList.Remove(gainInfo.GainView);
+            }
         }
     }
 

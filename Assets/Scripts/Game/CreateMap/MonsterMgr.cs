@@ -48,6 +48,10 @@ public class MonsterMgr : Singleton<MonsterMgr>
     public override void Awake()
     {
         base.Awake();
+    }
+    public override void Start()
+    {
+        base.Start();
         CreateEntityTest();
     }
 

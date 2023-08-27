@@ -148,6 +148,11 @@ public interface ILoadPrefabAsync
                 result.SetUnityObjectData(f_Target);
                 await result.OnStartAsync();
                 f_Target.AfterLoad();
+
+                if (f_Target is WorldObjectBaseData data)
+                {
+                    WeatherMgr.Ins.InflictionGain(data);
+                }
             }
         }
         else
