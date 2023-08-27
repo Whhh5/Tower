@@ -760,7 +760,7 @@ public bool GetHeroDataByType(EHeroCradType f_HeroType, int f_TargetIndex, EHero
     switch (f_HeroType)
     {
         case EHeroCradType.Hero1:
-            f_Result = new Entity_Player_Hero1Data(0, f_TargetIndex, null);
+            f_Result = new Entity_Player_Hero1Data(0, f_TargetIndex, f_StarLevel);
             break;
         case EHeroCradType.Hero2:
             f_Result = new Entity_Player_Hero2Data(0, f_TargetIndex, f_StarLevel);

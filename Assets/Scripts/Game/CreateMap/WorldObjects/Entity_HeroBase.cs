@@ -115,7 +115,8 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
                         SetPersonStatus(EPersonStatusType.Skill);
                         SetForward(CurAttackTarget.WorldPosition - WorldPosition);
                     }
-                    if (!GTools.UnityObjectIsActive(CurAttackTarget))
+                    if (!GTools.UnityObjectIsActive(CurAttackTarget)
+                        || Vector3.Distance(CurAttackTarget.WorldPosition, WorldPosition) > AtkRange * 1.2f)
                     {
                         SetPersonStatus(EPersonStatusType.Idle);
                     }

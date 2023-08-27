@@ -24,7 +24,7 @@ public class Emitter_SwordLowData: Emitter_SwordBaseData
     // ½áÊøÌõ¼þ
     public override bool GetStopCondition(WeaponElementBaseData f_Buttle, WorldObjectBaseData f_Target, float f_Ratio)
     {
-        return f_Buttle.GetResistStatus() ? false : !f_Buttle.GetIsTarget();
+        return f_Buttle.GetResistStatus() ? false : true;//!f_Buttle.GetIsTarget();
     }
 
     public override Vector3 GetWorldPosition(Vector3 f_StartPoint, Vector3 f_EndPoint, Vector3 f_CurPoint, float f_Ratio)

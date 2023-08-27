@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &7207577720883975081
 Transform:
   m_ObjectHideFlags: 0
@@ -44,19 +44,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c07ccf83ec84f141b363619a7fc057e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UpdateInteractable: 1
-  m_UnitTime: 2
-  m_Count: 3
-  m_Radius: 30
-  m_LaunchSpeed: 1
-  m_CollectSpeed: 3
-  m_Harm: 10
-  m_WeaponElement: -2147483629
-  m_Targets: []
-  m_TargetPerson: {fileID: 0}
-  m_LayerMask: 1
-  m_AttackLayer: 1
-  m_ExcuteTimeOffset: 0.1
-  m_IsAotuMove: 1
-  m_LaunchStatus: 0
-  m_CollectStatus: 0
+  UpdateInteractable: 0
+  m_CurAnim: {fileID: 0}
+  m_MainBody: {fileID: 0}
+  m_MainObject: {fileID: 0}
+  m_PointUp: {fileID: 0}
