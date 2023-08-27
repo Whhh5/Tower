@@ -47,28 +47,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
                 break;
             case EPersonStatusType.Idle:
                 {
-                    // 攻击
-                    if (TryGetAttackTarget() && m_CurTarget.CurStatus != EPersonStatusType.Die)
-                    {
-                        if (m_CurTarget.CurrentIndex != CurTargetIndex)
-                        {
-                            UpdatePathPoint(m_CurTarget.CurrentIndex);
-                        }
-                        SetPersonStatus(EPersonStatusType.Attack);
-                    }
-                    // 行走
-                    else if (MoveNext())
-                    {
-                        if (m_CurTarget != null && m_CurTarget.CurStatus != EPersonStatusType.Die)
-                        {
-
-                        }
-                        else if (CurTargetIndex != TargetIndex)
-                        {
-                            UpdatePathPoint(TargetIndex);
-                        }
-                        SetPersonStatus(EPersonStatusType.Walk);
-                    }
+                    DitectionNextAction();
                 }
                 break;
             case EPersonStatusType.Walk:
@@ -82,7 +61,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
                     }
                     else
                     {
-                        SetPersonStatus(EPersonStatusType.Idle);
+                        DitectionNextAction();
                     }
                 }
                 break;
@@ -120,7 +99,33 @@ public abstract class Person_EnemyData : WorldObjectBaseData
             default:
                 break;
         }
-        PlayerAnimation();
+
+
+    }
+    public void DitectionNextAction()
+    {
+        // 攻击
+        if (TryGetAttackTarget() && m_CurTarget.CurStatus != EPersonStatusType.Die)
+        {
+            if (m_CurTarget.CurrentIndex != CurTargetIndex)
+            {
+                UpdatePathPoint(m_CurTarget.CurrentIndex);
+            }
+            SetPersonStatus(EPersonStatusType.Attack);
+        }
+        // 行走
+        else if (MoveNext())
+        {
+            if (m_CurTarget != null && m_CurTarget.CurStatus != EPersonStatusType.Die)
+            {
+
+            }
+            else if (CurTargetIndex != TargetIndex)
+            {
+                UpdatePathPoint(TargetIndex);
+            }
+            SetPersonStatus(EPersonStatusType.Walk);
+        }
     }
     // -- 
     // ----------------------------------===============----------------------------------
