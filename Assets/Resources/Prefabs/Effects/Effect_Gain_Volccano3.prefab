@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8391627892670510926}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.041, y: 0, z: -0.124}
+  m_LocalPosition: {x: 0.318, y: -0.729, z: 0.788}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -223,7 +223,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 2
       minColor: {r: 1, g: 0.590682, b: 0.15566039, a: 0.44705883}
-      maxColor: {r: 1, g: 0.11183071, b: 0, a: 0.2784314}
+      maxColor: {r: 1, g: 0.1137255, b: 0, a: 0.41960785}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}
@@ -1305,7 +1305,7 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 1, g: 1, b: 1, a: 0}
+        key0: {r: 0.7686275, g: 0.7686275, b: 0.7686275, a: 0}
         key1: {r: 1, g: 1, b: 1, a: 1}
         key2: {r: 0, g: 0, b: 0, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
@@ -1474,11 +1474,11 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     speedRange: {x: 0, y: 1}
-    tilesX: 1
-    tilesY: 1
+    tilesX: 10
+    tilesY: 5
     animationType: 0
     rowIndex: 0
-    cycles: 1
+    cycles: 50
     uvChannelMask: -1
     rowMode: 1
     sprites:
@@ -4761,7 +4761,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e823cd5b5d27c0f4b8256e7c12ee3e6d, type: 2}
+  - {fileID: 2100000, guid: c10b1630d5621ec48a17223c3c102023, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4860,12 +4860,6 @@ MonoBehaviour:
   UpdateInteractable: 0
   m_CurAnim: {fileID: 0}
   CurAnimationTime: 1
-  m_CentralPoint: {fileID: 0}
-  m_BeHitPoint: {fileID: 0}
-  m_BuffPoint: {fileID: 0}
-  m_EffectPoint: {fileID: 0}
-  m_TrailPoint: {fileID: 0}
-  m_WeaponPoint: {fileID: 0}
   m_MainBody: {fileID: 0}
   m_MainObject: {fileID: 0}
   m_PointUp: {fileID: 0}

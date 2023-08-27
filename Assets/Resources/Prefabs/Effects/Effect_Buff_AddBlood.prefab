@@ -4761,7 +4761,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: e823cd5b5d27c0f4b8256e7c12ee3e6d, type: 2}
+  - {fileID: 2100000, guid: c10b1630d5621ec48a17223c3c102023, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -4860,12 +4860,6 @@ MonoBehaviour:
   UpdateInteractable: 0
   m_CurAnim: {fileID: 0}
   CurAnimationTime: 1
-  m_CentralPoint: {fileID: 0}
-  m_BeHitPoint: {fileID: 0}
-  m_BuffPoint: {fileID: 0}
-  m_EffectPoint: {fileID: 0}
-  m_TrailPoint: {fileID: 0}
-  m_WeaponPoint: {fileID: 0}
   m_MainBody: {fileID: 0}
   m_MainObject: {fileID: 0}
   m_PointUp: {fileID: 0}
