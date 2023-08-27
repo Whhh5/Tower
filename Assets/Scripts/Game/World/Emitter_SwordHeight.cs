@@ -7,9 +7,9 @@ using UnityEngine;
 
 public class Emitter_SwordHeightData: Emitter_SwordBaseData
 {
-    public Emitter_SwordHeightData(int f_Index, WorldObjectBaseData f_Target):base(f_Index, f_Target)
+    public Emitter_SwordHeightData(int f_Index, WorldObjectBaseData f_Target, float f_Speed):base(f_Index, f_Target)
     {
-
+        m_speed = f_Speed;
     }
     private enum EWeaponStatus
     {
@@ -17,6 +17,7 @@ public class Emitter_SwordHeightData: Emitter_SwordBaseData
         Defense,
     }
 
+    private float m_speed = 1;
     private bool m_IsPenetrate = true;
     private bool m_DefenseIsATK = false;
     private float m_DefenceRadius = 2.0f;
@@ -109,7 +110,7 @@ public class Emitter_SwordHeightData: Emitter_SwordBaseData
 
     public override WeaponElementBaseData GetWeaponElementData()
     {
-        var result = new EmitterElement_SwordLowData(0, Initiator as WorldObjectBaseData);
+        var result = new EmitterElement_SwordLowData(0, Initiator);
         return result;
     }
     public override ResultData<WeaponElementBaseData> GetWeaponElementAsync()
@@ -142,7 +143,7 @@ public class Emitter_SwordHeightData: Emitter_SwordBaseData
                 // ����λ��
                 {
                     var curPos = element.WorldPosition;
-                    var targetPos = Vector3.Lerp(curPos, worldPos, GTools.UpdateDeltaTime * 10);
+                    var targetPos = Vector3.Lerp(curPos, worldPos, GTools.UpdateDeltaTime * m_speed);
                     element.SetPosition(targetPos);
                 }
 

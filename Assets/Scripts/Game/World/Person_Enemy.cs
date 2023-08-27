@@ -59,9 +59,9 @@ public abstract class Person_EnemyData : WorldObjectBaseData
                         SetForward(value - WorldPosition);
                         SetPosition(value);
                     }
-                    else
+                    else if(DitectionNextAction())
                     {
-                        DitectionNextAction();
+                        SetPersonStatus(EPersonStatusType.Idle);
                     }
                 }
                 break;
@@ -102,7 +102,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
 
 
     }
-    public void DitectionNextAction()
+    public bool DitectionNextAction()
     {
         // 攻击
         if (TryGetAttackTarget() && m_CurTarget.CurStatus != EPersonStatusType.Die)
@@ -112,6 +112,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
                 UpdatePathPoint(m_CurTarget.CurrentIndex);
             }
             SetPersonStatus(EPersonStatusType.Attack);
+            return true;
         }
         // 行走
         else if (MoveNext())
@@ -125,6 +126,11 @@ public abstract class Person_EnemyData : WorldObjectBaseData
                 UpdatePathPoint(TargetIndex);
             }
             SetPersonStatus(EPersonStatusType.Walk);
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
     // -- 

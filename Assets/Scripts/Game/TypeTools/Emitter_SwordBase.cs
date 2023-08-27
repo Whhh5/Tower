@@ -111,6 +111,8 @@ public abstract class Emitter_SwordBaseData: WeaponBaseData
         {
             GTools.DrawGizom.AddLine(UpdateLevelID, new() { (WorldPosition, targets.CentralPoint) });
         }
+
+        SetPosition(Initiator.WeaponPoint);
     }
 
     public override async UniTask StartExecute()
@@ -152,7 +154,14 @@ public abstract class Emitter_SwordBaseData: WeaponBaseData
     public override async UniTask LaunchAsync(WorldObjectBaseData f_Target)
     {
         if (m_LaunchStatus == EStatus.Close) return;
-        var targetPoint = (f_Target.CentralPoint - WorldPosition).normalized * Radius + WorldPosition;
+
+        var radius = Radius + GTools.MathfMgr.GetRandomValue(-1.0f, 1.0f);
+
+        var targetPoint = (f_Target.CentralPoint - WorldPosition).normalized * radius + WorldPosition;
+        var rangeX = GTools.MathfMgr.GetRandomValue(-0.5f, 0.5f);
+        var rangeZ = GTools.MathfMgr.GetRandomValue(-0.5f, 0.5f);
+        targetPoint += new Vector3(rangeX, 0, rangeZ);
+
 
         var resultData = GetWeaponElementAsync();
         if (resultData.Result == EResult.Succeed)
