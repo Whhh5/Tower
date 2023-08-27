@@ -18,29 +18,9 @@ public class Entity_Player_Hero4Data : Entity_HeroBaseData
     public override int HarmBase => 1;
     public override EHeroCradType HeroCradType => EHeroCradType.Hero4;
 
-    public override void AnimatorCallback000()
-    {
-        base.AnimatorCallback000();
-        switch (CurStatus)
-        {
-            case EPersonStatusType.None:
-                break;
-            case EPersonStatusType.Idle:
-                break;
-            case EPersonStatusType.Walk:
-                break;
-            case EPersonStatusType.Attack:
-                break;
-            case EPersonStatusType.Skill:
-                break;
-            case EPersonStatusType.Die:
-                break;
-            case EPersonStatusType.Control:
-                break;
-            default:
-                break;
-        }
-    }
+
+    public ESkillStage3 m_SkillStage => (ESkillStage3)CurStage;
+    public override int SkillStageCount => (int)ESkillStage3.EnumCount;
 
     public override void AnimatorCallback050()
     {
@@ -48,12 +28,6 @@ public class Entity_Player_Hero4Data : Entity_HeroBaseData
 
         switch (CurStatus)
         {
-            case EPersonStatusType.None:
-                break;
-            case EPersonStatusType.Idle:
-                break;
-            case EPersonStatusType.Walk:
-                break;
             case EPersonStatusType.Attack:
                 {
                     AttackTarget();
@@ -61,12 +35,24 @@ public class Entity_Player_Hero4Data : Entity_HeroBaseData
                 break;
             case EPersonStatusType.Skill:
                 {
-                    IGainUtil.InflictionGain(EGainType.Launch1, this, this);
+                    
+                    switch (m_SkillStage)
+                    {
+                        case ESkillStage3.Stage1:
+                            SkillStage1();
+                            break;
+                        case ESkillStage3.Stage2:
+                            SkillStage2();
+                            break;
+                        case ESkillStage3.Stage3:
+                            SkillStage3();
+                            break;
+                        case ESkillStage3.EnumCount:
+                            break;
+                        default:
+                            break;
+                    }
                 }
-                break;
-            case EPersonStatusType.Die:
-                break;
-            case EPersonStatusType.Control:
                 break;
             default:
                 break;
@@ -91,6 +77,18 @@ public class Entity_Player_Hero4Data : Entity_HeroBaseData
                 IBuffUtil.InflictionBuff(EBuffType.Poison, this, CurAttackTarget);
             }
         });
+    }
+    private void SkillStage1()
+    {
+        IGainUtil.InflictionGain(EGainType.Launch1, this, this);
+    }
+    private void SkillStage2()
+    {
+        IGainUtil.InflictionGain(EGainType.Launch1, this, this);
+    }
+    private void SkillStage3()
+    {
+        IGainUtil.InflictionGain(EGainType.Launch1, this, this);
     }
 }
 public class Entity_Player_Hero4 : Entity_HeroBase

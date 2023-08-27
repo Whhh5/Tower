@@ -41,6 +41,7 @@ public enum EHeroCradType
 }
 public enum EHeroQualityLevel
 {
+    None,
     Level1,
     Level2,
     Level3,

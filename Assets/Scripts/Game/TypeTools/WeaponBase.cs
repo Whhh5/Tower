@@ -16,7 +16,7 @@ public abstract class WeaponBaseData : VirtualEntityData
 
     public WorldObjectBaseData Initiator = null;
     public float UnitTime = 1;
-    public int Count = 10;
+    public int Count = 15;
     public float Radius = 10;
     public float LaunchSpeed = 1;
     public float CollectSpeed = 3;

@@ -85,6 +85,16 @@ public class Emitter_SwordLowData: Emitter_SwordBaseData
     {
         base.OnUpdate();
     }
+    public override ResultData<WeaponElementBaseData> GetWeaponElementAsync()
+    {
+        var value = base.GetWeaponElementAsync();
+        if (value.Result == EResult.Defeated)
+        {
+            var bubble = CreateWeaponElementAsync();
+            value.SetData(bubble);
+        }
+        return value;
+    }
 
 }
 public class Emitter_SwordLow : Emitter_SwordBase

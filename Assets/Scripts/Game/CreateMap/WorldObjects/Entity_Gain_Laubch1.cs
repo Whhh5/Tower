@@ -24,6 +24,7 @@ public class Entity_Gain_Laubch1Data : EntityGainBaseData
         await wepon.StartExecute();
         await wepon.StopExecute();
         ILoadPrefabAsync.UnLoad(wepon);
+        IGainUtil.RemoteGain(EGainType.Launch1, m_Recipient);
     }
 
     public override Vector3 GetPosiion()

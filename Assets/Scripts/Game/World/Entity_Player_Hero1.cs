@@ -19,7 +19,7 @@ public class Entity_Player_Hero1Data : Entity_HeroBaseData
     public override EHeroCradType HeroCradType => EHeroCradType.Hero1;
 
     private ESkillStage3 m_SkillStage => (ESkillStage3)CurStage;
-    public override int SkillStageCount => (int)m_SkillStage;
+    public override int SkillStageCount => (int)ESkillStage3.EnumCount;
 
 
     private Emitter_SwordBaseData m_SwordBase = null;
