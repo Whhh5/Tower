@@ -9,6 +9,8 @@ using UnityEngine.Playables;
 
 public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
 {
+    public float UpdateDelta { get; set; }
+    public float LasteUpdateTime { get; set; }
     protected UnityObjectData(int f_Index)
     {
         Index = f_Index;
@@ -33,7 +35,6 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
         InitAnimatorParams();
         SetPersonStatus(EPersonStatusType.Idle);
         AnimaStatus = EAnimatorStatus.Loop;
-        LastUpdateTime = Time.time;
         if (IsUpdateEnable)
         {
             GTools.LifecycleMgr.AddUpdate(this);
@@ -61,13 +62,9 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
     //--
     public int UpdateLevelID { get; set; }
     public EUpdateLevel UpdateLevel => EUpdateLevel.Level1;
-    public float LastUpdateTime { get; private set; }
-    public float UpdateDelta { get; private set; }
     public virtual bool IsUpdateEnable => false;
     public virtual void OnUpdate()
     {
-        UpdateDelta = Time.time - LastUpdateTime;
-        LastUpdateTime = Time.time;
         UpdateAnimator();
     }
     //--
@@ -206,13 +203,13 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
     }
 
     // 当前动画播放速度
-    protected virtual float m_BaseSpeed { get; set; } = 1;
-    protected float m_AddAnimaSpeed = 0;
-    public float CurAnimaSpeed => Mathf.Clamp(m_BaseSpeed + m_AddAnimaSpeed, 0.1f, 10);
+    public virtual float AtkSpeedBase { get; set; } = 1;
+    protected float m_AddAtkSpeed = 0;
+    public float CurAnimaSpeed => Mathf.Clamp(AtkSpeedBase + m_AddAtkSpeed, 0.1f, 10);
     public void ChangeReleaseSpeed(float f_Value)
     {
-        var value = f_Value * m_BaseSpeed;
-        m_AddAnimaSpeed += value;
+        var value = f_Value * AtkSpeedBase;
+        m_AddAtkSpeed += value;
     }
     // 移动速度
     protected virtual float m_BaseMoveSpeed { get; set; } = 1;
@@ -299,7 +296,6 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
     }
     private void UpdateAnimator()
     {
-        PlayerAnimation();
         switch (AnimaStatus)
         {
             case EAnimatorStatus.None:
@@ -329,6 +325,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
             default:
                 break;
         }
+        PlayerAnimation();
     }
 
     private void UpdateCurAnimaNormalizedTime()
@@ -396,6 +393,8 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
 // 世界池物体父类
 public abstract class ObjectPoolBase : TransformBase, IObjectPoolBase
 {
+    public float UpdateDelta { get; set; }
+    public float LasteUpdateTime { get; set; }
     public bool UpdateInteractable = false;
     public AssetKey AssetKey { get; set; }
     public int SaveID { get; set; }

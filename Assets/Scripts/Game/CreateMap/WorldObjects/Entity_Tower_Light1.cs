@@ -7,6 +7,8 @@ public class Entity_Tower_Light1Data : EntityTowerBaseData
 {
     public Entity_Tower_Light1Data(int f_index, int f_ChunkIndex) : base(f_index, f_ChunkIndex)
     {
+
+
     }
 
     public override AssetKey AssetPrefabID => AssetKey.Entity_Tower_Light1;
@@ -23,6 +25,7 @@ public class Entity_Tower_Light1Data : EntityTowerBaseData
     public Vector3 AtkPoint => TowerMono.AtkPoint != null ? TowerMono.AtkPoint.position : WorldPosition;
 
     protected override int AtkRange => 6;
+    public override int BranchOutIndex => 1;
 
     public List<Vector3> GetSkill2Points()
     {
@@ -58,12 +61,13 @@ public class Entity_Tower_Light1Data : EntityTowerBaseData
 
     private Entity_Effect_Tower_Light1_AttackData GetAttackBullet(Vector3 f_StartPoint, int f_DamageValue, bool f_IsAddMagic)
     {
-        var bullet = new Entity_Effect_Tower_Light1_AttackData(f_StartPoint, this, f_DamageValue, f_IsAddMagic);
+        var bullet = new Entity_Effect_Tower_Light1_AttackData();
+        bullet.Initialization(f_StartPoint, this, f_DamageValue, f_IsAddMagic);
         return bullet;
     }
     private void AtkTargets(List<WorldObjectBaseData> f_Targets, int? f_DamageValue = null, bool f_IsAddMagic = false, Vector3? f_StartPoint = null, float? f_Speed = null)
     {
-        var bullet = GetAttackBullet(f_StartPoint ?? AtkPoint, f_DamageValue ?? -HarmBase, f_IsAddMagic);
+        var bullet = GetAttackBullet(f_StartPoint ?? AtkPoint, f_DamageValue ?? -CurHarm, f_IsAddMagic);
         var trackData = new Effect_Track_Points<Entity_Effect_Tower_Light1_AttackData>(bullet, f_Targets, f_Speed ?? AtkSpeed);
         GTools.RunUniTask(trackData.StartExecute());
     }
@@ -139,7 +143,7 @@ public class Entity_Tower_Light1Data : EntityTowerBaseData
                                         {
                                             item,
                                         };
-                                        AtkTargets(target, -HarmBase * 2, f_StartPoint: point);
+                                        AtkTargets(target, -CurHarm * 2, f_StartPoint: point);
 
                                     }
                                 }
@@ -217,7 +221,7 @@ public class Entity_Tower_Light1Data : EntityTowerBaseData
             {
                 item,
             };
-            AtkTargets(target, -HarmBase * 3, false, AtkPoint, AtkSpeed * 3);
+            AtkTargets(target, -CurHarm * 3, false, AtkPoint, AtkSpeed * 3);
             var interval = AtkInterval / targets.Count;
             await UniTask.Delay(Mathf.CeilToInt(interval * 1000));
             if (!m_IsStartSkill3) break;

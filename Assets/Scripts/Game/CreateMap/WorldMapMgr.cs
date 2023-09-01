@@ -474,11 +474,35 @@ public class WorldMapMgr : B1.Singleton<WorldMapMgr>
         }
         return false;
     }
+    public bool IsInNearByObject(int f_Index, WorldObjectBaseData f_Target, int f_Range = 1)
+    {
+        if (TryGetRangeChunkByIndex(f_Index, out var result, index => true, false, f_Range))
+        {
+            var indexs = f_Target.GetAllChunkIndex();
+            foreach (var item in indexs)
+            {
+                if (result.Contains(item))
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     // 在块上添加一个元素对象
     public bool AddChunkElement<T>(T f_Element, bool f_IsForce = false)
         where T : DependChunkData
     {
-        if (TryGetChunkData(f_Element.CurrentIndex, out var chunk))
+        if (AddChunkElement(f_Element.CurrentIndex, f_Element, f_IsForce))
+        {
+            return true;
+        }
+        return false;
+    }
+    public bool AddChunkElement<T>(int f_Index, T f_Element, bool f_IsForce = false)
+        where T : DependChunkData
+    {
+        if (TryGetChunkData(f_Index, out var chunk))
         {
             var result = chunk.AddElement(f_Element, f_IsForce);
             return result;
@@ -489,7 +513,16 @@ public class WorldMapMgr : B1.Singleton<WorldMapMgr>
     public void RemoveChunkElement<T>(T f_Element)
         where T : DependChunkData
     {
-        if (TryGetChunkData(f_Element.CurrentIndex, out var chunk))
+        var indexList = f_Element.GetAllChunkIndex();
+        foreach (var item in indexList)
+        {
+            RemoveChunkElement(item, f_Element);
+        }
+    }
+    public void RemoveChunkElement<T>(int f_Index, T f_Element)
+        where T : DependChunkData
+    {
+        if (TryGetChunkData(f_Index, out var chunk))
         {
             chunk.RemoveElement(f_Element);
         }
@@ -499,7 +532,11 @@ public class WorldMapMgr : B1.Singleton<WorldMapMgr>
     {
         RemoveChunkElement(f_Element);
         f_Element.SetCurrentChunkIndex(f_ToChunkIndex);
-        AddChunkElement(f_Element);
+        var indexList = f_Element.GetAllChunkIndex();
+        foreach (var item in indexList)
+        {
+            AddChunkElement(item, f_Element);
+        }
     }
     public bool TryGetChunkByType(EWorldObjectType f_Type, out Dictionary<int, Entity_Chunk1Data> f_Result, bool f_IsInclude = false)
     {

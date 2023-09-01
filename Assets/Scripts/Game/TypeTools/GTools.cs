@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
+using B1.Event;
 
 public static class GTools
 {
@@ -68,6 +69,7 @@ public static class GTools
     public static MonsterMgr MonsterMgr => MonsterMgr.Ins;
     public static UIMgr UIMgr => UIMgr.Ins;
     public static WorldWindowMgr WorldWindowMgr => WorldWindowMgr.Ins;
+    public static EventSystemMgr EventSystemMgr => EventSystemMgr.Ins;
     #endregion
 
     #region Mono 静态类
@@ -197,5 +199,18 @@ public static class GTools
     public static void FloaterHint(string f_Context)
     {
         Debug.Log(f_Context);
+    }
+
+
+}
+
+public static class ExtendFunction
+{
+    public static void Add(this IncubatorAttributeInfo source, IncubatorAttributeInfo target)
+    {
+        source.BloodRatio += target.BloodRatio;
+        source.HarmRatio += target.HarmRatio;
+        source.DefenceRatio += target.DefenceRatio;
+        source.AtkSpeedRatio += target.AtkSpeedRatio;
     }
 }

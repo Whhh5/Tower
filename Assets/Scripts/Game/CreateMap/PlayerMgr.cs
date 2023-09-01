@@ -9,7 +9,8 @@ public class PlayerData
 }
 public class PlayerMgr : Singleton<PlayerMgr>, IUpdateBase
 {
-
+    public float UpdateDelta { get; set; }
+    public float LasteUpdateTime { get; set; }
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------

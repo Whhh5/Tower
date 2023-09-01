@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2023072462}
-  m_Layer: 11
+  m_Layer: 8
   m_Name: Point_Up
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2023072461}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.06, z: 0}
+  m_LocalPosition: {x: 0, y: 6.41, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -40,7 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3047219642143703402}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point_Skill2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -74,7 +74,7 @@ GameObject:
   - component: {fileID: 5455290062246395259}
   - component: {fileID: 5455290062246395258}
   - component: {fileID: 5455290062246395253}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -171,7 +171,7 @@ GameObject:
   - component: {fileID: 5455290062367315205}
   - component: {fileID: 5455290062367315204}
   - component: {fileID: 5455290062367315207}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -267,7 +267,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5455290062792299351}
   - component: {fileID: 5455290062792299348}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Entity_Tower_Deault1 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -283,7 +283,7 @@ Transform:
   m_GameObject: {fileID: 5455290062792299350}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0.15, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5455290062849932066}
@@ -328,7 +328,7 @@ GameObject:
   - component: {fileID: 5455290062849932093}
   - component: {fileID: 5455290062849932092}
   - component: {fileID: 5455290062849932095}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -425,7 +425,7 @@ GameObject:
   - component: {fileID: 5455290063392365366}
   - component: {fileID: 5455290063392365361}
   - component: {fileID: 5455290063392365360}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -523,7 +523,7 @@ GameObject:
   - component: {fileID: 5455290063743739409}
   - component: {fileID: 5455290063743739408}
   - component: {fileID: 5455290063743739411}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -622,7 +622,7 @@ GameObject:
   - component: {fileID: 5455290063827431532}
   - component: {fileID: 5455290063827431535}
   - component: {fileID: 5455290063827431534}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -720,7 +720,7 @@ GameObject:
   - component: {fileID: 5455290063952033180}
   - component: {fileID: 5455290063952033183}
   - component: {fileID: 5455290063952033182}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -815,7 +815,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6031412383158798718}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point_Skill2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -846,7 +846,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1139431057987487939}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point_Skill2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -878,7 +878,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4812959867932047222}
   - component: {fileID: 1290435996692774932}
-  m_Layer: 11
+  m_Layer: 8
   m_Name: Entity_Tower_Light1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -916,7 +916,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UpdateInteractable: 0
   m_CurAnim: {fileID: 5455290062792299348}
-  CurAnimationTime: 1
   m_MainBody: {fileID: 0}
   m_MainObject: {fileID: 0}
   m_PointUp: {fileID: 2023072462}
@@ -941,7 +940,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5893544648292871236}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point_Attack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -972,7 +971,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4821325546103528095}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Point_Skill2
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -19,7 +19,7 @@ namespace B1
         }
 
 
-        private Dictionary<EEvent, List<(object tUserdata, string tDesc)>> m_MsgDic = null;
+        private Dictionary<EEventSystemType, string> m_MsgDic = null;
         protected virtual void Awake()
         {
             Awake_Message();
@@ -41,17 +41,16 @@ namespace B1
         private void Awake_Message()
         {
             //消息接口处理
-            var eventSystem = this as IMessageSystem;
+            var eventSystem = this as IEventSystem;
             if (eventSystem != null)
             {
                 m_MsgDic = eventSystem.SubscribeList();
                 foreach (var item in m_MsgDic)
                 {
                     var tempItem = item;
-                    foreach (var msg in tempItem.Value)
-                    {
-                        MessagingSystem.Ins.Subscribe(tempItem.Key, eventSystem, msg.tUserdata, msg.tDesc);
-                    }
+
+                        EventSystemMgr.Ins.Subscribe(tempItem.Key, eventSystem, tempItem.Value);
+                    
                 }
             }
         }
@@ -60,11 +59,11 @@ namespace B1
             //消息接口处理
             if (!object.ReferenceEquals(m_MsgDic, null))
             {
-                var eventSystem = this as IMessageSystem;
+                var eventSystem = this as IEventSystem;
                 foreach (var item in m_MsgDic)
                 {
                     var tempItem = item;
-                    MessagingSystem.Ins.Unsubscribe(tempItem.Key, eventSystem);
+                    EventSystemMgr.Ins.Unsubscribe(tempItem.Key, eventSystem);
                 }
             }
         } 

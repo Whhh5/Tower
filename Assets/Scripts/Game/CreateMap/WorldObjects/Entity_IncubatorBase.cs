@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-
 public class Entity_IncubatorBaseData : WorldObjectBaseData
 {
     public Entity_IncubatorBaseData() : base(-1, -1)
     {
     }
-
+    public IncubatorAttributeInfo AddAttribute = new();
     public void Initialization(int f_index, int f_ChunkIndex, EHeroQualityLevel f_Quality, EHeroCradStarLevel f_HeroStarLevl)
     {
-        SetCurrentChunkIndex(f_ChunkIndex);
+        base.Initialization(f_index, f_ChunkIndex);
         if (WorldMapMgr.Ins.TryGetChunkData(CurrentIndex, out var chunkData))
         {
             SetPosition(chunkData.WorldPosition);
@@ -97,6 +96,17 @@ public class Entity_IncubatorBaseData : WorldObjectBaseData
             SetPersonStatus(EPersonStatusType.Die);
             m_IsFinish = true;
         }
+        else
+        {
+            UpdateCurAddAttribute();
+        }
+    }
+    public void UpdateCurAddAttribute()
+    {
+        if (GTools.WeatherMgr.TryGetCurWeatherInfo(out var weatherInfo))
+        {
+            AddAttribute += weatherInfo.IncubatorRatio * UpdateDelta;
+        }
     }
     public override void AnimatorCallback100()
     {
@@ -139,6 +149,7 @@ public class Entity_IncubatorBaseData : WorldObjectBaseData
     {
         if (TableMgr.Ins.GetHeroDataByType(m_HeroType, CurrentIndex, m_HeroStarLevel, out var worldObjData))
         {
+            worldObjData.UpdateAddAttributes(AddAttribute);
             GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(worldObjData));
         }
     }

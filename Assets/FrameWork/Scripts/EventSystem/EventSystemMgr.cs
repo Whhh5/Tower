@@ -6,10 +6,14 @@ using System;
 
 namespace B1.Event
 {
-    public class MessagingSystem : Singleton<MessagingSystem>
+    public class EventSystemMgr : Singleton<EventSystemMgr>
     {
-        private Dictionary<EEvent, Dictionary<IMessageSystem, (object tUserdata, string tDesc)>> m_DicEvent = new();
-        public void SendEvent(EEvent f_EEvent, object f_Param, string f_Description)
+        private Dictionary<EEventSystemType, Dictionary<IEventSystem, string>> m_DicEvent = new();
+        public override void Awake()
+        {
+            base.Awake();
+        }
+        public void SendEvent(EEventSystemType f_EEvent, object f_Param = null, string f_Description = "未添加注释")
         {
             if (m_DicEvent.TryGetValue(f_EEvent, out var value))
             {
@@ -19,7 +23,7 @@ namespace B1.Event
                     if (tempItem.Key != null)
                     {
                         Log($"触发事件  event name = {f_EEvent}  description = {f_Description}");
-                        tempItem.Key.ReceptionEvent(f_EEvent, f_Param, tempItem.Value.tUserdata, tempItem.Value.tDesc, f_Description);
+                        tempItem.Key.ReceptionEvent(f_EEvent, f_Param, f_Description);
                     }
                 }
             }
@@ -27,13 +31,9 @@ namespace B1.Event
             {
                 LogWarning($"当前事件未注册 event name = {f_EEvent}");
             }
-
-
-
-
         }
-        public void Subscribe<T>(EEvent f_EEvent, T f_EventReception, object f_UserData, string f_SubDesc)
-            where T : IMessageSystem
+        public void Subscribe<T>(EEventSystemType f_EEvent, T f_EventReception, string f_SubDesc = "未添加注释")
+            where T : IEventSystem
         {
             if (!m_DicEvent.ContainsKey(f_EEvent))
             {
@@ -45,11 +45,11 @@ namespace B1.Event
                 return;
             }
 
-            m_DicEvent[f_EEvent].Add(f_EventReception, (f_UserData, f_SubDesc));
-            LogWarning($"订阅事件   event name = {f_EEvent}     param = {f_UserData}   SubDesc = {f_SubDesc}");
+            m_DicEvent[f_EEvent].Add(f_EventReception, f_SubDesc);
+            LogWarning($"订阅事件   event name = {f_EEvent}     SubDesc = {f_SubDesc}");
         }
-        public void Unsubscribe<T>(EEvent f_EEvent, T f_EventReception)
-            where T : IMessageSystem
+        public void Unsubscribe<T>(EEventSystemType f_EEvent, T f_EventReception)
+            where T : IEventSystem
         {
             if (m_DicEvent.TryGetValue(f_EEvent, out var value) && value.ContainsKey(f_EventReception))
             {
@@ -68,7 +68,7 @@ namespace B1.Event
                 LogError($"取消订阅事件, 不存在该事件 event name = {f_EEvent}");
             }
         }
-        public void UnsubscribeAllByEvent(EEvent f_EEvent)
+        public void UnsubscribeAllByEvent(EEventSystemType f_EEvent)
         {
             if (m_DicEvent.TryGetValue(f_EEvent, out var list))
             {
@@ -77,7 +77,7 @@ namespace B1.Event
                 str += "\n{";
                 foreach (var item in list)
                 {
-                    str += $"\n\t event desc = {item.Value.tDesc} ";
+                    str += $"\n\t event desc = {item.Value} ";
                 }
                 str += "\n}";
                 LogWarning(str);
@@ -99,7 +99,7 @@ namespace B1.Event
                 str += "\n{";
                 foreach (var value in item.Value)
                 {
-                    str += $"\n\t event desc = {value.Value.tDesc} ";
+                    str += $"\n\t event desc = {value.Value} ";
                 }
                 str += "\n}";
                 LogWarning(str);
@@ -120,7 +120,7 @@ namespace B1.Event
                 {
                     str += $"\n\t[ {eventIndex++} ] = " +
                         $"\n\t{{" +
-                        $"\n\t\tevent layer \t= {item.Value.tDesc}" +
+                        $"\n\t\tevent layer \t= {item.Value}" +
                         $"\n\t\tevent action \t= {item.Key}" +
                         $"\n\t}}";
                 }

@@ -12,7 +12,8 @@ public class MoveCardMgr : MonoSingleton<MoveCardMgr>, IUpdateBase
     private RectTransform m_TargetIcon = null;
     [SerializeField]
     private RectTransform m_TargetArrow = null;
-
+    public float UpdateDelta { get; set; }
+    public float LasteUpdateTime { get; set; }
 
     [SerializeField]
     private Entity_HeroBaseData m_CurSelectHeroEntity = null;

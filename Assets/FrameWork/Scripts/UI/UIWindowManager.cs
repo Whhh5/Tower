@@ -231,7 +231,7 @@ namespace B1.UI
                 window.Rect.NormalFullScene();
                 await window.AwakeAsync();
 
-                MessagingSystem.Ins.SendEvent(EEvent.UI_WINDOW_LOAD_FINISH, window, f_EWindow.ToString());
+                EventSystemMgr.Ins.SendEvent(EEventSystemType.UI_WINDOW_LOAD_FINISH, window, f_EWindow.ToString());
 
                 LogWarning($"加载一个窗口    window name = {f_EWindow}     window = {window}");
             }

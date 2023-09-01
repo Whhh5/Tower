@@ -36,7 +36,8 @@ public class Entity_Player_Hero2Data : Entity_HeroBaseData
         {
             case EPersonStatusType.Attack:
                 {
-                    var eff = new TestTimeLineData( this, AttackPoint, CurAttackTarget, -HarmBase, true, DirectorWrapMode.Loop);
+                    var eff = new TestTimeLineData();
+                    eff.Initialization(this, AttackPoint, CurAttackTarget, -CurHarm, true, DirectorWrapMode.Loop);
                     var data = new Effect_Track_Line<TestTimeLineData>(eff, AtkSpeed);
                     GTools.RunUniTask(data.StartExecute());
                 }
@@ -87,7 +88,8 @@ public class Entity_Player_Hero2Data : Entity_HeroBaseData
 
     public void SkillStage1()
     {
-        var eff = new TestTimeLineData( this, AttackPoint, CurAttackTarget, -Mathf.CeilToInt(HarmBase * 1), false, DirectorWrapMode.Loop);
+        var eff = new TestTimeLineData();
+        eff.Initialization(this, AttackPoint, CurAttackTarget, -Mathf.CeilToInt(CurHarm * 1), false, DirectorWrapMode.Loop);
         var data = new Effect_Track_Line<TestTimeLineData>(eff, AtkSpeed);
         GTools.RunUniTask(data.StartExecute());
     }
@@ -100,7 +102,8 @@ public class Entity_Player_Hero2Data : Entity_HeroBaseData
             foreach (var item in targets)
             {
                 var rangeSpeed = GTools.MathfMgr.GetRandomValue(6.0f, 10.0f);
-                var eff = new TestTimeLineData( this, SkillPoint2, item, -Mathf.CeilToInt(HarmBase * 1.5f), false, DirectorWrapMode.Loop);
+                var eff = new TestTimeLineData();
+                eff.Initialization(this, SkillPoint2, item, -Mathf.CeilToInt(CurHarm * 1.5f), false, DirectorWrapMode.Loop);
                 var data = new Effect_Track_Line<TestTimeLineData>(eff, rangeSpeed);
                 GTools.RunUniTask(data.StartExecute());
             }
@@ -116,7 +119,8 @@ public class Entity_Player_Hero2Data : Entity_HeroBaseData
             foreach (var item in targets)
             {
                 var rangeSpeed = GTools.MathfMgr.GetRandomValue(AtkSpeed - 2.0f, AtkSpeed + 3.0f);
-                var eff = new TestTimeLineData( this, SkillPoint2, item, -HarmBase * 2, false, DirectorWrapMode.Loop);
+                var eff = new TestTimeLineData();
+                eff.Initialization(this, SkillPoint2, item, -CurHarm * 2, false, DirectorWrapMode.Loop);
                 var data = new Effect_Track_Line<TestTimeLineData>(eff, rangeSpeed);
                 GTools.RunUniTask(data.StartExecute());
             }

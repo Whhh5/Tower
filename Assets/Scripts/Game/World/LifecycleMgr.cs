@@ -142,6 +142,12 @@ public class UpdateData
         {
             if ((m_ForI >= m_IndexArr[0] && m_ForI < m_IndexArr[1]) || (m_ForI >= m_IndexArr[2] && m_ForI < m_IndexArr[3]))
             {
+                if (item.Value.LasteUpdateTime == 0)
+                {
+                    item.Value.LasteUpdateTime = GTools.CurTime;
+                }
+                item.Value.UpdateDelta = GTools.CurTime - item.Value.LasteUpdateTime;
+                item.Value.LasteUpdateTime = GTools.CurTime;
                 item.Value.OnUpdate();
             }
             m_ForI++;

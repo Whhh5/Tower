@@ -4,6 +4,8 @@ using UnityEngine;
 using B1;
 using B1.UI;
 using System;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 
 public class WorldWindowMgr : Singleton<WorldWindowMgr>
 {
@@ -86,4 +88,19 @@ public class WorldWindowMgr : Singleton<WorldWindowMgr>
         sliderData.Initialization(f_Target, f_Update, f_Condition);
         sliderData.SetParent(m_Root);
     }
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- ¹¥»÷ÌØÐ§ Æª
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    public void CreateAttackEffect(Vector3 f_WorldPosition, EAttackEffectType f_EffectType)
+    {
+        if (GTools.TableMgr.TryGetAttactEffectBaseData(f_EffectType, out var eff, f_WorldPosition))
+        {
+            GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(eff));
+        }
+    }
+
 }

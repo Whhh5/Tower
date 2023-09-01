@@ -16,7 +16,7 @@ public class Effect_Gain_Volccano3Data : EntityGainBaseData
 
     public override void ExecuteContext(int f_CurProbability)
     {
-        var damageValue = Mathf.CeilToInt(m_Initiator.HarmBase / 1);
+        var damageValue = Mathf.CeilToInt(m_Initiator.CurHarm / 1);
         GTools.MathfMgr.EntityDamage(m_Initiator, m_Recipient, EDamageType.Magic, damageValue);
     }
 

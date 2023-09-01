@@ -76,7 +76,8 @@ public enum EUIElementName
 public abstract class UIObjectPoolBase : MonoBase, IObjectPoolBase
 {
     public bool UpdateInteractable = false;
-
+    public float UpdateDelta { get; set; }
+    public float LasteUpdateTime { get; set; }
     public int UpdateLevelID { get; set; }
     public string PoolKey { get; set; }
     public int AssetName { get; set; }

@@ -87,7 +87,7 @@ public class ListStack<T> : Base
 {
     private string m_Message = null;
 
-    public ListStack(string f_Message, int count = 10, Func<T, T, bool> sort = null,
+    public ListStack(string f_Message = "", int count = 10, Func<T, T, bool> sort = null,
         ESortType sortTyoe = ESortType.Forward)
     {
         count = count <= 0 ? 1 : count;

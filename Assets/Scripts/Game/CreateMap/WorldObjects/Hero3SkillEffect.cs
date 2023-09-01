@@ -6,9 +6,11 @@ using UnityEngine.Playables;
 
 public class Hero3SkillEffectData : EntityEffectBaseData
 {
-    public Hero3SkillEffectData(Vector3 f_StartPos, int f_HarmValue, WorldObjectBaseData f_Initiator) : base(f_StartPos, f_Initiator, DirectorWrapMode.Loop)
+    public void Initialization(Vector3 f_StartPos, int f_HarmValue, WorldObjectBaseData f_Initiator)
     {
+        base.Initialization(f_StartPos, f_Initiator, DirectorWrapMode.Loop);
         m_HarmValue = f_HarmValue;
+
     }
     public override AssetKey AssetPrefabID => AssetKey.Hero3SkillEffect;
 

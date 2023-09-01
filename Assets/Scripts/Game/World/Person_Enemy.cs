@@ -56,10 +56,11 @@ public abstract class Person_EnemyData : WorldObjectBaseData
                     if (distance > 0.001f)
                     {
                         var value = Vector3.MoveTowards(WorldPosition, m_MoveToTarget, m_MoveSpeed * Time.deltaTime);
-                        SetForward(value - WorldPosition);
+                        var forward = Vector3.MoveTowards(Forward, value - WorldPosition, m_MoveSpeed * Time.deltaTime * 50);
+                        SetForward(forward);
                         SetPosition(value);
                     }
-                    else if(DitectionNextAction())
+                    else if (!DitectionNextAction())
                     {
                         SetPersonStatus(EPersonStatusType.Idle);
                     }
@@ -67,7 +68,8 @@ public abstract class Person_EnemyData : WorldObjectBaseData
                 break;
             case EPersonStatusType.Attack:
                 {
-                    if(m_CurTarget != null && m_CurTarget.CurStatus != EPersonStatusType.Die && WorldMapMgr.Ins.IsInNearByIndex(CurrentIndex, m_CurTarget.CurrentIndex, AtkRange))
+                    if (GTools.UnityObjectIsActive(m_CurTarget)
+                        && WorldMapMgr.Ins.IsInNearByObject(CurrentIndex, m_CurTarget, AtkRange))
                     {
                         if (MagicPercent >= 1)
                         {
@@ -75,7 +77,8 @@ public abstract class Person_EnemyData : WorldObjectBaseData
                         }
                         else
                         {
-                            SetForward(m_CurTarget.WorldPosition - WorldPosition);
+                            var value = Vector3.MoveTowards(Forward, m_CurTarget.WorldPosition - WorldPosition, m_MoveSpeed * Time.deltaTime * 10);
+                            SetForward(value);
                         }
                     }
                     else
@@ -167,7 +170,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
         if (WorldMapMgr.Ins.TryGetChunkData(f_Index, out var chunkData))
         {
             if ((chunkData.CurObjectType & EWorldObjectType.Road) != 0
-                && ((chunkData.CurObjectType & EWorldObjectType.Construction) == 0)
+                || ((chunkData.CurObjectType & EWorldObjectType.Construction) != 0)
                 )
             {
                 return true;
@@ -322,7 +325,8 @@ public abstract class Person_EnemyData : WorldObjectBaseData
         base.AttackTarget();
         if (GTools.UnityObjectIsActive(m_CurTarget))
         {
-            GTools.MathfMgr.EntityDamage(this, m_CurTarget, EDamageType.Physical, -HarmBase, false);
+            GTools.MathfMgr.EntityDamage(this, m_CurTarget, EDamageType.Physical, -CurHarm, false);
+            GTools.WorldWindowMgr.CreateAttackEffect(m_CurTarget.CentralPoint, EAttackEffectType.Default1);
         }
     }
     public virtual int DiePrice { get; } = 10;

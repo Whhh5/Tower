@@ -131,7 +131,7 @@ namespace B1.UI
             if (m_DicWindow.TryGetValue(f_Window, out var value))
             {
                 await value.ShowAsync();
-                MessagingSystem.Ins.SendEvent(EEvent.UI_WINDOW_HIDE, value, f_Window.ToString());
+                EventSystemMgr.Ins.SendEvent(EEventSystemType.UI_WINDOW_HIDE, value, f_Window.ToString());
             }
             else
             {
@@ -148,7 +148,7 @@ namespace B1.UI
             if (m_DicWindow.TryGetValue(f_Window, out var value))
             {
                 await value.HideAsync();
-                MessagingSystem.Ins.SendEvent(EEvent.UI_WINDOW_HIDE, value, f_Window.ToString());
+                EventSystemMgr.Ins.SendEvent(EEventSystemType.UI_WINDOW_HIDE, value, f_Window.ToString());
             }
             else
             {
@@ -223,7 +223,7 @@ namespace B1.UI
                 tasks[index++] = UniTask.Create(async () =>
                 {
                     await UIWindowManager.Ins.UnloadWindowAsync(window.Key, window.Value);
-                    MessagingSystem.Ins.SendEvent(EEvent.UI_WINDOW_UNLOAD_FINISH, window.Key, window.Key.ToString());
+                    EventSystemMgr.Ins.SendEvent(EEventSystemType.UI_WINDOW_UNLOAD_FINISH, window.Key, window.Key.ToString());
                 });
             }
 
@@ -242,23 +242,20 @@ namespace B1.UI
 
 
 
-        private Dictionary<EEvent, List<(object tUserdata, string tDesc)>> m_MsgDic = null;
+        private Dictionary<EEventSystemType, string> m_MsgDic = null;
 
         #region 消息系统处理
         private void Awa_Msg()
         {
             //消息接口处理
-            var eventSystem = this as IMessageSystem;
+            var eventSystem = this as IEventSystem;
             if (!object.ReferenceEquals(eventSystem, null))
             {
                 m_MsgDic = eventSystem.SubscribeList();
                 foreach (var item in m_MsgDic)
                 {
                     var tempItem = item;
-                    foreach (var msg in tempItem.Value)
-                    {
-                        MessagingSystem.Ins.Subscribe(tempItem.Key, eventSystem, msg.tUserdata, msg.tDesc);
-                    }
+                    EventSystemMgr.Ins.Subscribe(tempItem.Key, eventSystem, tempItem.Value);
                 }
             }
         }
@@ -267,11 +264,11 @@ namespace B1.UI
             //消息接口处理
             if (!object.ReferenceEquals(m_MsgDic, null))
             {
-                var eventSystem = this as IMessageSystem;
+                var eventSystem = this as IEventSystem;
                 foreach (var item in m_MsgDic)
                 {
                     var tempItem = item;
-                    MessagingSystem.Ins.Unsubscribe(tempItem.Key, eventSystem);
+                    EventSystemMgr.Ins.Unsubscribe(tempItem.Key, eventSystem);
                 }
             }
         }

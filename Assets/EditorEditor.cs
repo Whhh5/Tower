@@ -630,7 +630,7 @@ public class PropertyWindow : EditorWindow
 
 public class MessagingSystemWindow : EditorWindow
 {
-    MessagingSystem m_Target = null;
+    EventSystemMgr m_Target = null;
 
 
     private void OnInspectorUpdate()
@@ -648,12 +648,12 @@ public class MessagingSystemWindow : EditorWindow
 
     private void OnGUI()
     {
-        var target = MessagingSystem.Ins;
+        var target = EventSystemMgr.Ins;
         if (target == null) return;
 
-        var field = typeof(MessagingSystem).GetField("m_DicEvent", BindingFlags.Default | BindingFlags.NonPublic | BindingFlags.Instance);
+        var field = typeof(EventSystemMgr).GetField("m_DicEvent", BindingFlags.Default | BindingFlags.NonPublic | BindingFlags.Instance);
         if (field == null) return;
-        var m_DicEvent = field.GetValue(target) as Dictionary<EEvent, Dictionary<IMessageSystem, (object tUserdata, string tDesc)>>;
+        var m_DicEvent = field.GetValue(target) as Dictionary<EEventSystemType, Dictionary<IEventSystem, (object tUserdata, string tDesc)>>;
 
 
         m_ScrollPoint = EditorGUILayout.BeginScrollView(m_ScrollPoint, GUILayout.Width(ViewSize.x), GUILayout.Height(ViewSize.y)); // 1 - 1

@@ -78,7 +78,7 @@ public class UISelectHeroInfo : MonoBehaviour
     {
         blood.text = $"{t_targetData.CurrentBlood}/{t_targetData.MaxBlood}";
         bloodSlider.value = (float)t_targetData.CurrentBlood/ (float)t_targetData.MaxBlood;
-        attack.text= $"{t_targetData.HarmBase}";
+        attack.text= $"{t_targetData.CurHarm}";
         magic.text = $"{t_targetData.CurrentMagic}/{ t_targetData.MaxMagic}";
         magicSlider.value = (float)t_targetData.CurrentMagic / (float)t_targetData.MaxMagic;
         speed.text = $"{t_targetData.CurAnimaSpeed}";

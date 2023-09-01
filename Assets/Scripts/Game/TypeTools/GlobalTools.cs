@@ -154,6 +154,8 @@ public interface IUpdateBase
 {
     public int UpdateLevelID { get; set; }
     public EUpdateLevel UpdateLevel { get; }
+    public float LasteUpdateTime { get; set; }
+    public float UpdateDelta { get; set; }
     public void OnUpdate();
 }
 

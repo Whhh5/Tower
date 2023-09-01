@@ -38,7 +38,8 @@ public class Entity_Player_Default2Data : Person_EnemyData
                 {
                     var startPos = Target != null && Target.AttackPoint != null ? Target.AttackPoint.position : WorldPosition;
 
-                    var eff = new TestTimeLineData( this, startPos, m_CurTarget, -HarmBase, false, DirectorWrapMode.Loop);
+                    var eff = new TestTimeLineData();
+                    eff.Initialization(this, startPos, m_CurTarget, -CurHarm, false, DirectorWrapMode.Loop);
                     var data = new Effect_Track_Line<TestTimeLineData>(eff, AtkSpeed);
                     GTools.RunUniTask(data.StartExecute());
                 }

@@ -9,6 +9,8 @@ using UnityEngine.UI;
 
 public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
 {
+    public float UpdateDelta { get; set; }
+    public float LasteUpdateTime { get; set; }
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------

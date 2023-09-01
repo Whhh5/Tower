@@ -4,7 +4,11 @@ using UnityEngine;
 using B1;
 using UnityEngine.EventSystems;
 
-
+public class WeatherGainRandomData
+{
+    public EWeatherGainType WeatherGainType;
+    public EWeatherGainLevel Level;
+}
 public abstract class WeatherEventBaseData
 {
     public abstract EWeatherEventType WeatherEventType { get; }
@@ -92,6 +96,60 @@ public class Weather_TyphoonData : WeatherBaseData
 {
     public override EWeatherType WeatherType => EWeatherType.Typhoon;
 }
+public class Weather_GainDefault1 : WeatherGainData
+{
+    public override EWeatherGainType WeatherGainType => EWeatherGainType.Default1;
+
+    public override void StartExecute()
+    {
+
+    }
+}
+public class Weather_GainDefault2 : WeatherGainData
+{
+    public override EWeatherGainType WeatherGainType => EWeatherGainType.Default2;
+
+    public override void StartExecute()
+    {
+
+    }
+}
+public class Weather_GainDefault3 : WeatherGainData
+{
+    public override EWeatherGainType WeatherGainType => EWeatherGainType.Default3;
+
+    public override void StartExecute()
+    {
+
+    }
+}
+public class Weather_GainDefault4 : WeatherGainData
+{
+    public override EWeatherGainType WeatherGainType => EWeatherGainType.Default4;
+
+    public override void StartExecute()
+    {
+
+    }
+}
+public class Weather_GainDefault5 : WeatherGainData
+{
+    public override EWeatherGainType WeatherGainType => EWeatherGainType.Default5;
+
+    public override void StartExecute()
+    {
+
+    }
+}
+public class Weather_GainDefault6 : WeatherGainData
+{
+    public override EWeatherGainType WeatherGainType => EWeatherGainType.Default6;
+
+    public override void StartExecute()
+    {
+
+    }
+}
 public class WeatherUpdateEventInfo
 {
     public EWeatherEventType EventType;
@@ -107,10 +165,12 @@ public class WeatherUpdateInfo
 }
 public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
 {
+    public float UpdateDelta { get; set; }
+    public float LasteUpdateTime { get; set; }
     private ListStack<WeatherUpdateInfo> m_CurWeatherSystemList = new("", 10);
 
-    public EWeatherType CurWeatherType = EWeatherType.EnumCount;
-    public EWeatherEventType CurWeatherEvent = EWeatherEventType.EnumCount;
+    public EWeatherType CurWeatherType => CurWeatherUpdateInfo.WeatherType;
+    public EWeatherEventType CurWeatherEventType => CurEventInfo.EventType;
 
     // 开始运行第一个天气系统间隔时间
     private float m_StartIntervalTime = 0;
@@ -207,9 +267,11 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
             m_CurWeatherResidueTime = 0;
             if (ChangeWeatherSystem(out var weatherInfo))
             {
-                if (CurWeatherData != null)
+                var lastWeather = CurWeatherData;
+                GTools.EventSystemMgr.SendEvent(EEventSystemType.WeatherMgr_ChangeWeather, lastWeather, "天气事件 -> 切换天气, 参数是上一个天气实例数据");
+                if (lastWeather != null)
                 {
-                    CurWeatherData.StopExecute();
+                    lastWeather.StopExecute();
                 }
                 weatherInfo.StartExecute();
                 CurWeatherData = weatherInfo;
@@ -228,7 +290,10 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
             m_CurWeatherEventResidueTime = 0;
             if (ChangeWeatherEvent(out var value))
             {
-                if (CurEventData != null)
+                var lastWeatherEvent = CurEventData;
+                GTools.EventSystemMgr.SendEvent(EEventSystemType.WeatherMgr_ChangeWeatherEvent, lastWeatherEvent,
+                    "天气事件 -> 切换天气事件, 参数是上一个天气事件实例数据");
+                if (lastWeatherEvent != null)
                 {
                     StopExecute();
                 }
@@ -250,7 +315,22 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
 
         m_LasteUpdateTime = Time.time;
     }
-
+    public bool TryGetCurWeatherInfo(out WeatherInfo f_WeatherInfo)
+    {
+        if (GTools.TableMgr.TryGetWeatherInfo(CurWeatherType, out f_WeatherInfo))
+        {
+            return true;
+        }
+        return false;
+    }
+    public bool TryGetCurWeatherEventInfo(out WeatherEventInfo f_WeatherEventInfo)
+    {
+        if (GTools.TableMgr.TryGetWeatherEventInfo(CurWeatherEventType, out f_WeatherEventInfo))
+        {
+            return true;
+        }
+        return false;
+    }
     // 天气切换数据
     // 切换到下一个天气剩余时间
     private float m_CurWeatherResidueTime = 0;
@@ -308,6 +388,10 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
 
 
     // 对外
+    /// <summary>
+    /// 对一个对象应用当前天气效果
+    /// </summary>
+    /// <param name="f_Recipient"></param>
     public void InflictionGain(WorldObjectBaseData f_Recipient)
     {
         if (CurEventData != null)
@@ -315,6 +399,9 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
             IGainUtil.InflictionGain(CurEventData.GainType, null, f_Recipient);
         }
     }
+    /// <summary>
+    /// 开始运行天气事件效果
+    /// </summary>
     public virtual void StartExecute()
     {
         if (ILoadPrefabAsync.TryGetEntityByType<WorldObjectBaseData>(EWorldObjectType.Preson, out var dic))
@@ -325,6 +412,9 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
             }
         }
     }
+    /// <summary>
+    /// 停止运行天气事件效果
+    /// </summary>
     public virtual void StopExecute()
     {
         if (ILoadPrefabAsync.TryGetEntityByType<WorldObjectBaseData>(EWorldObjectType.Preson, out var dic))
@@ -334,5 +424,57 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
                 IGainUtil.RemoteGain(CurEventData.GainType, item.Value);
             }
         }
+    }
+
+
+
+    //===============================----------------------========================================
+    //=====-----                                                                         -----=====
+    //                                catalogue -- 天气随机buff
+    //=====-----                                                                         -----=====
+    //===============================----------------------========================================
+    public List<WeatherGainData> CurWeatherGainList = new();
+    public void AddWeatherGain(EWeatherGainType f_WeatherGainType, EWeatherGainLevel f_Level)
+    {
+        if (GTools.TableMgr.TryGetWeatherGainInfo(f_WeatherGainType, out var f_Info))
+        {
+            if (f_Info.TryGetWeatherGainData(out var data, f_Level))
+            {
+                CurWeatherGainList.Add(data);
+                data.StartExecute();
+            }
+        }
+    }
+    public List<WeatherGainRandomData> TryGetCurWeatherRandomGain(int f_Count = 3)
+    {
+        List<WeatherGainRandomData> result = new();
+        var count = Mathf.Max(0, f_Count);
+        if (TryGetCurWeatherInfo(out var weatherInfo))
+        {
+            var gainList = weatherInfo.WeatherGainTypeList;
+            ListStack<int> list = new("", count + 1);
+
+            while (list.Count < count && gainList.Count >= f_Count)
+            {
+                var index = GTools.MathfMgr.GetRandomValue(0, gainList.Count);
+                if (!list.Contains(index))
+                {
+                    list.Push(index);
+                }
+            }
+
+            while (list.TryPop(out var index))
+            {
+                var level = (EWeatherGainLevel)GTools.MathfMgr.GetRandomValue((int)EWeatherGainLevel.Level1, (int)EWeatherGainLevel.MaxLevel);
+                result.Add(new()
+                {
+
+                    WeatherGainType = gainList[index],
+                    Level = level
+                });
+            }
+
+        }
+        return result;
     }
 }

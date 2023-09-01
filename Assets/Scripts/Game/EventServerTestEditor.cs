@@ -22,7 +22,7 @@ public class EventServerTestEditor : Editor
         EditorGUILayout.BeginHorizontal();
         GUILayout.Label("Event");
         m_Target.m_Layer = EditorGUILayout.TextField(m_Target.m_Layer);
-        m_Target.m_Event = (EEvent)EditorGUILayout.EnumPopup(m_Target.m_Event);
+        m_Target.m_Event = (EEventSystemType)EditorGUILayout.EnumPopup(m_Target.m_Event);
         EditorGUILayout.EndHorizontal();
         if (GUILayout.Button("Subscribe Event"))
         {
@@ -40,16 +40,16 @@ public class EventServerTestEditor : Editor
         EditorGUILayout.EndHorizontal();
         if (GUILayout.Button("Fire Event"))
         {
-            MessagingSystem.Ins.SendEvent(EEvent.SCENE_LOAD_START, m_Para, m_Des);
+            EventSystemMgr.Ins.SendEvent(EEventSystemType.SCENE_LOAD_START, m_Para, m_Des);
         }
         if (GUILayout.Button("Console Event"))
         {
-            MessagingSystem.Ins.LogEvent();
+            EventSystemMgr.Ins.LogEvent();
         }
 
         base.OnInspectorGUI();
     }
-    void TestAction(EEvent f_EEvent, object f_Parameter, (string layer, string des) des)
+    void TestAction(EEventSystemType f_EEvent, object f_Parameter, (string layer, string des) des)
     {
         Debug.Log($"触发事件  event name = {f_EEvent}     layer = {des.layer}     des = {des.des}");
     }

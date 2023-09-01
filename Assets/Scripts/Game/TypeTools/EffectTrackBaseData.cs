@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public abstract class EffectMoveBaseData : IUpdateBase, IExecute
+public abstract class EffectTrackBaseData : IUpdateBase, IExecute
 {
-    public EffectMoveBaseData(EntityEffectBaseData f_EffectData, Vector3 f_StartPosition, Vector3 f_EndPosition, float f_UnitSpeed = 1)
+    public float UpdateDelta { get; set; }
+    public float LasteUpdateTime { get; set; }
+    public EffectTrackBaseData(EntityEffectBaseData f_EffectData, Vector3 f_StartPosition, Vector3 f_EndPosition, float f_UnitSpeed = 1)
     {
         Index = f_EffectData.Index;
         OnEnable = true;
@@ -71,7 +73,7 @@ public abstract class EffectMoveBaseData : IUpdateBase, IExecute
 /// 跟踪目标
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public class Effect_Track_Line<T> : EffectMoveBaseData
+public class Effect_Track_Line<T> : EffectTrackBaseData
     where T : TestTimeLineData
 {
     public Effect_Track_Line(T f_EffectData, float f_UnitSpeed = 1) : base(f_EffectData, f_EffectData.WorldPosition, f_EffectData.TargetEnemy.CentralPoint, f_UnitSpeed)
@@ -97,7 +99,7 @@ public class Effect_Track_Line<T> : EffectMoveBaseData
 /// 目标点列表寻路
 /// </summary>
 /// <typeparam name="T"></typeparam>
-public class Effect_Track_Points<T> : EffectMoveBaseData
+public class Effect_Track_Points<T> : EffectTrackBaseData
    where T : EntityEffectBaseData
 {
     public Effect_Track_Points(T f_EffectData, List<WorldObjectBaseData> f_PathList, float f_UnitSpeed = 1) : base(f_EffectData, f_EffectData.WorldPosition, f_EffectData.WorldPosition, f_UnitSpeed)

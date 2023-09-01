@@ -6,11 +6,8 @@ using B1;
 
 public abstract class EntityEffectBaseData : UnityObjectData
 {
-    public EntityEffectBaseData(Vector3 f_StartPos, WorldObjectBaseData f_Initiator, DirectorWrapMode f_WrapMode = DirectorWrapMode.Loop) : base(0)
+    public EntityEffectBaseData() : base(0)
     {
-        DirectorUpdateMode = f_WrapMode;
-        SetPosition(f_StartPos);
-        Initiator = f_Initiator;
     }
     public EntityEffectBase Target => GetCom<EntityEffectBase>();
     public override bool IsUpdateEnable => true;
@@ -23,6 +20,12 @@ public abstract class EntityEffectBaseData : UnityObjectData
     public DirectorWrapMode DirectorUpdateMode;
     public override EWorldObjectType ObjectType => EWorldObjectType.Effect;
 
+    public virtual void Initialization(Vector3 f_StartPos, WorldObjectBaseData f_Initiator, DirectorWrapMode f_WrapMode = DirectorWrapMode.Loop)
+    {
+        DirectorUpdateMode = f_WrapMode;
+        SetPosition(f_StartPos);
+        Initiator = f_Initiator;
+    }
     public override void OnUpdate()
     {
         base.OnUpdate();

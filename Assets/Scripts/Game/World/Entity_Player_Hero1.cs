@@ -25,6 +25,9 @@ public class Entity_Player_Hero1Data : Entity_HeroBaseData
     private Emitter_SwordBaseData m_SwordBase = null;
 
     public override int AtkRange => 5;
+    public override float AtkSpeed => 5.0f;
+    public override float AtkSpeedBase { get => 3.0f; set => base.AtkSpeedBase = value; }
+
     public override void AfterLoad()
     {
         base.AfterLoad();
@@ -73,7 +76,7 @@ public class Entity_Player_Hero1Data : Entity_HeroBaseData
     public override void AttackTarget()
     {
         base.AttackTarget();
-        GTools.MathfMgr.EntityDamage(this, CurAttackTarget, EDamageType.Physical, -HarmBase, true);
+        GTools.MathfMgr.EntityDamage(this, CurAttackTarget, EDamageType.Physical, -CurHarm, true);
 
         GTools.RunUniTask(m_SwordBase.StartExecute());
     }

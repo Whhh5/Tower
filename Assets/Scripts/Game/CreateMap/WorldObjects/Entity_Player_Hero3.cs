@@ -48,7 +48,8 @@ public class Entity_Player_Hero3Data : Entity_HeroBaseData
         {
             case EPersonStatusType.Attack:
                 {
-                    var eff = new TestTimeLineData(this, AttackPoint, CurAttackTarget, -HarmBase, true, DirectorWrapMode.Loop);
+                    var eff = new TestTimeLineData();
+                    eff.Initialization(this, AttackPoint, CurAttackTarget, -CurHarm, true, DirectorWrapMode.Loop);
                     var data = new Effect_Track_Line<TestTimeLineData>(eff, AtkSpeed);
                     GTools.RunUniTask(data.StartExecute());
                 }
@@ -97,7 +98,8 @@ public class Entity_Player_Hero3Data : Entity_HeroBaseData
         if (result.Count > 0)
         {
             var tareget = result[0];
-            var eff = new Hero3SkillEffectData( AttackPoint, AddBloodValue, this);
+            var eff = new Hero3SkillEffectData( );
+            eff.Initialization(AttackPoint, AddBloodValue, this);
             var moveData = new Effect_Track_Points<Hero3SkillEffectData>(eff, result, AtkSpeed * 2);
             GTools.RunUniTask(moveData.StartExecute());
         }
@@ -110,7 +112,8 @@ public class Entity_Player_Hero3Data : Entity_HeroBaseData
             for (int i = 0; i < 2; i++)
             {
                 var speed = AtkSpeed * GTools.MathfMgr.GetRandomValue(2, 3.0f);
-                var eff = new Hero3SkillEffectData( AttackPoint, AddBloodValue, this);
+                var eff = new Hero3SkillEffectData( );
+                eff.Initialization(AttackPoint, AddBloodValue, this);
                 var moveData = new Effect_Track_Points<Hero3SkillEffectData>(eff, result, speed);
                 GTools.RunUniTask(moveData.StartExecute());
             }
@@ -124,7 +127,8 @@ public class Entity_Player_Hero3Data : Entity_HeroBaseData
             for (int i = 0; i < 5; i++)
             {
                 var speed = AtkSpeed * GTools.MathfMgr.GetRandomValue(1.5f, 3.0f);
-                var eff = new Hero3SkillEffectData( AttackPoint, AddBloodValue, this);
+                var eff = new Hero3SkillEffectData( );
+                eff.Initialization(AttackPoint, AddBloodValue, this);
                 var moveData = new Effect_Track_Points<Hero3SkillEffectData>(eff, result, speed);
                 GTools.RunUniTask(moveData.StartExecute());
                 await UniTask.Delay(200);

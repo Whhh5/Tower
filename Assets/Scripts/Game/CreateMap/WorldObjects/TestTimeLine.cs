@@ -6,12 +6,19 @@ using UnityEngine.Playables;
 
 public class TestTimeLineData : EntityEffectBaseData
 {
-    public TestTimeLineData(WorldObjectBaseData f_Initiator, Vector3 f_StartPosition, WorldObjectBaseData f_TargetEnemy, int f_DamageValue, bool f_IsChangeMagic, DirectorWrapMode f_WrapMode = DirectorWrapMode.None) : base(f_StartPosition, f_Initiator, f_WrapMode)
+    public void Initialization(
+        WorldObjectBaseData f_Initiator, 
+        Vector3 f_StartPosition, 
+        WorldObjectBaseData f_TargetEnemy, 
+        int f_DamageValue, 
+        bool f_IsChangeMagic,
+        DirectorWrapMode f_Mode = DirectorWrapMode.None)
     {
-
+        base.Initialization(f_StartPosition, f_Initiator, f_Mode);
         DamageValue = f_DamageValue;
         TargetEnemy = f_TargetEnemy;
         m_IsChangeMagic = f_IsChangeMagic;
+
     }
     public override AssetKey AssetPrefabID => AssetKey.TestTimeLine;
 

@@ -8,6 +8,9 @@ public class CameraMgr : Singleton<CameraMgr>, IUpdateBase
     public int UpdateLevelID { get; set; }
     public EUpdateLevel UpdateLevel => EUpdateLevel.Level3;
 
+    public float UpdateDelta { get; set; }
+    public float LasteUpdateTime { get; set; }
+
     public override void Awake()
     {
         base.Awake();

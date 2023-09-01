@@ -35,7 +35,7 @@ public abstract class WorldObjectBaseData : DependChunkData
     }
     public virtual void Initialization(int f_index, int f_ChunkIndex)
     {
-
+        SetCurrentChunkIndex(f_ChunkIndex);
     }
 
     public WorldObjectBase WorldObjectTarget => GetCom<WorldObjectBase>();
@@ -110,6 +110,8 @@ public abstract class WorldObjectBaseData : DependChunkData
     //===============================----------------------========================================
     //--
     public virtual int HarmBase => 12;
+    protected int m_AddHarm = 0;
+    public int CurHarm => m_AddHarm + HarmBase;
     // 暴击率 0 - 1
     public float CriticalChance { get; private set; } = 0.2f;
     // 暴击倍数, 相当于攻击的多少倍 1 - n
@@ -149,10 +151,15 @@ public abstract class WorldObjectBaseData : DependChunkData
     //===============================----------------------========================================
     //--
     public int CurrentBlood { get; private set; } = 400;
-    public virtual int MaxBlood { get; private set; } = 523;
+    private int m_AddMaxBlood = 0;
+    public virtual int MaxBloodBase { get; private set; } = 523;
+    public int MaxBlood => m_AddMaxBlood + MaxBloodBase;
     public int CurrentMagic { get; protected set; } = 300;
     public virtual int MaxMagic { get; private set; } = 653;
     public float MagicPercent => (float)CurrentMagic / MaxMagic;
+    public virtual int DefenceBase => 20;
+    private int m_AddDefence = 0;
+    public int CurDefence => DefenceBase + m_AddDefence;
     public virtual int ChangeBlood(ChangeBloodData f_Data)
     {
         var value = CurrentBlood + f_Data.ChangeValue;
@@ -296,6 +303,22 @@ public abstract class WorldObjectBaseData : DependChunkData
     public void UpdateGain()
     {
 
+    }
+
+
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- 更新属性 篇
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    public void UpdateAddAttributes(IncubatorAttributeInfo f_AttributeInfos)
+    {
+        m_AddAtkSpeed = Mathf.FloorToInt(f_AttributeInfos.AtkSpeedRatio * AtkSpeedBase);
+        m_AddDefence = Mathf.FloorToInt(f_AttributeInfos.DefenceRatio * DefenceBase);
+        m_AddMaxBlood = Mathf.FloorToInt(f_AttributeInfos.BloodRatio * MaxBloodBase);
+        m_AddHarm = Mathf.FloorToInt(f_AttributeInfos.HarmRatio * HarmBase);
     }
 }
 

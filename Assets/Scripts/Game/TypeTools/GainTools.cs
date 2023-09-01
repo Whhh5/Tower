@@ -31,6 +31,13 @@ public enum EGainType : ushort
     Volccano3,
 
 
+    Weather_Default1,
+    Weather_Default2,
+    Weather_Default3,
+    Weather_Default4,
+    Weather_Default5,
+    Weather_Default6,
+
 
     EnumCount,
 }

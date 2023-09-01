@@ -99,7 +99,8 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
                     if (distance > 0.001f)
                     {
                         var value = Vector3.MoveTowards(WorldPosition, m_MoveToTarget, CurMoveSpeed * Time.deltaTime);
-                        SetForward(value - WorldPosition);
+                        var forward = Vector3.MoveTowards(Forward, value - WorldPosition, CurMoveSpeed * Time.deltaTime * 100);
+                        SetForward(forward);
                         SetPosition(value);
                     }
                     else
@@ -113,10 +114,11 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
                     if (MagicPercent >= 1)
                     {
                         SetPersonStatus(EPersonStatusType.Skill);
-                        SetForward(CurAttackTarget.WorldPosition - WorldPosition);
+                        var value = Vector3.MoveTowards(Forward, CurAttackTarget.WorldPosition - WorldPosition, Time.deltaTime * 10);
+                        SetForward(value);
                     }
                     if (!GTools.UnityObjectIsActive(CurAttackTarget)
-                        || Vector3.Distance(CurAttackTarget.WorldPosition, WorldPosition) > AtkRange * 1.2f)
+                        || Vector3.Distance(CurAttackTarget.WorldPosition, WorldPosition) > AtkRange * 2)
                     {
                         SetPersonStatus(EPersonStatusType.Idle);
                     }
@@ -260,6 +262,13 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
             curName = $"{curName}_{(int)CurStage + 1}";
         }
         return curName;
+    }
+
+    public override void AttackTarget()
+    {
+        base.AttackTarget();
+
+        GTools.WorldWindowMgr.CreateAttackEffect(CurAttackTarget.CentralPoint, EAttackEffectType.Default1);
     }
 
 }

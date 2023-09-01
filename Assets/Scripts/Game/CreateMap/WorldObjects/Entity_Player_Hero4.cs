@@ -62,7 +62,8 @@ public class Entity_Player_Hero4Data : Entity_HeroBaseData
     { 
         base.AttackTarget();
 
-        var eff = new TestTimeLineData(this, AttackPoint, CurAttackTarget, -HarmBase, true, DirectorWrapMode.Loop);
+        var eff = new TestTimeLineData();
+        eff.Initialization(this, AttackPoint, CurAttackTarget, -CurHarm, true, DirectorWrapMode.Loop);
         var data = new Effect_Track_Line<TestTimeLineData>(eff, AtkSpeed * CurAnimaSpeed);
         GTools.RunUniTask(async () =>
         {
