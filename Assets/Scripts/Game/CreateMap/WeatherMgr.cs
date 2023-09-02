@@ -1,4 +1,4 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using B1;
@@ -160,7 +160,7 @@ public class WeatherUpdateInfo
 {
     public EWeatherType WeatherType;
     public float DurationTime;
-    public ListStack<WeatherUpdateEventInfo> EventList = new("ÌìÆøÊÂ¼ş", 10);
+    public ListStack<WeatherUpdateEventInfo> EventList = new("å¤©æ°”äº‹ä»¶", 10);
     public WeatherInfo WeatherInfo => TableMgr.Ins.TryGetWeatherInfo(WeatherType, out var weatherInfo) ? weatherInfo : null;
 }
 public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
@@ -172,23 +172,23 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
     public EWeatherType CurWeatherType => CurWeatherUpdateInfo.WeatherType;
     public EWeatherEventType CurWeatherEventType => CurEventInfo.EventType;
 
-    // ¿ªÊ¼ÔËĞĞµÚÒ»¸öÌìÆøÏµÍ³¼ä¸ôÊ±¼ä
+    // å¼€å§‹è¿è¡Œç¬¬ä¸€ä¸ªå¤©æ°”ç³»ç»Ÿé—´éš”æ—¶é—´
     private float m_StartIntervalTime = 0;
-    // ¿ªÊ¼ÔËĞĞµÚÒ»¸öÌìÆøÊÂ¼ş¼ä¸ôÊ±¼ä
+    // å¼€å§‹è¿è¡Œç¬¬ä¸€ä¸ªå¤©æ°”äº‹ä»¶é—´éš”æ—¶é—´
     private float m_StartEventIntervalTime = 0;
-    // ÌìÆøÏµÍ³ÔËĞĞ¿ªÊ¼ÊÂ¼ş
+    // å¤©æ°”ç³»ç»Ÿè¿è¡Œå¼€å§‹äº‹ä»¶
     private float m_StartTime = 0;
 
 
 
 
-    // update Ïà¹Ø
+    // update ç›¸å…³
     public int UpdateLevelID { get; set; }
     public EUpdateLevel UpdateLevel => EUpdateLevel.Level2;
     private float m_LasteUpdateTime = 0;
     private float m_TimeDelta = 0;
 
-    // ui ´°¿Ú
+    // ui çª—å£
     private UIWeatherSystem m_CurWeatherWindow = null;
     public void SetCurWeatherWindow(UIWeatherSystem f_Window)
     {
@@ -261,14 +261,14 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
         m_LasteUpdateTime = m_LasteUpdateTime == 0 ? Time.time : m_LasteUpdateTime;
         m_TimeDelta = Time.time - m_LasteUpdateTime;
 
-        // ÌìÆøË¢ĞÂ
+        // å¤©æ°”åˆ·æ–°
         if (m_WeatherEndTime == 0 || m_WeatherEndTime < Time.time)
         {
             m_CurWeatherResidueTime = 0;
             if (ChangeWeatherSystem(out var weatherInfo))
             {
                 var lastWeather = CurWeatherData;
-                GTools.EventSystemMgr.SendEvent(EEventSystemType.WeatherMgr_ChangeWeather, lastWeather, "ÌìÆøÊÂ¼ş -> ÇĞ»»ÌìÆø, ²ÎÊıÊÇÉÏÒ»¸öÌìÆøÊµÀıÊı¾İ");
+                GTools.EventSystemMgr.SendEvent(EEventSystemType.WeatherMgr_ChangeWeather, lastWeather, "å¤©æ°”äº‹ä»¶ -> åˆ‡æ¢å¤©æ°”, å‚æ•°æ˜¯ä¸Šä¸€ä¸ªå¤©æ°”å®ä¾‹æ•°æ®");
                 if (lastWeather != null)
                 {
                     lastWeather.StopExecute();
@@ -284,7 +284,7 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
         {
             m_CurWeatherResidueTime -= m_TimeDelta;
         }
-        // ÊÂ¼şË¢ĞÂ
+        // äº‹ä»¶åˆ·æ–°
         if (m_WeatherEventEndTime == 0 || m_WeatherEventEndTime < Time.time)
         {
             m_CurWeatherEventResidueTime = 0;
@@ -292,7 +292,7 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
             {
                 var lastWeatherEvent = CurEventData;
                 GTools.EventSystemMgr.SendEvent(EEventSystemType.WeatherMgr_ChangeWeatherEvent, lastWeatherEvent,
-                    "ÌìÆøÊÂ¼ş -> ÇĞ»»ÌìÆøÊÂ¼ş, ²ÎÊıÊÇÉÏÒ»¸öÌìÆøÊÂ¼şÊµÀıÊı¾İ");
+                    "å¤©æ°”äº‹ä»¶ -> åˆ‡æ¢å¤©æ°”äº‹ä»¶, å‚æ•°æ˜¯ä¸Šä¸€ä¸ªå¤©æ°”äº‹ä»¶å®ä¾‹æ•°æ®");
                 if (lastWeatherEvent != null)
                 {
                     StopExecute();
@@ -331,11 +331,11 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
         }
         return false;
     }
-    // ÌìÆøÇĞ»»Êı¾İ
-    // ÇĞ»»µ½ÏÂÒ»¸öÌìÆøÊ£ÓàÊ±¼ä
+    // å¤©æ°”åˆ‡æ¢æ•°æ®
+    // åˆ‡æ¢åˆ°ä¸‹ä¸€ä¸ªå¤©æ°”å‰©ä½™æ—¶é—´
     private float m_CurWeatherResidueTime = 0;
     public float CurWeatherResidueTime => Mathf.Max(0, m_CurWeatherResidueTime);
-    // µ±Ç°ÌìÆøÏµÍ³ÔËĞĞÊ±¼ä
+    // å½“å‰å¤©æ°”ç³»ç»Ÿè¿è¡Œæ—¶é—´
     private float m_WeatherTime = 0;
     private float m_WeatherEndTime = 0;
     public WeatherBaseData CurWeatherData = null;
@@ -354,14 +354,14 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
         return false;
     }
 
-    // ÌìÆøÊÂ¼şÇĞ»»Êı¾İ
-    // ÇĞ»»µ½ÏÂÒ»¸öÊÂ¼şÊ£ÓàÊ±¼ä
+    // å¤©æ°”äº‹ä»¶åˆ‡æ¢æ•°æ®
+    // åˆ‡æ¢åˆ°ä¸‹ä¸€ä¸ªäº‹ä»¶å‰©ä½™æ—¶é—´
     private float m_CurWeatherEventResidueTime = 0;
     public float CurWeatherEventResidueTime => Mathf.Max(0, m_CurWeatherEventResidueTime);
-    // µ±Ç°ÌìÆøÊÂ¼şÔËĞĞÊ±¼ä
+    // å½“å‰å¤©æ°”äº‹ä»¶è¿è¡Œæ—¶é—´
     private float m_WeatherEventTime = 0;
     private float m_WeatherEventEndTime = 0;
-    private ListStack<WeatherUpdateEventInfo> m_EventList = new("ÌìÆøÊÂ¼ş", 10);
+    private ListStack<WeatherUpdateEventInfo> m_EventList = new("å¤©æ°”äº‹ä»¶", 10);
     public WeatherEventBaseData CurEventData = null;
     public WeatherUpdateEventInfo CurEventInfo = null;
     private void InitCurEventData()
@@ -387,9 +387,9 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
     }
 
 
-    // ¶ÔÍâ
+    // å¯¹å¤–
     /// <summary>
-    /// ¶ÔÒ»¸ö¶ÔÏóÓ¦ÓÃµ±Ç°ÌìÆøĞ§¹û
+    /// å¯¹ä¸€ä¸ªå¯¹è±¡åº”ç”¨å½“å‰å¤©æ°”æ•ˆæœ
     /// </summary>
     /// <param name="f_Recipient"></param>
     public void InflictionGain(WorldObjectBaseData f_Recipient)
@@ -400,7 +400,7 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
         }
     }
     /// <summary>
-    /// ¿ªÊ¼ÔËĞĞÌìÆøÊÂ¼şĞ§¹û
+    /// å¼€å§‹è¿è¡Œå¤©æ°”äº‹ä»¶æ•ˆæœ
     /// </summary>
     public virtual void StartExecute()
     {
@@ -413,7 +413,7 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
         }
     }
     /// <summary>
-    /// Í£Ö¹ÔËĞĞÌìÆøÊÂ¼şĞ§¹û
+    /// åœæ­¢è¿è¡Œå¤©æ°”äº‹ä»¶æ•ˆæœ
     /// </summary>
     public virtual void StopExecute()
     {
@@ -430,7 +430,7 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
 
     //===============================----------------------========================================
     //=====-----                                                                         -----=====
-    //                                catalogue -- ÌìÆøËæ»úbuff
+    //                                catalogue -- å¤©æ°”éšæœºbuff
     //=====-----                                                                         -----=====
     //===============================----------------------========================================
     public List<WeatherGainData> CurWeatherGainList = new();
