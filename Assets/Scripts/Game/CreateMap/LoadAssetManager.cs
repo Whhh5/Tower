@@ -18,7 +18,7 @@ public class LoadAssetManager : B1.Singleton<LoadAssetManager>
 
     public async UniTask<T> LoadAsync<T>(AssetKey f_ID) where T : ObjectPoolBase
     {
-        if (!GTools.TableMgr.GetAssetPath(f_ID, out var path)) return null;
+        if (!GTools.TableMgr.TryGetAssetPath(f_ID, out var path)) return null;
         T com = null;
         if (m_DicAsset.TryGetValue(f_ID, out var value))
         {

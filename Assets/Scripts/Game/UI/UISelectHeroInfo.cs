@@ -42,6 +42,8 @@ public class UISelectHeroInfo : MonoBehaviour
     void Start()
     {
         Ins = this;
+
+        SetData(null);
     }
 
     public void SetData(WorldObjectBaseData data)
@@ -137,7 +139,7 @@ public class UISelectHeroInfo : MonoBehaviour
         }
         else
         {
-            if (TableMgr.Ins.GetAssetPath(assetKey,out var path))
+            if (TableMgr.Ins.TryGetAssetPath(assetKey,out var path))
             {
                 Sprite sp = Resources.Load<Sprite>(path);
                 sprite_dir.Add(assetKey, new SpriteAsset<Sprite>(1, sp, assetKey));

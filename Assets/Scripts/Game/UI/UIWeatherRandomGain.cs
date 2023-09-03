@@ -1,84 +1,161 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIWeatherRandomGain : MonoBehaviour, IEventSystem
 {
-    private class WeatherGainItem
-    {
-        public WeatherGainItem(Transform f_SourceItem)
-        {
-            m_SourceItem = f_SourceItem;
-        }
-        public Transform m_SourceItem = null;
-        public Transform Item = null;
-        public int Index;
+    CanvasGroup CanvasGroup => m_WeatherGainSelectVieww.GetComponent<CanvasGroup>();
+    EUIMapDGIDType DGAnimaID => EUIMapDGIDType.UIWeatherRandomGain_Animation;
 
-        public void SetActive(bool f_ToActive)
-        {
-            if (Item != null)
-            {
-                Item.gameObject.SetActive(f_ToActive);
-            }
-        }
-
-    }
     private Dictionary<EEventSystemType, string> SubscribeList => new()
     {
         { EEventSystemType.WeatherMgr_ChangeWeather, "" },
+
         { EEventSystemType.WeatherMgr_ChangeWeatherEvent, "" },
+        { EEventSystemType.WeatherMgr_SelectWeatherEvent, "" },
     };
 
     private void Awake()
     {
+        PlayDestoryAnimation();
         foreach (var item in SubscribeList)
         {
             GTools.EventSystemMgr.Subscribe(item.Key, this, item.Value);
         }
+        m_UpdateBtn.onClick.AddListener(Click_UpdateWeatherGainList);
+        m_MainBackgroudOriginalColor = m_MainBackground.color;
     }
+    private Dictionary<int, UIItem_WeatherGainData> m_WeatherGainItemList = new();
+    [SerializeField]
+    private CanvasGroup m_WeatherGainSelectVieww = null;
+    [SerializeField]
+    private RectTransform m_ScrollListRoot = null;
+    [SerializeField]
+    private Image m_MainBackground = null;
+    Color m_MainBackgroudOriginalColor;
+    [SerializeField]
+    private Button m_UpdateBtn = null;
+    [SerializeField]
+    private RectTransform m_CurWeatherGainListRoot = null;
 
-    private List<WeatherGainItem> m_WeatherGainItemList = new();
+
+    private void SetMainBackgroundColor(Color f_ToColor)
+    {
+        m_MainBackground.color = f_ToColor;
+    }
     public void ReceptionEvent(EEventSystemType f_Event, object f_Params, string f_SendDesc)
     {
-        var curWeather = GTools.WeatherMgr.CurWeatherType;
-        var curWeatherEvent = GTools.WeatherMgr.CurWeatherEventType;
         switch (f_Event)
         {
             case EEventSystemType.WeatherMgr_ChangeWeather:
                 {
-                    if (GTools.WeatherMgr.TryGetCurWeatherInfo(out var curWeatherInfo))
-                    {
-                        var list = GTools.WeatherMgr.TryGetCurWeatherRandomGain();
-
-                        UpdateRandomGainList(list);
-                    }
+                    Click_UpdateWeatherGainList();
                 }
                 break;
             case EEventSystemType.WeatherMgr_ChangeWeatherEvent:
                 {
                     if (GTools.WeatherMgr.TryGetCurWeatherEventInfo(out var curWeatherEventInfo))
                     {
-
                     }
+                }
+                break;
+            case EEventSystemType.WeatherMgr_SelectWeatherEvent:
+                {
+                    var data = f_Params as WeatherGainRandomData;
+                    SetMainBackgroundColor(data.WeatherLevelInfo.Color);
+                    PlayDestoryAnimation();
+
+
+                    AddCurWeatherGainItem(data);
+                }
+                break;
+            case EEventSystemType.WeatherMgr_AddWeatherGain:
+                {
+                    var data = f_Params as WeatherGainInfo;
                 }
                 break;
             default:
                 break;
         }
     }
+    public void Click_UpdateWeatherGainList()
+    {
+        if (GTools.WeatherMgr.TryGetCurWeatherInfo(out var curWeatherInfo))
+        {
+            if (GTools.WeatherMgr.UpdateCurWeatherRandomGain())
+            {
+                var list = GTools.WeatherMgr.GetCurUpdateWeatherGainList();
+
+
+                UpdateRandomGainList(list);
+            }
+        }
+    }
     public void UpdateRandomGainList(List<WeatherGainRandomData> f_List)
+    {
+        ClearWeatherGainItems();
+        SetMainBackgroundColor(m_MainBackgroudOriginalColor);
+        foreach (var data in f_List)
+        {
+            var targetData = new UIItem_WeatherGainData();
+            targetData.UpdateItemData(data, m_ScrollListRoot);
+            m_WeatherGainItemList.Add(data.Index, targetData);
+        }
+        PlayEnableAnimation();
+    }
+    public void ClearWeatherGainItems()
     {
         foreach (var item in m_WeatherGainItemList)
         {
-            item.SetActive(false);
+            ILoadPrefabAsync.UnLoad(item.Value);
         }
+        m_WeatherGainItemList.Clear();
     }
-    public void SelectionWeatherGainItem(WeatherGainRandomData f_ItemData)
+    public void PlayEnableAnimation()
     {
+        DOTween.Kill(DGAnimaID);
+        var curAlpha = CanvasGroup.alpha;
+        var toAlpha = 1.0f;
+        DOTween.To(() => 0.0f, value =>
+          {
+              var updateAlpha = (toAlpha - curAlpha) * value + curAlpha;
+              CanvasGroup.alpha = updateAlpha;
 
+          }, 1.0f, toAlpha - curAlpha)
+            .SetId(DGAnimaID)
+            .OnStart(() =>
+            {
+                CanvasGroup.interactable = true;
+                CanvasGroup.blocksRaycasts = true;
+            });
     }
-    public void UpdateWeatherGainItem(WeatherGainRandomData f_ItemData)
+    public void PlayDestoryAnimation()
     {
+        DOTween.Kill(DGAnimaID);
+        var curAlpha = CanvasGroup.alpha;
+        var toAlpha = 0.0f;
+        DOTween.To(() => 0.0f, value =>
+        {
+            var updateAlpha = (toAlpha - curAlpha) * value + curAlpha;
+            CanvasGroup.alpha = updateAlpha;
 
+        }, 1.0f, curAlpha - toAlpha)
+            .SetId(DGAnimaID)
+            .OnStart(()=>
+            {
+                CanvasGroup.interactable = false;
+            })
+            .OnComplete(() =>
+            {
+                CanvasGroup.blocksRaycasts = false;
+            });
+    }
+
+    public void AddCurWeatherGainItem(WeatherGainRandomData f_Data)
+    {
+        var item = new UIItem_CurWeatherGainData();
+        item.UpdateItemData(f_Data, m_CurWeatherGainListRoot);
     }
 }

@@ -86,6 +86,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
+    public bool Active = true;
     public Transform Parent { get; private set; } = null;
     public Vector3 WorldPosition { get; private set; } = new Vector3();
     public Vector3 LocalPosition { get; private set; } = new Vector3();
@@ -100,7 +101,15 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
     public Vector3 PointUp => PrefabTarget != null && PrefabTarget.PointUp != null
         ? PrefabTarget.PointUp.position
         : WorldPosition;
-
+    public void SetActive(bool f_ToActive)
+    {
+        var active = f_ToActive;
+        Active = active;
+        if (PrefabTarget != null)
+        {
+            PrefabTarget.SetActive();
+        }
+    }
     public void SetParent(Transform f_ToParent)
     {
         Parent = f_ToParent;
@@ -393,6 +402,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
 // 世界池物体父类
 public abstract class ObjectPoolBase : TransformBase, IObjectPoolBase
 {
+    public bool Active { get; set; }
     public float UpdateDelta { get; set; }
     public float LasteUpdateTime { get; set; }
     public bool UpdateInteractable = false;
@@ -467,6 +477,7 @@ public abstract class ObjectPoolBase : TransformBase, IObjectPoolBase
         SetLocalRotation();
         SetColor();
         PlayerAnimation();
+        SetActive();
     }
 
 
@@ -494,7 +505,10 @@ public abstract class ObjectPoolBase : TransformBase, IObjectPoolBase
     {
         return UnityObjectData as T;
     }
-
+    public void SetActive()
+    {
+        gameObject.SetActive(UnityObjectData.Active);
+    }
     public void SetParent()
     {
         transform.SetParent(UnityObjectData.Parent);

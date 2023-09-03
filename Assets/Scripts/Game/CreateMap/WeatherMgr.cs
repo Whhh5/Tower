@@ -6,8 +6,14 @@ using UnityEngine.EventSystems;
 
 public class WeatherGainRandomData
 {
+    public int Index;
+    public int EventIndex;
     public EWeatherGainType WeatherGainType;
     public EWeatherGainLevel Level;
+
+    public WeatherGainLevelInfo WeatherLevelInfo => GTools.TableMgr.TryGetWeatherGainLevelInfo(Level, out var result) ? result : null;
+    public WeatherGainInfo WeatherGainInfo => GTools.TableMgr.TryGetWeatherGainInfo(WeatherGainType, out var WeatherGainInfo) ? WeatherGainInfo : null;
+    public AssetKey WeatherGainIcon => WeatherGainInfo.TryGetWeatherGainIcon(out var iconId, Level) ? iconId : AssetKey.None;
 }
 public abstract class WeatherEventBaseData
 {
@@ -171,6 +177,9 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
 
     public EWeatherType CurWeatherType => CurWeatherUpdateInfo.WeatherType;
     public EWeatherEventType CurWeatherEventType => CurEventInfo.EventType;
+
+    private int WeatherRandomGainCount => GTools.WeatherRandomGainCount;
+
 
     // 开始运行第一个天气系统间隔时间
     private float m_StartIntervalTime = 0;
@@ -433,48 +442,78 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
     //                                catalogue -- 天气随机buff
     //=====-----                                                                         -----=====
     //===============================----------------------========================================
-    public List<WeatherGainData> CurWeatherGainList = new();
+    private List<WeatherGainData> m_CurWeatherGainList = new();
+    private List<WeatherGainRandomData> m_CurUpdateGainList = new();
     public void AddWeatherGain(EWeatherGainType f_WeatherGainType, EWeatherGainLevel f_Level)
     {
         if (GTools.TableMgr.TryGetWeatherGainInfo(f_WeatherGainType, out var f_Info))
         {
             if (f_Info.TryGetWeatherGainData(out var data, f_Level))
             {
-                CurWeatherGainList.Add(data);
+                m_CurWeatherGainList.Add(data);
                 data.StartExecute();
+                GTools.EventSystemMgr.SendEvent(EEventSystemType.WeatherMgr_AddWeatherGain, data, "添加天气增益  WeatherGainData");
             }
         }
     }
-    public List<WeatherGainRandomData> TryGetCurWeatherRandomGain(int f_Count = 3)
+    public bool UpdateCurWeatherRandomGain()
     {
-        List<WeatherGainRandomData> result = new();
-        var count = Mathf.Max(0, f_Count);
+        ClearCurUpdateWeatherGainList();
+
+        while (m_CurUpdateGainList.Count < WeatherRandomGainCount)
+        {
+            TryUpdateWeatherGainItem(m_CurUpdateGainList.Count, out var itemData);
+        }
+
+        return m_CurUpdateGainList.Count == WeatherRandomGainCount;
+    }
+    public List<WeatherGainRandomData> GetCurUpdateWeatherGainList()
+    {
+        return m_CurUpdateGainList;
+    }
+    public void ClearCurUpdateWeatherGainList()
+    {
+        m_CurUpdateGainList.Clear();
+    }
+    public void SelectWeatherGainItem(WeatherGainRandomData f_WeatherItem)
+    {
+        if (m_CurUpdateGainList.Contains(f_WeatherItem))
+        {
+            AddWeatherGain(f_WeatherItem.WeatherGainType, f_WeatherItem.Level);
+            GTools.EventSystemMgr.SendEvent(EEventSystemType.WeatherMgr_SelectWeatherEvent, f_WeatherItem, "选择天气增益  WeatherGainRandomData");
+        }
+        ClearCurUpdateWeatherGainList();
+    }
+    public bool TryUpdateWeatherGainItem(int f_Index, out WeatherGainRandomData f_NewData)
+    {
+        f_NewData = null;
         if (TryGetCurWeatherInfo(out var weatherInfo))
         {
-            var gainList = weatherInfo.WeatherGainTypeList;
-            ListStack<int> list = new("", count + 1);
-
-            while (list.Count < count && gainList.Count >= f_Count)
+            while (m_CurUpdateGainList.Count - f_Index <= 0)
             {
-                var index = GTools.MathfMgr.GetRandomValue(0, gainList.Count);
-                if (!list.Contains(index))
+                m_CurUpdateGainList.Add(null);
+            }
+            var gainList = weatherInfo.WeatherGainTypeList;
+            var eventIndex = GTools.MathfMgr.GetRandomValue(0, gainList.Count);
+            var level = (EWeatherGainLevel)GTools.MathfMgr.GetRandomValue((int)EWeatherGainLevel.Level1, (int)EWeatherGainLevel.MaxLevel);
+
+            foreach (var item in m_CurUpdateGainList)
+            {
+                if (item != null && item.EventIndex == eventIndex && gainList.Count >= WeatherRandomGainCount)
                 {
-                    list.Push(index);
+                    return TryUpdateWeatherGainItem(f_Index, out f_NewData);
                 }
             }
-
-            while (list.TryPop(out var index))
+            var itemData = new WeatherGainRandomData()
             {
-                var level = (EWeatherGainLevel)GTools.MathfMgr.GetRandomValue((int)EWeatherGainLevel.Level1, (int)EWeatherGainLevel.MaxLevel);
-                result.Add(new()
-                {
-
-                    WeatherGainType = gainList[index],
-                    Level = level
-                });
-            }
-
+                Index = f_Index,
+                EventIndex = eventIndex,
+                WeatherGainType = gainList[eventIndex],
+                Level = level
+            };
+            m_CurUpdateGainList[f_Index] = itemData;
+            f_NewData = itemData;
         }
-        return result;
+        return f_NewData != null;
     }
 }

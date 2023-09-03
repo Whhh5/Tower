@@ -247,30 +247,30 @@ namespace B1.UI
         #region 消息系统处理
         private void Awa_Msg()
         {
-            //消息接口处理
-            var eventSystem = this as IEventSystem;
-            if (!object.ReferenceEquals(eventSystem, null))
-            {
-                m_MsgDic = eventSystem.SubscribeList();
-                foreach (var item in m_MsgDic)
-                {
-                    var tempItem = item;
-                    EventSystemMgr.Ins.Subscribe(tempItem.Key, eventSystem, tempItem.Value);
-                }
-            }
+            ////消息接口处理
+            //var eventSystem = this as IEventSystem;
+            //if (!object.ReferenceEquals(eventSystem, null))
+            //{
+            //    m_MsgDic = eventSystem.SubscribeList();
+            //    foreach (var item in m_MsgDic)
+            //    {
+            //        var tempItem = item;
+            //        EventSystemMgr.Ins.Subscribe(tempItem.Key, eventSystem, tempItem.Value);
+            //    }
+            //}
         }
         private void Des_Msg()
         {
-            //消息接口处理
-            if (!object.ReferenceEquals(m_MsgDic, null))
-            {
-                var eventSystem = this as IEventSystem;
-                foreach (var item in m_MsgDic)
-                {
-                    var tempItem = item;
-                    EventSystemMgr.Ins.Unsubscribe(tempItem.Key, eventSystem);
-                }
-            }
+            ////消息接口处理
+            //if (!object.ReferenceEquals(m_MsgDic, null))
+            //{
+            //    var eventSystem = this as IEventSystem;
+            //    foreach (var item in m_MsgDic)
+            //    {
+            //        var tempItem = item;
+            //        EventSystemMgr.Ins.Unsubscribe(tempItem.Key, eventSystem);
+            //    }
+            //}
         }
         #endregion
 

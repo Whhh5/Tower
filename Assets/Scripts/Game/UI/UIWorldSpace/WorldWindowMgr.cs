@@ -84,7 +84,7 @@ public class WorldWindowMgr : Singleton<WorldWindowMgr>
     //--
     public void CreateWorldSlider(WorldObjectBaseData f_Target, Func<float> f_Update, Func<bool> f_Condition)
     {
-        var sliderData = new UISliderInfoData();
+        var sliderData = new WorldUISliderInfoData();
         sliderData.Initialization(f_Target, f_Update, f_Condition);
         sliderData.SetParent(m_Root);
     }

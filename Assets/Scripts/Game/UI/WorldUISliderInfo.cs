@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UISliderInfoData : UnityObjectData
+public class WorldUISliderInfoData : UnityObjectData
 {
-    public UISliderInfoData() : base(0)
+    public WorldUISliderInfoData() : base(0)
     {
     }
 
@@ -20,11 +20,11 @@ public class UISliderInfoData : UnityObjectData
         m_Condition = FCondition;
         GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(this));
     }
-    public override AssetKey AssetPrefabID => AssetKey.UISliderInfo;
+    public override AssetKey AssetPrefabID => AssetKey.WorldUISliderInfo;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.Effect;
 
-    public UISliderInfo UISliderInfo => GetCom<UISliderInfo>();
+    public WorldUISliderInfo UISliderInfo => GetCom<WorldUISliderInfo>();
     public override bool IsUpdateEnable => true;
     public override void OnUpdate()
     {
@@ -61,7 +61,7 @@ public class UISliderInfoData : UnityObjectData
         }
     }
 }
-public class UISliderInfo : ObjectPoolBase
+public class WorldUISliderInfo : ObjectPoolBase
 {
 
     [SerializeField]

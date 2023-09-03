@@ -162,6 +162,8 @@ public enum EUIMapDGIDType
     ChangMapScaleTo,
     UpdateFlagStateByUIMapSatus,
     Button3DOnMouseEnter,
+    UIWeatherRandomGain_Animation,
+    UIOnEnableInfos_Animation,
     EnumCount,
 }
 

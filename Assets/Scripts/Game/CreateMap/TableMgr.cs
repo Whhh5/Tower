@@ -131,7 +131,7 @@ public enum AssetKey
     Entity_Player_Default3,
     TestTimeLine,
     WorldUIEntityHint,
-    UISliderInfo,
+    WorldUISliderInfo,
     EmitterElement_GuidedMissile,
     EmitterElement_SwordLow,
 
@@ -144,6 +144,9 @@ public enum AssetKey
     Entity_Player_Hero3,
     Entity_Player_Hero4,
 
+    // UI Item
+    UIItem_WeatherGain,
+    UIItem_CurWeatherGain,
 
     // 特效
     Hero3SkillEffect,
@@ -180,7 +183,14 @@ public enum AssetKey
     Icon_IncubatorDebris3,
     Icon_Incubator4,
     Icon_IncubatorDebris4,
-
+    // 天气轮回增益
+    Icon_WeatherGainLevel1Default1,
+    Icon_WeatherGainLevel2Default1,
+    Icon_WeatherGainLevel3Default1,
+    Icon_WeatherGainLevel4Default1,
+    Icon_WeatherGainLevelMaxDefault1,
+    // 天气增益建筑物
+    Entity_WeatherGainView,
 }
 public enum EAttackEffectType
 {
@@ -361,13 +371,23 @@ public class WeatherInfoEventInfo
 }
 public class WeatherGainInfo
 {
+    public string Name;
     public EWeatherGainType WeatherGainType;
-    public AssetKey IconKey;
     public string Describe;
+    public Dictionary<EWeatherGainLevel, AssetKey> IconDic;
     public bool TryGetWeatherGainData(out WeatherGainData f_Result, EWeatherGainLevel f_Level = EWeatherGainLevel.Level1)
     {
         return GTools.TableMgr.TryGetWeatherGainData(WeatherGainType, out f_Result, f_Level);
     }
+    public bool TryGetWeatherGainIcon(out AssetKey f_Result, EWeatherGainLevel f_Level = EWeatherGainLevel.Level1)
+    {
+        return IconDic.TryGetValue(f_Level, out f_Result);
+    }
+}
+public class WeatherGainLevelInfo
+{
+    public EWeatherGainLevel Level;
+    public Color Color;
 }
 public abstract class WeatherGainData
 {
@@ -378,6 +398,7 @@ public abstract class WeatherGainData
         Level = f_Level;
     }
     public abstract void StartExecute();
+    public WeatherGainLevelInfo WeatherLevelInfo => GTools.TableMgr.TryGetWeatherGainLevelInfo(Level, out var result) ? result : null;
 }
 public struct IncubatorAttributeInfo
 {
@@ -479,8 +500,9 @@ public class TableMgr : Singleton<TableMgr>
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
-    static string BuffIconParentPath = "Icons/BuffIcon";
+    static string BuffIconParentPath = "Icons/BuffIcon"; 
     static string IncubatorIconParentPath = "Icons/IncubatorIcon";
+    static string WeatherGainIconParentPath = "Icons/WeatherGainIcon";
     private static readonly Dictionary<AssetKey, string> m_DicIDToPath = new()
     {
         { AssetKey.Alp1, "Prefabs/WorldObject/Entity_Alt1" },
@@ -501,6 +523,9 @@ public class TableMgr : Singleton<TableMgr>
         { AssetKey.Entity_Player_Hero3, "Prefabs/WorldObject/Entity_Player_Hero3" },
         { AssetKey.Entity_Player_Hero4, "Prefabs/WorldObject/Entity_Player_Hero4" },
 
+        // UI Item
+        { AssetKey.UIItem_WeatherGain, "Prefabs/UI/Item/UIItem_WeatherGain" },
+        { AssetKey.UIItem_CurWeatherGain, "Prefabs/UI/Item/UIItem_CurWeatherGain" },
 
         // 防御塔
         { AssetKey.Entity_Tower_Light1, "Prefabs/WorldObject/Entity_Tower_Light1" },
@@ -522,7 +547,7 @@ public class TableMgr : Singleton<TableMgr>
         { AssetKey.TestTimeLine, "Prefabs/TimeLine/TestTimeLine" },
         { AssetKey.Hero3SkillEffect, "Prefabs/TimeLine/Hero3SkillEffect" },
         { AssetKey.WorldUIEntityHint, "Prefabs/WorldUI/WorldUIEntityHint" },
-        { AssetKey.UISliderInfo, "Prefabs/WorldUI/UISliderInfo" },
+        { AssetKey.WorldUISliderInfo, "Prefabs/WorldUI/WorldUISliderInfo" },
 
         // 特效
         { AssetKey.Effect_Buff_Poison, "Prefabs/Effects/Effect_Buff_Poison" },
@@ -546,8 +571,18 @@ public class TableMgr : Singleton<TableMgr>
         { AssetKey.Icon_IncubatorDebris3, $"{IncubatorIconParentPath}/Icon_IncubatorDebris3" },
         { AssetKey.Icon_Incubator4, $"{IncubatorIconParentPath}/Icon_Incubator4" },
         { AssetKey.Icon_IncubatorDebris4, $"{IncubatorIconParentPath}/Icon_IncubatorDebris4" },
+        
+        // 天气增益icon
+        { AssetKey.Icon_WeatherGainLevel1Default1, $"{WeatherGainIconParentPath}/Icon_WeatherGainLevel1Default1" },
+        { AssetKey.Icon_WeatherGainLevel2Default1, $"{WeatherGainIconParentPath}/Icon_WeatherGainLevel2Default1" },
+        { AssetKey.Icon_WeatherGainLevel3Default1, $"{WeatherGainIconParentPath}/Icon_WeatherGainLevel3Default1" },
+        { AssetKey.Icon_WeatherGainLevel4Default1, $"{WeatherGainIconParentPath}/Icon_WeatherGainLevel4Default1" },
+        { AssetKey.Icon_WeatherGainLevelMaxDefault1, $"{WeatherGainIconParentPath}/Icon_WeatherGainLevelMaxDefault1" },
+
+        // 天气增益建筑物
+        { AssetKey.Entity_WeatherGainView, "Prefabs/WorldObject/Entity_WeatherGainView" },
     };
-    public bool GetAssetPath(AssetKey f_Key, out string f_Result)
+    public bool TryGetAssetPath(AssetKey f_Key, out string f_Result)
     {
         return m_DicIDToPath.TryGetValue(f_Key, out f_Result);
     }
@@ -1126,11 +1161,194 @@ public class TableMgr : Singleton<TableMgr>
             EWeatherGainType.Default1,
             new()
             {
+                Name = "Default1",
                 WeatherGainType = EWeatherGainType.Default1,
-                Describe = "",
-                IconKey = AssetKey.Icon_Incubator1,
+                Describe = "Default1 Default1 Default1",
+                IconDic = new()
+                {
+                    {
+                        EWeatherGainLevel.Level1,
+                        AssetKey.Icon_WeatherGainLevel1Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level2,
+                        AssetKey.Icon_WeatherGainLevel2Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level3,
+                        AssetKey.Icon_WeatherGainLevel3Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level4,
+                        AssetKey.Icon_WeatherGainLevel4Default1
+                    },
+                    {
+                        EWeatherGainLevel.MaxLevel,
+                        AssetKey.Icon_WeatherGainLevelMaxDefault1
+                    },
+                }
             }
-        }
+        },
+        {
+            EWeatherGainType.Default2,
+            new()
+            {
+                Name = "Default2",
+                WeatherGainType = EWeatherGainType.Default2,
+                Describe = "Default2 Default2 Default2",
+                IconDic = new()
+                {
+                    {
+                        EWeatherGainLevel.Level1,
+                        AssetKey.Icon_WeatherGainLevel1Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level2,
+                        AssetKey.Icon_WeatherGainLevel2Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level3,
+                        AssetKey.Icon_WeatherGainLevel3Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level4,
+                        AssetKey.Icon_WeatherGainLevel4Default1
+                    },
+                    {
+                        EWeatherGainLevel.MaxLevel,
+                        AssetKey.Icon_WeatherGainLevelMaxDefault1
+                    },
+                }
+            }
+        },
+        {
+            EWeatherGainType.Default3,
+            new()
+            {
+                Name = "Default3",
+                WeatherGainType = EWeatherGainType.Default3,
+                Describe = "Default3 Default3 Default3",
+                IconDic = new()
+                {
+                    {
+                        EWeatherGainLevel.Level1,
+                        AssetKey.Icon_WeatherGainLevel1Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level2,
+                        AssetKey.Icon_WeatherGainLevel2Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level3,
+                        AssetKey.Icon_WeatherGainLevel3Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level4,
+                        AssetKey.Icon_WeatherGainLevel4Default1
+                    },
+                    {
+                        EWeatherGainLevel.MaxLevel,
+                        AssetKey.Icon_WeatherGainLevelMaxDefault1
+                    },
+                }
+            }
+        },
+        {
+            EWeatherGainType.Default4,
+            new()
+            {
+                Name = "Default4",
+                WeatherGainType = EWeatherGainType.Default4,
+                Describe = "Default4 Default4 Default4",
+                IconDic = new()
+                {
+                    {
+                        EWeatherGainLevel.Level1,
+                        AssetKey.Icon_WeatherGainLevel1Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level2,
+                        AssetKey.Icon_WeatherGainLevel2Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level3,
+                        AssetKey.Icon_WeatherGainLevel3Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level4,
+                        AssetKey.Icon_WeatherGainLevel4Default1
+                    },
+                    {
+                        EWeatherGainLevel.MaxLevel,
+                        AssetKey.Icon_WeatherGainLevelMaxDefault1
+                    },
+                }
+            }
+        },
+        {
+            EWeatherGainType.Default5,
+            new()
+            {
+                Name = "Default5",
+                WeatherGainType = EWeatherGainType.Default5,
+                Describe = "Default5 Default5 Default5",
+                IconDic = new()
+                {
+                    {
+                        EWeatherGainLevel.Level1,
+                        AssetKey.Icon_WeatherGainLevel1Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level2,
+                        AssetKey.Icon_WeatherGainLevel2Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level3,
+                        AssetKey.Icon_WeatherGainLevel3Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level4,
+                        AssetKey.Icon_WeatherGainLevel4Default1
+                    },
+                    {
+                        EWeatherGainLevel.MaxLevel,
+                        AssetKey.Icon_WeatherGainLevelMaxDefault1
+                    },
+                }
+            }
+        },
+        {
+            EWeatherGainType.Default6,
+            new()
+            {
+                Name = "Default6",
+                WeatherGainType = EWeatherGainType.Default6,
+                Describe = "Default6 Default6 Default6",
+                IconDic = new()
+                {
+                    {
+                        EWeatherGainLevel.Level1,
+                        AssetKey.Icon_WeatherGainLevel1Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level2,
+                        AssetKey.Icon_WeatherGainLevel2Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level3,
+                        AssetKey.Icon_WeatherGainLevel3Default1
+                    },
+                    {
+                        EWeatherGainLevel.Level4,
+                        AssetKey.Icon_WeatherGainLevel4Default1
+                    },
+                    {
+                        EWeatherGainLevel.MaxLevel,
+                        AssetKey.Icon_WeatherGainLevelMaxDefault1
+                    },
+                }
+            }
+        },
     };
     public bool TryGetWeatherGainInfo(EWeatherGainType f_WeatherGainType, out WeatherGainInfo f_Result)
     {
@@ -1164,6 +1382,53 @@ public class TableMgr : Singleton<TableMgr>
         }
         f_Result.Initialization(f_Level);
         return f_Result != null;
+    }
+    private Dictionary<EWeatherGainLevel, WeatherGainLevelInfo> m_WeatherGainLevelInfo = new()
+    {
+        {
+            EWeatherGainLevel.Level1,
+            new()
+            {
+                Level = EWeatherGainLevel.Level1,
+                Color = Color.gray,
+            }
+        },
+        {
+            EWeatherGainLevel.Level2,
+            new()
+            {
+                Level = EWeatherGainLevel.Level2,
+                Color = Color.green,
+            }
+        },
+        {
+            EWeatherGainLevel.Level3,
+            new()
+            {
+                Level = EWeatherGainLevel.Level3,
+                Color = Color.yellow,
+            }
+        },
+        {
+            EWeatherGainLevel.Level4,
+            new()
+            {
+                Level = EWeatherGainLevel.Level4,
+                Color = Color.red,
+            }
+        },
+        {
+            EWeatherGainLevel.MaxLevel,
+            new()
+            {
+                Level = EWeatherGainLevel.MaxLevel,
+                Color = Color.cyan,
+            }
+        },
+    };
+    public bool TryGetWeatherGainLevelInfo(EWeatherGainLevel f_Level, out WeatherGainLevelInfo f_Result)
+    {
+        return m_WeatherGainLevelInfo.TryGetValue(f_Level, out f_Result);
     }
 
 

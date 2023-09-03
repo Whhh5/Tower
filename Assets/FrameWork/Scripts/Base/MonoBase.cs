@@ -44,7 +44,7 @@ namespace B1
             var eventSystem = this as IEventSystem;
             if (eventSystem != null)
             {
-                m_MsgDic = eventSystem.SubscribeList();
+                m_MsgDic = SubscribeList();
                 foreach (var item in m_MsgDic)
                 {
                     var tempItem = item;
@@ -67,6 +67,10 @@ namespace B1
                 }
             }
         } 
+        public virtual Dictionary<EEventSystemType, string> SubscribeList()
+        {
+            return m_MsgDic;
+        }
         #endregion
     }
 }

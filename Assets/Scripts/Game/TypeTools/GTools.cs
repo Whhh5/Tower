@@ -36,6 +36,7 @@ public static class GTools
         { EUpdateLevel.Level2, (85, 90, 100) },
         { EUpdateLevel.Level3, (85, 95, 50) },
     };
+    public readonly static int WeatherRandomGainCount = 3;
 
     #endregion
 
@@ -212,5 +213,11 @@ public static class ExtendFunction
         source.HarmRatio += target.HarmRatio;
         source.DefenceRatio += target.DefenceRatio;
         source.AtkSpeedRatio += target.AtkSpeedRatio;
+    }
+    public static void Initialization(this UnityObjectData tran)
+    {
+        tran.SetLocalPosition(Vector3.zero);
+        tran.SetLocalRotation(Vector3.zero);
+        tran.SetLocalScale(Vector3.one);
     }
 }

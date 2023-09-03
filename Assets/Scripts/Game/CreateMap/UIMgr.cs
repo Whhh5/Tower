@@ -53,4 +53,7 @@ public class UIMgr : Singleton<UIMgr>
 
         UICanvas = GameObject.Find("UI Canvas").GetComponent<Canvas>();
     }
+
+
+    
 }

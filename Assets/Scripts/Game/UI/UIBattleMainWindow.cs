@@ -154,7 +154,7 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
                     item.Find("Tex_Expenditure").GetComponent<TextMeshProUGUI>().text = $"{incubatorInfo.Expenditure}";
                     GTools.RunUniTask(async () =>
                     {
-                        if (GTools.TableMgr.GetAssetPath(incubatorInfo.IncubatorDebrisIcon, out var path))
+                        if (GTools.TableMgr.TryGetAssetPath(incubatorInfo.IncubatorDebrisIcon, out var path))
                         {
                             var sprite = await ILoadSpriteAsync.LoadAsync(path);
                             item.Find("Img_Icon").GetComponent<Image>().sprite = sprite;
@@ -220,7 +220,7 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
         }
         public async void SetIcon(AssetKey f_AssetKey)
         {
-            if (GTools.TableMgr.GetAssetPath(f_AssetKey, out var path))
+            if (GTools.TableMgr.TryGetAssetPath(f_AssetKey, out var path))
             {
                 var sprite = await ILoadSpriteAsync.LoadAsync(path);
                 if (Item == null)

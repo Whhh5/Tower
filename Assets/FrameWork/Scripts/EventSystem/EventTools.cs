@@ -20,6 +20,10 @@ public enum EEventSystemType : int
     UI_WINDOW_HIDE,
     WeatherMgr_ChangeWeather,
     WeatherMgr_ChangeWeatherEvent,
+    WeatherMgr_SelectWeatherEvent,
+    WeatherMgr_AddWeatherGain,
+    UIOnEnableInfos_Enter,
+    UIOnEnableInfos_Exit,
     EnumCount,
 }
 public interface IEventSystem
