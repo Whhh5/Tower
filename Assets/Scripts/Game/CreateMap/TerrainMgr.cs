@@ -24,7 +24,7 @@ public class TerrainRenderData
     public Transform Tran => m_RawImage.transform;
     public void Init()
     {
-        // Éú³ÉÍ¼Æ¬²¿·Ö
+        // ç”Ÿæˆå›¾ç‰‡éƒ¨åˆ†
         Texture2D texture2D = new(m_Width, m_Height);
         texture2D.wrapMode = TextureWrapMode.Clamp;
         texture2D.filterMode = FilterMode.Point;
@@ -37,7 +37,7 @@ public class TerrainRenderData
                 texture2D.SetPixel(i, j, color);
             }
         }
-        // ¶ÔÏó²¿·Ö
+        // å¯¹è±¡éƒ¨åˆ†
         var name = $"{m_Flag}";
         var rtObj = GameObject.Find(name) ?? new GameObject(m_Flag);
 
@@ -70,7 +70,7 @@ public class TerrainRenderData
     }
     public void SaveSprite()
     {
-        // ±£´æÍ¼Æ¬µ½±¾µØ
+        // ä¿å­˜å›¾ç‰‡åˆ°æœ¬åœ°
     }
     public void Destroy()
     {
