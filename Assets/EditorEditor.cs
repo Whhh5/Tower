@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using B1.UI;
 using Cysharp.Threading.Tasks;
 using Object = UnityEngine.Object;
-using B1.Event;
 using System.IO;
 using System.Collections;
 using UnityEngine.UI;

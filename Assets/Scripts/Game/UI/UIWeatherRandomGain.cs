@@ -22,7 +22,7 @@ public class UIWeatherRandomGain : MonoBehaviour, IEventSystem
         PlayDestoryAnimation();
         foreach (var item in SubscribeList)
         {
-            GTools.EventSystemMgr.Subscribe(item.Key, this, item.Value);
+            GTools.EventSystemMgr.Subscribe(item.Key, this);
         }
         m_UpdateBtn.onClick.AddListener(Click_UpdateWeatherGainList);
         m_MainBackgroudOriginalColor = m_MainBackground.color;
@@ -45,7 +45,7 @@ public class UIWeatherRandomGain : MonoBehaviour, IEventSystem
     {
         m_MainBackground.color = f_ToColor;
     }
-    public void ReceptionEvent(EEventSystemType f_Event, object f_Params, string f_SendDesc)
+    public void ReceptionEvent(EEventSystemType f_Event, EventSystemParamData f_Params)
     {
         switch (f_Event)
         {
@@ -63,17 +63,17 @@ public class UIWeatherRandomGain : MonoBehaviour, IEventSystem
                 break;
             case EEventSystemType.WeatherMgr_SelectWeatherEvent:
                 {
-                    var data = f_Params as WeatherGainRandomData;
-                    SetMainBackgroundColor(data.WeatherLevelInfo.Color);
+                    var data = f_Params as WeatherSelectGainEventData;
+                    SetMainBackgroundColor(data.WeatherGainData.WeatherLevelInfo.Color);
                     PlayDestoryAnimation();
 
 
-                    AddCurWeatherGainItem(data);
+                    AddCurWeatherGainItem(data.WeatherGainData);
                 }
                 break;
             case EEventSystemType.WeatherMgr_AddWeatherGain:
                 {
-                    var data = f_Params as WeatherGainInfo;
+                    var data = f_Params as WeatherAddGainEventData;
                 }
                 break;
             default:

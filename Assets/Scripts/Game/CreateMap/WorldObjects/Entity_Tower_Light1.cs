@@ -45,12 +45,12 @@ public class Entity_Tower_Light1Data : EntityTowerBaseData
     }
 
 
-    public override void EntityDied()
+    public override void Death()
     {
-        base.EntityDied();
-
+        base.Death();
         m_IsStartSkill3 = false;
     }
+
     public override void OnUnLoad()
     {
         m_IsStartSkill3 = false;

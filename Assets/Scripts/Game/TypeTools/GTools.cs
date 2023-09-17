@@ -6,7 +6,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
-using B1.Event;
 
 public static class GTools
 {
@@ -36,7 +35,11 @@ public static class GTools
         { EUpdateLevel.Level2, (85, 90, 100) },
         { EUpdateLevel.Level3, (85, 95, 50) },
     };
-    public readonly static int WeatherRandomGainCount = 3;
+    public const int WeatherRandomGainCount = 3;
+    public const int CardGroupCount = 5;
+    public const int ResultantQuanatity = 3;
+    public const int CardSkillGroupCount = 2;
+    public const float AppearSkillCardProbability = 1.0f;
 
     #endregion
 
@@ -69,8 +72,12 @@ public static class GTools
     public static HeroIncubatorPoolMgr HeroIncubatorPoolMgr => HeroIncubatorPoolMgr.Ins;
     public static MonsterMgr MonsterMgr => MonsterMgr.Ins;
     public static UIMgr UIMgr => UIMgr.Ins;
-    public static WorldWindowMgr WorldWindowMgr => WorldWindowMgr.Ins;
+    public static WorldWindowMgr WorldWindowMgr => WorldWindowMgr.Ins; 
     public static EventSystemMgr EventSystemMgr => EventSystemMgr.Ins;
+    public static GlobalEventMgr GlobalEventMgr => GlobalEventMgr.Ins;
+    public static CardMgr CardMgr => CardMgr.Ins;
+    public static HeroMgr HeroMgr => HeroMgr.Ins;
+    public static EquipmentMgr EquipmentMgr => EquipmentMgr.Ins;
     #endregion
 
     #region Mono 静态类
@@ -180,7 +187,6 @@ public static class GTools
 
 
 
- 
 
     public static async void RunUniTask(UniTask f_Task)
     {
@@ -219,5 +225,23 @@ public static class ExtendFunction
         tran.SetLocalPosition(Vector3.zero);
         tran.SetLocalRotation(Vector3.zero);
         tran.SetLocalScale(Vector3.one);
+    }
+
+    public static bool ContainsEntityType(this WorldObjectBaseData f_WorldObjData, EEntityType f_EntityType)
+    {
+        var result = (f_WorldObjData.EntityType & f_EntityType) != 0;
+        return result;
+    }
+
+    private const string SkillPath = "AnimationClip/";
+    public static async UniTask<AnimationClip> LoadSkillAnimtionClip(this Entity_HeroBaseData f_HeroData, EPersonSkillType f_SkillType)
+    {
+        var skillPath = $"{SkillPath}{f_HeroData.HeroCradType}/{f_HeroData.HeroCradType}_{f_SkillType}";
+        var clipAsset = await LoadAssetManager.Ins.LoadAsync<AnimationClip>(skillPath);
+        if (clipAsset == null)
+        {
+            f_HeroData.LogError($"加载技能动画资源失败 {f_HeroData.HeroCradType} assetPath = {skillPath}");
+        }
+        return clipAsset;
     }
 }

@@ -8,6 +8,7 @@ public abstract class EntityTowerBaseData : WorldObjectBaseData
     {
     }
 
+    public override EEntityType EntityType => EEntityType.Item;
     public abstract ETowerType TowerType { get; }
     public override ELayer AttackLayerMask => ELayer.Enemy;
     public override EWorldObjectType ObjectType => EWorldObjectType.Construction;
@@ -54,13 +55,10 @@ public abstract class EntityTowerBaseData : WorldObjectBaseData
     public override void AfterLoad()
     {
         base.AfterLoad();
-
-        WorldWindowMgr.Ins.UpdateBloodHint(this);
     }
     public override void OnUnLoad()
     {
         base.OnUnLoad();
-        WorldWindowMgr.Ins.RemoveBloodHint(this);
     }
     // Update 
     public override bool IsUpdateEnable => true;

@@ -1,13 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using B1.Event;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.U2D;
 
 namespace B1.UI
 {
+    public class UIWindowEventdata : EventSystemParamData
+    {
+        public UIWindow Window;
+    }
     public class UIWindowPageData
     {
 
@@ -131,7 +134,11 @@ namespace B1.UI
             if (m_DicWindow.TryGetValue(f_Window, out var value))
             {
                 await value.ShowAsync();
-                EventSystemMgr.Ins.SendEvent(EEventSystemType.UI_WINDOW_HIDE, value, f_Window.ToString());
+                var eventData = new UIWindowEventdata()
+                {
+                    Window = value,
+                };
+                EventSystemMgr.Ins.SendEvent(EEventSystemType.UI_WINDOW_HIDE, eventData);
             }
             else
             {
@@ -148,7 +155,11 @@ namespace B1.UI
             if (m_DicWindow.TryGetValue(f_Window, out var value))
             {
                 await value.HideAsync();
-                EventSystemMgr.Ins.SendEvent(EEventSystemType.UI_WINDOW_HIDE, value, f_Window.ToString());
+                var eventData = new UIWindowEventdata()
+                {
+                    Window = value,
+                };
+                EventSystemMgr.Ins.SendEvent(EEventSystemType.UI_WINDOW_HIDE, eventData);
             }
             else
             {
@@ -223,7 +234,11 @@ namespace B1.UI
                 tasks[index++] = UniTask.Create(async () =>
                 {
                     await UIWindowManager.Ins.UnloadWindowAsync(window.Key, window.Value);
-                    EventSystemMgr.Ins.SendEvent(EEventSystemType.UI_WINDOW_UNLOAD_FINISH, window.Key, window.Key.ToString());
+                    var eventData = new UIWindowEventdata()
+                    {
+                        Window = window.Value,
+                    };
+                    EventSystemMgr.Ins.SendEvent(EEventSystemType.UI_WINDOW_UNLOAD_FINISH, eventData);
                 });
             }
 

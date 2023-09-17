@@ -1,4 +1,3 @@
-using B1.Event;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
@@ -27,7 +26,7 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
         m_ItemHero.gameObject.SetActive(false);
         m_TargetIcon.gameObject.SetActive(false);
         m_TargetArrow.gameObject.SetActive(false);
-        for (int i = 0; i < HeroIncubatorPoolMgr.Ins.CardGroupCount; i++)
+        for (int i = 0; i < GTools.CardGroupCount; i++)
         {
             var obj = GameObject.Instantiate(m_CardViewItem, m_CardViewItem.parent);
             m_ItemList.Add(obj);
@@ -138,43 +137,101 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
         {
             item.gameObject.SetActive(false);
         }
-        if (HeroIncubatorPoolMgr.Ins.TryGetIncybatorGroup(out var list))
+        if (GTools.CardMgr.TryGetCardGroup(out var list))
         {
             for (int i = 0; i < list.Count; i++)
             {
                 var data = list[i];
-                var item = m_ItemList[i];
-                if (GTools.TableMgr.TryGetHeroCradLevelInfo(data, out var qualityInfo) && GTools.TableMgr.TryGetIncubatorInfo(data, out var incubatorInfo))
+                switch (data.CardType)
                 {
-                    m_Content.GetComponent<HorizontalLayoutGroup>().enabled = true;
-                    m_Content.GetComponent<ContentSizeFitter>().enabled = true;
-                    item.gameObject.SetActive(true);
-                    item.Find("Txt_Name").GetComponent<TextMeshProUGUI>().text = $"{incubatorInfo.Name}";
-                    item.Find("Img_Quality").GetComponent<Image>().color = qualityInfo.Color;
-                    item.Find("Tex_Expenditure").GetComponent<TextMeshProUGUI>().text = $"{incubatorInfo.Expenditure}";
-                    GTools.RunUniTask(async () =>
-                    {
-                        if (GTools.TableMgr.TryGetAssetPath(incubatorInfo.IncubatorDebrisIcon, out var path))
-                        {
-                            var sprite = await ILoadSpriteAsync.LoadAsync(path);
-                            item.Find("Img_Icon").GetComponent<Image>().sprite = sprite;
-                        }
-                    });
-                    var btn = item.Find("Btn_Button").GetComponent<Button>();
-                    btn.onClick.RemoveAllListeners();
-                    btn.onClick.AddListener(() =>
-                    {
-                        m_Content.GetComponent<HorizontalLayoutGroup>().enabled = false;
-                        m_Content.GetComponent<ContentSizeFitter>().enabled = false;
-                        if (HeroIncubatorPoolMgr.Ins.BuyIncubator(data))
-                        {
-                            item.gameObject.SetActive(false);
-                            AddIncubaorDebris(data);
-                        }
-                        Debug.Log(data);
-                    });
+                    case ECardType.Skill:
+                        var skillData = data.GetTargetType<SkillCardInfo>();
+                        AddCardSkill(i, skillData);
+                        break;
+                    case ECardType.Incubator:
+                        var incubatorData = data.GetTargetType<IncubatorCardInfo>();
+                        AddCardIncubator(i, incubatorData);
+                        break;
+                    default:
+                        break;
                 }
             }
+        }
+    }
+    private void AddCardIncubator(int f_Index, IncubatorCardInfo f_IncubatorData)
+    {
+        var quality = f_IncubatorData.QualityLevel;
+
+        var item = m_ItemList[f_Index];
+        if (GTools.TableMgr.TryGetHeroCradLevelInfo(quality, out var qualityInfo) && GTools.TableMgr.TryGetIncubatorInfo(quality, out var incubatorInfo))
+        {
+            m_Content.GetComponent<HorizontalLayoutGroup>().enabled = true;
+            m_Content.GetComponent<ContentSizeFitter>().enabled = true;
+            item.gameObject.SetActive(true);
+            item.Find("Txt_Name").GetComponent<TextMeshProUGUI>().text = $"{incubatorInfo.Name}";
+            item.Find("Img_Quality").GetComponent<Image>().color = qualityInfo.Color;
+            item.Find("Tex_Expenditure").GetComponent<TextMeshProUGUI>().text = $"{incubatorInfo.Expenditure}";
+            GTools.RunUniTask(async () =>
+            {
+                if (GTools.TableMgr.TryGetAssetPath(incubatorInfo.IncubatorDebrisIcon, out var path))
+                {
+                    var sprite = await ILoadSpriteAsync.LoadAsync(path);
+                    item.Find("Img_Icon").GetComponent<Image>().sprite = sprite;
+                }
+            });
+            var btn = item.Find("Btn_Button").GetComponent<Button>();
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() =>
+            {
+                m_Content.GetComponent<HorizontalLayoutGroup>().enabled = false;
+                m_Content.GetComponent<ContentSizeFitter>().enabled = false;
+                if (HeroIncubatorPoolMgr.Ins.BuyIncubator(incubatorInfo))
+                {
+                    item.gameObject.SetActive(false);
+                    AddIncubaorDebris(quality);
+                }
+            });
+        }
+    }
+    private void AddCardSkill(int f_Index, SkillCardInfo f_SkillData)
+    {
+        var skillType = f_SkillData.SkillType;
+        var heroData = f_SkillData.HeroData;
+
+        var item = m_ItemList[f_Index];
+        if (GTools.TableMgr.TryGetPersonSkillInfo(skillType, out var skillInfo))
+        {
+            m_Content.GetComponent<HorizontalLayoutGroup>().enabled = true;
+            m_Content.GetComponent<ContentSizeFitter>().enabled = true;
+            item.gameObject.SetActive(true);
+            item.Find("Txt_Name").GetComponent<TextMeshProUGUI>().text = $"{skillInfo.SkillName}";
+            item.Find("Img_Quality").GetComponent<Image>().color = skillInfo.GetColor();
+            item.Find("Tex_Expenditure").GetComponent<TextMeshProUGUI>().text = $"{skillInfo.Expenditure}";
+            GTools.RunUniTask(async () =>
+            {
+                if (GTools.TableMgr.TryGetAssetPath(skillInfo.IconKey, out var path))
+                {
+                    var sprite = await ILoadSpriteAsync.LoadAsync(path);
+                    item.Find("Img_Icon").GetComponent<Image>().sprite = sprite;
+                }
+            });
+            var btn = item.Find("Btn_Button").GetComponent<Button>();
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() =>
+            {
+                m_Content.GetComponent<HorizontalLayoutGroup>().enabled = false;
+                m_Content.GetComponent<ContentSizeFitter>().enabled = false;
+                if (HeroIncubatorPoolMgr.Ins.BuyIncubator(skillInfo))
+                {
+                    var addSkillResult = GTools.HeroMgr.AddSkillHero(heroData, skillType);
+                    if (addSkillResult.Result == EResult.Defeated)
+                    {
+                        Debug.Log(addSkillResult.Value);
+                        return;
+                    }
+                    item.gameObject.SetActive(false);
+                }
+            });
         }
     }
     public void UpLevel()
@@ -260,7 +317,7 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
     private Transform m_ItemCard = null;
 
     private Dictionary<EHeroQualityLevel, List<IncubatorDebrisData>> m_CurCardInsList = new();
-    private int ResultantQuanatity => GTools.HeroIncubatorPoolMgr.ResultantQuanatity;
+    private int ResultantQuanatity => GTools.ResultantQuanatity;
 
     /// <summary>
     /// ÃÌº””¢–€ÀÈ∆¨

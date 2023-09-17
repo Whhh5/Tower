@@ -26,7 +26,9 @@ public class Entity_Player_Hero2Data : Entity_HeroBaseData
 
     public override int HarmBase => 5;
 
-    public override EHeroCradType HeroCradType => EHeroCradType.Hero2;
+    public override EHeroCardType HeroCradType => EHeroCardType.Hero2;
+
+    public override EEntityType EntityType => EEntityType.Dragon;
 
     public override void AnimatorCallback050()
     {

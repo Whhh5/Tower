@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using B1.Event;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Sirenix.OdinInspector;
@@ -49,7 +48,7 @@ namespace B1
                 {
                     var tempItem = item;
 
-                        EventSystemMgr.Ins.Subscribe(tempItem.Key, eventSystem, tempItem.Value);
+                        EventSystemMgr.Ins.Subscribe(tempItem.Key, eventSystem);
                     
                 }
             }

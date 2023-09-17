@@ -196,6 +196,7 @@ public class GodEntityData : WorldObjectBaseData
     {
 
     }
+    public override EEntityType EntityType => EEntityType.God;
 
     public override string ObjectName => "上帝";
 

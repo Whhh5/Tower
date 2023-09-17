@@ -10,6 +10,7 @@ public class Entity_Player_Hero3Data : Entity_HeroBaseData
     {
 
     }
+    public override EEntityType EntityType => EEntityType.Dragon;
     public Entity_Player_Hero3 EntityMono => GetCom<Entity_Player_Hero3>();
 
     public override AssetKey AssetPrefabID => AssetKey.Entity_Player_Hero3;
@@ -19,7 +20,7 @@ public class Entity_Player_Hero3Data : Entity_HeroBaseData
     public override float AtkSpeed => 8;
     public int AddBloodValue = 19;
     public override int HarmBase => 2;
-    public override EHeroCradType HeroCradType => EHeroCradType.Hero3;
+    public override EHeroCardType HeroCradType => EHeroCardType.Hero3;
 
     public override void AnimatorCallback020()
     {

@@ -4,7 +4,7 @@ using UnityEngine;
 public class Entity_Gain_Collect1Data : EntityGainBaseData
 {
     public override EGainType GainType => EGainType.Collect1;
-    public override EGainView GainView => EGainView.Collect;
+    public override EBuffView GainView => EBuffView.Collect;
 
     protected override float DurationTime => 30;
 

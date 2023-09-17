@@ -24,9 +24,13 @@ public enum EEventSystemType : int
     WeatherMgr_AddWeatherGain,
     UIOnEnableInfos_Enter,
     UIOnEnableInfos_Exit,
+    CreateHero,
+    DestroyHero,
+
+    Hero_Skill_Add,
     EnumCount,
 }
 public interface IEventSystem
 {
-    void ReceptionEvent(EEventSystemType f_Event, object f_Params, string f_SendDesc);
+    void ReceptionEvent(EEventSystemType f_Event, EventSystemParamData f_Params);
 }

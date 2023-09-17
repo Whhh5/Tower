@@ -10,19 +10,21 @@ public class Entity_Player_Hero1Data : Entity_HeroBaseData
     {
 
     }
+    public override EEntityType EntityType => EEntityType.Person;
     public override ELayer LayerMask => ELayer.Player;
 
     public override ELayer AttackLayerMask => ELayer.Enemy;
 
     public override AssetKey AssetPrefabID => AssetKey.Entity_Player_Hero1;
 
-    public override EHeroCradType HeroCradType => EHeroCradType.Hero1;
+    public override EHeroCardType HeroCradType => EHeroCardType.Hero1;
 
     private ESkillStage3 m_SkillStage => (ESkillStage3)CurStage;
     public override int SkillStageCount => (int)ESkillStage3.EnumCount;
 
 
-    private Emitter_SwordBaseData m_SwordBase = null;
+    private Emitter_SwordLowData m_SwordLow = null;
+    public Emitter_SwordLowData SwordLow => m_SwordLow;
 
     public override int AtkRange => 5;
     public override float AtkSpeed => 5.0f;
@@ -34,10 +36,17 @@ public class Entity_Player_Hero1Data : Entity_HeroBaseData
 
 
         var weaponData = new Emitter_SwordLowData(0, this);
-        m_SwordBase = weaponData;
+        m_SwordLow = weaponData;
         GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(weaponData));
     }
-
+    public void StartExecuteSword()
+    {
+        GTools.RunUniTask(m_SwordLow.StartExecute());
+    }
+    public void StopExecuteSword()
+    {
+        GTools.RunUniTask(m_SwordLow.StopExecute());
+    }
 
     public override void AnimatorCallback050()
     {
@@ -76,24 +85,28 @@ public class Entity_Player_Hero1Data : Entity_HeroBaseData
     public override void AttackTarget()
     {
         base.AttackTarget();
-        GTools.MathfMgr.EntityDamage(this, CurAttackTarget, EDamageType.Physical, -CurHarm, true);
+        GTools.MathfMgr.EntityDamage(this, CurAttackTarget, EDamageType.Physical, -CurHarm, CurSkillCount > 0);
 
-        GTools.RunUniTask(m_SwordBase.StartExecute());
+        GTools.RunUniTask(m_SwordLow.StartExecute());
     }
 
     public void SkillStage1()
     {
-
+        var skillInfo = GetSkill(ESkillIndex.Skill_1);
+        skillInfo.SkillData.StartExecute();
     }
 
     public void SkillStage2()
     {
-        GTools.RunUniTask(m_SwordBase.StopExecute());
+        //GTools.RunUniTask(m_SwordLow.StopExecute());
+        var skillInfo = GetSkill(ESkillIndex.Skill_2);
+        skillInfo.SkillData.StartExecute();
     }
 
     public void SkillStage3()
     {
-
+        var skillInfo = GetSkill(ESkillIndex.Skill_3);
+        skillInfo.SkillData.StartExecute();
     }
 }
 public class Entity_Player_Hero1 : Entity_HeroBase

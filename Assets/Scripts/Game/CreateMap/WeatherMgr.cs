@@ -4,6 +4,22 @@ using UnityEngine;
 using B1;
 using UnityEngine.EventSystems;
 
+public class WeatherEventData : EventSystemParamData
+{
+    public WeatherBaseData LastWeatherData;
+}
+public class WeatherEventEventData : EventSystemParamData
+{
+    public WeatherEventBaseData LastWeathereventData;
+}
+public class WeatherSelectGainEventData : EventSystemParamData
+{
+    public WeatherGainRandomData WeatherGainData;
+}
+public class WeatherAddGainEventData : EventSystemParamData
+{
+    public WeatherGainData WeatherGainData;
+}
 public class WeatherGainRandomData
 {
     public int Index;
@@ -106,7 +122,7 @@ public class Weather_GainDefault1 : WeatherGainData
 {
     public override EWeatherGainType WeatherGainType => EWeatherGainType.Default1;
 
-    public override void StartExecute()
+    public override void StartExecute(WorldObjectBaseData f_WorldObj)
     {
 
     }
@@ -115,7 +131,7 @@ public class Weather_GainDefault2 : WeatherGainData
 {
     public override EWeatherGainType WeatherGainType => EWeatherGainType.Default2;
 
-    public override void StartExecute()
+    public override void StartExecute(WorldObjectBaseData f_WorldObj)
     {
 
     }
@@ -124,7 +140,7 @@ public class Weather_GainDefault3 : WeatherGainData
 {
     public override EWeatherGainType WeatherGainType => EWeatherGainType.Default3;
 
-    public override void StartExecute()
+    public override void StartExecute(WorldObjectBaseData f_WorldObj)
     {
 
     }
@@ -133,7 +149,7 @@ public class Weather_GainDefault4 : WeatherGainData
 {
     public override EWeatherGainType WeatherGainType => EWeatherGainType.Default4;
 
-    public override void StartExecute()
+    public override void StartExecute(WorldObjectBaseData f_WorldObj)
     {
 
     }
@@ -142,7 +158,7 @@ public class Weather_GainDefault5 : WeatherGainData
 {
     public override EWeatherGainType WeatherGainType => EWeatherGainType.Default5;
 
-    public override void StartExecute()
+    public override void StartExecute(WorldObjectBaseData f_WorldObj)
     {
 
     }
@@ -151,7 +167,7 @@ public class Weather_GainDefault6 : WeatherGainData
 {
     public override EWeatherGainType WeatherGainType => EWeatherGainType.Default6;
 
-    public override void StartExecute()
+    public override void StartExecute(WorldObjectBaseData f_WorldObj)
     {
 
     }
@@ -277,7 +293,12 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
             if (ChangeWeatherSystem(out var weatherInfo))
             {
                 var lastWeather = CurWeatherData;
-                GTools.EventSystemMgr.SendEvent(EEventSystemType.WeatherMgr_ChangeWeather, lastWeather, "天气事件 -> 切换天气, 参数是上一个天气实例数据");
+                WeatherEventData eventdata = new()
+                {
+                    Description = "天气事件 -> 切换天气, 参数是上一个天气实例数据",
+                    LastWeatherData = lastWeather,
+                };
+                GTools.EventSystemMgr.SendEvent(EEventSystemType.WeatherMgr_ChangeWeather, eventdata);
                 if (lastWeather != null)
                 {
                     lastWeather.StopExecute();
@@ -300,8 +321,12 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
             if (ChangeWeatherEvent(out var value))
             {
                 var lastWeatherEvent = CurEventData;
-                GTools.EventSystemMgr.SendEvent(EEventSystemType.WeatherMgr_ChangeWeatherEvent, lastWeatherEvent,
-                    "天气事件 -> 切换天气事件, 参数是上一个天气事件实例数据");
+                WeatherEventEventData eventData = new()
+                {
+                    LastWeathereventData = lastWeatherEvent,
+                    Description = "天气事件 -> 切换天气事件, 参数是上一个天气事件实例数据",
+                };
+                GTools.EventSystemMgr.SendEvent(EEventSystemType.WeatherMgr_ChangeWeatherEvent, eventData);
                 if (lastWeatherEvent != null)
                 {
                     StopExecute();
@@ -451,8 +476,12 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
             if (f_Info.TryGetWeatherGainData(out var data, f_Level))
             {
                 m_CurWeatherGainList.Add(data);
-                data.StartExecute();
-                GTools.EventSystemMgr.SendEvent(EEventSystemType.WeatherMgr_AddWeatherGain, data, "添加天气增益  WeatherGainData");
+                WeatherAddGainEventData eventData = new()
+                {
+                    WeatherGainData = data,
+                    Description = "添加天气增益  WeatherGainData",
+                };
+                GTools.EventSystemMgr.SendEvent(EEventSystemType.WeatherMgr_AddWeatherGain, eventData);
             }
         }
     }
@@ -467,6 +496,13 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
 
         return m_CurUpdateGainList.Count == WeatherRandomGainCount;
     }
+    public void ExecuteCurWeatherGain(WorldObjectBaseData f_WorldObj)
+    {
+        foreach (var item in m_CurWeatherGainList)
+        {
+            item.StartExecute(f_WorldObj);
+        }
+    }
     public List<WeatherGainRandomData> GetCurUpdateWeatherGainList()
     {
         return m_CurUpdateGainList;
@@ -479,8 +515,13 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
     {
         if (m_CurUpdateGainList.Contains(f_WeatherItem))
         {
-            AddWeatherGain(f_WeatherItem.WeatherGainType, f_WeatherItem.Level);
-            GTools.EventSystemMgr.SendEvent(EEventSystemType.WeatherMgr_SelectWeatherEvent, f_WeatherItem, "选择天气增益  WeatherGainRandomData");
+            AddWeatherGain(f_WeatherItem.WeatherGainType, f_WeatherItem.Level); 
+            WeatherSelectGainEventData eventData = new()
+            {
+                WeatherGainData = f_WeatherItem,
+                Description = "选择天气增益  WeatherGainRandomData",
+            };
+            GTools.EventSystemMgr.SendEvent(EEventSystemType.WeatherMgr_SelectWeatherEvent, eventData);
         }
         ClearCurUpdateWeatherGainList();
     }

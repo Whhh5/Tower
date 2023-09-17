@@ -91,6 +91,37 @@ public class WorldWindowMgr : Singleton<WorldWindowMgr>
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------
+    //                                catalogue -- 技能栏 篇
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    private Dictionary<Entity_HeroBaseData, UISkillInfoData> m_HeroSkillPlaneList = new();
+    public void CreateSkillPlane(Entity_HeroBaseData f_Target)
+    {
+        var skillData = new UISkillInfoData();
+        GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(skillData));
+        skillData.Initialization(f_Target);
+        skillData.SetParent(m_Root);
+        m_HeroSkillPlaneList.Add(f_Target, skillData);
+    }
+    public void DestroySkillPlane(Entity_HeroBaseData f_Target)
+    {
+        if (m_HeroSkillPlaneList.TryGetValue(f_Target, out var value))
+        {
+            ILoadPrefabAsync.UnLoad(value);
+            m_HeroSkillPlaneList.Remove(f_Target);
+        }
+    }
+    public void AddHeroSkill(HeroAddSKillEventData f_Target)
+    {
+        if (m_HeroSkillPlaneList.TryGetValue(f_Target.HeroData, out var value))
+        {
+            value.AddSkill(f_Target.SkillType);
+        }
+    }
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
     //                                catalogue -- 攻击特效 篇
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================

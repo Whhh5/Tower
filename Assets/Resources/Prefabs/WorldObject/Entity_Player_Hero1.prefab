@@ -212,7 +212,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UpdateInteractable: 0
-  m_CurAnim: {fileID: 0}
   m_MainBody: {fileID: 0}
   m_MainObject: {fileID: 0}
   m_PointUp: {fileID: 7644472359175277155}
@@ -222,7 +221,8 @@ MonoBehaviour:
   m_EffectPoint: {fileID: 0}
   m_TrailPoint: {fileID: 0}
   m_WeaponPoint: {fileID: 92403835}
-  TargetPosition: {x: 0, y: 0, z: 0}
+  m_CurAnim: {fileID: 7776661988967324121}
+  m_AttackPoint: {fileID: 0}
 --- !u!114 &6705664695032189533
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1626,6 +1626,10 @@ PrefabInstance:
       propertyPath: m_WarningMessage
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 5866666021909216657, guid: c863a44d6fba89f4dabf63cb74a52f90, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6000407479487422213, guid: c863a44d6fba89f4dabf63cb74a52f90, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.0000000037252907
@@ -1899,5 +1903,10 @@ PrefabInstance:
 --- !u!4 &4399009910316319651 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c863a44d6fba89f4dabf63cb74a52f90, type: 3}
+  m_PrefabInstance: {fileID: 4217292613363868744}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &7776661988967324121 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 5866666021909216657, guid: c863a44d6fba89f4dabf63cb74a52f90, type: 3}
   m_PrefabInstance: {fileID: 4217292613363868744}
   m_PrefabAsset: {fileID: 0}

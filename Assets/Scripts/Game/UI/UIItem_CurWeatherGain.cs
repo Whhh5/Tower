@@ -32,7 +32,7 @@ public class UIItem_CurWeatherGainData : UIItemBaseData<WeatherGainRandomData>
         var hintInfos = new UIOnEnableInfosShowData()
         {
             IconKey = Data.WeatherGainIcon,
-            Describes = Data.WeatherGainInfo.Describe,
+            Description = Data.WeatherGainInfo.Describe,
             Name = Data.WeatherGainInfo.Name,
         };
         GTools.EventSystemMgr.SendEvent(EEventSystemType.UIOnEnableInfos_Enter, hintInfos);

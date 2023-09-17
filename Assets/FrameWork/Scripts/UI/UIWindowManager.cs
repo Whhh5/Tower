@@ -5,7 +5,6 @@ using B1;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using System.Reflection;
-using B1.Event;
 
 namespace B1.UI
 {
@@ -230,8 +229,12 @@ namespace B1.UI
                 window.transform.SetParent(parent);
                 window.Rect.NormalFullScene();
                 await window.AwakeAsync();
-
-                EventSystemMgr.Ins.SendEvent(EEventSystemType.UI_WINDOW_LOAD_FINISH, window, f_EWindow.ToString());
+                UIWindowEventdata eventData = new()
+                {
+                    Window = window,
+                    Description = f_EWindow.ToString(),
+                };
+                EventSystemMgr.Ins.SendEvent(EEventSystemType.UI_WINDOW_LOAD_FINISH, eventData);
 
                 LogWarning($"加载一个窗口    window name = {f_EWindow}     window = {window}");
             }

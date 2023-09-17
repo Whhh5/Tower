@@ -21,7 +21,26 @@ public interface IBuffUtil
         f_Target.AddBuffAsync(f_Buff, f_Initiator);
     }
 }
+public class BuffInsData
+{
+    public bool Active = true;
+    public WorldObjectBaseData ObjData = null;
+    public Dictionary<EBuffView, Effect_BuffBaseData> BuffData = null;
+}
 public class BuffMgr : Singleton<BuffMgr>
 {
+    private Dictionary<WorldObjectBaseData, BuffInsData> m_BuffDatas = new();
 
+    public void AddBuff()
+    {
+
+    }
+    public void RemoveBuff()
+    {
+
+    }
+    public void OnClick(EBuffView f_ClickType)
+    {
+
+    }
 }

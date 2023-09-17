@@ -9,7 +9,7 @@ public abstract class Entity_SpawnPointData : WorldObjectBaseData
     {
         DoorDirection = f_Direction;
     }
-
+    public override EEntityType EntityType => EEntityType.Item;
     public override EWorldObjectType ObjectType => EWorldObjectType.Construction;
 
     public override AssetKey AssetPrefabID => AssetKey.SpawnPointMonster1;

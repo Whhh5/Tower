@@ -12,6 +12,7 @@ public abstract class UIItemBaseData<T> : UnityObjectData
     }
 
     public T Data;
+    public int ListIndex;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.None;
 

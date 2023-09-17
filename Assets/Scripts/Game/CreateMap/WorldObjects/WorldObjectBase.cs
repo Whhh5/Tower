@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using B1;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.Serialization;
 
 
@@ -38,6 +39,7 @@ public abstract class WorldObjectBaseData : DependChunkData
         SetCurrentChunkIndex(f_ChunkIndex);
     }
 
+    public abstract EEntityType EntityType { get; }
     public WorldObjectBase WorldObjectTarget => GetCom<WorldObjectBase>();
     public int CurrentMapKey { get; private set; }
     //--
@@ -51,6 +53,8 @@ public abstract class WorldObjectBaseData : DependChunkData
     {
         base.AfterLoad();
         Resurgence();
+        InitAnimatorParams();
+        SetPersonStatus(EPersonStatusType.Idle);
     }
     public override void OnUnLoad()
     {
@@ -67,40 +71,13 @@ public abstract class WorldObjectBaseData : DependChunkData
         base.OnUpdate();
         UpdateBuff();
         UpdateGain();
+        UpdateAnimator();
     }
-    public void Death()
+    public virtual void Death()
     {
         m_BuffDic.Clear();
         WorldMapMgr.Ins.RemoveChunkElement(this);
         WorldWindowMgr.Ins.RemoveBloodHint(this);
-    }
-    public override void AnimatorCallback000()
-    {
-        base.AnimatorCallback000();
-        switch (CurStatus)
-        {
-            case EPersonStatusType.Die:
-                {
-                    Death();
-                }
-                break;
-            default:
-                break;
-        }
-    }
-    public override void AnimatorCallback100()
-    {
-        base.AnimatorCallback100();
-        switch (CurStatus)
-        {
-            case EPersonStatusType.Entrance:
-                {
-                    SetPersonStatus(EPersonStatusType.Idle);
-                }
-                break;
-            default:
-                break;
-        }
     }
     //--
     //===============================----------------------========================================
@@ -134,7 +111,7 @@ public abstract class WorldObjectBaseData : DependChunkData
 
     public virtual void AttackTarget()
     {
-        ExecuteGainAsync(EGainView.Launch);
+        ExecuteGainAsync(EBuffView.Launch);
     }
     public virtual void SkillTarget()
     {
@@ -168,9 +145,8 @@ public abstract class WorldObjectBaseData : DependChunkData
 
         if (value <= 0)
         {
-            EntityDied();
+            SetPersonStatus(EPersonStatusType.Die, EAnimatorStatus.Stop);
         }
-        WorldWindowMgr.Ins.UpdateBloodHint(this);
         return CurrentBlood;
     }
     public virtual int ChangeMagic(int f_Increment)
@@ -179,13 +155,7 @@ public abstract class WorldObjectBaseData : DependChunkData
 
         CurrentMagic = Mathf.Clamp(value, 0, MaxMagic);
 
-        WorldWindowMgr.Ins.UpdateBloodHint(this);
-
         return CurrentMagic;
-    }
-    public virtual void EntityDied()
-    {
-        SetPersonStatus(EPersonStatusType.Die, EAnimatorStatus.Stop);
     }
 
     //--
@@ -245,9 +215,9 @@ public abstract class WorldObjectBaseData : DependChunkData
     //===============================----------------------========================================
     //--
     // Gain
-    protected Dictionary<EGainView, Dictionary<EGainType, EntityGainBaseData>> m_CurGainList = new();
+    protected Dictionary<EBuffView, Dictionary<EGainType, EntityGainBaseData>> m_CurGainList = new();
     // 触发增益
-    public void ExecuteGainAsync(EGainView f_GainType)
+    public void ExecuteGainAsync(EBuffView f_GainType)
     {
         if (m_CurGainList.TryGetValue(f_GainType, out var list))
         {
@@ -320,12 +290,276 @@ public abstract class WorldObjectBaseData : DependChunkData
         m_AddMaxBlood = Mathf.FloorToInt(f_AttributeInfos.BloodRatio * MaxBloodBase);
         m_AddHarm = Mathf.FloorToInt(f_AttributeInfos.HarmRatio * HarmBase);
     }
+
+
+    public virtual void SetPersonStatus(EPersonStatusType f_ToStatus, EAnimatorStatus f_AnimaStatus = EAnimatorStatus.Loop)
+    {
+        if (CurStatus != f_ToStatus)
+        {
+            CurStatus = f_ToStatus;
+            CurAnimaNormalizedTime = 0;
+            AnimaStatus = f_AnimaStatus;
+            UpdateCallbackStatus();
+            PlayerAnimation();
+        }
+    }
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- 动画篇
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    class AnomatorCallback
+    {
+        public float NormalizedTime = 0;
+        public Action Action = null;
+        public bool Status = false;
+        public void Init()
+        {
+            Status = true;
+        }
+        public void Invok()
+        {
+            Status = false;
+            Action?.Invoke();
+        }
+    }
+    // 当前动画播放进度
+    private float m_CurAnimaNormalizedTime = 0;
+    public float CurAnimaNormalizedTime
+    {
+        get => m_CurAnimaNormalizedTime;
+        set => m_CurAnimaNormalizedTime = Mathf.Clamp01(value);
+    }
+
+    // 当前动画播放速度
+    public virtual float AtkSpeedBase { get; set; } = 1;
+    protected float m_AddAtkSpeed = 0;
+    public float CurAnimaSpeed => Mathf.Clamp(AtkSpeedBase + m_AddAtkSpeed, 0.1f, 10);
+    public void ChangeReleaseSpeed(float f_Value)
+    {
+        var value = f_Value * AtkSpeedBase;
+        m_AddAtkSpeed += value;
+    }
+    // 移动速度
+    protected virtual float m_BaseMoveSpeed { get; set; } = 1;
+    protected float m_AddMoveSpeed = 0;
+    public float CurMoveSpeed => Mathf.Clamp(m_BaseMoveSpeed + m_AddMoveSpeed, 0.1f, 10);
+    public void ChangeMoveSpeed(float f_Value)
+    {
+        var value = f_Value * m_BaseMoveSpeed;
+        m_AddMoveSpeed += value;
+    }
+    // 动画状态
+    public EAnimatorStatus AnimaStatus = EAnimatorStatus.None;
+    private Dictionary<int, AnomatorCallback> m_DicAnimaCallBack = new();
+    private float CurAnimationTime => WorldObjectTarget != null ? WorldObjectTarget.CurAnimationTime : 1;
+    public void InitAnimatorParams()
+    {
+        int index = 0;
+        AnimaStatus = EAnimatorStatus.Loop;
+        m_DicAnimaCallBack = new()
+        {
+            {
+                index++,
+                new()
+                {
+                    NormalizedTime = 0.0f,
+                    Status = true,
+                    Action = AnimatorCallback000,
+                }
+            },
+            {
+                index++,
+                new()
+                {
+                    NormalizedTime = 0.2f,
+                    Status = true,
+                    Action = AnimatorCallback020,
+                }
+            },
+            {
+                index++,
+                new()
+                {
+                    NormalizedTime = 0.5f,
+                    Status = true,
+                    Action = AnimatorCallback050,
+                }
+            },
+            {
+                index++,
+                new()
+                {
+                    NormalizedTime = 0.7f,
+                    Status = true,
+                    Action = AnimatorCallback070,
+                }
+            },
+            {
+                index++,
+                new()
+                {
+                    NormalizedTime = 1.0f,
+                    Status = true,
+                    Action = AnimatorCallback100,
+                }
+            },
+        };
+    }
+    public void UpdateCallbackStatus()
+    {
+        foreach (var item in m_DicAnimaCallBack)
+        {
+            item.Value.Init();
+        }
+    }
+    public void PlayerAnimation(bool f_IsForce = false)
+    {
+        if (WorldObjectTarget != null && !f_IsForce)
+        {
+            WorldObjectTarget.PlayerAnimation();
+        }
+    }
+    public virtual string GetCurrentAnimationName()
+    {
+        return $"{CurStatus}";
+    }
+    private void UpdateAnimator()
+    {
+        switch (AnimaStatus)
+        {
+            case EAnimatorStatus.None:
+                break;
+            case EAnimatorStatus.One:
+                {
+                    if (CurAnimaNormalizedTime == 1)
+                    {
+                        SetPersonStatus(EPersonStatusType.Idle);
+                    }
+                    UpdateCurAnimaNormalizedTime();
+                }
+                break;
+            case EAnimatorStatus.Loop:
+                {
+                    UpdateCurAnimaNormalizedTime();
+                }
+                break;
+            case EAnimatorStatus.Stop:
+                {
+                    if (CurAnimaNormalizedTime != 1)
+                    {
+                        UpdateCurAnimaNormalizedTime();
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+        PlayerAnimation();
+    }
+
+    private void UpdateCurAnimaNormalizedTime()
+    {
+        // 目标进度
+        var speed = 1.0f;
+        if (CurStatus is EPersonStatusType.Attack or EPersonStatusType.Skill)
+        {
+            speed = CurAnimaSpeed;
+        }
+        else if (CurStatus is EPersonStatusType.Walk)
+        {
+            speed = CurMoveSpeed;
+        }
+        var value = CurAnimaNormalizedTime + UpdateDelta * speed / CurAnimationTime;
+        if (CurStatus == EPersonStatusType.Die && GetType() == typeof(Entity_Incubator1Data))
+        {
+            Log("");
+        }
+        // 动画回调
+        foreach (var item in m_DicAnimaCallBack)
+        {
+            if (item.Value.Status && item.Value.NormalizedTime <= value)
+            {
+                item.Value.Invok();
+            }
+        }
+
+        // 更新进度
+        if (value >= 1)
+        {
+            CurAnimaNormalizedTime = AnimaStatus == EAnimatorStatus.Loop ? value - 1 : 1;
+            UpdateCallbackStatus();
+        }
+        else
+        {
+            CurAnimaNormalizedTime = value;
+        }
+
+
+        //AnimationClip clip = 
+        //clip.events
+    }
+
+    public virtual void AnimatorCallback000()
+    {
+        switch (CurStatus)
+        {
+            case EPersonStatusType.Die:
+                {
+                    Death();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    public virtual void AnimatorCallback020()
+    {
+
+    }
+    public virtual void AnimatorCallback050()
+    {
+
+    }
+    public virtual void AnimatorCallback070()
+    {
+
+    }
+    public virtual void AnimatorCallback100()
+    {
+        switch (CurStatus)
+        {
+            case EPersonStatusType.Entrance:
+                {
+                    SetPersonStatus(EPersonStatusType.Idle);
+                }
+                break;
+            case EPersonStatusType.Die:
+                {
+
+                }
+                break;
+            default:
+                break;
+        }
+    }
+    
 }
 
 public class WorldObjectBase : DependChunk, IUpdateBase
 {
+
     public override EUpdateLevel UpdateLevel => EUpdateLevel.Level1;
     public WorldObjectBaseData WorldObjectBaseData => GetData<WorldObjectBaseData>();
+
+    public override async UniTask OnStartAsync(params object[] f_Params)
+    {
+        await base.OnStartAsync(f_Params);
+
+        PlayerAnimation();
+    }
     public override void OnUpdate()
     {
         base.OnUpdate();
@@ -335,6 +569,15 @@ public class WorldObjectBase : DependChunk, IUpdateBase
         {
 
         }
+    }
+    public override async UniTask OnUnLoadAsync()
+    {
+        await base.OnUnLoadAsync();
+        if (CurAnim != null)
+        {
+            CurAnim.StopPlayback();
+        }
+        m_AnimatorGraph = PlayableGraph.Create();
     }
     private void OnMouseDown()
     {
@@ -348,5 +591,83 @@ public class WorldObjectBase : DependChunk, IUpdateBase
     private void OnMouseExit()
     {
         UISelectHeroInfo.Ins.SetData(null);
+    }
+
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- 动画篇
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    [SerializeField]
+    private Animator m_CurAnim = null;
+    public Animator CurAnim => m_CurAnim != null ? m_CurAnim : GetComponent<Animator>();
+    public float CurAnimationTime
+    {
+        get
+        {
+            var value = 1.0f;
+            if (CurAnim != null)
+            {
+                var curArr = CurAnim.GetCurrentAnimatorClipInfo(0);
+                value = curArr != null && curArr.Length > 0 ? curArr[0].clip.length : 1;
+                value = value > 0 ? value : 1;
+            }
+            return value;
+        }
+    }
+    private bool TryGetAnimationClip(string f_Name, out AnimationClip f_Clip, int f_Layer = 0)
+    {
+        var clips = CurAnim.runtimeAnimatorController.animationClips;
+        f_Clip = null;
+        foreach (var item in clips)
+        {
+            var hashCode = item.GetHashCode();
+            if (!item.name.Contains(f_Name))
+            {
+                continue;
+            }
+            //f_Clip = item;
+            break;
+        }
+        return f_Clip != null;
+    }
+    private string m_LastAnimaClipName = "";
+    private PlayableGraph m_AnimatorGraph;
+    public void PlayerAnimation()
+    {
+        var animaName = WorldObjectBaseData.GetCurrentAnimationName();
+        if (CurAnim != null)
+        {
+
+            CurAnim.Play(animaName, 0, WorldObjectBaseData.CurAnimaNormalizedTime);
+
+
+            //if (m_LastAnimaClipName != "" && m_LastAnimaClipName != animaName
+            //    && TryGetAnimationClip(m_LastAnimaClipName, out var lastAnim) 
+            //    && TryGetAnimationClip(animaName, out var curAnima))
+            //{
+            //    var animOutput = AnimationPlayableOutput.Create(m_AnimatorGraph, "AnimationOutout", CurAnim);
+
+            //    var mixerPlayable = AnimationMixerPlayable.Create(m_AnimatorGraph, 2);
+
+            //    var clipPlayableA = AnimationClipPlayable.Create(m_AnimatorGraph, lastAnim);
+            //    var clipPlayableB = AnimationClipPlayable.Create(m_AnimatorGraph, curAnima);
+
+
+            //    m_AnimatorGraph.Connect(clipPlayableA, 0, mixerPlayable, 0);
+            //    m_AnimatorGraph.Connect(clipPlayableB, 0, mixerPlayable, 1);
+
+            //    animOutput.SetSourcePlayable(mixerPlayable);
+
+            //    mixerPlayable.SetInputWeight(0, 1);
+            //    mixerPlayable.SetInputWeight(1, 1);
+
+            //    m_AnimatorGraph.Play();
+
+            //}
+            m_LastAnimaClipName = animaName;
+        }
     }
 }

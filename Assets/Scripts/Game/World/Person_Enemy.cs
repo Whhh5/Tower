@@ -15,6 +15,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
         CurStatus = EPersonStatusType.None;
     }
 
+    public override EEntityType EntityType => EEntityType.Person;
     public int StartIndex { get; protected set; }
     public int TargetIndex { get; protected set; }
     public int CurTargetIndex { get; protected set; }

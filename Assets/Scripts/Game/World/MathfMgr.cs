@@ -297,6 +297,7 @@ public class MathfMgr : Singleton<MathfMgr>
     }
     public void EntityDamage(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target, EDamageType f_DamageType, int f_Value, bool f_IsAddMagic = false)
     {
+        f_Value = 1;
         if (GTools.UnityObjectIsActive(f_Target))
         {
 
@@ -315,16 +316,21 @@ public class MathfMgr : Singleton<MathfMgr>
                     EDamageType = f_DamageType,
                 };
                 f_Target.ChangeBlood(data);
+                WorldWindowMgr.Ins.UpdateBloodHint(f_Target);
                 hintTex = $"{damageValue}";
 
 
-                f_Initiator.ExecuteGainAsync(EGainView.Collect);
+                f_Initiator.ExecuteGainAsync(EBuffView.Collect);
             }
             else
             {
                 hintTex = hitCondition.Value;
             }
-            f_Initiator.ChangeMagic(f_IsAddMagic ? 200 : 0);
+            if (f_IsAddMagic)
+            {
+                f_Initiator.ChangeMagic(50);
+                WorldWindowMgr.Ins.UpdateBloodHint(f_Initiator);
+            }
 
             WorldMgr.Ins.DamageText(hintTex, f_DamageType, f_Target.CentralPoint);
         }

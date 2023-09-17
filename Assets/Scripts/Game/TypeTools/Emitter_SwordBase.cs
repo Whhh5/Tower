@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public abstract class Emitter_SwordBaseData: WeaponBaseData
+public abstract class Emitter_SwordBaseData : WeaponBaseData
 {
     public enum EStatus
     {
@@ -23,7 +23,7 @@ public abstract class Emitter_SwordBaseData: WeaponBaseData
     [SerializeField] protected float MaxExcuteTime => UnitTime / CollectSpeed;
     [SerializeField] protected Dictionary<ESwordStatus, ListStack<WeaponElementBaseData>> m_AllSwordElements = new();
 
-    protected Dictionary<ushort, Vector3> m_SwordElementPoint = new();
+    protected Dictionary<int, Vector3> m_SwordElementPoint = new();
 
     public override void AfterLoad()
     {
@@ -95,8 +95,17 @@ public abstract class Emitter_SwordBaseData: WeaponBaseData
         {
             foreach (var item in m_AllSwordElements[ESwordStatus.Prepare].GetEnumerator())
             {
-                item.Value.SetPosition(Vector3.Lerp(item.Value.WorldPosition,
-                    m_SwordElementPoint[(ushort)item.Key] + WorldPosition, GTools.UpdateDeltaTime * 10));
+                if (!m_SwordElementPoint.TryGetValue(item.Key, out var pos))
+                {
+                    pos = new Vector3
+                        (
+                            GTools.MathfMgr.GetRandomValue(-0.5f, 0.5f),
+                            GTools.MathfMgr.GetRandomValue(0, 0.5f),
+                            GTools.MathfMgr.GetRandomValue(-0.5f, 0.5f)
+                        );
+                    m_SwordElementPoint.Add(item.Key, pos);
+                }
+                item.Value.SetPosition(Vector3.Lerp(item.Value.WorldPosition, pos + WorldPosition, GTools.UpdateDeltaTime * 10));
                 item.Value.SetForward(Vector3.Lerp(item.Value.Forward, Forward, GTools.UpdateDeltaTime * 10));
             }
         }
@@ -189,7 +198,7 @@ public abstract class Emitter_SwordBaseData: WeaponBaseData
 
             buttle.StopExecute();
             LaunchStopAsync(buttle, f_Target);
-            Initiator.ExecuteGainAsync(EGainView.Launch);
+            Initiator.ExecuteGainAsync(EBuffView.Launch);
         }
     }
 
@@ -223,7 +232,7 @@ public abstract class Emitter_SwordBaseData: WeaponBaseData
                 buttle.ClearTargets();
             }
 
-            Initiator.ExecuteGainAsync(EGainView.Collect);
+            Initiator.ExecuteGainAsync(EBuffView.Collect);
         }
 
         CollectSleepAsync(f_Point);

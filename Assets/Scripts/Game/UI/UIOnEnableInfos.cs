@@ -5,11 +5,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIOnEnableInfosShowData
+public class UIOnEnableInfosShowData : EventSystemParamData
 {
     public AssetKey IconKey;
     public string Name;
-    public string Describes;
 }
 public class UIOnEnableInfos : MonoBehaviour, IEventSystem
 {
@@ -31,7 +30,7 @@ public class UIOnEnableInfos : MonoBehaviour, IEventSystem
         GTools.EventSystemMgr.Subscribe(EEventSystemType.UIOnEnableInfos_Enter, this);
         GTools.EventSystemMgr.Subscribe(EEventSystemType.UIOnEnableInfos_Exit, this);
     }
-    public void ReceptionEvent(EEventSystemType f_Event, object f_Params, string f_SendDesc)
+    public void ReceptionEvent(EEventSystemType f_Event, EventSystemParamData f_Params)
     {
         var dataInfos = f_Params as UIOnEnableInfosShowData;
         switch (f_Event)
@@ -52,7 +51,7 @@ public class UIOnEnableInfos : MonoBehaviour, IEventSystem
     public async void UpdateInfos(UIOnEnableInfosShowData f_Infos)
     {
         m_NameTxt.text = f_Infos.Name;
-        m_DescribesTxt.text = f_Infos.Describes;
+        m_DescribesTxt.text = f_Infos.Description;
 
         LayoutRebuilder.ForceRebuildLayoutImmediate(m_MainRoot);
         DOTween.Kill(DGID);
@@ -75,7 +74,7 @@ public class UIOnEnableInfos : MonoBehaviour, IEventSystem
         }
         Release();
 
-        if (GTools.TableMgr.TryGetAssetPath(f_Infos.IconKey, out var path) )
+        if (GTools.TableMgr.TryGetAssetPath(f_Infos.IconKey, out var path))
         {
             m_CurIconKey = f_Infos.IconKey;
             var sprite = await ILoadSpriteAsync.LoadAsync(path);

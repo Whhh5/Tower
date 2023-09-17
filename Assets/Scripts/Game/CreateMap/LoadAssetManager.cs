@@ -5,7 +5,7 @@ using Cysharp.Threading.Tasks;
 using Unity.VisualScripting;
 using Object = System.Object;
 
-public class LoadAssetManager : B1.Singleton<LoadAssetManager>
+public class LoadAssetManager : Singleton<LoadAssetManager>
 {
     class LoadData<T>
         where T : Component
@@ -43,7 +43,7 @@ public class LoadAssetManager : B1.Singleton<LoadAssetManager>
 
             m_DicAsset.Add(f_ID, value);
 
-            var asset = await Resources.LoadAsync<GameObject>(assetPath);
+            var asset = await LoadAsync<GameObject>(assetPath);
             if (asset != null && asset is GameObject targetObj)
             {
                 var obj = GameObject.Instantiate(targetObj);
@@ -88,9 +88,24 @@ public class LoadAssetManager : B1.Singleton<LoadAssetManager>
         GTools.RunUniTask(f_Asset.OnUnLoadAsync());
         value.objs.Remove(f_Asset.SaveID);
         GameObject.Destroy(f_Asset.gameObject);
+        //if (value.objs.Count == 0)
+        //{
+        //    UnLoad(value.ass);
+        //    m_DicAsset.Remove(f_Asset.AssetKey);
+        //}
     }
 
-
+    public async UniTask<T> LoadAsync<T>(string f_Path)
+        where T: UnityEngine.Object
+    {
+        var result = await Resources.LoadAsync<T>(f_Path) as T;
+        return result;
+    }
+    public void UnLoad<T>(T f_AssetObj)
+    where T : UnityEngine.Object
+    {
+        //Resources.UnloadAsset(f_AssetObj);
+    }
 
 
 }

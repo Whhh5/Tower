@@ -9,14 +9,15 @@ public class GainMgr : Singleton<GainMgr>
 {
 }
 
-public enum EGainView : ushort
+public enum EBuffView : ushort
 {
     None,
-    Launch,
-    Collect,
-    Hit,
-    BeHit,
-    Interval,
+    Launch, // ¹¥»÷
+    Collect, // 
+    Hit, // ¹¥»÷
+    BeHit, // ÊÜ»÷
+    Interval, // ¼ä¸ô
+    perpetual, // ÓÀ¾Ã
     EnumCount,
 }
 public enum EGainType : ushort
@@ -58,7 +59,7 @@ public abstract class EntityGainBaseData : UnityObjectData
     {
     }
     public abstract EGainType GainType { get; }
-    public abstract EGainView GainView { get; }
+    public abstract EBuffView GainView { get; }
     protected WorldObjectBaseData m_Recipient = null;
     protected WorldObjectBaseData m_Initiator = null;
     protected int m_Probability = 0;
@@ -131,7 +132,7 @@ public abstract class EntityGainBaseData : UnityObjectData
         }
         switch (GainView)
         {
-            case EGainView.Interval:
+            case EBuffView.Interval:
                 {
                     if (Time.time - m_LastExecuteTime > IntervalTime)
                     {

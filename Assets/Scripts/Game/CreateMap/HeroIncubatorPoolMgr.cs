@@ -4,15 +4,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-
+public class IncubatorCardInfo : ICardGroupData
+{
+    public EHeroQualityLevel QualityLevel;
+}
 public class HeroCradPoolInfo
 {
-    public HeroCradPoolInfo(EHeroCradType f_EHeroCradType, int? f_Count = null)
+    public HeroCradPoolInfo(EHeroCardType f_EHeroCradType, int? f_Count = null)
     {
         Type = f_EHeroCradType;
         ResidueCount = f_Count ?? LevelInfo.MaxCount;
     }
-    public EHeroCradType Type { get; private set; }
+    public EHeroCardType Type { get; private set; }
     public int ResidueCount { get; private set; }
 
     public EHeroQualityLevel Level => CradInfo.QualityLevel;
@@ -45,9 +48,7 @@ public class HeroCradPoolInfo
 }
 public class HeroIncubatorPoolMgr : Singleton<HeroIncubatorPoolMgr>
 {
-    private Dictionary<EHeroQualityLevel, ListStack<EHeroCradType>> m_HeroCardList = new();
-    public int CardGroupCount => 5;
-    public int ResultantQuanatity => 3;
+    private Dictionary<EHeroQualityLevel, ListStack<EHeroCardType>> m_HeroCardList = new();
     public override void Awake()
     {
         InitHeroCradList();
@@ -69,18 +70,16 @@ public class HeroIncubatorPoolMgr : Singleton<HeroIncubatorPoolMgr>
     /// <summary>
     /// 买孵化器
     /// </summary>
-    public bool BuyIncubator(EHeroQualityLevel f_Quality)
+    public bool BuyIncubator<T>(T f_Quality)
+        where T : IExpenditure
     {
-        if (GTools.TableMgr.TryGetIncubatorInfo(f_Quality, out var cardInfo))
+        if (GTools.PlayerMgr.TryExpenditure(f_Quality.Expenditure))
         {
-            if (GTools.PlayerMgr.TryExpenditure(cardInfo.Expenditure))
-            {
-                return true;
-            }
-            else
-            {
-                GTools.FloaterHint("<color=#FF0000FF>金币不足!!!</color>");
-            }
+            return true;
+        }
+        else
+        {
+            GTools.FloaterHint("<color=#FF0000FF>金币不足!!!</color>");
         }
         return false;
     }
@@ -98,9 +97,9 @@ public class HeroIncubatorPoolMgr : Singleton<HeroIncubatorPoolMgr>
     /// 根据品质随机获取一个英雄
     /// </summary>
     /// <returns></returns>
-    public bool TryGetRandomCardByLevel(EHeroQualityLevel f_Level, out EHeroCradType f_HerpType)
+    public bool TryGetRandomCardByLevel(EHeroQualityLevel f_Level, out EHeroCardType f_HerpType)
     {
-        f_HerpType = EHeroCradType.EnumCount;
+        f_HerpType = EHeroCardType.EnumCount;
         if (m_HeroCardList.TryGetValue(f_Level, out var list))
         {
             var index = GTools.MathfMgr.GetRandomValue(0, list.Count - 1);
@@ -111,13 +110,15 @@ public class HeroIncubatorPoolMgr : Singleton<HeroIncubatorPoolMgr>
 
         return false;
     }
+
+
     /// <summary>
     /// 根据玩家等级随机获取一组孵化器
     /// </summary>
     /// <returns></returns>
-    public bool TryGetIncybatorGroup(out List<EHeroQualityLevel> f_Result, int? f_Count = null, EPlayerLevel? f_PlayerLevel = null)
+    public bool TryGetIncybatorGroup(out List<IncubatorCardInfo> f_Result, int f_Count = GTools.CardGroupCount, EPlayerLevel? f_PlayerLevel = null)
     {
-        var count = f_Count ?? CardGroupCount;
+        var count = f_Count;
         var result = f_Result = new();
         var playerLevel = f_PlayerLevel ?? GTools.PlayerMgr.Level;
 
@@ -135,7 +136,10 @@ public class HeroIncubatorPoolMgr : Singleton<HeroIncubatorPoolMgr>
                         {
                             continue;
                         }
-                        result.Add(item.Key);
+                        result.Add(new()
+                        {
+                            QualityLevel = item.Key,
+                        });
                         break;
                     }
 

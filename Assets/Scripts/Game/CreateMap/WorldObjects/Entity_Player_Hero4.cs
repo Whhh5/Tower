@@ -9,6 +9,7 @@ public class Entity_Player_Hero4Data : Entity_HeroBaseData
     {
 
     }
+    public override EEntityType EntityType => EEntityType.Dragon;
 
     public override AssetKey AssetPrefabID => AssetKey.Entity_Player_Hero4;
 
@@ -16,7 +17,7 @@ public class Entity_Player_Hero4Data : Entity_HeroBaseData
     public override float AtkSpeed => 10;
 
     public override int HarmBase => 1;
-    public override EHeroCradType HeroCradType => EHeroCradType.Hero4;
+    public override EHeroCardType HeroCradType => EHeroCardType.Hero4;
 
 
     public ESkillStage3 m_SkillStage => (ESkillStage3)CurStage;

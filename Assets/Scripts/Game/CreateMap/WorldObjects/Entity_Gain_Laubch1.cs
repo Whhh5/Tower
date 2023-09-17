@@ -5,7 +5,7 @@ using UnityEngine;
 public class Entity_Gain_Laubch1Data : EntityGainBaseData
 {
     public override EGainType GainType => EGainType.Launch1;
-    public override EGainView GainView => EGainView.Launch;
+    public override EBuffView GainView => EBuffView.Launch;
 
     protected override float DurationTime => 20;
 

@@ -118,7 +118,7 @@ public class PathElementData
     }
 }
 
-public class WorldMapMgr : B1.Singleton<WorldMapMgr>
+public class WorldMapMgr : Singleton<WorldMapMgr>
 {
     //                                ------------------------------------------------
     //                                --------------------Catalogue 生命周期函数
@@ -128,8 +128,10 @@ public class WorldMapMgr : B1.Singleton<WorldMapMgr>
         base.Awake();
 
         CreateChunkTest();
+        CreateAltsData();
         InitMonsterSpawnPointData();
         CreateRoadExtend();
+        CreateTowerLight();
     }
 
 
@@ -570,6 +572,7 @@ public class WorldMapMgr : B1.Singleton<WorldMapMgr>
 
                 var height = 1 + range / 30.0f * 2;
                 var worldObject = new WorldObjectBaseObjectDataAlt(data.Key, data.Key, height);
+                worldObject.ApplyCurrentChunk();
             }
             await CreateAltsAsync();
         }

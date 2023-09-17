@@ -8,6 +8,7 @@ public class Entity_IncubatorBaseData : WorldObjectBaseData
     public Entity_IncubatorBaseData() : base(-1, -1)
     {
     }
+    public override EEntityType EntityType => EEntityType.Incubator;
     public IncubatorAttributeInfo AddAttribute = new();
     public void Initialization(int f_index, int f_ChunkIndex, EHeroQualityLevel f_Quality, EHeroCradStarLevel f_HeroStarLevl)
     {
@@ -58,7 +59,7 @@ public class Entity_IncubatorBaseData : WorldObjectBaseData
     public override ELayer AttackLayerMask => ELayer.Enemy;
 
 
-    protected EHeroCradType m_HeroType = EHeroCradType.EnumCount;
+    protected EHeroCardType m_HeroType = EHeroCardType.EnumCount;
     private EHeroCradStarLevel m_HeroStarLevel;
     private EHeroQualityLevel m_QuelityLevel = EHeroQualityLevel.EnumCount;
     private float m_IncubatorTime = 0;
@@ -147,11 +148,7 @@ public class Entity_IncubatorBaseData : WorldObjectBaseData
     }
     public virtual void IncubatorFinish()
     {
-        if (TableMgr.Ins.GetHeroDataByType(m_HeroType, CurrentIndex, m_HeroStarLevel, out var worldObjData))
-        {
-            worldObjData.UpdateAddAttributes(AddAttribute);
-            GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(worldObjData));
-        }
+        GTools.HeroMgr.CreateHero(m_HeroType, m_HeroStarLevel, CurrentIndex, out var heroData, AddAttribute);
     }
 }
 

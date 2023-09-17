@@ -11,20 +11,31 @@ public class Emitter_SwordLowData: Emitter_SwordBaseData
 
     public override WeaponElementBaseData GetWeaponElementData()
     {
-        var value = new EmitterElement_GuidedMissileData(0, Initiator as WorldObjectBaseData);
+        var value = new EmitterElement_GuidedMissileData(0, Initiator);
         return value;
     }
-
 
     public Emitter_SwordLowData(int f_Index, WorldObjectBaseData f_TargetEntity) : base(f_Index, f_TargetEntity)
     {
 
     }
 
+    // 是否穿透目标
+    private bool m_IsPenetrate = false;
+    private bool m_IsTargetStop = false;
+
+    public void SetPenrtrate(bool f_IsPenrtrate)
+    {
+        m_IsPenetrate = f_IsPenrtrate;
+    }
+    public void SetTargetStop(bool f_IsTargetStop)
+    {
+        m_IsTargetStop = f_IsTargetStop;
+    }
     // 结束条件
     public override bool GetStopCondition(WeaponElementBaseData f_Buttle, WorldObjectBaseData f_Target, float f_Ratio)
     {
-        return f_Buttle.GetResistStatus() ? false : true;//!f_Buttle.GetIsTarget();
+        return f_Buttle.GetResistStatus() ? false : (m_IsPenetrate ? true :!f_Buttle.GetIsTarget());
     }
 
     public override Vector3 GetWorldPosition(Vector3 f_StartPoint, Vector3 f_EndPoint, Vector3 f_CurPoint, float f_Ratio)
@@ -41,6 +52,14 @@ public class Emitter_SwordLowData: Emitter_SwordBaseData
     public override void LaunchStopAsync(WeaponElementBaseData f_Element, WorldObjectBaseData f_Entity)
     {
         f_Element.ClearTargets();
+        if (m_IsTargetStop)
+        {
+
+        }
+        else
+        {
+            DestroyWeaponElementAsync(f_Element);
+        }
     }
 
     public override void LaunchUpdateAsync(WeaponElementBaseData f_Element, WorldObjectBaseData f_Entity, float f_Ratio)
@@ -49,7 +68,7 @@ public class Emitter_SwordLowData: Emitter_SwordBaseData
         if (!GTools.RefIsNull(target) && target.CurStatus != EPersonStatusType.Die)
         {
             f_Element.AttackTargetAsync(target);
-            f_Element.SetTargetAsync(target);
+            f_Element.SetTargetAsync(m_IsPenetrate ? null : target);
         }
     }
     public override void CollectStartAsync(WeaponElementBaseData f_Element, Vector3 f_Target)

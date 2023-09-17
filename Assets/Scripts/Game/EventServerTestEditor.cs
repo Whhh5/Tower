@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using B1.Event;
 using UnityEditor;
 using UnityEngine;
 
@@ -40,7 +39,7 @@ public class EventServerTestEditor : Editor
         EditorGUILayout.EndHorizontal();
         if (GUILayout.Button("Fire Event"))
         {
-            EventSystemMgr.Ins.SendEvent(EEventSystemType.SCENE_LOAD_START, m_Para, m_Des);
+
         }
         if (GUILayout.Button("Console Event"))
         {

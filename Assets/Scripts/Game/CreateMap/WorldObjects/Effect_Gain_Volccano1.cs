@@ -6,7 +6,7 @@ public class Effect_Gain_Volccano1Data : EntityGainBaseData
 {
     public override EGainType GainType => EGainType.Volccano1;
 
-    public override EGainView GainView => EGainView.Interval;
+    public override EBuffView GainView => EBuffView.Interval;
 
     public override AssetKey AssetPrefabID => AssetKey.Effect_Gain_Volccano1;
 
