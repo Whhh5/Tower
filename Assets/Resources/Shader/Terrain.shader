@@ -14,11 +14,16 @@ Shader "Custom/Terrain"
     }
     SubShader
     {
-        Tags { "RenderType"="Opaque" }
+        Tags { "Queue"="Transparent" "IgnoreProjector"="True" "RenderType"="Transparent" }
         LOD 200
 
         Pass{
-
+                         Tags { "LightMode"="ForwardBase" }
+             
+             // 关闭深度写入
+             ZWrite Off
+             // 开启混合模式，并设置混合因子为SrcAlpha和OneMinusSrcAlpha
+             Blend SrcAlpha OneMinusSrcAlpha
             CGPROGRAM
 
             #pragma vertex FuncVertex
@@ -73,10 +78,11 @@ Shader "Custom/Terrain"
             void FuncFragment(FragmentData f_InData, out fixed4 R_Color: SV_TARGET)
             {
                 // 路面
-                fixed roadValue = tex2D(_RoadTex, f_InData.uv).r;
-                fixed4 roadTex = tex2D(_RoadMainTex, f_InData.worldRoadUV).r;
-                fixed4 roadCol = roadValue * roadTex;
+                fixed4 roadValue = tex2D(_RoadTex, f_InData.uv);
+                fixed4 roadTex = tex2D(_RoadMainTex, f_InData.worldRoadUV);
+                fixed4 roadCol = roadValue.r > 0.1 ? roadTex : 0;
 
+                roadCol.a = roadValue.r > 0.1 ? 0.8 : 1;
 
                 // 草地
 

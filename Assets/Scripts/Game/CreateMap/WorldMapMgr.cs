@@ -123,13 +123,19 @@ public class WorldMapMgr : Singleton<WorldMapMgr>
     //                                ------------------------------------------------
     //                                --------------------Catalogue 生命周期函数
     //                                ------------------------------------------------
-    public override void Awake()
+    public override async void Awake()
     {
         base.Awake();
 
         CreateChunkTest();
         CreateAltsData();
         InitMonsterSpawnPointData();
+        if (m_DicRoad.Count < 2)
+        {
+            GTools.RunUniTask(ClearAllChunkAsync());
+            Awake();
+            return;
+        }
         CreateRoadExtend();
         CreateTowerLight();
     }
@@ -147,13 +153,13 @@ public class WorldMapMgr : Singleton<WorldMapMgr>
     // 整个世界地图的长宽
     private Vector2Int m_WorldMapSize = new Vector2Int(100, 100);
 
-     // scaleX: x-y, ScaleZ: z-w  块大小范围
+    // scaleX: x-y, ScaleZ: z-w  块大小范围
     private Vector4 ChunkSizeRandom = new Vector4(1, 2, 1, 2);
 
-     // 地图快行列
+    // 地图快行列
     public Vector2Int RowCol = new(10, 20);
 
-     // 地图快间隔
+    // 地图快间隔
     public Vector2 Interval = new(0.2f, 0.2f);
 
     // 存放所有的快
@@ -573,6 +579,7 @@ public class WorldMapMgr : Singleton<WorldMapMgr>
                 var height = 1 + range / 30.0f * 2;
                 var worldObject = new WorldObjectBaseObjectDataAlt(data.Key, data.Key, height);
                 worldObject.ApplyCurrentChunk();
+                worldObject.SetPosition(data.Value.PointUp);
             }
             await CreateAltsAsync();
         }
@@ -832,7 +839,6 @@ public class WorldMapMgr : Singleton<WorldMapMgr>
             }
         }
 
-
         // 遍历所有通路
         // Dictionary<int, ListStack<PathElementData>> pathDic = new();
         // foreach (var leftValue in leftPoint)
@@ -886,11 +892,31 @@ public class WorldMapMgr : Singleton<WorldMapMgr>
         foreach (var VARIABLE in m_DicPlayerSpawnPoint)
         {
             await ILoadPrefabAsync.LoadAsync(VARIABLE.Value);
+            if (TryGetRangeChunkByIndex(VARIABLE.Value.CurrentIndex, out var list))
+            {
+                foreach (var item in list.GetEnumerator())
+                {
+                    if (TryGetChunkData(item.Value, out var chunkData))
+                    {
+                        chunkData.RemoveAllElement();
+                    }
+                }
+            }
         }
 
         foreach (var VARIABLE in m_DicMonsterSpawnPoint)
         {
             await ILoadPrefabAsync.LoadAsync(VARIABLE.Value);
+            if (TryGetRangeChunkByIndex(VARIABLE.Value.CurrentIndex, out var list))
+            {
+                foreach (var item in list.GetEnumerator())
+                {
+                    if (TryGetChunkData(item.Value, out var chunkData))
+                    {
+                        chunkData.RemoveAllElement();
+                    }
+                }
+            }
         }
     }
 

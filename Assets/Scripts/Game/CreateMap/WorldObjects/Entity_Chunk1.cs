@@ -143,6 +143,7 @@ public class Entity_Chunk1Data : UnityObjectData
         {
             ILoadPrefabAsync.UnLoad(VARIABLE2.Value);
         }
+        m_AllObjectsType.Clear();
     }
 
     private void AddChunkObjectType(EWorldObjectType fEWorldObjectType)

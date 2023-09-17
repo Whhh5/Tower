@@ -14,7 +14,7 @@ public abstract class Effect_BuffBaseData : UnityObjectData
     public override EWorldObjectType ObjectType => EWorldObjectType.Effect;
 
     protected int m_CurSupCount = 0;
-    protected int m_SuperpositionCount = 0;
+    protected int m_SuperpositionCount = 1;
     protected float m_StartTime = 0;
     public int SuperpositionCount => m_SuperpositionCount;
 
@@ -24,20 +24,19 @@ public abstract class Effect_BuffBaseData : UnityObjectData
     public string Name => m_Name;
     protected ushort m_Level = 0;
     public ushort Level => m_Level;
-    protected int m_HarmBase = 0;
-    public int HarmBase => m_HarmBase;
+    protected virtual int HarmBase { get; } = 1;
 
-    protected float m_IntervalTime = 0.0f;
-    protected float m_UnitTime = 0;
+    protected virtual float IntervalTime { get; } = 0.0f;
+    protected virtual float UnitTime { get; } = 3.0f;
 
     protected WorldObjectBaseData m_Initiator = null;
     protected WorldObjectBaseData m_Target = null;
 
 
     // 当前间隔时间
-    public float CurIntervalTime => m_IntervalTime / Mathf.Clamp(m_SuperpositionCount * m_Level * 0.1f, 1, 3);
+    public float CurIntervalTime => IntervalTime / Mathf.Clamp(m_SuperpositionCount * m_Level * 0.1f, 1, 3);
     // 当前伤害数值
-    public int CurHarmValue => m_HarmBase * m_Level * (m_SuperpositionCount - m_CurSupCount);
+    public int CurHarmValue => HarmBase * m_Level * (m_SuperpositionCount - m_CurSupCount);
     // 当前 层 CommandQueue 持续时间进度
     public float CurSupRatio = 0.0f;
     // 当前 CommandQueue 持续时间总进度
@@ -75,14 +74,14 @@ public abstract class Effect_BuffBaseData : UnityObjectData
         m_StartTime = GTools.CurTime;
 
 
-        while (m_CurSupCount < m_SuperpositionCount && GTools.GetEntityActively(m_Target))
+        while (m_CurSupCount < m_SuperpositionCount && GTools.UnityObjectIsActive(m_Target))
         {
             await GTools.WaitSecondAsync(CurIntervalTime);
 
             var timed = GTools.CurTime - m_StartTime;
-            m_CurSupCount = Mathf.FloorToInt(timed / m_UnitTime);
-            CurSupRatio = timed % m_UnitTime / m_UnitTime;
-            CurRatio = timed / (m_UnitTime * m_SuperpositionCount);
+            m_CurSupCount = Mathf.FloorToInt(timed / UnitTime);
+            CurSupRatio = timed % UnitTime / UnitTime;
+            CurRatio = timed / (UnitTime * m_SuperpositionCount);
             ExecuteResultAsync(CurHarmValue, CurSupRatio);
 
         }
@@ -96,7 +95,6 @@ public abstract class Effect_BuffBaseData : UnityObjectData
         m_CurSupCount = 0;
         m_Level = 0;
         m_StartTime = 0;
-        m_IntervalTime = 0;
         CurSupRatio = 0;
         CurRatio = 0;
         ILoadPrefabAsync.UnLoad(this);
@@ -117,9 +115,6 @@ public abstract class Effect_BuffBaseData : UnityObjectData
         {
             m_Level = f_Level;
 
-            m_HarmBase = 2;
-            m_UnitTime = 3.0f;
-            m_IntervalTime = 1.0f;
             m_CurSupCount = 0;
         }
 

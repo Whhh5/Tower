@@ -87,13 +87,17 @@ public abstract class WorldObjectBaseData : DependChunkData
     //===============================----------------------========================================
     //--
     public virtual int HarmBase => 12;
-    protected int m_AddHarm = 0;
-    public int CurHarm => m_AddHarm + HarmBase;
+    protected float m_AddHarm = 0;
+    public int CurHarm => Mathf.Clamp(Mathf.FloorToInt((1 + m_AddHarm) * HarmBase), 1, 200);
     // 暴击率 0 - 1
     public float CriticalChance { get; private set; } = 0.2f;
     // 暴击倍数, 相当于攻击的多少倍 1 - n
     public float CriticalMultiple { get; private set; } = 2;
 
+    public void ChangeHarm(float f_Ratio)
+    {
+        m_AddHarm += f_Ratio;
+    }
     /// <summary>
     /// 获取当前可攻击状态
     /// </summary>
@@ -128,15 +132,15 @@ public abstract class WorldObjectBaseData : DependChunkData
     //===============================----------------------========================================
     //--
     public int CurrentBlood { get; private set; } = 400;
-    private int m_AddMaxBlood = 0;
+    private float m_AddMaxBlood = 0;
     public virtual int MaxBloodBase { get; private set; } = 523;
-    public int MaxBlood => m_AddMaxBlood + MaxBloodBase;
+    public int MaxBlood => Mathf.Clamp(Mathf.CeilToInt((1 + m_AddMaxBlood) * MaxBloodBase), 100, 5000);
     public int CurrentMagic { get; protected set; } = 300;
     public virtual int MaxMagic { get; private set; } = 653;
     public float MagicPercent => (float)CurrentMagic / MaxMagic;
     public virtual int DefenceBase => 20;
-    private int m_AddDefence = 0;
-    public int CurDefence => DefenceBase + m_AddDefence;
+    private float m_AddDefence = 0;
+    public int CurDefence => Mathf.Clamp(Mathf.CeilToInt(DefenceBase * (1 + m_AddDefence)), 1, 300);
     public virtual int ChangeBlood(ChangeBloodData f_Data)
     {
         var value = CurrentBlood + f_Data.ChangeValue;
@@ -156,6 +160,14 @@ public abstract class WorldObjectBaseData : DependChunkData
         CurrentMagic = Mathf.Clamp(value, 0, MaxMagic);
 
         return CurrentMagic;
+    }
+    public virtual void ChangeMaxBlood(float f_Ratio)
+    {
+        m_AddMaxBlood += f_Ratio;
+    }
+    public virtual void ChangeDefence(float f_Ratio)
+    {
+        m_AddDefence += f_Ratio;
     }
 
     //--
@@ -181,6 +193,7 @@ public abstract class WorldObjectBaseData : DependChunkData
         else if (TableMgr.Ins.TryGetBuffInfo(f_BuffID, out var buffInfo))
         {
             var buffData = buffInfo.CreateBuffData(f_Initiator, this);
+            buffData.StartExecute();
             m_BuffDic.Add(f_BuffID, buffData);
         }
     }
@@ -285,10 +298,10 @@ public abstract class WorldObjectBaseData : DependChunkData
     //--
     public void UpdateAddAttributes(IncubatorAttributeInfo f_AttributeInfos)
     {
-        m_AddAtkSpeed = Mathf.FloorToInt(f_AttributeInfos.AtkSpeedRatio * AtkSpeedBase);
-        m_AddDefence = Mathf.FloorToInt(f_AttributeInfos.DefenceRatio * DefenceBase);
-        m_AddMaxBlood = Mathf.FloorToInt(f_AttributeInfos.BloodRatio * MaxBloodBase);
-        m_AddHarm = Mathf.FloorToInt(f_AttributeInfos.HarmRatio * HarmBase);
+        m_AddAtkSpeed = Mathf.FloorToInt(f_AttributeInfos.AtkSpeedRatio);
+        m_AddDefence = Mathf.FloorToInt(f_AttributeInfos.DefenceRatio);
+        m_AddMaxBlood = Mathf.FloorToInt(f_AttributeInfos.BloodRatio);
+        m_AddHarm = Mathf.FloorToInt(f_AttributeInfos.HarmRatio);
     }
 
 
@@ -336,11 +349,10 @@ public abstract class WorldObjectBaseData : DependChunkData
     // 当前动画播放速度
     public virtual float AtkSpeedBase { get; set; } = 1;
     protected float m_AddAtkSpeed = 0;
-    public float CurAnimaSpeed => Mathf.Clamp(AtkSpeedBase + m_AddAtkSpeed, 0.1f, 10);
+    public float CurAnimaSpeed => Mathf.Clamp(AtkSpeedBase * (1 + m_AddAtkSpeed), 0.1f, 10);
     public void ChangeReleaseSpeed(float f_Value)
     {
-        var value = f_Value * AtkSpeedBase;
-        m_AddAtkSpeed += value;
+        m_AddAtkSpeed += f_Value;
     }
     // 移动速度
     protected virtual float m_BaseMoveSpeed { get; set; } = 1;
@@ -545,7 +557,7 @@ public abstract class WorldObjectBaseData : DependChunkData
                 break;
         }
     }
-    
+
 }
 
 public class WorldObjectBase : DependChunk, IUpdateBase

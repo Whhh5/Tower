@@ -10,8 +10,8 @@ public class TerrainRenderData
     public TerrainRenderData(string f_Flag, int? f_Width = null, int? f_Height = null)
     {
         var size = WorldMapMgr.Ins.RowCol;
-        m_Width = f_Width ?? size.y * 2;
-        m_Height = f_Height ?? size.x;
+        m_Width = f_Width ?? size.y * 2 + 1;
+        m_Height = f_Height ?? size.x + 1;
         m_Flag = f_Flag;
     }
     private RenderTexture m_RT = null;
@@ -25,7 +25,7 @@ public class TerrainRenderData
     public void Init()
     {
         // 生成图片部分
-        Texture2D texture2D = new(m_Width, m_Height);
+        Texture2D texture2D = new(m_Width, m_Height, TextureFormat.RGBA64, true);
         texture2D.wrapMode = TextureWrapMode.Clamp;
         texture2D.filterMode = FilterMode.Point;
 
@@ -33,7 +33,7 @@ public class TerrainRenderData
         {
             for (int j = 0; j < m_Height; j++)
             {
-                Color color = new Color(0, 0, 0, 1);
+                Color color = new Color(0, 0, 0, 0.5f);
                 texture2D.SetPixel(i, j, color);
             }
         }
@@ -173,7 +173,13 @@ public class TerrainMgr : Singleton<TerrainMgr>
     {
         var resultY = y * 2 + x % 2;
 
+        color.a = 0.5f;
         m_TerrainRenderData[0].SetPixel(resultY, x, color);
+
+
+        var offset = x % 2 == 0 ? -1 : 1;
+        m_TerrainRenderData[0].SetPixel(resultY + 1, x, color);
+        m_TerrainRenderData[0].SetPixel(resultY - 1, x, color);
     }
 
 

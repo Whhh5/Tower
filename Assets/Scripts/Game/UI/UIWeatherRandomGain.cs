@@ -14,7 +14,9 @@ public class UIWeatherRandomGain : MonoBehaviour, IEventSystem
         { EEventSystemType.WeatherMgr_ChangeWeather, "" },
 
         { EEventSystemType.WeatherMgr_ChangeWeatherEvent, "" },
+        
         { EEventSystemType.WeatherMgr_SelectWeatherEvent, "" },
+        { EEventSystemType.WeatherMgr_AddWeatherGain, "" },
     };
 
     private void Awake()
@@ -92,6 +94,10 @@ public class UIWeatherRandomGain : MonoBehaviour, IEventSystem
                 UpdateRandomGainList(list);
             }
         }
+    }
+    private void Click_WeatherMgr_AddWeatherGain()
+    {
+
     }
     public void UpdateRandomGainList(List<WeatherGainRandomData> f_List)
     {

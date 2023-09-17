@@ -11,6 +11,7 @@ public class GlobalEventMgr : Singleton<GlobalEventMgr>, IEventSystem
 
         GTools.EventSystemMgr.Subscribe(EEventSystemType.CreateHero, this);
         GTools.EventSystemMgr.Subscribe(EEventSystemType.Hero_Skill_Add, this);
+        GTools.EventSystemMgr.Subscribe(EEventSystemType.WeatherMgr_AddWeatherGain, this);
     }
 
     public void ReceptionEvent(EEventSystemType f_Event, EventSystemParamData f_Params)
@@ -24,8 +25,16 @@ public class GlobalEventMgr : Singleton<GlobalEventMgr>, IEventSystem
                 }
                 break;
             case EEventSystemType.Hero_Skill_Add:
-                var eventData = f_Params as HeroAddSKillEventData;
-                Event_Hero_Skill_Add(eventData);
+                {
+                    var eventData = f_Params as HeroAddSKillEventData;
+                    Event_Hero_Skill_Add(eventData);
+                }
+                break;
+            case EEventSystemType.WeatherMgr_AddWeatherGain:
+                {
+                    var eventData = f_Params as WeatherAddGainEventData;
+                    Event_WeatherMgr_AddWeatherGain(eventData);
+                }
                 break;
             default:
                 break;
@@ -34,10 +43,25 @@ public class GlobalEventMgr : Singleton<GlobalEventMgr>, IEventSystem
     public void Event_CreateHero(EventData_CreateHero f_HeroData)
     {
         var heroData = f_HeroData.HeroData;
+        GTools.WeatherMgr.ExecuteCurWeatherGain(heroData);
     }
     public void Event_Hero_Skill_Add(HeroAddSKillEventData f_SkillEventData)
     {
         WorldWindowMgr.Ins.AddHeroSkill(f_SkillEventData);
         Log($"{f_SkillEventData.HeroData.HeroCradType} + skill {f_SkillEventData.SkillType} , skill count = {f_SkillEventData.HeroData.GetCurSkillCount()}");
+    }
+    private void Event_WeatherMgr_AddWeatherGain(WeatherAddGainEventData f_Eventdata)
+    {
+        if (ILoadPrefabAsync.TryGetEntityByType<WorldObjectBaseData>(EWorldObjectType.Preson, out var dic))
+        {
+            foreach (var item in dic)
+            {
+                if (item.Value.LayerMask != ELayer.Player)
+                {
+                    continue;
+                }
+                f_Eventdata.WeatherGainData.StartExecute(item.Value);
+            }
+        }
     }
 }

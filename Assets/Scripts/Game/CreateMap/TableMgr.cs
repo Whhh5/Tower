@@ -84,6 +84,10 @@ public enum EBuffType
 {
     AddBlood, // 加血
     Poison, // 中毒
+    WeatherSpeed,
+    WeatherMaxBlood,
+    WeatherAttack,
+    WeatherDefense,
 }
 public enum ECardType
 {
@@ -176,6 +180,10 @@ public enum AssetKey
     Hero3SkillEffect,
     Effect_Buff_AddBlood,
     Effect_Buff_Poison,
+    Effect_Buff_WeatherGainSpeed,
+    Effect_Buff_WeatherBuffAttack,
+    Effect_Buff_WeatherBuffMaxBlood,
+    Effect_Buff_WeatherBuffDefence,
     Entity_Effect_Tower_Light1_Attack,
     Entity_Effect_Attack_Default1,
 
@@ -734,6 +742,10 @@ public class TableMgr : Singleton<TableMgr>
 
         // 特效
         { AssetKey.Effect_Buff_Poison, "Prefabs/Effects/Effect_Buff_Poison" },
+        { AssetKey.Effect_Buff_WeatherGainSpeed, "Prefabs/Effects/Effect_Buff_WeatherGainSpeed" },
+        { AssetKey.Effect_Buff_WeatherBuffAttack, "Prefabs/Effects/Effect_Buff_WeatherBuffAttack" },
+        { AssetKey.Effect_Buff_WeatherBuffMaxBlood, "Prefabs/Effects/Effect_Buff_WeatherBuffMaxBlood" },
+        { AssetKey.Effect_Buff_WeatherBuffDefence, "Prefabs/Effects/Effect_Buff_WeatherBuffDefense" },
         { AssetKey.Entity_Effect_Tower_Light1_Attack, "Prefabs/Effects/Entity_Effect_Tower_Light1_Attack" },
         { AssetKey.Entity_Effect_Attack_Default1, "Prefabs/Effects/Entity_Effect_Attack_Default1" },
         { AssetKey.Effect_Buff_AddBlood, "Prefabs/Effects/Effect_Buff_AddBlood" },
@@ -1488,7 +1500,7 @@ public class TableMgr : Singleton<TableMgr>
             {
                 Name = "Default1",
                 WeatherGainType = EWeatherGainType.Default1,
-                Describe = "Default1 Default1 Default1",
+                Describe = "增加攻速 × 3",
                 IconDic = new()
                 {
                     {
@@ -1520,7 +1532,7 @@ public class TableMgr : Singleton<TableMgr>
             {
                 Name = "Default2",
                 WeatherGainType = EWeatherGainType.Default2,
-                Describe = "Default2 Default2 Default2",
+                Describe = "增级攻击 × 5",
                 IconDic = new()
                 {
                     {
@@ -1552,7 +1564,7 @@ public class TableMgr : Singleton<TableMgr>
             {
                 Name = "Default3",
                 WeatherGainType = EWeatherGainType.Default3,
-                Describe = "Default3 Default3 Default3",
+                Describe = "增加最大血量 × 0.5",
                 IconDic = new()
                 {
                     {
@@ -1584,7 +1596,7 @@ public class TableMgr : Singleton<TableMgr>
             {
                 Name = "Default4",
                 WeatherGainType = EWeatherGainType.Default4,
-                Describe = "Default4 Default4 Default4",
+                Describe = "增加防御 × 0.5",
                 IconDic = new()
                 {
                     {
@@ -1616,7 +1628,7 @@ public class TableMgr : Singleton<TableMgr>
             {
                 Name = "Default5",
                 WeatherGainType = EWeatherGainType.Default5,
-                Describe = "Default5 Default5 Default5",
+                Describe = "为开发功能",
                 IconDic = new()
                 {
                     {
@@ -1648,7 +1660,7 @@ public class TableMgr : Singleton<TableMgr>
             {
                 Name = "Default6",
                 WeatherGainType = EWeatherGainType.Default6,
-                Describe = "Default6 Default6 Default6",
+                Describe = "未开发功能",
                 IconDic = new()
                 {
                     {
@@ -1803,6 +1815,50 @@ public class TableMgr : Singleton<TableMgr>
                 IconPath = AssetKey.BuffIcon_Poison
             }
         },
+        {
+
+            EBuffType.WeatherSpeed,
+            new BuffInfo()
+            {
+                BuffType = EBuffType.WeatherSpeed,
+                Desc = "增加速度",
+                Name = "速度",
+                IconPath = AssetKey.BuffIcon_Poison
+            }
+        },
+        {
+
+            EBuffType.WeatherAttack,
+            new BuffInfo()
+            {
+                BuffType = EBuffType.WeatherAttack,
+                Desc = "增加攻击",
+                Name = "攻击",
+                IconPath = AssetKey.BuffIcon_Poison
+            }
+        },
+        {
+
+            EBuffType.WeatherMaxBlood,
+            new BuffInfo()
+            {
+                BuffType = EBuffType.WeatherMaxBlood,
+                Desc = "增加最大生命值",
+                Name = "最大生命值",
+                IconPath = AssetKey.BuffIcon_Poison
+            }
+        },
+        {
+
+            EBuffType.WeatherDefense,
+            new BuffInfo()
+            {
+                BuffType = EBuffType.WeatherDefense,
+                Desc = "增加防御力",
+                Name = "防御力",
+                IconPath = AssetKey.BuffIcon_Poison
+            }
+        },
     };
     public bool TryGetBuffInfo(EBuffType f_BuffType, out BuffInfo f_Result)
     {
@@ -1818,6 +1874,18 @@ public class TableMgr : Singleton<TableMgr>
                 break;
             case EBuffType.Poison:
                 f_Result = IBuffUtil.CreateBuffData<Effect_Buff_PoisonData>(f_Initiator, f_Target);
+                break; 
+            case EBuffType.WeatherSpeed:
+                f_Result = IBuffUtil.CreateBuffData<Effect_Buff_WeatherGainSpeedData>(f_Initiator, f_Target);
+                break;
+            case EBuffType.WeatherAttack:
+                f_Result = IBuffUtil.CreateBuffData<Effect_Buff_WeatherBuffAttackData>(f_Initiator, f_Target);
+                break;
+            case EBuffType.WeatherMaxBlood:
+                f_Result = IBuffUtil.CreateBuffData<Effect_Buff_WeatherBuffMaxBloodData>(f_Initiator, f_Target);
+                break;
+            case EBuffType.WeatherDefense:
+                f_Result = IBuffUtil.CreateBuffData<Effect_Buff_WeatherBuffDefenceData>(f_Initiator, f_Target);
                 break;
             default:
                 break;

@@ -121,10 +121,11 @@ public class Weather_TyphoonData : WeatherBaseData
 public class Weather_GainDefault1 : WeatherGainData
 {
     public override EWeatherGainType WeatherGainType => EWeatherGainType.Default1;
+    public EBuffType BuffType = EBuffType.WeatherSpeed;
 
     public override void StartExecute(WorldObjectBaseData f_WorldObj)
     {
-
+        f_WorldObj.AddBuffAsync(EBuffType.WeatherSpeed, GTools.MonsterMgr.GodEntityData);
     }
 }
 public class Weather_GainDefault2 : WeatherGainData
@@ -133,7 +134,7 @@ public class Weather_GainDefault2 : WeatherGainData
 
     public override void StartExecute(WorldObjectBaseData f_WorldObj)
     {
-
+        f_WorldObj.AddBuffAsync(EBuffType.WeatherAttack, GTools.MonsterMgr.GodEntityData);
     }
 }
 public class Weather_GainDefault3 : WeatherGainData
@@ -142,7 +143,7 @@ public class Weather_GainDefault3 : WeatherGainData
 
     public override void StartExecute(WorldObjectBaseData f_WorldObj)
     {
-
+        f_WorldObj.AddBuffAsync(EBuffType.WeatherMaxBlood, GTools.MonsterMgr.GodEntityData);
     }
 }
 public class Weather_GainDefault4 : WeatherGainData
@@ -151,7 +152,7 @@ public class Weather_GainDefault4 : WeatherGainData
 
     public override void StartExecute(WorldObjectBaseData f_WorldObj)
     {
-
+        f_WorldObj.AddBuffAsync(EBuffType.WeatherDefense, GTools.MonsterMgr.GodEntityData);
     }
 }
 public class Weather_GainDefault5 : WeatherGainData
@@ -515,7 +516,7 @@ public class WeatherMgr : Singleton<WeatherMgr>, IUpdateBase
     {
         if (m_CurUpdateGainList.Contains(f_WeatherItem))
         {
-            AddWeatherGain(f_WeatherItem.WeatherGainType, f_WeatherItem.Level); 
+            AddWeatherGain(f_WeatherItem.WeatherGainType, f_WeatherItem.Level);
             WeatherSelectGainEventData eventData = new()
             {
                 WeatherGainData = f_WeatherItem,
