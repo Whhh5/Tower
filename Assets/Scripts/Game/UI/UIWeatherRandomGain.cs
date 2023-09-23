@@ -4,6 +4,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum EUIMapDGIDType
+{
+    UIWeatherRandomGain_Animation,
+    UIOnEnableInfos_Animation,
+    Button3DOnMouseEnter,
+}
 public class UIWeatherRandomGain : MonoBehaviour, IEventSystem
 {
     CanvasGroup CanvasGroup => m_WeatherGainSelectVieww.GetComponent<CanvasGroup>();

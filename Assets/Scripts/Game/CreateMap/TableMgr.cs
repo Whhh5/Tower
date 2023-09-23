@@ -48,6 +48,13 @@ public enum EHeroCardType
     Hero2,
     Hero3,
     Hero4,
+
+    Monster_Default1,
+    Monster_Default2,
+    Monster_Default3,
+
+
+
     EnumCount,
 }
 public enum EHeroQualityLevel
@@ -1109,6 +1116,32 @@ public class TableMgr : Singleton<TableMgr>
                 }
             }
         },
+        {
+            EHeroCardType.Monster_Default1,
+            new()
+            {
+                QualityLevel = EHeroQualityLevel.Level1,
+                Name = "monster 1",
+                AssetKet = AssetKey.Entity_Monster_Default1,
+                SkillLinkInfos = new()
+                {
+                    Count = 0,
+                }
+            }
+        },
+        {
+            EHeroCardType.Monster_Default2,
+            new()
+            {
+                QualityLevel = EHeroQualityLevel.Level1,
+                Name = "monster 2",
+                AssetKet = AssetKey.Entity_Monster_Default2,
+                SkillLinkInfos = new()
+                {
+                    Count = 1,
+                }
+            }
+        },
     };
     public bool TryGetHeroCradInfo(EHeroCardType f_EHeroCradType, out HeroCradInfo f_HeroCradInfo)
     {
@@ -1344,6 +1377,31 @@ public class TableMgr : Singleton<TableMgr>
 
     };
     public bool GetHeroDataByType(EHeroCardType f_HeroType, int f_TargetIndex, EHeroCradStarLevel f_StarLevel, out Entity_HeroBaseData f_Result)
+    {
+        f_Result = null;
+        if (TryGetCardDataByType(f_HeroType, f_TargetIndex, f_StarLevel, out var result))
+        {
+            if (result is Entity_HeroBaseData heroData)
+            {
+                f_Result = heroData;
+            }
+        }
+        return f_Result != null;
+    }
+    public bool GetEnemyDataByType(EHeroCardType f_HeroType, int f_TargetIndex, EHeroCradStarLevel f_StarLevel, out Person_EnemyData f_Result)
+    {
+        f_Result = null;
+        if (TryGetCardDataByType(f_HeroType, f_TargetIndex, f_StarLevel, out var result))
+        {
+            if (result is Person_EnemyData enemyData)
+            {
+                f_Result = enemyData;
+            }
+        }
+        return f_Result != null;
+    }
+
+    public bool TryGetCardDataByType(EHeroCardType f_HeroType, int f_TargetIndex, EHeroCradStarLevel f_StarLevel, out WorldObjectBaseData f_Result)
     {
         f_Result = null;
         switch (f_HeroType)

@@ -15,6 +15,7 @@ public class Entity_Player_Default2Data : Person_EnemyData
     public override ELayer LayerMask => ELayer.Player;
 
     public override ELayer AttackLayerMask => ELayer.Enemy;
+    public override EHeroCardType CardType => EHeroCardType.Monster_Default2;
 
     protected override int AtkRange => base.AtkRange + 1;
 

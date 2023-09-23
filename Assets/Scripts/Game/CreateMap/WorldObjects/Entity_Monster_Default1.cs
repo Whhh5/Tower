@@ -14,6 +14,8 @@ public class Entity_Monster_Default1Data : Person_EnemyData
     public override ELayer LayerMask => ELayer.Enemy;
 
     public override ELayer AttackLayerMask => ELayer.Player;
+
+    public override EHeroCardType CardType => EHeroCardType.Monster_Default1;
     public override int HarmBase => 22;
 
     public override void AfterLoad()

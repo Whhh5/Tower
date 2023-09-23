@@ -187,6 +187,142 @@ public class MonsterMgr : Singleton<MonsterMgr>
     {
 
     }
+
+
+
+
+
+
+    public class CreateMonsterData
+    {
+        public EHeroCardType CardType;
+        public int Level;
+    }
+    public class WaveData
+    {
+        public List<CreateMonsterData> MonsterData;
+        public float CreateInterval;
+        public float DelayTime;
+    }
+    List<WaveData> WaveDataList = new()
+    {
+        new()
+        {
+            MonsterData = new()
+            {
+                new()
+                {
+                    CardType = EHeroCardType.Monster_Default1,
+                    Level = 1,
+                },
+                new()
+                {
+                    CardType = EHeroCardType.Monster_Default1,
+                    Level = 1,
+                },
+                new()
+                {
+                    CardType = EHeroCardType.Monster_Default1,
+                    Level = 1,
+                },
+            },
+            CreateInterval = 1,
+            DelayTime = 5,
+        },
+        new()
+        {
+            MonsterData = new()
+            {
+                new()
+                {
+                    CardType = EHeroCardType.Monster_Default1,
+                    Level = 1,
+                },
+                new()
+                {
+                    CardType = EHeroCardType.Monster_Default1,
+                    Level = 1,
+                },
+                new()
+                {
+                    CardType = EHeroCardType.Monster_Default2,
+                    Level = 1,
+                },
+            },
+            CreateInterval = 2,
+            DelayTime = 10,
+        },
+        new()
+        {
+            MonsterData = new()
+            {
+                new()
+                {
+                    CardType = EHeroCardType.Monster_Default1,
+                    Level = 1,
+                },
+                new()
+                {
+                    CardType = EHeroCardType.Monster_Default2,
+                    Level = 1,
+                },
+                new()
+                {
+                    CardType = EHeroCardType.Monster_Default2,
+                    Level = 1,
+                },
+            },
+            CreateInterval = 3,
+            DelayTime = 15,
+        },
+    };
+    private int m_CurWaveNum = 0;
+    public float NextWaveTime { get; private set; } = 0;
+    private List<int> m_RangePoints = new();
+    public void InitPoints()
+    {
+        m_RangePoints.Clear();
+        foreach (var item in MonsterSpawnPoint)
+        {
+            if (!GTools.WorldMapMgr.TryGetRangeChunkByIndex(item.Value.CurrentIndex, out var list, GetMonsterPointCondition, true, 1))
+            {
+                continue;
+            }
+            foreach (var index in list.GetEnumerator())
+            {
+                m_RangePoints.Add(index.Value);
+            }
+        }
+    }
+    public async void CreateMonsterDataNew()
+    {
+        m_CurWaveNum = Mathf.Min(WaveDataList.Count, m_CurWaveNum + 1);
+        var curWaveIndex = m_CurWaveNum - 1;
+        var curWaveData = WaveDataList[curWaveIndex];
+        var nextTime = Time.time + curWaveData.DelayTime;
+        NextWaveTime = nextTime;
+
+
+        var residueTime = nextTime - Time.time;
+        await UniTask.Delay((int)residueTime);
+
+        var curMonsterList = curWaveData.MonsterData;
+        foreach (var item in curMonsterList)
+        {
+
+        }
+    }
+    private bool GetMonsterPointCondition(int f_Index)
+    {
+        if (GTools.WorldMapMgr.TryGetChunkData(f_Index, out var chunkData))
+        {
+            if (chunkData.CurObjectType == EWorldObjectType.Road)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 

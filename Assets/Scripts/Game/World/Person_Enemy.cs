@@ -16,6 +16,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
     }
 
     public override EEntityType EntityType => EEntityType.Person;
+    public abstract EHeroCardType CardType { get; }
     public int StartIndex { get; protected set; }
     public int TargetIndex { get; protected set; }
     public int CurTargetIndex { get; protected set; }

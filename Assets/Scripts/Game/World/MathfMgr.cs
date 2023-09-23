@@ -297,7 +297,7 @@ public class MathfMgr : Singleton<MathfMgr>
     }
     public void EntityDamage(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target, EDamageType f_DamageType, int f_Value, bool f_IsAddMagic = false)
     {
-        f_Value = 1;
+        //f_Value = 1;
         if (GTools.UnityObjectIsActive(f_Target))
         {
 

@@ -25,7 +25,7 @@ public class Entity_Tower_Light1Data : EntityTowerBaseData
     public Vector3 AtkPoint => TowerMono.AtkPoint != null ? TowerMono.AtkPoint.position : WorldPosition;
 
     protected override int AtkRange => 6;
-    public override int BranchOutIndex => 1;
+    public override int BranchOutIndex => 0;
 
     public List<Vector3> GetSkill2Points()
     {

@@ -1,7 +1,7 @@
 using Cysharp.Threading.Tasks;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Animations;
+//using UnityEditor.Animations;
 using UnityEngine;
 public enum ESkillIndex
 {
@@ -460,7 +460,25 @@ public abstract class Entity_HeroBase : WorldObjectBase
     private Entity_HeroBaseData DataEntity => GetData<Entity_HeroBaseData>();
     public Transform m_AttackPoint = null;
     private AnimatorOverrideController m_AnimOverCon;
-    private Dictionary<string, string> m_StateToAssetName = new();
+    private Dictionary<string, string> m_StateToAssetName = new()
+    {
+        {
+            "Skill_1",
+            "Skill_1"
+        },
+        {
+            "Skill_2",
+            "Skill_2"
+        },
+        {
+            "Skill_3",
+            "Skill_3"
+        },
+        {
+            "Skill_4",
+            "Skill_5"
+        },
+    };
 
     private void OnMouseDown()
     {
@@ -479,13 +497,13 @@ public abstract class Entity_HeroBase : WorldObjectBase
         m_AnimOverCon.runtimeAnimatorController = CurAnim.runtimeAnimatorController;
         CurAnim.runtimeAnimatorController = m_AnimOverCon;
 
-        var anima = con as AnimatorController;
-        AnimatorStateMachine stateMachine = anima.layers[0].stateMachine;
-        for (int i = 0; i < stateMachine.states.Length; i++)
-        {
-            var item = stateMachine.states[i].state;
-            m_StateToAssetName.Add(item.name, item.motion.name);
-        }
+        //var anima = con as AnimatorController;
+        //AnimatorStateMachine stateMachine = anima.layers[0].stateMachine;
+        //for (int i = 0; i < stateMachine.states.Length; i++)
+        //{
+        //    var item = stateMachine.states[i].state;
+        //    m_StateToAssetName.Add(item.name, item.motion.name);
+        //}
 
     }
 

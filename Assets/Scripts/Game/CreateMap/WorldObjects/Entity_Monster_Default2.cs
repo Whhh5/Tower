@@ -15,6 +15,7 @@ public class Entity_Monster_Default2Data : Person_EnemyData
 
     public override ELayer LayerMask => ELayer.Enemy;
 
+    public override EHeroCardType CardType => EHeroCardType.Monster_Default2;
     public override ELayer AttackLayerMask => ELayer.Player;
     private Entity_Monster_Default2 Target => GetCom<Entity_Monster_Default2>();
 
