@@ -99,6 +99,7 @@ public enum EBuffType
 public enum ECardType
 {
     Skill,
+    HeroPerson,
     Incubator,
 }
 public enum ELockStatus
@@ -321,7 +322,16 @@ public enum AssetKey
     Entity_WeatherGainView,
 
     // 技能 skill
-    SkillClip_
+    SkillClip_,
+
+
+    // 角色图标
+    Icon_Hero1,
+    Icon_Hero2,
+    Icon_Hero3,
+    Icon_Hero4,
+    Icon_Monster1,
+    Icon_Monster2,
 }
 public enum EAttackEffectType
 {
@@ -400,15 +410,20 @@ public class HeroCradInfo
     public EHeroQualityLevel QualityLevel;
     public string Name;
     public AssetKey AssetKet;
+    public AssetKey Icon;
     public PersonSkillInfos SkillLinkInfos;
     public HeroCradLevelInfo QualityLevelInfo => TableMgr.Ins.TryGetHeroCradLevelInfo(QualityLevel, out var levelInfo) ? levelInfo : null;
 
 }
-public class HeroCradLevelInfo
+public class HeroCradLevelInfo : IExpenditure
 {
     public string Name = "普通";
     public int MaxCount; // 最大数量
     public Color Color; // 等级颜色
+
+    public int ExpenditureBase;
+    public int Expenditure => ExpenditureBase;
+
 }
 public class HeroIncubatorInfo : IExpenditure
 {
@@ -761,6 +776,7 @@ public class TableMgr : Singleton<TableMgr>
     static string WeatherGainIconParentPath = "Icons/WeatherGainIcon";
     static string SkillIconParentPath = "Icons/Skills";
     static string EquipmentIconParentPath = "Icons/Equipment";
+    static string HeroIconParentPath = "Icons/HeroIcon";
     private static readonly Dictionary<AssetKey, string> m_DicIDToPath = new()
     {
         { AssetKey.Alp1, "Prefabs/WorldObject/Entity_Alt1" },
@@ -936,6 +952,15 @@ public class TableMgr : Singleton<TableMgr>
         { AssetKey.Icon_Equipment_Default2, $"{EquipmentIconParentPath}/Icon_Equipment_Default2" },
         { AssetKey.Icon_Equipment_Default3, $"{EquipmentIconParentPath}/Icon_Equipment_Default3" },
         { AssetKey.Icon_Equipment_Default4, $"{EquipmentIconParentPath}/Icon_Equipment_Default4" },
+
+        // 角色图标
+        { AssetKey.Icon_Hero1, $"{HeroIconParentPath}/Icon_Hero1" },
+        { AssetKey.Icon_Hero2, $"{HeroIconParentPath}/Icon_Hero2" },
+        { AssetKey.Icon_Hero3, $"{HeroIconParentPath}/Icon_Hero3" },
+        { AssetKey.Icon_Hero4, $"{HeroIconParentPath}/Icon_Hero4" },
+        { AssetKey.Icon_Monster1, $"{HeroIconParentPath}/Icon_Monster1" },
+        { AssetKey.Icon_Monster2, $"{HeroIconParentPath}/Icon_Monster2" },
+
     };
     public bool TryGetAssetPath(AssetKey f_Key, out string f_Result)
     {
@@ -960,6 +985,7 @@ public class TableMgr : Singleton<TableMgr>
                 QualityLevel = EHeroQualityLevel.Level1,
                 Name = "Hero1",
                 AssetKet = AssetKey.Entity_Player_Hero1,
+                Icon = AssetKey.Icon_Hero1,
                 SkillLinkInfos = new()
                 {
                     Count = 4,
@@ -1084,6 +1110,7 @@ public class TableMgr : Singleton<TableMgr>
                 QualityLevel = EHeroQualityLevel.Level2,
                 Name = "Hero2",
                 AssetKet = AssetKey.Entity_Player_Hero2,
+                Icon = AssetKey.Icon_Hero2,
                 SkillLinkInfos = new()
                 {
                     Count = 3,
@@ -1097,6 +1124,7 @@ public class TableMgr : Singleton<TableMgr>
                 QualityLevel = EHeroQualityLevel.Level3,
                 Name = "Hero3",
                 AssetKet = AssetKey.Entity_Player_Hero3,
+                Icon = AssetKey.Icon_Hero3,
                 SkillLinkInfos = new()
                 {
                     Count = 3,
@@ -1110,6 +1138,7 @@ public class TableMgr : Singleton<TableMgr>
                 QualityLevel = EHeroQualityLevel.Level4,
                 Name = "Hero4",
                 AssetKet = AssetKey.Entity_Player_Hero4,
+                Icon = AssetKey.Icon_Hero4,
                 SkillLinkInfos = new()
                 {
                     Count = 3,
@@ -1123,6 +1152,7 @@ public class TableMgr : Singleton<TableMgr>
                 QualityLevel = EHeroQualityLevel.Level1,
                 Name = "monster 1",
                 AssetKet = AssetKey.Entity_Monster_Default1,
+                Icon = AssetKey.Icon_Monster1,
                 SkillLinkInfos = new()
                 {
                     Count = 0,
@@ -1136,6 +1166,7 @@ public class TableMgr : Singleton<TableMgr>
                 QualityLevel = EHeroQualityLevel.Level1,
                 Name = "monster 2",
                 AssetKet = AssetKey.Entity_Monster_Default2,
+                Icon = AssetKey.Icon_Monster2,
                 SkillLinkInfos = new()
                 {
                     Count = 1,
@@ -1171,6 +1202,7 @@ public class TableMgr : Singleton<TableMgr>
                 Name = "普通",
                 MaxCount = 30,
                 Color = Color.gray,
+                ExpenditureBase = 3,
             }
         },
         {
@@ -1180,6 +1212,7 @@ public class TableMgr : Singleton<TableMgr>
                 Name = "罕见",
                 MaxCount = 20,
                 Color = Color.yellow,
+                ExpenditureBase = 4,
             }
         },
         {
@@ -1189,6 +1222,7 @@ public class TableMgr : Singleton<TableMgr>
                 Name = "传说",
                 MaxCount = 10,
                 Color = Color.red,
+                ExpenditureBase = 5,
             }
         },
         {
@@ -1198,6 +1232,7 @@ public class TableMgr : Singleton<TableMgr>
                 Name = "史诗",
                 MaxCount = 5,
                 Color = Color.cyan,
+                ExpenditureBase = 6,
             }
         },
     };
@@ -2070,7 +2105,7 @@ public class TableMgr : Singleton<TableMgr>
                 break;
             case EBuffType.Poison:
                 f_Result = IBuffUtil.CreateBuffData<Effect_Buff_PoisonData>(f_Initiator, f_Target);
-                break; 
+                break;
             case EBuffType.WeatherSpeed:
                 f_Result = IBuffUtil.CreateBuffData<Effect_Buff_WeatherGainSpeedData>(f_Initiator, f_Target);
                 break;

@@ -8,6 +8,10 @@ public class IncubatorCardInfo : ICardGroupData
 {
     public EHeroQualityLevel QualityLevel;
 }
+public class HeroCardInfo : ICardGroupData
+{
+    public EHeroCardType HeroType;
+}
 public class HeroCradPoolInfo
 {
     public HeroCradPoolInfo(EHeroCardType f_EHeroCradType, int? f_Count = null)
@@ -116,7 +120,7 @@ public class HeroIncubatorPoolMgr : Singleton<HeroIncubatorPoolMgr>
     /// 根据玩家等级随机获取一组孵化器
     /// </summary>
     /// <returns></returns>
-    public bool TryGetIncybatorGroup(out List<IncubatorCardInfo> f_Result, int f_Count = GTools.CardGroupCount, EPlayerLevel? f_PlayerLevel = null)
+    public bool TryGetIncybatorGroup(out List<ICardGroupData> f_Result, int f_Count = GTools.CardGroupCount, EPlayerLevel? f_PlayerLevel = null)
     {
         var count = f_Count;
         var result = f_Result = new();
@@ -136,10 +140,21 @@ public class HeroIncubatorPoolMgr : Singleton<HeroIncubatorPoolMgr>
                         {
                             continue;
                         }
-                        result.Add(new()
+                        var type = GTools.MathfMgr.GetRandomValue(0, 1);
+                        if (type > 0.5)
                         {
-                            QualityLevel = item.Key,
-                        });
+                            result.Add(new IncubatorCardInfo()
+                            {
+                                QualityLevel = item.Key,
+                            });
+                        }
+                        else if(TryGetRandomCardByLevel(item.Key, out var heroType))
+                        {
+                            result.Add(new HeroCardInfo()
+                            {
+                                QualityLevel = heroType,
+                            });
+                        }
                         break;
                     }
 

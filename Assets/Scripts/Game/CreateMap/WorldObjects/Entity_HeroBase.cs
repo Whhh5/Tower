@@ -476,7 +476,7 @@ public abstract class Entity_HeroBase : WorldObjectBase
         },
         {
             "Skill_4",
-            "Skill_5"
+            "Skill_4"
         },
     };
 

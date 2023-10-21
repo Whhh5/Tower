@@ -35,10 +35,25 @@ public static class GTools
         { EUpdateLevel.Level2, (85, 90, 100) },
         { EUpdateLevel.Level3, (85, 95, 50) },
     };
+    /// <summary>
+    /// 天气随机 buff 数组
+    /// </summary>
     public const int WeatherRandomGainCount = 3;
+    /// <summary>
+    /// 刷新卡牌数组
+    /// </summary>
     public const int CardGroupCount = 5;
+    /// <summary>
+    /// 英雄碎片合成数量
+    /// </summary>
     public const int ResultantQuanatity = 3;
+    /// <summary>
+    /// 可刷新技能数量
+    /// </summary>
     public const int CardSkillGroupCount = 2;
+    /// <summary>
+    /// 英雄技能可出现概率
+    /// </summary>
     public const float AppearSkillCardProbability = 1.0f;
 
     #endregion

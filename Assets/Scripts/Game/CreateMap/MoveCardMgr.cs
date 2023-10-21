@@ -44,6 +44,7 @@ public class MoveCardMgr : MonoSingleton<MoveCardMgr>, IUpdateBase
     }
     public void SetCurSelectHero(Entity_HeroBaseData f_HeroType)
     {
+        return;
         if (TryGetCurrentMousePos(out var pos))
         {
             m_MouseClickDownPos = pos;

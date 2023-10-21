@@ -1,4 +1,5 @@
 using DG.Tweening;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -152,6 +153,10 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
                         var incubatorData = data.GetTargetType<IncubatorCardInfo>();
                         AddCardIncubator(i, incubatorData);
                         break;
+                    case ECardType.HeroPerson:
+                        var heroData = data.GetTargetType<HeroCardInfo>();
+                        AddCardHero(i, heroData);
+                        break;
                     default:
                         break;
                 }
@@ -161,30 +166,11 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
     private void AddCardIncubator(int f_Index, IncubatorCardInfo f_IncubatorData)
     {
         var quality = f_IncubatorData.QualityLevel;
-
         var item = m_ItemList[f_Index];
         if (GTools.TableMgr.TryGetHeroCradLevelInfo(quality, out var qualityInfo) && GTools.TableMgr.TryGetIncubatorInfo(quality, out var incubatorInfo))
         {
-            m_Content.GetComponent<HorizontalLayoutGroup>().enabled = true;
-            m_Content.GetComponent<ContentSizeFitter>().enabled = true;
-            item.gameObject.SetActive(true);
-            item.Find("Txt_Name").GetComponent<TextMeshProUGUI>().text = $"{incubatorInfo.Name}";
-            item.Find("Img_Quality").GetComponent<Image>().color = qualityInfo.Color;
-            item.Find("Tex_Expenditure").GetComponent<TextMeshProUGUI>().text = $"{incubatorInfo.Expenditure}";
-            GTools.RunUniTask(async () =>
+            CreateSelectCardItem(f_Index, incubatorInfo.Name, qualityInfo.Color, incubatorInfo.Expenditure, incubatorInfo.IncubatorDebrisIcon, () =>
             {
-                if (GTools.TableMgr.TryGetAssetPath(incubatorInfo.IncubatorDebrisIcon, out var path))
-                {
-                    var sprite = await ILoadSpriteAsync.LoadAsync(path);
-                    item.Find("Img_Icon").GetComponent<Image>().sprite = sprite;
-                }
-            });
-            var btn = item.Find("Btn_Button").GetComponent<Button>();
-            btn.onClick.RemoveAllListeners();
-            btn.onClick.AddListener(() =>
-            {
-                m_Content.GetComponent<HorizontalLayoutGroup>().enabled = false;
-                m_Content.GetComponent<ContentSizeFitter>().enabled = false;
                 if (HeroIncubatorPoolMgr.Ins.BuyIncubator(incubatorInfo))
                 {
                     item.gameObject.SetActive(false);
@@ -192,6 +178,49 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
                 }
             });
         }
+    }
+    private void AddCardHero(int f_Index, HeroCardInfo f_IncubatorData)
+    {
+        var heroType = f_IncubatorData.HeroType;
+        var item = m_ItemList[f_Index];
+        if (GTools.TableMgr.TryGetHeroCradInfo(heroType, out var heroInfo)
+            && GTools.TableMgr.TryGetHeroCradLevelInfo(heroInfo.QualityLevel, out var heroLevelInfo))
+        {
+            CreateSelectCardItem(f_Index, heroInfo.Name, heroLevelInfo.Color, heroLevelInfo.Expenditure, heroInfo.Icon, () =>
+            {
+                if (HeroIncubatorPoolMgr.Ins.BuyIncubator(heroLevelInfo))
+                {
+                    item.gameObject.SetActive(false);
+                    AddHeroDebris(heroType);
+                }
+            });
+        }
+    }
+    private void CreateSelectCardItem(int f_Index, string f_Name, Color f_QuaColor, int f_Expenditure, AssetKey f_Icon, Action f_ClickEvent)
+    {
+        var item = m_ItemList[f_Index];
+        m_Content.GetComponent<HorizontalLayoutGroup>().enabled = true;
+        m_Content.GetComponent<ContentSizeFitter>().enabled = true;
+        item.gameObject.SetActive(true);
+        item.Find("Txt_Name").GetComponent<TextMeshProUGUI>().text = $"{f_Name}";
+        item.Find("Img_Quality").GetComponent<Image>().color = f_QuaColor;
+        item.Find("Tex_Expenditure").GetComponent<TextMeshProUGUI>().text = $"{f_Expenditure}";
+        GTools.RunUniTask(async () =>
+        {
+            if (GTools.TableMgr.TryGetAssetPath(f_Icon, out var path))
+            {
+                var sprite = await ILoadSpriteAsync.LoadAsync(path);
+                item.Find("Img_Icon").GetComponent<Image>().sprite = sprite;
+            }
+        });
+        var btn = item.Find("Btn_Button").GetComponent<Button>();
+        btn.onClick.RemoveAllListeners();
+        btn.onClick.AddListener(() =>
+        {
+            m_Content.GetComponent<HorizontalLayoutGroup>().enabled = false;
+            m_Content.GetComponent<ContentSizeFitter>().enabled = false;
+            f_ClickEvent.Invoke();
+        });
     }
     private void AddCardSkill(int f_Index, SkillCardInfo f_SkillData)
     {
@@ -342,11 +371,12 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
     {
         if (m_CurCardInsList.TryGetValue(f_Quality, out var list))
         {
-            while (list.Count >= ResultantQuanatity)
+            var count = (false ? ResultantQuanatity : 1);
+            while (list.Count >= count)
             {
                 AddIncubator(f_Quality);
 
-                for (int i = 0; i < ResultantQuanatity; i++)
+                for (int i = 0; i < count; i++)
                 {
                     var item = list[0];
                     item.UnLoad();
@@ -361,6 +391,56 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
         }
     }
 
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- Ìí¼ÓÓ¢ÐÛ¿¨³ß
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    private Dictionary<EHeroCardType, List<IncubatorDebrisData>> m_CurHeroCardInsList = new();
+    public void AddHeroDebris(EHeroCardType f_HeroType, int f_Count = 1)
+    {
+        if (!m_CurHeroCardInsList.TryGetValue(f_HeroType, out var info))
+        {
+            info = new();
+            m_CurHeroCardInsList.Add(f_HeroType, info);
+        }
+        if (!GTools.TableMgr.TryGetHeroCradInfo(f_HeroType, out var heroInfo))
+        {
+            return;
+        }
+        var item = new IncubatorDebrisData(heroInfo.QualityLevel, m_ItemCard);
+
+        item.SetName(heroInfo.Name);
+        item.SetIcon(heroInfo.Icon);
+
+        info.Add(item);
+        UpdateHeroInfo(f_HeroType);
+    }
+    public void UpdateHeroInfo(EHeroCardType f_HeroType)
+    {
+        if (m_CurHeroCardInsList.TryGetValue(f_HeroType, out var list))
+        {
+            var count = (false ? ResultantQuanatity : 1);
+            while (list.Count >= count)
+            {
+                AddHero(f_HeroType);
+
+                for (int i = 0; i < count; i++)
+                {
+                    var item = list[0];
+                    item.UnLoad();
+                    list.Remove(item);
+                }
+                if (list.Count == 0)
+                {
+                    m_CurHeroCardInsList.Remove(f_HeroType);
+                    break;
+                }
+            }
+        }
+    }
 
     //--
     //===============================----------------------========================================
@@ -377,14 +457,15 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
     [SerializeField]
     private Transform m_ItemHero = null;
 
-    private Dictionary<EHeroQualityLevel, Dictionary<EHeroCradStarLevel, List<IncubatorDebrisData>>> m_HeroInsList = new();
+    private Dictionary<EHeroQualityLevel, Dictionary<EHeroCradStarLevel, List<IncubatorDebrisData>>> m_IncubetorInsList = new();
+    private Dictionary<EHeroCardType, Dictionary<EHeroCradStarLevel, List<IncubatorDebrisData>>> m_HeroInsList = new();
 
     public void AddIncubator(EHeroQualityLevel f_Quality, EHeroCradStarLevel f_StarLevel = EHeroCradStarLevel.Level1)
     {
-        if (!m_HeroInsList.TryGetValue(f_Quality, out var list))
+        if (!m_IncubetorInsList.TryGetValue(f_Quality, out var list))
         {
             list = new();
-            m_HeroInsList.Add(f_Quality, list);
+            m_IncubetorInsList.Add(f_Quality, list);
         }
         var starLevel = f_StarLevel;
         var item = GetIncubatorItem(f_Quality, starLevel);
@@ -414,7 +495,7 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
     }
     private void RemoveIncubator(IncubatorDebrisData f_Item, EHeroCradStarLevel f_StarLevel)
     {
-        if (m_HeroInsList.TryGetValue(f_Item.QualityLevel, out var list))
+        if (m_IncubetorInsList.TryGetValue(f_Item.QualityLevel, out var list))
         {
             if (list.TryGetValue(f_StarLevel, out var datas))
             {
@@ -422,6 +503,40 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
                 datas.Remove(f_Item);
             }
         }
+    }
+    private void AddHero(EHeroCardType f_HeroType, EHeroCradStarLevel f_StarLevel = EHeroCradStarLevel.Level1)
+    {
+        if (!m_HeroInsList.TryGetValue(f_HeroType, out var list))
+        {
+            list = new();
+            m_HeroInsList.Add(f_HeroType, list);
+        }
+        var starLevel = f_StarLevel;
+        var item = GetHeroItem(f_HeroType, starLevel);
+        item.SetStarLevel((int)starLevel);
+        if (GTools.TableMgr.TryGetHeroCradInfo(f_HeroType, out var heroInfo))
+        {
+            item.SetName(heroInfo.Name);
+            item.SetIcon(heroInfo.Icon);
+        }
+
+        if (!list.TryGetValue(starLevel, out var datas))
+        {
+            datas = new();
+            list.Add(starLevel, datas);
+        }
+        datas.Add(item);
+        if (datas.Count >= ResultantQuanatity)
+        {
+            for (int i = 0; i < ResultantQuanatity; i++)
+            {
+                var target = datas[0];
+                target.UnLoad();
+                datas.Remove(target);
+            }
+            AddHero(f_HeroType, f_StarLevel + 1);
+        }
+
     }
     private IncubatorDebrisData GetIncubatorItem(EHeroQualityLevel f_Quality, EHeroCradStarLevel f_StarLevel)
     {
@@ -439,12 +554,37 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
             var image = item.Item.Find("Img_Icon").GetComponent<Image>();
             m_CurIncubatorItem = item;
             SetTargetIcon(image.sprite);
-            SetCurSelectHero(f_Quality, f_StarLevel);
+            SetCurSelectIncubator(f_Quality, f_StarLevel);
+        }
+        return item;
+    }
+    private IncubatorDebrisData GetHeroItem(EHeroCardType f_HeroType, EHeroCradStarLevel f_StarLevel)
+    {
+        if (!GTools.TableMgr.TryGetHeroCradInfo(f_HeroType, out var heroInfo))
+        {
+            return null;
+        }
+        var item = new IncubatorDebrisData(heroInfo.QualityLevel, m_ItemHero);
+
+        var triggerDown = new EventTrigger.Entry();
+        var eventTrigger = item.Item.Find("Btn_Button").GetComponent<EventTrigger>();
+        triggerDown.eventID = EventTriggerType.PointerDown;
+        triggerDown.callback = new EventTrigger.TriggerEvent();
+        triggerDown.callback.AddListener(DownClick);
+        eventTrigger.triggers.Add(triggerDown);
+
+        void DownClick(BaseEventData eventData)
+        {
+            var image = item.Item.Find("Img_Icon").GetComponent<Image>();
+            m_CurIncubatorItem = item;
+            SetTargetIcon(image.sprite);
+            SetCurSelectHero(f_HeroType, f_StarLevel);
         }
         return item;
     }
 
-    private EHeroQualityLevel m_CurSelectHero = EHeroQualityLevel.EnumCount;
+    private EHeroQualityLevel m_CurSelectIncubator = EHeroQualityLevel.EnumCount;
+    private EHeroCardType m_CurSelectHero = EHeroCardType.EnumCount;
     private EHeroCradStarLevel m_StarLevel = EHeroCradStarLevel.None;
     private IncubatorDebrisData m_CurIncubatorItem = null;
     public int UpdateLevelID { get; set; }
@@ -458,15 +598,30 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
     private Entity_HeroBaseData m_CurSelectHeroEntity = null;
     public EUpdateLevel UpdateLevel => EUpdateLevel.Level1;
     private Vector2 m_MouseClickDownPos = Vector2.zero;
-    public void SetCurSelectHero(EHeroQualityLevel f_Quality, EHeroCradStarLevel f_StarLevel)
+    public void SetCurSelectIncubator(EHeroQualityLevel f_Quality, EHeroCradStarLevel f_StarLevel)
     {
-        if (f_Quality != m_CurSelectHero)
+        if (f_Quality != m_CurSelectIncubator)
         {
             var pos = IUIUtil.GetMouseUGUIPosition();
             m_MouseClickDownPos = pos;
             m_TargetArrow.anchoredPosition = pos;
 
-            m_CurSelectHero = f_Quality;
+            m_CurSelectIncubator = f_Quality;
+            m_StarLevel = f_StarLevel;
+            GTools.LifecycleMgr.AddUpdate(this);
+            m_TargetIcon.gameObject.SetActive(true);
+            m_TargetArrow.gameObject.SetActive(true);
+        }
+    }
+    public void SetCurSelectHero(EHeroCardType f_HeroType, EHeroCradStarLevel f_StarLevel)
+    {
+        if (f_HeroType != m_CurSelectHero)
+        {
+            var pos = IUIUtil.GetMouseUGUIPosition();
+            m_MouseClickDownPos = pos;
+            m_TargetArrow.anchoredPosition = pos;
+
+            m_CurSelectHero = f_HeroType;
             m_StarLevel = f_StarLevel;
             GTools.LifecycleMgr.AddUpdate(this);
             m_TargetIcon.gameObject.SetActive(true);
@@ -483,10 +638,18 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
         {
             if (chunkData.CurObjectType == EWorldObjectType.Road)
             {
-                PlaceIncubator(m_CurSelectHero, chunkData.Index);
+                if (m_CurSelectIncubator != EHeroQualityLevel.EnumCount)
+                {
+                    PlaceIncubator(m_CurSelectIncubator, chunkData.Index);
+                }
+                if (m_CurSelectHero != EHeroCardType.EnumCount)
+                {
+                    GTools.HeroMgr.CreateHero(m_CurSelectHero, m_StarLevel, chunkData.Index, out var heroData, new());
+                }
             }
         }
-        m_CurSelectHero = EHeroQualityLevel.EnumCount;
+        m_CurSelectIncubator = EHeroQualityLevel.EnumCount;
+        m_CurSelectHero = EHeroCardType.EnumCount;
         m_StarLevel = EHeroCradStarLevel.None;
         m_CurIncubatorItem = null;
     }
@@ -498,7 +661,8 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
     public void OnUpdate()
     {
         var pos = IUIUtil.GetMouseUGUIPosition();
-        if (m_CurSelectHero != EHeroQualityLevel.EnumCount)
+        if (m_CurSelectIncubator != EHeroQualityLevel.EnumCount
+            || m_CurSelectHero != EHeroCardType.EnumCount)
         {
             m_TargetIcon.anchoredPosition = pos;
         }

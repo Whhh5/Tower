@@ -123,7 +123,7 @@ public class WorldMapMgr : Singleton<WorldMapMgr>
     //                                ------------------------------------------------
     //                                --------------------Catalogue 生命周期函数
     //                                ------------------------------------------------
-    public override async void Awake()
+    public override void Awake()
     {
         base.Awake();
 
@@ -137,7 +137,7 @@ public class WorldMapMgr : Singleton<WorldMapMgr>
             return;
         }
         CreateRoadExtend();
-        CreateTowerLight();
+        // CreateTowerLight();
     }
 
 
