@@ -148,11 +148,11 @@ public class HeroIncubatorPoolMgr : Singleton<HeroIncubatorPoolMgr>
                                 QualityLevel = item.Key,
                             });
                         }
-                        else if(TryGetRandomCardByLevel(item.Key, out var heroType))
+                        else if (TryGetRandomCardByLevel(item.Key, out var heroType))
                         {
                             result.Add(new HeroCardInfo()
                             {
-                                QualityLevel = heroType,
+                                HeroType = heroType,
                             });
                         }
                         break;
