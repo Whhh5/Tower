@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
 
-public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
+public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase, IWorldObjectType
 {
     public float UpdateDelta { get; set; }
     public float LasteUpdateTime { get; set; }
@@ -71,7 +71,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
-    public int Index { get; private set; }
+    public int Index { get; protected set; }
     public abstract EWorldObjectType ObjectType { get; }
 
 

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public abstract class DependChunkData : EntityData
 {
     public abstract ELayer LayerMask { get; }
@@ -23,13 +22,28 @@ public abstract class DependChunkData : EntityData
     public void SetCurrentChunkIndex(int f_ToIndex)
     {
         CurrentIndex = f_ToIndex;
-        AddtionIndexLiat.Clear();
-        if (GTools.WorldMapMgr.TryGetRangeChunkByIndex(f_ToIndex, out var list, null, false, BranchOutIndex))
+        //AddtionIndexLiat.Clear();
+        //if (GTools.WorldMapMgr.TryGetRangeChunkByIndex(f_ToIndex, out var list, null, false, BranchOutIndex))
+        //{
+        //    foreach (var item in list.GetEnumerator())
+        //    {
+        //        AddtionIndexLiat.Add(item.Value);
+        //    }
+        //}
+    }
+
+    public virtual void InitData(int f_ChunkIndex)
+    {
+        CurrentIndex = -1;
+        SetPosition(Vector3.one * -1);
+        if (!(f_ChunkIndex > 0 && this.MoveToChunk(f_ChunkIndex)))
         {
-            foreach (var item in list.GetEnumerator())
-            {
-                AddtionIndexLiat.Add(item.Value);
-            }
+            LogError("ÒÆ¶¯Ê§°Ü");
+            SetPosition(Vector3.one * -1);
+        }
+        else if (GTools.CreateMapNew.TryGetChunkData(f_ChunkIndex, out var chunkData))
+        {
+            SetPosition(chunkData.WorldPosition + Vector3.forward * -1);
         }
     }
     public bool TryExistChunk(int f_Index)

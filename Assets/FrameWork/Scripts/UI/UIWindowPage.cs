@@ -233,7 +233,7 @@ namespace B1.UI
                 var window = item;
                 tasks[index++] = UniTask.Create(async () =>
                 {
-                    await UIWindowManager.Ins.UnloadWindowAsync(window.Key, window.Value);
+                    await UIWindowManager.Ins.UnloadWindowAsync(window.Value);
                     var eventData = new UIWindowEventdata()
                     {
                         Window = window.Value,

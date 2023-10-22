@@ -42,7 +42,6 @@ GameObject:
   - component: {fileID: 6168054165126095588}
   - component: {fileID: 6168054165126095595}
   - component: {fileID: 501569801556179772}
-  - component: {fileID: 224902465645850636}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -81,6 +80,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PoolRoot: {fileID: 6168054165547923406}
   TestRoot: {fileID: 8403634661636698667}
+  Canvas: {fileID: 0}
 --- !u!114 &501569801556179772
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -93,19 +93,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce7210aa37b93cf48a1474321bafde24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  UpdateKey: -2147483648
   CurFrameRate: 0
---- !u!114 &224902465645850636
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6168054165126095590}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ba5f8561bd8c56b47a7fb1f214269869, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6168054165547923407
 GameObject:
   m_ObjectHideFlags: 0

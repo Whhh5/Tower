@@ -11,20 +11,20 @@ public class WorldWindowMgr : Singleton<WorldWindowMgr>
 {
 
     [SerializeField]
-    private RectTransform m_Root = null;
+    private Transform m_Root => GTools.UIWindowManager.GetUIRootAsync(EUIAppRoot.System);
 
-    public override void Awake()
+    public override async void Awake()
     {
         base.Awake();
 
-        var obj = new GameObject("Hint Root");
-        var tran = obj.AddComponent<RectTransform>();
-        tran.SetParent(GTools.UIMgr.UICanvasRect);
-        tran.SetSiblingIndex(0);
-        tran.localPosition = Vector3.zero;
-        tran.localScale = Vector3.one;
-        tran.localRotation = Quaternion.Euler(Vector3.zero);
-        m_Root = tran;
+        //var obj = new GameObject("Hint Root");
+        //var tran = obj.AddComponent<RectTransform>();
+        //tran.SetParent(GTools.UIMgr.UICanvasRect);
+        //tran.SetSiblingIndex(0);
+        //tran.localPosition = Vector3.zero;
+        //tran.localScale = Vector3.one;
+        //tran.localRotation = Quaternion.Euler(Vector3.zero);
+        //m_Root = tran;
     }
 
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using B1;
+using B1.UI;
 
 public interface IUIUtil
 {
@@ -47,11 +48,15 @@ public class UIMgr : Singleton<UIMgr>
     public Canvas UICanvas = null;
     public RectTransform UICanvasRect => UICanvas.GetComponent<RectTransform>();
     public Camera UICamera => UICanvas.worldCamera;
-    public override void Awake()
+    public override async void Awake()
     {
         base.Awake();
 
-        UICanvas = GameObject.Find("UI Canvas").GetComponent<Canvas>();
+
+
+        await AssetsMgr.Ins.LoadPrefabAsync<UGUISystem>(EAssetName.UGUISystem, null);
+        await UIWindowManager.Ins.LoadWindowAsync<UIGameStart>(EAssetName.UIGameStart);
+        UICanvas = GameObject.Find("UGUISystem(Clone)").GetComponent<Canvas>();
     }
 
 

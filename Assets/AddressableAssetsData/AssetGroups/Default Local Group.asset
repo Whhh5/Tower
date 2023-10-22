@@ -83,6 +83,18 @@ MonoBehaviour:
     m_Address: citywar_pannel_lose
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: f14b81e62acdbdb47892156a469695e5
+    m_Address: UIGameStart
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 1400bc4ff4d01bf47aa87196f43bb335
+    m_Address: UIGameLevel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 9ea68476a8cd2304a8b319e062983929
+    m_Address: UIHeroCardSelect
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 056db3dee3486459a9eb7c3820ef1dcd, type: 2}
   m_SchemaSet:

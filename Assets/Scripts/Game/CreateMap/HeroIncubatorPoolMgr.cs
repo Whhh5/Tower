@@ -6,53 +6,15 @@ using UnityEngine;
 
 public class IncubatorCardInfo : ICardGroupData
 {
-    public EHeroQualityLevel QualityLevel;
+    public EQualityType QualityLevel;
 }
 public class HeroCardInfo : ICardGroupData
 {
     public EHeroCardType HeroType;
 }
-public class HeroCradPoolInfo
-{
-    public HeroCradPoolInfo(EHeroCardType f_EHeroCradType, int? f_Count = null)
-    {
-        Type = f_EHeroCradType;
-        ResidueCount = f_Count ?? LevelInfo.MaxCount;
-    }
-    public EHeroCardType Type { get; private set; }
-    public int ResidueCount { get; private set; }
-
-    public EHeroQualityLevel Level => CradInfo.QualityLevel;
-    public HeroCradLevelInfo LevelInfo => TableMgr.Ins.TryGetHeroCradLevelInfo(Level, out var levelInfo) ? levelInfo : null;
-    public HeroCradInfo CradInfo => TableMgr.Ins.TryGetHeroCradInfo(Type, out var cradInfo) ? cradInfo : null;
-
-
-    public void Push(int f_Count = 1)
-    {
-        ResidueCount = Mathf.Clamp(ResidueCount + f_Count, 0, LevelInfo.MaxCount);
-    }
-    public void Pop(int f_Count = 1)
-    {
-        ResidueCount = Mathf.Clamp(ResidueCount - f_Count, 0, LevelInfo.MaxCount);
-    }
-    public EHeroCradStarLevel StarLevel()
-    {
-        EHeroCradStarLevel result = EHeroCradStarLevel.Level1;
-        var max = (int)EHeroCradStarLevel.EnumCount;
-        for (int i = max - 1; i > 0; i--)
-        {
-            if (ResidueCount >= Mathf.Pow(3, i - 1))
-            {
-                result = (EHeroCradStarLevel)i;
-                break;
-            }
-        }
-        return result;
-    }
-}
 public class HeroIncubatorPoolMgr : Singleton<HeroIncubatorPoolMgr>
 {
-    private Dictionary<EHeroQualityLevel, ListStack<EHeroCardType>> m_HeroCardList = new();
+    private Dictionary<EQualityType, ListStack<EHeroCardType>> m_HeroCardList = new();
     public override void Awake()
     {
         InitHeroCradList();
@@ -91,7 +53,7 @@ public class HeroIncubatorPoolMgr : Singleton<HeroIncubatorPoolMgr>
     /// <summary>
     /// 回收孵化器
     /// </summary>
-    public void RecycleGroupCrad(EHeroQualityLevel f_Quality, int f_Count = 1)
+    public void RecycleGroupCrad(EQualityType f_Quality, int f_Count = 1)
     {
 
     }
@@ -101,7 +63,7 @@ public class HeroIncubatorPoolMgr : Singleton<HeroIncubatorPoolMgr>
     /// 根据品质随机获取一个英雄
     /// </summary>
     /// <returns></returns>
-    public bool TryGetRandomCardByLevel(EHeroQualityLevel f_Level, out EHeroCardType f_HerpType)
+    public bool TryGetRandomCardByLevel(EQualityType f_Level, out EHeroCardType f_HerpType)
     {
         f_HerpType = EHeroCardType.EnumCount;
         if (m_HeroCardList.TryGetValue(f_Level, out var list))

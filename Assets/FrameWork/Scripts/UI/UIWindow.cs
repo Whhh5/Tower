@@ -21,6 +21,11 @@ namespace B1.UI
         public RectTransform Rect => GetComponent<RectTransform>();
 
         private UIWindowPage m_Page = null;
+        public EAssetName AssetName { get; private set; }
+        public void SetAssetName(EAssetName f_AssetName)
+        {
+            AssetName = f_AssetName;
+        }
 
         [SerializeField]
         protected EUIAppRoot m_AppRoot = EUIAppRoot.None;
@@ -35,7 +40,7 @@ namespace B1.UI
         /// 将会在被加载出来首先调用
         /// </summary>
         /// <returns></returns>
-        public async UniTask OnLoadAsync()
+        public virtual async UniTask OnLoadAsync()
         {
             await DelayAsync();
             CanvasGroup.interactable = false;
@@ -72,11 +77,11 @@ namespace B1.UI
             }, 1, moveTime)
                 .SetEase(Ease.InOutBack)
                 .SetId(EDOTweenShowID)
-                .OnStart(()=>
+                .OnStart(() =>
                 {
                     gameObject.SetActive(true);
                 })
-                .OnComplete(()=>
+                .OnComplete(() =>
                 {
                     CanvasGroup.interactable = true;
                 });
@@ -114,7 +119,7 @@ namespace B1.UI
         /// 将会在实体被销毁的时候调用
         /// </summary>
         /// <returns></returns>
-        public async UniTask OnUnLoadAsync()
+        public virtual async UniTask OnUnLoadAsync()
         {
             await DelayAsync();
         }

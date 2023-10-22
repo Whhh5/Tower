@@ -188,9 +188,8 @@ namespace B1.UI
         /// </summary>
         /// <param name="f_EUIRoot"></param>
         /// <returns></returns>
-        public async UniTask<Transform> GetUIRootAsync(EUIAppRoot f_EUIRoot)
+        public Transform GetUIRootAsync(EUIAppRoot f_EUIRoot)
         {
-            await UniTask.Delay(0);
             return transform.Find($"{f_EUIRoot}");
         }
         private bool TryPageIsExistAsync(Type f_Type, out UIWindowPage f_UIWindowPage)
@@ -225,9 +224,10 @@ namespace B1.UI
             if (result.result == true && result.obj != null)
             {
                 window = result.obj;
-                var parent = await GetUIRootAsync(window.AppRoot);
+                var parent = GetUIRootAsync(window.AppRoot);
                 window.transform.SetParent(parent);
                 window.Rect.NormalFullScene();
+                window.SetAssetName(f_EWindow);
                 await window.AwakeAsync();
                 UIWindowEventdata eventData = new()
                 {
@@ -251,11 +251,11 @@ namespace B1.UI
         /// <param name="f_EWindow"></param>
         /// <param name="f_Obj"></param>
         /// <returns></returns>
-        public async UniTask UnloadWindowAsync(EAssetName f_EWindow, UIWindow f_Obj)
+        public async UniTask UnloadWindowAsync(UIWindow f_Obj)
         {
-            await AssetsMgr.Ins.UnLoadPrefabAsync(f_EWindow, EAssetLable.Prefab, f_Obj);
+            await AssetsMgr.Ins.UnLoadPrefabAsync(f_Obj.AssetName, EAssetLable.Prefab, f_Obj);
 
-            LogWarning($"卸载窗口    f_EWindow = {f_EWindow} ");
+            LogWarning($"卸载窗口    f_EWindow = {f_Obj.AssetName} ");
 
         }
         #endregion

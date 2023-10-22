@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Reflection;
+using B1.UI;
 
 public static class GTools
 {
@@ -93,6 +94,11 @@ public static class GTools
     public static CardMgr CardMgr => CardMgr.Ins;
     public static HeroMgr HeroMgr => HeroMgr.Ins;
     public static EquipmentMgr EquipmentMgr => EquipmentMgr.Ins;
+    public static UIWindowManager UIWindowManager => UIWindowManager.Ins;
+    public static GameDataMgr GameDataMgr => GameDataMgr.Ins;
+    public static LoadAssetManager LoadAssetManager => LoadAssetManager.Ins;
+    public static CreateMapNew CreateMapNew => CreateMapNew.Ins;
+    public static HeroCardPoolMgr HeroCardPoolMgr => HeroCardPoolMgr.Ins;
     #endregion
 
     #region Mono 静态类
@@ -258,5 +264,10 @@ public static class ExtendFunction
             f_HeroData.LogError($"加载技能动画资源失败 {f_HeroData.HeroCradType} assetPath = {skillPath}");
         }
         return clipAsset;
+    }
+
+    public static bool MoveToChunk(this DependChunkData f_ependData, int f_ChunkIndex)
+    {
+        return GTools.CreateMapNew.MoveToChunk(f_ependData, f_ChunkIndex);
     }
 }

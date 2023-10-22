@@ -57,13 +57,13 @@ public enum EHeroCardType
 
     EnumCount,
 }
-public enum EHeroQualityLevel
+public enum EQualityType
 {
     None,
-    Level1,
-    Level2,
-    Level3,
-    Level4,
+    Quality1,
+    Quality2,
+    Quality3,
+    Quality4,
     EnumCount,
 }
 public enum EHeroCradStarLevel
@@ -183,6 +183,11 @@ public enum AssetKey
     UIItem_CurWeatherGain,
     UIItem_Skill,
     UIItem_Equipment,
+
+    // 实体
+    Entity_Marrizer,
+    Entity_ChunkMap,
+    Entity_ChunkWarSeat,
 
     // 特效
     Hero3SkillEffect,
@@ -332,6 +337,12 @@ public enum AssetKey
     Icon_Hero4,
     Icon_Monster1,
     Icon_Monster2,
+
+    // 地图配置文件
+    Cfg_MapLevel1,
+    Cfg_MapLevel2,
+    Cfg_MapLevel3,
+    Cache_GameData,
 }
 public enum EAttackEffectType
 {
@@ -345,14 +356,6 @@ public enum EWeatherGainLevel
     Level3,
     Level4,
     MaxLevel,
-}
-public enum EQualityType
-{
-    Quality1,
-    Quality2,
-    Quality3,
-    Quality4,
-    Quality5,
 }
 public enum EEquipmentType
 {
@@ -395,6 +398,14 @@ public enum EPersonSkillType
     Stage3_Default3_Loss1_Height1,
 
 }
+public enum EMapLevelType
+{
+    Level0,
+    Level1,
+    Level2,
+    Level3,
+    EnumCount,
+}
 public class SkillLink
 {
     public EPersonSkillType SkillType;
@@ -407,7 +418,7 @@ public class PersonSkillInfos
 }
 public class HeroCradInfo
 {
-    public EHeroQualityLevel QualityLevel;
+    public EQualityType QualityLevel;
     public string Name;
     public AssetKey AssetKet;
     public AssetKey Icon;
@@ -428,7 +439,7 @@ public class HeroCradLevelInfo : IExpenditure
 public class HeroIncubatorInfo : IExpenditure
 {
     public string Name;
-    public EHeroQualityLevel QualityLevel;
+    public EQualityType QualityLevel;
     public AssetKey IncubatorPrefab;
     public AssetKey IncubatorIcon;
     public AssetKey IncubatorDebrisIcon;
@@ -484,10 +495,10 @@ public class QualityInfo
 public class PlayerLevelInfo
 {
     // 获取卡牌概率
-    public Dictionary<EHeroQualityLevel, float> DicCradProbability = new();
+    public Dictionary<EQualityType, float> DicCradProbability = new();
 
     // 获得卡牌概率范围
-    public (float tMin, float tMAx) GetRangeCradProbability(EHeroQualityLevel f_CradLevel)
+    public (float tMin, float tMAx) GetRangeCradProbability(EQualityType f_CradLevel)
     {
         Vector2 result = Vector2.zero;
         var curResidue = 1.0f;
@@ -504,7 +515,7 @@ public class PlayerLevelInfo
         }
         return (result.x, result.y);
     }
-    public bool GetQualityRandom(out Dictionary<EHeroQualityLevel, (float tMin, float tMax)> f_Result)
+    public bool GetQualityRandom(out Dictionary<EQualityType, (float tMin, float tMax)> f_Result)
     {
         // 概率范围
         var curLevelPro = f_Result = new();
@@ -515,9 +526,9 @@ public class PlayerLevelInfo
             curLevelPro.Add(item.Key, range);
         }
 
-        for (int i = 0; i < (int)EHeroQualityLevel.EnumCount; i++)
+        for (int i = 0; i < (int)EQualityType.EnumCount; i++)
         {
-            var level = (EHeroQualityLevel)i;
+            var level = (EQualityType)i;
             if (curLevelPro.ContainsKey(level))
             {
                 continue;
@@ -529,38 +540,38 @@ public class PlayerLevelInfo
             var tempI = i;
             while (--tempI >= 0)
             {
-                if (!curLevelPro.TryGetValue((EHeroQualityLevel)tempI, out var proValue))
+                if (!curLevelPro.TryGetValue((EQualityType)tempI, out var proValue))
                 {
                     continue;
                 }
                 lastLevel = tempI;
                 proValue.tMax += halfRange;
-                curLevelPro[(EHeroQualityLevel)tempI] = proValue;
+                curLevelPro[(EQualityType)tempI] = proValue;
                 break;
             }
             tempI = i;
-            while (++tempI < (int)EHeroQualityLevel.EnumCount)
+            while (++tempI < (int)EQualityType.EnumCount)
             {
-                if (!curLevelPro.TryGetValue((EHeroQualityLevel)tempI, out var proValue))
+                if (!curLevelPro.TryGetValue((EQualityType)tempI, out var proValue))
                 {
                     continue;
                 }
                 latterLevel = tempI;
                 proValue.tMin -= halfRange;
-                curLevelPro[(EHeroQualityLevel)tempI] = proValue;
+                curLevelPro[(EQualityType)tempI] = proValue;
                 break;
             }
             if (lastLevel == null && latterLevel != null)
             {
-                var proValue = curLevelPro[(EHeroQualityLevel)latterLevel];
+                var proValue = curLevelPro[(EQualityType)latterLevel];
                 proValue.tMin -= halfRange;
-                curLevelPro[(EHeroQualityLevel)latterLevel] = proValue;
+                curLevelPro[(EQualityType)latterLevel] = proValue;
             }
             if (latterLevel == null && lastLevel != null)
             {
-                var proValue = curLevelPro[(EHeroQualityLevel)lastLevel];
+                var proValue = curLevelPro[(EQualityType)lastLevel];
                 proValue.tMax += halfRange;
-                curLevelPro[(EHeroQualityLevel)lastLevel] = proValue;
+                curLevelPro[(EQualityType)lastLevel] = proValue;
             }
         }
         return curLevelPro.Count > 0;
@@ -777,6 +788,7 @@ public class TableMgr : Singleton<TableMgr>
     static string SkillIconParentPath = "Icons/Skills";
     static string EquipmentIconParentPath = "Icons/Equipment";
     static string HeroIconParentPath = "Icons/HeroIcon";
+    static string MapConfigParentPath = "Config/Map";
     private static readonly Dictionary<AssetKey, string> m_DicIDToPath = new()
     {
         { AssetKey.Alp1, "Prefabs/WorldObject/Entity_Alt1" },
@@ -825,6 +837,10 @@ public class TableMgr : Singleton<TableMgr>
         { AssetKey.WorldUIEntityHint, "Prefabs/WorldUI/WorldUIEntityHint" },
         { AssetKey.WorldUISliderInfo, "Prefabs/WorldUI/WorldUISliderInfo" },
         { AssetKey.UISkillInfo, "Prefabs/WorldUI/UISkillInfo" },
+
+        { AssetKey.Entity_Marrizer , "Prefabs/PerfabNew/Entity_Massif" },
+        { AssetKey.Entity_ChunkMap , "Prefabs/PerfabNew/Entity_ChunkMap" },
+        { AssetKey.Entity_ChunkWarSeat, "Prefabs/PerfabNew/Entity_ChunkWarSeat" },
 
         // 特效
         { AssetKey.Effect_Buff_Poison, "Prefabs/Effects/Effect_Buff_Poison" },
@@ -961,6 +977,12 @@ public class TableMgr : Singleton<TableMgr>
         { AssetKey.Icon_Monster1, $"{HeroIconParentPath}/Icon_Monster1" },
         { AssetKey.Icon_Monster2, $"{HeroIconParentPath}/Icon_Monster2" },
 
+        // 地图配置文件
+        { AssetKey.Cfg_MapLevel1, $"{MapConfigParentPath}/Cfg_MapLevel1" },
+        { AssetKey.Cfg_MapLevel2, $"{MapConfigParentPath}/Cfg_MapLevel2" },
+        { AssetKey.Cfg_MapLevel3, $"{MapConfigParentPath}/Cfg_MapLevel3" },
+        { AssetKey.Cache_GameData, $"{MapConfigParentPath}/Cache_GameData" },
+
     };
     public bool TryGetAssetPath(AssetKey f_Key, out string f_Result)
     {
@@ -982,7 +1004,7 @@ public class TableMgr : Singleton<TableMgr>
             EHeroCardType.Hero1,
             new()
             {
-                QualityLevel = EHeroQualityLevel.Level1,
+                QualityLevel = EQualityType.Quality1,
                 Name = "Hero1",
                 AssetKet = AssetKey.Entity_Player_Hero1,
                 Icon = AssetKey.Icon_Hero1,
@@ -1107,7 +1129,7 @@ public class TableMgr : Singleton<TableMgr>
             EHeroCardType.Hero2,
             new()
             {
-                QualityLevel = EHeroQualityLevel.Level2,
+                QualityLevel = EQualityType.Quality2,
                 Name = "Hero2",
                 AssetKet = AssetKey.Entity_Player_Hero2,
                 Icon = AssetKey.Icon_Hero2,
@@ -1121,7 +1143,7 @@ public class TableMgr : Singleton<TableMgr>
             EHeroCardType.Hero3,
             new()
             {
-                QualityLevel = EHeroQualityLevel.Level3,
+                QualityLevel = EQualityType.Quality3,
                 Name = "Hero3",
                 AssetKet = AssetKey.Entity_Player_Hero3,
                 Icon = AssetKey.Icon_Hero3,
@@ -1135,7 +1157,7 @@ public class TableMgr : Singleton<TableMgr>
             EHeroCardType.Hero4,
             new()
             {
-                QualityLevel = EHeroQualityLevel.Level4,
+                QualityLevel = EQualityType.Quality4,
                 Name = "Hero4",
                 AssetKet = AssetKey.Entity_Player_Hero4,
                 Icon = AssetKey.Icon_Hero4,
@@ -1149,7 +1171,7 @@ public class TableMgr : Singleton<TableMgr>
             EHeroCardType.Monster_Default1,
             new()
             {
-                QualityLevel = EHeroQualityLevel.Level1,
+                QualityLevel = EQualityType.Quality1,
                 Name = "monster 1",
                 AssetKet = AssetKey.Entity_Monster_Default1,
                 Icon = AssetKey.Icon_Monster1,
@@ -1163,7 +1185,7 @@ public class TableMgr : Singleton<TableMgr>
             EHeroCardType.Monster_Default2,
             new()
             {
-                QualityLevel = EHeroQualityLevel.Level1,
+                QualityLevel = EQualityType.Quality1,
                 Name = "monster 2",
                 AssetKet = AssetKey.Entity_Monster_Default2,
                 Icon = AssetKey.Icon_Monster2,
@@ -1193,10 +1215,10 @@ public class TableMgr : Singleton<TableMgr>
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
-    private Dictionary<EHeroQualityLevel, HeroCradLevelInfo> m_HeroCradLevelInfo = new()
+    private Dictionary<EQualityType, HeroCradLevelInfo> m_HeroCradLevelInfo = new()
     {
         {
-            EHeroQualityLevel.Level1,
+            EQualityType.Quality1,
             new()
             {
                 Name = "普通",
@@ -1206,7 +1228,7 @@ public class TableMgr : Singleton<TableMgr>
             }
         },
         {
-            EHeroQualityLevel.Level2,
+            EQualityType.Quality2,
             new()
             {
                 Name = "罕见",
@@ -1216,7 +1238,7 @@ public class TableMgr : Singleton<TableMgr>
             }
         },
         {
-            EHeroQualityLevel.Level3,
+            EQualityType.Quality3,
             new()
             {
                 Name = "传说",
@@ -1226,7 +1248,7 @@ public class TableMgr : Singleton<TableMgr>
             }
         },
         {
-            EHeroQualityLevel.Level4,
+            EQualityType.Quality4,
             new()
             {
                 Name = "史诗",
@@ -1236,7 +1258,7 @@ public class TableMgr : Singleton<TableMgr>
             }
         },
     };
-    public bool TryGetHeroCradLevelInfo(EHeroQualityLevel f_EHeroCradLevel, out HeroCradLevelInfo f_HeroCradLevelInfo)
+    public bool TryGetHeroCradLevelInfo(EQualityType f_EHeroCradLevel, out HeroCradLevelInfo f_HeroCradLevelInfo)
     {
         return m_HeroCradLevelInfo.TryGetValue(f_EHeroCradLevel, out f_HeroCradLevelInfo);
     }
@@ -1257,19 +1279,19 @@ public class TableMgr : Singleton<TableMgr>
                 DicCradProbability = new()
                 {
                     {
-                        EHeroQualityLevel.Level1,
+                        EQualityType.Quality1,
                         0.5f
                     },
                     {
-                        EHeroQualityLevel.Level2,
+                        EQualityType.Quality2,
                         0.25f
                     },
                     {
-                        EHeroQualityLevel.Level3,
+                        EQualityType.Quality3,
                         0.5f
                     },
                     {
-                        EHeroQualityLevel.Level4,
+                        EQualityType.Quality4,
                         1f
                     },
                 }
@@ -1330,14 +1352,14 @@ public class TableMgr : Singleton<TableMgr>
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
-    private Dictionary<EHeroQualityLevel, HeroIncubatorInfo> m_IncubatorInfo = new()
+    private Dictionary<EQualityType, HeroIncubatorInfo> m_IncubatorInfo = new()
     {
         {
-            EHeroQualityLevel.Level1,
+            EQualityType.Quality1,
             new()
             {
                 Name = "普通孵化器",
-                QualityLevel = EHeroQualityLevel.Level1,
+                QualityLevel = EQualityType.Quality1,
                 IncubatorTime = 10,
                 ExpenditureBase = 2,
                 IncubatorPrefab = AssetKey.Entity_Incubator1,
@@ -1346,11 +1368,11 @@ public class TableMgr : Singleton<TableMgr>
             }
         },
         {
-            EHeroQualityLevel.Level2,
+            EQualityType.Quality2,
             new()
             {
                 Name = "罕见孵化器",
-                QualityLevel = EHeroQualityLevel.Level2,
+                QualityLevel = EQualityType.Quality2,
                 IncubatorTime = 20,
                 ExpenditureBase = 4,
                 IncubatorPrefab = AssetKey.Entity_Incubator2,
@@ -1359,11 +1381,11 @@ public class TableMgr : Singleton<TableMgr>
             }
         },
         {
-            EHeroQualityLevel.Level3,
+            EQualityType.Quality3,
             new()
             {
                 Name = "传说孵化器",
-                QualityLevel = EHeroQualityLevel.Level3,
+                QualityLevel = EQualityType.Quality3,
                 IncubatorTime = 30,
                 ExpenditureBase = 6,
                 IncubatorPrefab = AssetKey.Entity_Incubator3,
@@ -1372,11 +1394,11 @@ public class TableMgr : Singleton<TableMgr>
             }
         },
         {
-            EHeroQualityLevel.Level4,
+            EQualityType.Quality4,
             new()
             {
                 Name = "史诗孵化器",
-                QualityLevel = EHeroQualityLevel.Level4,
+                QualityLevel = EQualityType.Quality4,
                 IncubatorTime = 40,
                 ExpenditureBase = 10,
                 IncubatorPrefab = AssetKey.Entity_Incubator4,
@@ -1385,7 +1407,7 @@ public class TableMgr : Singleton<TableMgr>
             }
         },
     };
-    public bool TryGetIncubatorInfo(EHeroQualityLevel f_QualityLevle, out HeroIncubatorInfo f_IncubatorInfo)
+    public bool TryGetIncubatorInfo(EQualityType f_QualityLevle, out HeroIncubatorInfo f_IncubatorInfo)
     {
         return m_IncubatorInfo.TryGetValue(f_QualityLevle, out f_IncubatorInfo);
     }
@@ -2732,5 +2754,39 @@ public class TableMgr : Singleton<TableMgr>
                 break;
         }
         return f_DataBase != null;
+    }
+
+
+    public class MapConfigInfo
+    {
+        public AssetKey AssetPath;
+    }
+    private Dictionary<EMapLevelType, MapConfigInfo> m_MapConfigDic = new()
+    {
+        {
+            EMapLevelType.Level1,
+            new()
+            {
+                 AssetPath = AssetKey.Cfg_MapLevel1,
+            }
+        },
+        {
+            EMapLevelType.Level2,
+            new()
+            {
+                AssetPath = AssetKey.Cfg_MapLevel2,
+            }
+        },
+        {
+            EMapLevelType.Level3,
+            new()
+            {
+                AssetPath = AssetKey.Cfg_MapLevel3,
+            }
+        },
+    };
+    public bool TryGetMapConfigInfo(EMapLevelType f_LevelType, out MapConfigInfo f_LevelInfo)
+    {
+        return m_MapConfigDic.TryGetValue(f_LevelType, out f_LevelInfo);
     }
 }

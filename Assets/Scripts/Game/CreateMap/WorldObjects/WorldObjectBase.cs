@@ -582,6 +582,10 @@ public class WorldObjectBase : DependChunk, IUpdateBase
 
         }
     }
+    public override async UniTask OnLoadAsync()
+    {
+        await base.OnLoadAsync();
+    }
     public override async UniTask OnUnLoadAsync()
     {
         await base.OnUnLoadAsync();

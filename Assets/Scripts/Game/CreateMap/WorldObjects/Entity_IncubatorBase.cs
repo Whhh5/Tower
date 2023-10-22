@@ -10,7 +10,7 @@ public class Entity_IncubatorBaseData : WorldObjectBaseData
     }
     public override EEntityType EntityType => EEntityType.Incubator;
     public IncubatorAttributeInfo AddAttribute = new();
-    public void Initialization(int f_index, int f_ChunkIndex, EHeroQualityLevel f_Quality, EHeroCradStarLevel f_HeroStarLevl)
+    public void Initialization(int f_index, int f_ChunkIndex, EQualityType f_Quality, EHeroCradStarLevel f_HeroStarLevl)
     {
         base.Initialization(f_index, f_ChunkIndex);
         if (WorldMapMgr.Ins.TryGetChunkData(CurrentIndex, out var chunkData))
@@ -61,7 +61,7 @@ public class Entity_IncubatorBaseData : WorldObjectBaseData
 
     protected EHeroCardType m_HeroType = EHeroCardType.EnumCount;
     private EHeroCradStarLevel m_HeroStarLevel;
-    private EHeroQualityLevel m_QuelityLevel = EHeroQualityLevel.EnumCount;
+    private EQualityType m_QuelityLevel = EQualityType.EnumCount;
     private float m_IncubatorTime = 0;
     private float m_EndTime = 1;
     private float StartTime => m_EndTime - m_IncubatorTime;

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class MoveCardMgr : MonoSingleton<MoveCardMgr>, IUpdateBase
 {
-    private EHeroQualityLevel m_CurSelectHero = EHeroQualityLevel.EnumCount;
+    private EQualityType m_CurSelectHero = EQualityType.EnumCount;
     public int UpdateLevelID { get; set; }
     [SerializeField]
     private RectTransform m_TargetIcon = null;
@@ -27,7 +27,7 @@ public class MoveCardMgr : MonoSingleton<MoveCardMgr>, IUpdateBase
         m_TargetArrow.gameObject.SetActive(false);
     }
     private Vector2 m_MouseClickDownPos = Vector2.zero;
-    public void SetCurSelectHero(EHeroQualityLevel f_Quality)
+    public void SetCurSelectHero(EQualityType f_Quality)
     {
         if (f_Quality != m_CurSelectHero)
         {
@@ -68,7 +68,7 @@ public class MoveCardMgr : MonoSingleton<MoveCardMgr>, IUpdateBase
                 
             }
         }
-        m_CurSelectHero = EHeroQualityLevel.EnumCount;
+        m_CurSelectHero = EQualityType.EnumCount;
     }
     public void SetTargetIcon(Sprite f_Sprite)
     {
@@ -79,7 +79,7 @@ public class MoveCardMgr : MonoSingleton<MoveCardMgr>, IUpdateBase
     {
         if (TryGetCurrentMousePos(out var pos))
         {
-            if (m_CurSelectHero != EHeroQualityLevel.EnumCount)
+            if (m_CurSelectHero != EQualityType.EnumCount)
             {
                 m_TargetIcon.anchoredPosition = pos;
             }

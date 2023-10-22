@@ -8,19 +8,15 @@ public class GameMgr : MonoSingleton<GameMgr>
 {
     public Transform PoolRoot = null;
     public Transform TestRoot = null;
+    public Canvas Canvas = null;
     protected override void Awake()
     {
         base.Awake();
         GameObject.DontDestroyOnLoad(this);
-
-
     }
 
-
-    private async void Start()
+    protected override async void Start()
     {
-        //await AssetsMgr.Ins.LoadPrefabAsync<UGUISystem>(EAssetName.UGUISystem, null);
-
 
         //await UIWindowManager.Ins.OpenPageAsync<UIAppPlanePage>();
         //await UIWindowManager.Ins.OpenPageAsync<UINavigationBarPage>();

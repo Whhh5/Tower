@@ -84,6 +84,15 @@ public interface ILoadSpriteAsync
         var request = await Resources.LoadAsync<Sprite>(f_Path) as Sprite;
         return request;
     }
+    public static async UniTask<Sprite> LoadAsync(AssetKey f_SpriteKey)
+    {
+        Sprite result = null;
+        if (GTools.TableMgr.TryGetAssetPath(f_SpriteKey, out var path))
+        {
+            result = await LoadAsync(path);
+        }
+        return result;
+    }
     public static void UnLoad(Object f_Assets)
     {
         Resources.UnloadAsset(f_Assets);

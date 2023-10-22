@@ -24,7 +24,10 @@ public enum EAssetName : int
 
     #region UISystem
     UGUISystem,
+    UIGameStart,
     UINavigationBar,
+    UIGameLevel,
+    UIHeroCardSelect,
     #endregion
 
     #region UIAppPlane
@@ -65,6 +68,15 @@ public enum EAssetName : int
     #region 图集
 
     UILobbySpriteAltas,
+
+
+    #endregion
+
+
+
+    #region Script Object
+
+    
 
 
     #endregion

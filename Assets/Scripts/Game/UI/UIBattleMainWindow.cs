@@ -280,14 +280,14 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
     //--
     class IncubatorDebrisData
     {
-        public IncubatorDebrisData(EHeroQualityLevel f_QualityLevel, Transform f_Item)
+        public IncubatorDebrisData(EQualityType f_QualityLevel, Transform f_Item)
         {
             QualityLevel = f_QualityLevel;
             Load(f_Item);
             SetQuality();
         }
         public Transform Item = null;
-        public EHeroQualityLevel QualityLevel;
+        public EQualityType QualityLevel;
 
         private void Load(Transform f_Item)
         {
@@ -345,13 +345,13 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
     [SerializeField]
     private Transform m_ItemCard = null;
 
-    private Dictionary<EHeroQualityLevel, List<IncubatorDebrisData>> m_CurCardInsList = new();
+    private Dictionary<EQualityType, List<IncubatorDebrisData>> m_CurCardInsList = new();
     private int ResultantQuanatity => GTools.ResultantQuanatity;
 
     /// <summary>
     /// ÃÌº””¢–€ÀÈ∆¨
     /// </summary>
-    public void AddIncubaorDebris(EHeroQualityLevel f_Quality, int f_Count = 1)
+    public void AddIncubaorDebris(EQualityType f_Quality, int f_Count = 1)
     {
         if (!m_CurCardInsList.TryGetValue(f_Quality, out var info))
         {
@@ -367,7 +367,7 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
         info.Add(item);
         UpdateIncubatorInfo(f_Quality);
     }
-    public void UpdateIncubatorInfo(EHeroQualityLevel f_Quality)
+    public void UpdateIncubatorInfo(EQualityType f_Quality)
     {
         if (m_CurCardInsList.TryGetValue(f_Quality, out var list))
         {
@@ -457,10 +457,10 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
     [SerializeField]
     private Transform m_ItemHero = null;
 
-    private Dictionary<EHeroQualityLevel, Dictionary<EHeroCradStarLevel, List<IncubatorDebrisData>>> m_IncubetorInsList = new();
+    private Dictionary<EQualityType, Dictionary<EHeroCradStarLevel, List<IncubatorDebrisData>>> m_IncubetorInsList = new();
     private Dictionary<EHeroCardType, Dictionary<EHeroCradStarLevel, List<IncubatorDebrisData>>> m_HeroInsList = new();
 
-    public void AddIncubator(EHeroQualityLevel f_Quality, EHeroCradStarLevel f_StarLevel = EHeroCradStarLevel.Level1)
+    public void AddIncubator(EQualityType f_Quality, EHeroCradStarLevel f_StarLevel = EHeroCradStarLevel.Level1)
     {
         if (!m_IncubetorInsList.TryGetValue(f_Quality, out var list))
         {
@@ -538,7 +538,7 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
         }
 
     }
-    private IncubatorDebrisData GetIncubatorItem(EHeroQualityLevel f_Quality, EHeroCradStarLevel f_StarLevel)
+    private IncubatorDebrisData GetIncubatorItem(EQualityType f_Quality, EHeroCradStarLevel f_StarLevel)
     {
         var item = new IncubatorDebrisData(f_Quality, m_ItemHero);
 
@@ -583,7 +583,7 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
         return item;
     }
 
-    private EHeroQualityLevel m_CurSelectIncubator = EHeroQualityLevel.EnumCount;
+    private EQualityType m_CurSelectIncubator = EQualityType.EnumCount;
     private EHeroCardType m_CurSelectHero = EHeroCardType.EnumCount;
     private EHeroCradStarLevel m_StarLevel = EHeroCradStarLevel.None;
     private IncubatorDebrisData m_CurIncubatorItem = null;
@@ -598,7 +598,7 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
     private Entity_HeroBaseData m_CurSelectHeroEntity = null;
     public EUpdateLevel UpdateLevel => EUpdateLevel.Level1;
     private Vector2 m_MouseClickDownPos = Vector2.zero;
-    public void SetCurSelectIncubator(EHeroQualityLevel f_Quality, EHeroCradStarLevel f_StarLevel)
+    public void SetCurSelectIncubator(EQualityType f_Quality, EHeroCradStarLevel f_StarLevel)
     {
         if (f_Quality != m_CurSelectIncubator)
         {
@@ -638,7 +638,7 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
         {
             if (chunkData.CurObjectType == EWorldObjectType.Road)
             {
-                if (m_CurSelectIncubator != EHeroQualityLevel.EnumCount)
+                if (m_CurSelectIncubator != EQualityType.EnumCount)
                 {
                     PlaceIncubator(m_CurSelectIncubator, chunkData.Index);
                 }
@@ -648,7 +648,7 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
                 }
             }
         }
-        m_CurSelectIncubator = EHeroQualityLevel.EnumCount;
+        m_CurSelectIncubator = EQualityType.EnumCount;
         m_CurSelectHero = EHeroCardType.EnumCount;
         m_StarLevel = EHeroCradStarLevel.None;
         m_CurIncubatorItem = null;
@@ -661,7 +661,7 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
     public void OnUpdate()
     {
         var pos = IUIUtil.GetMouseUGUIPosition();
-        if (m_CurSelectIncubator != EHeroQualityLevel.EnumCount
+        if (m_CurSelectIncubator != EQualityType.EnumCount
             || m_CurSelectHero != EHeroCardType.EnumCount)
         {
             m_TargetIcon.anchoredPosition = pos;
@@ -686,7 +686,7 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
             GTools.LifecycleMgr.RemoveUpdate(this);
         }
     }
-    private void PlaceIncubator(EHeroQualityLevel f_IncubatorLevel, int f_ChunkIndex)
+    private void PlaceIncubator(EQualityType f_IncubatorLevel, int f_ChunkIndex)
     {
         var incubator = new Entity_Incubator1Data();
         incubator.Initialization(0, f_ChunkIndex, f_IncubatorLevel, m_StarLevel);
