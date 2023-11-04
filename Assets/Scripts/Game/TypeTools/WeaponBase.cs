@@ -53,7 +53,7 @@ public abstract class WeaponBaseData : VirtualEntityData
     {
         base.OnUpdate();
 
-        SetPosition(Initiator.WeaponPoint);
+        SetPosition(Initiator.AttackSpeedPoint);
     }
     public virtual void DestroyWeaponElementAsync(WeaponElementBaseData f_Target)
     {

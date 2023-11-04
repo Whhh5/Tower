@@ -258,6 +258,10 @@ public enum EAssetKey
     Effect_Gain_Volccano1,
     Effect_Gain_Volccano2,
     Effect_Gain_Volccano3,
+    Entity_Gain_AddAttackSpeed1,
+    Entity_Gain_AddAttackHarm1,
+    Entity_Gain_AddDeffense1,
+    Entity_Gain_AddAttackRange1,
 
     // 防御塔
     Entity_Tower_Light1,
@@ -762,6 +766,35 @@ public struct IncubatorAttributeInfo
         return a;
     }
 }
+public class GainInfo
+{
+    public EBuffView GainView;
+    public EGainType GainType;
+    public EntityGainBaseData CreateGain(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
+    {
+        if (GTools.TableMgr.TryGetGainData(GainType, out var result))
+        {
+            result.Initialization(f_Initiator, f_Target);
+            return result;
+        }
+        return null;
+    }
+}
+public class BuffInfo
+{
+    public string Name = "";
+    public string Desc = "";
+    public EAssetKey IconPath;
+    public EBuffType BuffType;
+    public Effect_BuffBaseData CreateBuffData(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
+    {
+        if (TableMgr.Ins.TryGetBuffData(BuffType, f_Initiator, f_Target, out var result))
+        {
+            result.Initialization(f_Initiator, f_Target);
+        }
+        return result;
+    }
+}
 public struct PersonPropertys
 {
     public int Blood;
@@ -927,6 +960,10 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Effect_Gain_Volccano1, "Prefabs/Effects/Effect_Gain_Volccano1" },
         { EAssetKey.Effect_Gain_Volccano2, "Prefabs/Effects/Effect_Gain_Volccano2" },
         { EAssetKey.Effect_Gain_Volccano3, "Prefabs/Effects/Effect_Gain_Volccano3" },
+        { EAssetKey.Entity_Gain_AddAttackSpeed1, "Prefabs/Effects/Entity_Gain_AddAttackSpeed1" },
+        { EAssetKey.Entity_Gain_AddAttackHarm1, "Prefabs/Effects/Entity_Gain_AddAttackHarm1" },
+        { EAssetKey.Entity_Gain_AddAttackRange1, "Prefabs/Effects/Entity_Gain_AddAttackRange1" },
+        { EAssetKey.Entity_Gain_AddDeffense1, "Prefabs/Effects/Entity_Gain_AddDeffense1" },
 
         // icon 
         { EAssetKey.BuffIcon_Poison, $"{BuffIconParentPath}/Poison" },
@@ -2171,21 +2208,6 @@ public class TableMgr : Singleton<TableMgr>
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
-    public class BuffInfo
-    {
-        public string Name = "";
-        public string Desc = "";
-        public EAssetKey IconPath;
-        public EBuffType BuffType;
-        public Effect_BuffBaseData CreateBuffData(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
-        {
-            if (TableMgr.Ins.TryGetBuffData(BuffType, f_Initiator, f_Target, out var result))
-            {
-                result.Initialization(f_Initiator, f_Target);
-            }
-            return result;
-        }
-    }
     private Dictionary<EBuffType, BuffInfo> m_BuffInfo = new()
     {
         {
@@ -2299,20 +2321,6 @@ public class TableMgr : Singleton<TableMgr>
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
-    public class GainInfo
-    {
-        public EBuffView GainView;
-        public EGainType GainType;
-        public EntityGainBaseData CreateGain(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
-        {
-            if (Ins.TryGetGainData(GainType, out var result))
-            {
-                result.Initialization(f_Initiator, f_Target);
-                return result;
-            }
-            return null;
-        }
-    }
     private Dictionary<EGainType, GainInfo> m_GainInfo = new()
     {
         {
@@ -2347,6 +2355,38 @@ public class TableMgr : Singleton<TableMgr>
                 GainView = EBuffView.Interval,
             }
         },
+        {
+            EGainType.AttackSpeed1,
+            new()
+            {
+                GainType = EGainType.AttackSpeed1,
+                GainView = EBuffView.perpetual,
+            }
+        },
+        {
+            EGainType.AttackHarm1,
+            new()
+            {
+                GainType = EGainType.AttackHarm1,
+                GainView = EBuffView.perpetual,
+            }
+        },
+        {
+            EGainType.AttackRange1,
+            new()
+            {
+                GainType = EGainType.AttackRange1,
+                GainView = EBuffView.perpetual,
+            }
+        },
+        {
+            EGainType.Deffense1,
+            new()
+            {
+                GainType = EGainType.Deffense1,
+                GainView = EBuffView.perpetual,
+            }
+        },
     };
     public bool TryGetGainInfo(EGainType f_GainType, out GainInfo f_GainInfo)
     {
@@ -2373,6 +2413,18 @@ public class TableMgr : Singleton<TableMgr>
                 break;
             case EGainType.Volccano3:
                 f_Result = new Effect_Gain_Volccano3Data();
+                break;
+            case EGainType.AttackSpeed1:
+                f_Result = new Entity_Gain_AddAttackSpeed1Data();
+                break;
+            case EGainType.AttackHarm1:
+                f_Result = new Entity_Gain_AddAttackHarm1Data();
+                break;
+            case EGainType.AttackRange1:
+                f_Result = new Entity_Gain_AddAttackRange1Data();
+                break;
+            case EGainType.Deffense1:
+                f_Result = new Entity_Gain_AddDeffense1Data();
                 break;
             case EGainType.EnumCount:
                 break;

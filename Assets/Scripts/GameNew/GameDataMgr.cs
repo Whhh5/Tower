@@ -67,7 +67,8 @@ public class GameDataMgr : Singleton<GameDataMgr>
 
         GTools.CreateMapNew.CreateMapData();
         GTools.HeroCardPoolMgr.CreateHeroCardPoolConfig();
-        GTools.PlayerMgr.SetGoldCount(0);
+        GTools.PlayerMgr.SetGoldCount(200);
+        GTools.HeroCardPoolMgr.InitCardPoolList();
     }
     private void EnterNextLevel()
     {

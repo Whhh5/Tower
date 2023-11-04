@@ -121,7 +121,7 @@ public abstract class Emitter_SwordBaseData : WeaponBaseData
             GTools.DrawGizom.AddLine(UpdateLevelID, new() { (WorldPosition, targets.CentralPoint) });
         }
 
-        SetPosition(Initiator.WeaponPoint);
+        SetPosition(Initiator.AttackSpeedPoint);
     }
 
     public override async UniTask StartExecute()

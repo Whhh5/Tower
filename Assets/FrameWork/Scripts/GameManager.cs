@@ -39,6 +39,7 @@ public class GameManager
         GTools.CreateMapNew,
         GTools.HeroCardPoolMgr,
         GTools.AttackMgr,
+        GTools.FormationMgr,
     };
 
 

@@ -40,8 +40,8 @@ public abstract class EntityData : UnityObjectData
         ? EntityTarget.TrailPoint.position
         : WorldPosition;
 
-    public Vector3 WeaponPoint => EntityTarget != null && EntityTarget.WeaponPoint != null
-        ? EntityTarget.WeaponPoint.position
+    public Vector3 AttackSpeedPoint => EntityTarget != null && EntityTarget.AttackSpeedPoint != null
+        ? EntityTarget.AttackSpeedPoint.position
         : WorldPosition;
 }
 
@@ -73,8 +73,8 @@ public abstract class Entity : ObjectPoolBase, IButton3DClick
     public Transform EffectPoint => m_EffectPoint;
     [SerializeField] private Transform m_TrailPoint = null;
     public Transform TrailPoint => m_TrailPoint;
-    [SerializeField] protected Transform m_WeaponPoint = null;
-    public Transform WeaponPoint => m_WeaponPoint;
+    [SerializeField] protected Transform m_AttackSpeedPoint = null;
+    public Transform AttackSpeedPoint => m_AttackSpeedPoint;
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------

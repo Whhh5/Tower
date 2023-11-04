@@ -92,6 +92,10 @@ public class Entity_Supplementary1Data : Entity_Hero_SupplementaryBaseData
             foreach (var item in list)
             {
                 this.EntityDamage(item, SkillDamage);
+                if (item.EntityType == EEntityType.Person)
+                {
+                    this.InflictionGain(item, EGainType.AttackSpeed1);
+                }
             }
         }
     }

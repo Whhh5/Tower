@@ -53,12 +53,8 @@ public class PlayerMgr : Singleton<PlayerMgr>, IUpdateBase
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
-    public UIGoldWindow UIGoldWindow = null;
     public void InitGold()
     {
-        UIGoldWindow = GameObject.FindObjectOfType<UIGoldWindow>();
-        SetGoldCount(0);
-
         GTools.LifecycleMgr.AddUpdate(this);
     }
     public int GetGoldCount()
@@ -68,7 +64,6 @@ public class PlayerMgr : Singleton<PlayerMgr>, IUpdateBase
     public void SetGoldCount(int f_Count)
     {
         CurGoldNum = f_Count;
-        UpdateGoldCount();
     }
     /// <summary>
     /// Ôö¼Ó½ð±Ò
@@ -106,13 +101,6 @@ public class PlayerMgr : Singleton<PlayerMgr>, IUpdateBase
             return true;
         }
         return false;
-    }
-    private void UpdateGoldCount()
-    {
-        if (UIGoldWindow != null)
-        {
-            UIGoldWindow.UpdateGoldCount();
-        }
     }
 
 

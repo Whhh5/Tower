@@ -59,7 +59,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase, IWo
     //===============================----------------------========================================
     //--
     public int UpdateLevelID { get; set; }
-    public EUpdateLevel UpdateLevel => EUpdateLevel.Level1;
+    public virtual EUpdateLevel UpdateLevel => EUpdateLevel.Level1;
     public virtual bool IsUpdateEnable => false;
     public virtual void OnUpdate()
     {

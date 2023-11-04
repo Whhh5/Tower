@@ -198,7 +198,39 @@ Transform:
   m_Children:
   - {fileID: 4094977263077981891}
   - {fileID: 4223029049678899137}
+  - {fileID: 3749537096065282397}
   m_Father: {fileID: 7446240853841626336}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5738812758305023626
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3749537096065282397}
+  m_Layer: 0
+  m_Name: Point_Effect_AttackSpeed
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3749537096065282397
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5738812758305023626}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9105348716057998562}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5890540807814757421
@@ -373,7 +405,7 @@ MonoBehaviour:
   m_BuffPoint: {fileID: 0}
   m_EffectPoint: {fileID: 0}
   m_TrailPoint: {fileID: 0}
-  m_WeaponPoint: {fileID: 0}
+  m_AttackSpeedPoint: {fileID: 3749537096065282397}
   m_Range: 10
   m_IsEnter: 0
   m_CurAnim: {fileID: 0}

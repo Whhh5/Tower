@@ -54,6 +54,7 @@ public abstract class Entity_HeroBaseNewData : WorldObjectBaseData
     public override void Death()
     {
         base.Death();
+        GTools.FormationMgr.FormationRemove(this);
         GTools.HeroCardPoolMgr.RecycleGroupCrad(HeroType);
         DOTween.To(() => 0.0f, slider =>
         {
@@ -123,7 +124,7 @@ public abstract class Entity_HeroBaseNewData : WorldObjectBaseData
                 {
                     if (!Skilling)
                     {
-                        if (GTools.UnityObjectIsVaild(m_CurAttackTarget))
+                        if (GTools.UnityObjectIsVaild(m_CurAttackTarget) || this.TryGetRandomNearTarget(out m_CurAttackTarget))
                         {
                             Skilling = true;
                             SkillBehavior();

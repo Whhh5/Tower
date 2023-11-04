@@ -28,7 +28,7 @@ public class Entity_Player_Hero1Data : Entity_HeroBaseData
 
     public override int AtkRange => 5;
     public override float AtkSpeed => 5.0f;
-    public override float AtkSpeedBase => 3.0f;
+    protected override float AtkSpeedBase => 3.0f;
 
     public override void AfterLoad()
     {

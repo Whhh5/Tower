@@ -76,6 +76,7 @@ public abstract class WorldObjectBaseData : DependChunkData
     }
     public virtual void Death()
     {
+        RemoveAllGain();
         m_BuffDic.Clear();
         GTools.WorldWindowMgr.RemoveBloodHint(this);
         GTools.CreateMapNew.ClearChunkElement(this);
@@ -94,7 +95,15 @@ public abstract class WorldObjectBaseData : DependChunkData
     public float CriticalChance { get; private set; } = 0.2f;
     // 暴击倍数, 相当于攻击的多少倍 1 - n
     public float CriticalMultiple { get; private set; } = 2;
+    // 攻击范围
+    protected int m_AddAtkRange = 0;
+    public virtual int AtkRangeBase { get; } = 1;
+    public int CurAtkRange => AtkRangeBase + m_AddAtkRange;
 
+    public void ChangeAttackRange(int f_AddAtkRange)
+    {
+        m_AddAtkRange += f_AddAtkRange;
+    }
     public void ChangeHarm(float f_Ratio)
     {
         m_AddHarm += f_Ratio;
@@ -140,9 +149,9 @@ public abstract class WorldObjectBaseData : DependChunkData
     public virtual int AtkAddMagic => 30;
     public virtual int MaxMagic { get; private set; } = 653;
     public float MagicPercent => (float)CurrentMagic / MaxMagic;
-    public virtual int DefenceBase => 20;
-    private float m_AddDefence = 0;
-    public int CurDefence => Mathf.Clamp(Mathf.CeilToInt(DefenceBase * (1 + m_AddDefence)), 1, 300);
+    public virtual int DefenceBase => 0;
+    private int m_AddDefence = 0;
+    public int CurDefence => DefenceBase + m_AddDefence;
     public virtual int ChangeBlood(ChangeBloodData f_Data)
     {
         var value = CurrentBlood + f_Data.ChangeValue;
@@ -176,7 +185,7 @@ public abstract class WorldObjectBaseData : DependChunkData
     {
         m_AddMaxBlood += f_Ratio;
     }
-    public virtual void ChangeDefence(float f_Ratio)
+    public virtual void ChangeDefence(int f_Ratio)
     {
         m_AddDefence += f_Ratio;
     }
@@ -254,23 +263,25 @@ public abstract class WorldObjectBaseData : DependChunkData
 
     public void AddGain(EGainType f_GainType, WorldObjectBaseData f_Initiator)
     {
-        if (TableMgr.Ins.TryGetGainInfo(f_GainType, out var gainInfo))
+        if (!TableMgr.Ins.TryGetGainInfo(f_GainType, out var gainInfo))
         {
-            if (!m_CurGainList.TryGetValue(gainInfo.GainView, out var list))
-            {
-                list = new();
-                m_CurGainList.Add(gainInfo.GainView, list);
-            }
-            if (list.TryGetValue(f_GainType, out var gain))
-            {
-                gain.Reset();
-            }
-            else
-            {
-                var gainData = gainInfo.CreateGain(f_Initiator, this);
-                gainData.StartExecute();
-                list.Add(f_GainType, gainData);
-            }
+            return;
+        }
+        if (!m_CurGainList.TryGetValue(gainInfo.GainView, out var list))
+        {
+            list = new();
+            m_CurGainList.Add(gainInfo.GainView, list);
+        }
+        if (list.TryGetValue(f_GainType, out var gain))
+        {
+            gain.Reset();
+        }
+        else
+        {
+            var gainData = gainInfo.CreateGain(f_Initiator, this);
+            gainData.StartExecute();
+            list.Add(f_GainType, gainData);
+            GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(gainData));
         }
     }
     public void RemoveGain(EGainType f_GainType)
@@ -294,6 +305,17 @@ public abstract class WorldObjectBaseData : DependChunkData
         }
     }
 
+    public void RemoveAllGain()
+    {
+        foreach (var item in m_CurGainList)
+        {
+            foreach (var data in item.Value)
+            {
+                data.Value.StopExecute();
+            }
+        }
+        m_CurGainList.Clear();
+    }
     public void UpdateGain()
     {
 
@@ -358,13 +380,10 @@ public abstract class WorldObjectBaseData : DependChunkData
     }
 
     // 当前动画播放速度
-    public virtual float AtkSpeedBase { get; } = 1;
+    protected virtual float AtkSpeedBase { get; } = 1;
     protected float m_AddAtkSpeed = 0;
     public float CurAtkSpeed => AtkSpeedBase * (1 + m_AddAtkSpeed);
 
-    public virtual int AtkRangeBase { get; } = 1;
-    protected int m_AddAtkRange = 0;
-    public int CurAtkRange => AtkRangeBase + m_AddAtkRange;
 
 
     public float CurAnimaSpeed => Mathf.Clamp(AtkSpeedBase * (1 + m_AddAtkSpeed), 0.1f, 10);

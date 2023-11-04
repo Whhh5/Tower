@@ -8,7 +8,7 @@ public class Effect_Buff_WeatherBuffDefenceData : Effect_BuffBaseData
     protected override float IntervalTime => base.IntervalTime + 100000;
     protected override float UnitTime => base.UnitTime + 1000000;
 
-    private float m_AddDefence = 3.0f;
+    private int m_AddDefence = 3;
     public override void StartExecute()
     {
         m_Target.ChangeDefence(m_AddDefence);

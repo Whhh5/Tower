@@ -24,16 +24,47 @@ public interface IBuffUtil
 public class BuffInsData
 {
     public bool Active = true;
-    public WorldObjectBaseData ObjData = null;
-    public Dictionary<EBuffView, Effect_BuffBaseData> BuffData = null;
+    public WorldObjectBaseData Target = null;
+    public Dictionary<EBuffView, EntityGainBaseData> BuffData = null;
+    public void AddBuff(EGainType f_BuffType, WorldObjectBaseData f_Initiator)
+    {
+        if (!GTools.TableMgr.TryGetGainInfo(f_BuffType, out var buffInfo))
+        {
+            return;
+        }
+        var buffData = buffInfo.CreateGain(f_Initiator, Target);
+    }
 }
 public class BuffMgr : Singleton<BuffMgr>
 {
     private Dictionary<WorldObjectBaseData, BuffInsData> m_BuffDatas = new();
 
-    public void AddBuff()
+    private void AddObjBuffList(WorldObjectBaseData f_ObjTarget )
     {
 
+    }
+    private void RemoveObjBuffList()
+    {
+
+    }
+    public bool AddBuff(WorldObjectBaseData f_Intiator, WorldObjectBaseData f_Target, EGainType f_BuffType)
+    {
+        if (!GTools.TableMgr.TryGetGainData(f_BuffType, out var buffInfo))
+        {
+            return false;
+        }
+        if (!m_BuffDatas.TryGetValue(f_Target, out var buffInsData))
+        {
+            buffInsData = new()
+            {
+                Active = true,
+                BuffData = new(),
+                Target = f_Target,
+            };
+            m_BuffDatas.Add(f_Target, buffInsData);
+        }
+        buffInsData.AddBuff(f_BuffType, f_Intiator);
+        return true;
     }
     public void RemoveBuff()
     {

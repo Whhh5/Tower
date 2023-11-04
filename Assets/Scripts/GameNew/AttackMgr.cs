@@ -16,7 +16,7 @@ public class AttackMgr : Singleton<AttackMgr>
         {
 
             var hitCondition = f_Target.IsHitConditoin();
-            var damageValue = f_Value;
+            var damageValue = f_Value < 0 ? Mathf.Min(-1, f_Value + f_Target.CurDefence) : f_Value;
             string hintTex;
             if (hitCondition.Result == EResult.Succeed)
             {
@@ -28,7 +28,7 @@ public class AttackMgr : Singleton<AttackMgr>
                 };
                 f_Target.ChangeBlood(data);
                 WorldWindowMgr.Ins.UpdateBloodHint(f_Target);
-                 hintTex = $"{damageValue}";
+                hintTex = $"{damageValue}";
 
 
                 f_Initiator.ExecuteGainAsync(EBuffView.Collect);

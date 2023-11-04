@@ -232,6 +232,30 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
     }
     public override void Awake()
     {
+       //m_HeroCradPool.Clear();
+       // for (int i = 0; i < (int)EHeroCardType.EnumCount; i++)
+       // {
+       //     var type = (EHeroCardType)i;
+       //     if (TableMgr.Ins.TryGetHeroCradInfo(type, out var info))
+       //     {
+       //         if (!m_HeroCradPool.TryGetValue(info.QualityLevel, out var value))
+       //         {
+       //             value = new();
+       //             m_HeroCradPool.Add(info.QualityLevel, value);
+       //         }
+
+       //         var poolInfo = new HeroCradPoolInfo(type);
+       //         value.Add(type, poolInfo);
+       //     }
+       // } 
+
+
+        InitHeroCradList();
+    }
+    public void InitCardPoolList()
+    {
+        m_CurCradList.Clear();
+        m_CurCradViewList.Clear();
         m_HeroCradPool.Clear();
         for (int i = 0; i < (int)EHeroCardType.EnumCount; i++)
         {
@@ -248,9 +272,6 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
                 value.Add(type, poolInfo);
             }
         }
-
-
-        InitHeroCradList();
     }
 
     public bool TryGetCurCardInfo(EHeroCardType f_BuyTarget, out HeroCradPoolInfo f_Result)
@@ -642,6 +663,7 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
         }
         heroData.MoveToChunk(f_ChunkData.ChunkIndex);
         heroData.SetPosition(f_ChunkData.WorldPosition);
+        GTools.FormationMgr.FormationDetection(heroData);
         data.ClearHeroCard();
     }
     public void WarSeatUpClick(Entity_ChunkWarSeatData f_ChunkData)

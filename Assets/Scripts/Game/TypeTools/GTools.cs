@@ -100,6 +100,7 @@ public static class GTools
     public static CreateMapNew CreateMapNew => CreateMapNew.Ins;
     public static HeroCardPoolMgr HeroCardPoolMgr => HeroCardPoolMgr.Ins;
     public static AttackMgr AttackMgr => AttackMgr.Ins;
+    public static FormationMgr FormationMgr => FormationMgr.Ins;
     #endregion
 
     #region Mono 静态类
@@ -385,5 +386,9 @@ public static class ExtendFunction
             return true;
         }
         return false;
+    }
+    public static void InflictionGain(this WorldObjectBaseData f_ObjData, WorldObjectBaseData f_Recipient, EGainType f_GainType)
+    {
+        IGainUtil.InflictionGain(f_GainType, f_ObjData, f_Recipient);
     }
 }

@@ -38,8 +38,8 @@ public abstract class Entity_Monster_WarriorBaseData : Entity_MonsterBaseNewData
                     this.EntityDamage(m_CurAttackTarget, null, -1);
                 }
                 var goSilder = (value - goValue) / (1 - goValue);
-                pos = Vector2.Lerp(curPos, startPos, goSilder);
-                up = Vector2.Lerp(curUp, startUp, goSilder);
+                pos = Vector2.Lerp(curPos, WeaponStartPos, goSilder);
+                up = Vector2.Lerp(curUp, WeaponStartUp, goSilder);
             }
             pos.z = WeaponStartPos.z;
             up.z = WeaponStartUp.z;

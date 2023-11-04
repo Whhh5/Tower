@@ -39,14 +39,18 @@ public enum EGainType : ushort
     Weather_Default5,
     Weather_Default6,
 
+    AttackHarm1,
+    AttackSpeed1,
+    AttackRange1,
+    Deffense1,
 
     EnumCount,
 }
 public interface IGainUtil
 {
-    public static void InflictionGain(EGainType f_GainView, WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Recipient)
+    public static void InflictionGain(EGainType f_GainType, WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Recipient)
     {
-        f_Recipient.AddGain(f_GainView, f_Initiator ?? MonsterMgr.Ins.GodEntityData);
+        f_Recipient.AddGain(f_GainType, f_Initiator ?? MonsterMgr.Ins.GodEntityData);
     }
     public static void RemoteGain(EGainType f_GainView, WorldObjectBaseData f_Recipient)
     {
@@ -63,7 +67,7 @@ public abstract class EntityGainBaseData : UnityObjectData
     protected WorldObjectBaseData m_Recipient = null;
     protected WorldObjectBaseData m_Initiator = null;
     protected int m_Probability = 0;
-    protected abstract float DurationTime { get; }
+    protected virtual float DurationTime { get; } = 0;
     protected virtual float IntervalTime { get; } = 1.0f;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.Effect;
@@ -89,9 +93,9 @@ public abstract class EntityGainBaseData : UnityObjectData
 
     public virtual void StopExecute()
     {
-        ILoadPrefabAsync.UnLoad(this);
         m_IsExecute = false;
         GTools.LifecycleMgr.RemoveUpdate(this);
+        ILoadPrefabAsync.UnLoad(this);
     }
 
     public void Reset()
@@ -108,10 +112,11 @@ public abstract class EntityGainBaseData : UnityObjectData
             return;
         }
         var randomNum = GTools.MathfMgr.GetRandomValue(0, 100);
-        if (randomNum <= m_Probability)
-        {
-            ExecuteContext(randomNum);
-        }
+        //if (randomNum <= m_Probability)
+        //{
+
+        //}
+        ExecuteContext(randomNum);
     }
     public abstract void ExecuteContext(int f_CurProbability);
     public abstract Vector3 GetPosiion();
@@ -128,7 +133,7 @@ public abstract class EntityGainBaseData : UnityObjectData
         base.OnUpdate();
         if (DurationTime > 0 && Time.time > m_EndTime)
         {
-            StopExecute();
+            m_Recipient.RemoveGain(GainType);
         }
         switch (GainView)
         {
@@ -148,7 +153,7 @@ public abstract class EntityGainBaseData : UnityObjectData
     }
 }
 
-public abstract class EntityGainBase: ObjectPoolBase
+public abstract class EntityGainBase : ObjectPoolBase
 {
 
 }
