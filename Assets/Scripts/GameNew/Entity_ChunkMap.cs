@@ -2,6 +2,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public interface IWorldObjectType
@@ -15,11 +16,12 @@ public class Entity_ChunkMapData : UnityObjectData
 
     }
     public int ChunkIndex { get; private set; }
-    public override AssetKey AssetPrefabID => AssetKey.Entity_ChunkMap;
+    public override EAssetKey AssetPrefabID => EAssetKey.Entity_ChunkMap;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.None;
 
     public EWorldObjectType CurChunkObjType { get; private set; }
+    public Entity_ChunkMap EntityTarget => GetCom<Entity_ChunkMap>();
 
 
     private Dictionary<EWorldObjectType, List<DependChunkData>> m_ObjDataList = new();
@@ -53,10 +55,15 @@ public class Entity_ChunkMapData : UnityObjectData
             return false;
         }
         var result = list.Remove(f_Obj);
+        if (f_Obj is WorldObjectBaseData objData)
+        {
+            objData.HideAttackRange();
+        }
         if (result && list.Count == 0)
         {
             m_ObjDataList.Remove(objType);
         }
+        CurChunkObjType &= ~objType;
         return result;
     }
     public bool IsPass()
@@ -66,6 +73,22 @@ public class Entity_ChunkMapData : UnityObjectData
     public bool IsExistObj(EWorldObjectType f_DetectionTarget)
     {
         return (CurChunkObjType & f_DetectionTarget) != EWorldObjectType.None;
+    }
+    public bool IsExistObj(ELayer f_Layer, out List<DependChunkData> f_Result)
+    {
+        f_Result = new();
+        foreach (var item in m_ObjDataList)
+        {
+            foreach (var data in item.Value)
+            {
+                if ((data.LayerMask & f_Layer) == 0)
+                {
+                    continue;
+                }
+                f_Result.Add(data);
+            }
+        }
+        return f_Result.Count > 0;
     }
     public bool GetObjectByType(out List<DependChunkData> f_DataList, EWorldObjectType? f_ObjType = null)
     {
@@ -95,6 +118,29 @@ public class Entity_ChunkMapData : UnityObjectData
         }
         return false;
     }
+    public void OnMouseUp()
+    {
+        GTools.HeroCardPoolMgr.PathPointUpClick(this);
+    }
+    public void OnMouseEnter()
+    {
+
+    }
+    public void OnMouseExit()
+    {
+        
+    }
+    public Color BaseColor => Color.white;
+    public Color MainColor = Color.white;
+    public void SetChunkColor(Color? f_Color = null)
+    {
+        var color = f_Color ?? BaseColor;
+        MainColor = color;
+        if (EntityTarget != null)
+        {
+            EntityTarget.SetChunkColor();
+        }
+    }
 }
 public class Entity_ChunkMap : ObjectPoolBase
 {
@@ -108,12 +154,23 @@ public class Entity_ChunkMap : ObjectPoolBase
     private Color m_OriginalColor;
     [SerializeField]
     private Color m_CurColor;
+    [SerializeField]
+    private TextMeshPro m_Txt = null;
 
+    private bool m_IsEnter = false;
     public override async UniTask OnLoadAsync()
     {
         await base.OnLoadAsync();
+    }
+    public override async UniTask OnStartAsync(params object[] f_Params)
+    {
+        await base.OnStartAsync(f_Params);
+
         m_CurColor = m_OriginalColor;
         UpdateColor();
+
+        m_Txt.text = Data.ChunkIndex.ToString();
+        SetChunkColor();
     }
     public override async UniTask OnUnLoadAsync()
     {
@@ -123,11 +180,54 @@ public class Entity_ChunkMap : ObjectPoolBase
 
     private void OnMouseEnter()
     {
+        m_IsEnter = true;
         StartEnter();
+
+        if (Data.GetObjectByType(out var listData, EWorldObjectType.Preson))
+        {
+            foreach (var item in listData)
+            {
+                if (item is not WorldObjectBaseData objData)
+                {
+                    continue;
+                }
+                var color = (objData.LayerMask & ELayer.Player) == ELayer.Player ? Color.green : Color.red;
+                objData.ShowAttackRange(color);
+            }
+        }
+        Data.OnMouseEnter();
     }
     private void OnMouseExit()
     {
+        m_IsEnter = false;
         StopEnter();
+
+        if (Data.GetObjectByType(out var listData, EWorldObjectType.Preson))
+        {
+            foreach (var item in listData)
+            {
+                if (item is not WorldObjectBaseData objData)
+                {
+                    continue;
+                }
+                objData.HideAttackRange();
+            }
+        }
+
+        Data.OnMouseExit();
+    }
+    private void OnMouseUp()
+    {
+
+    }
+
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+        if (m_IsEnter && Input.GetMouseButtonUp(0))
+        {
+            Data.OnMouseUp();
+        }
     }
 
     private void StartEnter()
@@ -164,6 +264,15 @@ public class Entity_ChunkMap : ObjectPoolBase
         foreach (var item in m_SpriteRenders)
         {
             item.color = m_CurColor;
+        }
+    }
+    [SerializeField]
+    private List<SpriteRenderer> m_SetColorList = new();
+    public void SetChunkColor()
+    {
+        foreach (var item in m_SetColorList)
+        {
+            item.color = Data.MainColor;
         }
     }
 }

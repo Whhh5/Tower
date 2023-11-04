@@ -7,10 +7,10 @@ using UnityEngine.Playables;
 
 public class Entity_Player_Default2Data : Person_EnemyData
 {
-    public Entity_Player_Default2Data(int f_Index, int f_TargetIndex, Entity_SpawnPointPlayerData f_TargetSpawnPoint) : base(f_Index, f_TargetIndex, f_TargetSpawnPoint)
+    public Entity_Player_Default2Data() : base()
     {
     }
-    public override AssetKey AssetPrefabID => AssetKey.Entity_Player_Default2;
+    public override EAssetKey AssetPrefabID => EAssetKey.Entity_Player_Default2;
 
     public override ELayer LayerMask => ELayer.Player;
 

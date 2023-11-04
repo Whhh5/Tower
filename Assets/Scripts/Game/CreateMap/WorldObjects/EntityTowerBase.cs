@@ -4,7 +4,7 @@ using UnityEngine;
 
 public abstract class EntityTowerBaseData : WorldObjectBaseData
 {
-    protected EntityTowerBaseData(int f_index, int f_ChunkIndex) : base(f_index, f_ChunkIndex)
+    protected EntityTowerBaseData() : base()
     {
     }
 
@@ -84,7 +84,7 @@ public abstract class EntityTowerBaseData : WorldObjectBaseData
                 break;
             case EPersonStatusType.Attack:
                 {
-                    if (m_AttackTarget != null && GTools.UnityObjectIsActive(m_AttackTarget))
+                    if (m_AttackTarget != null && GTools.UnityObjectIsVaild(m_AttackTarget))
                     {
                         if (false)
                         {
@@ -121,7 +121,7 @@ public abstract class EntityTowerBaseData : WorldObjectBaseData
         switch (CurStatus)
         {
             case EPersonStatusType.Attack:
-                if (GTools.UnityObjectIsActive(m_AttackTarget))
+                if (GTools.UnityObjectIsVaild(m_AttackTarget))
                 {
                     AttackTarget();
                 }

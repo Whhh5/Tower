@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Entity_Player_Hero1Data : Entity_HeroBaseData
 {
-    public Entity_Player_Hero1Data(int f_Index, int f_TargetIndex, EHeroCradStarLevel f_StarLevel) : base(f_Index, f_TargetIndex, f_StarLevel)
+    public Entity_Player_Hero1Data(EHeroCradStarLevel f_StarLevel) : base(f_StarLevel)
     {
 
     }
@@ -15,7 +15,7 @@ public class Entity_Player_Hero1Data : Entity_HeroBaseData
 
     public override ELayer AttackLayerMask => ELayer.Enemy;
 
-    public override AssetKey AssetPrefabID => AssetKey.Entity_Player_Hero1;
+    public override EAssetKey AssetPrefabID => EAssetKey.Entity_Player_Hero1;
 
     public override EHeroCardType HeroCradType => EHeroCardType.Hero1;
 
@@ -28,7 +28,7 @@ public class Entity_Player_Hero1Data : Entity_HeroBaseData
 
     public override int AtkRange => 5;
     public override float AtkSpeed => 5.0f;
-    public override float AtkSpeedBase { get => 3.0f; set => base.AtkSpeedBase = value; }
+    public override float AtkSpeedBase => 3.0f;
 
     public override void AfterLoad()
     {

@@ -8,7 +8,7 @@ public class Effect_Gain_Volccano3Data : EntityGainBaseData
 
     public override EBuffView GainView => EBuffView.Interval;
 
-    public override AssetKey AssetPrefabID => AssetKey.Effect_Gain_Volccano3;
+    public override EAssetKey AssetPrefabID => EAssetKey.Effect_Gain_Volccano3;
 
     protected override float DurationTime => 0;
 

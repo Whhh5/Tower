@@ -12,7 +12,7 @@ public class Hero3SkillEffectData : EntityEffectBaseData
         m_HarmValue = f_HarmValue;
 
     }
-    public override AssetKey AssetPrefabID => AssetKey.Hero3SkillEffect;
+    public override EAssetKey AssetPrefabID => EAssetKey.Hero3SkillEffect;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.Effect;
 

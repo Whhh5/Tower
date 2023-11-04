@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Effect_Buff_WeatherBuffDefenceData : Effect_BuffBaseData
 {
-    public override AssetKey AssetPrefabID => AssetKey.Effect_Buff_WeatherBuffDefence;
+    public override EAssetKey AssetPrefabID => EAssetKey.Effect_Buff_WeatherBuffDefence;
     protected override float IntervalTime => base.IntervalTime + 100000;
     protected override float UnitTime => base.UnitTime + 1000000;
 

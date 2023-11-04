@@ -14,7 +14,7 @@ public class Emitter_GuidedMissileBaseCommonData: Emitter_GuidedMissileBaseData
         SetPosition(f_TargetEntity.WeaponPoint);
     }
 
-    public override AssetKey AssetPrefabID => AssetKey.Emitter_GuidedMissileBaseCommon;
+    public override EAssetKey AssetPrefabID => EAssetKey.Emitter_GuidedMissileBaseCommon;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.Effect;
 

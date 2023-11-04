@@ -9,7 +9,7 @@ public class EmitterElement_SwordLowData : WeaponElementBaseData
     {
         Initiator = f_Initiator;
     }
-    public override AssetKey AssetPrefabID => AssetKey.EmitterElement_SwordLow;
+    public override EAssetKey AssetPrefabID => EAssetKey.EmitterElement_SwordLow;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.Effect;
 }

@@ -10,11 +10,11 @@ public class EffMoveData
 }
 public class Entity_Player_Hero2Data : Entity_HeroBaseData
 {
-    public Entity_Player_Hero2Data(int f_Index, int f_TargetIndex, EHeroCradStarLevel f_HeroStarLvevl) : base(f_Index, f_TargetIndex, f_HeroStarLvevl)
+    public Entity_Player_Hero2Data(EHeroCradStarLevel f_HeroStarLvevl) : base(f_HeroStarLvevl)
     {
 
     }
-    public override AssetKey AssetPrefabID => AssetKey.Entity_Player_Hero2;
+    public override EAssetKey AssetPrefabID => EAssetKey.Entity_Player_Hero2;
 
     private Entity_Player_Hero2 Target => GetCom<Entity_Player_Hero2>();
 

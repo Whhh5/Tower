@@ -9,7 +9,7 @@ public class Entity_WeatherGainViewData : UnityObjectData
     {
     }
 
-    public override AssetKey AssetPrefabID => AssetKey.Entity_WeatherGainView;
+    public override EAssetKey AssetPrefabID => EAssetKey.Entity_WeatherGainView;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.Wall;
 }

@@ -5,14 +5,14 @@ using UnityEngine;
 public abstract class Entity_SpawnPointData : WorldObjectBaseData
 {
 
-    public Entity_SpawnPointData(int f_Index, int f_ChunkIndex, EDirection f_Direction) : base(f_Index, f_ChunkIndex)
+    public Entity_SpawnPointData(EDirection f_Direction) : base()
     {
         DoorDirection = f_Direction;
     }
     public override EEntityType EntityType => EEntityType.Item;
     public override EWorldObjectType ObjectType => EWorldObjectType.Construction;
 
-    public override AssetKey AssetPrefabID => AssetKey.SpawnPointMonster1;
+    public override EAssetKey AssetPrefabID => EAssetKey.SpawnPointMonster1;
 
     public EDirection DoorDirection { get; private set; }
     // π÷ŒÔ¡–±Ì

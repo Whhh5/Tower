@@ -8,7 +8,7 @@ public class UISkillInfoData : UnityObjectData
     public UISkillInfoData() : base(0)
     {
     }
-    public override AssetKey AssetPrefabID => AssetKey.UISkillInfo;
+    public override EAssetKey AssetPrefabID => EAssetKey.UISkillInfo;
     public override EWorldObjectType ObjectType => EWorldObjectType.Effect;
 
     public Entity_HeroBaseData TargetObject = null;
@@ -61,7 +61,7 @@ public class UISkillInfoData : UnityObjectData
     {
         base.OnUpdate();
 
-        if (GTools.UnityObjectIsActive(TargetObject))
+        if (GTools.UnityObjectIsVaild(TargetObject))
         {
             var uguiPos = IUIUtil.GetUGUIPosByWorld(TargetObject.PointUp + new Vector3(0, 2.0f, 0), true);
             var worldPos = IUIUtil.GetWorldPosBuyUGUIPos(uguiPos);

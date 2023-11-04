@@ -20,6 +20,16 @@ public class BarrierData
 {
     public Vector2Int Index;
 }
+public class LevelEnergyCrystalData
+{
+    public int StartIndex;
+    public EQualityType Quality;
+}
+public class LevelMonsterData
+{
+    public int StartIndex;
+    public EHeroCardType MonsterType;
+}
 [CreateAssetMenu(fileName = "NewMapData", menuName = "ScriptableObject/MapData", order = 0)]
 public class MapConfig : SerializedScriptableObject
 {
@@ -27,7 +37,8 @@ public class MapConfig : SerializedScriptableObject
     public float MapChunkLength;
     public Vector2 MapChunkInterval;
     public Dictionary<EBarrierType, List<BarrierData>> BarrierData = new();
-
+    public Dictionary<int, LevelEnergyCrystalData> EnergyCrystalData = new();
+    public Dictionary<int, List<LevelMonsterData>> MonsterData = new();
 
     public int WarSeatCount;
     public int WarSeatRowCount;
@@ -39,4 +50,9 @@ public class MapConfig : SerializedScriptableObject
     public int LevelUpdateExpenditure;
     [Header("游戏初始金币")]
     public int LevelInitGlod;
+
+    [Space(50), Header("刷出技能数量")]
+    public int CardSkillCount;
+    [Header("技能出现的概率")]
+    public float CardSkillProbability;
 }

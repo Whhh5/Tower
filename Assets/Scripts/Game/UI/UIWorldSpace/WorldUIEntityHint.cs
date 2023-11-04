@@ -13,7 +13,7 @@ public class WorldUIEntityHintData : UnityObjectData
         TargetEntity = f_Target;
     }
 
-    public override AssetKey AssetPrefabID => AssetKey.WorldUIEntityHint;
+    public override EAssetKey AssetPrefabID => EAssetKey.WorldUIEntityHint;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.None;
     public override bool IsUpdateEnable => true;

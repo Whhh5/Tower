@@ -9,7 +9,7 @@ public class Entity_Gain_Laubch1Data : EntityGainBaseData
 
     protected override float DurationTime => 20;
 
-    public override AssetKey AssetPrefabID => AssetKey.Entity_Gain_Laubch1;
+    public override EAssetKey AssetPrefabID => EAssetKey.Entity_Gain_Laubch1;
 
     public override void Initialization(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Recipient)
     {

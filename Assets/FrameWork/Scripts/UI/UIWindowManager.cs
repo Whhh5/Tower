@@ -210,6 +210,7 @@ namespace B1.UI
         #endregion
 
         #region 加载 load
+        private Dictionary<int, UIWindow> m_CurAllWindows = new();
         /// <summary>
         /// 加载一个 UI window 窗口
         /// </summary>
@@ -224,6 +225,7 @@ namespace B1.UI
             if (result.result == true && result.obj != null)
             {
                 window = result.obj;
+                m_CurAllWindows.Add(window.GetInstanceID(), window);
                 var parent = GetUIRootAsync(window.AppRoot);
                 window.transform.SetParent(parent);
                 window.Rect.NormalFullScene();
@@ -253,9 +255,22 @@ namespace B1.UI
         /// <returns></returns>
         public async UniTask UnloadWindowAsync(UIWindow f_Obj)
         {
+            if (m_CurAllWindows.ContainsKey(f_Obj.GetInstanceID()))
+            {
+                m_CurAllWindows.Remove(f_Obj.GetInstanceID());
+            }
             await AssetsMgr.Ins.UnLoadPrefabAsync(f_Obj.AssetName, EAssetLable.Prefab, f_Obj);
 
             LogWarning($"卸载窗口    f_EWindow = {f_Obj.AssetName} ");
+
+        }
+        public async void CloseAllWindow()
+        {
+            foreach (var item in m_CurAllWindows)
+            {
+                await AssetsMgr.Ins.UnLoadPrefabAsync(item.Value.AssetName, EAssetLable.Prefab, item.Value);
+            }
+            m_CurAllWindows.Clear();
 
         }
         #endregion

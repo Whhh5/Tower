@@ -16,6 +16,7 @@ public class GlobalEventMgr : Singleton<GlobalEventMgr>, IEventSystem
 
     public void ReceptionEvent(EEventSystemType f_Event, EventSystemParamData f_Params)
     {
+        return;
         switch (f_Event)
         {
             case EEventSystemType.CreateHero:

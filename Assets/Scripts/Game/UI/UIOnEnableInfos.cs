@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class UIOnEnableInfosShowData : EventSystemParamData
 {
-    public AssetKey IconKey;
+    public EAssetKey IconKey;
     public string Name;
 }
 public class UIOnEnableInfos : MonoBehaviour, IEventSystem
@@ -23,7 +23,7 @@ public class UIOnEnableInfos : MonoBehaviour, IEventSystem
     [SerializeField]
     private Image m_IconImg = null;
 
-    private AssetKey m_CurIconKey = AssetKey.None;
+    private EAssetKey m_CurIconKey = EAssetKey.None;
 
     private void Awake()
     {
@@ -89,7 +89,7 @@ public class UIOnEnableInfos : MonoBehaviour, IEventSystem
 
     public void ExitClick()
     {
-        m_CurIconKey = AssetKey.None;
+        m_CurIconKey = EAssetKey.None;
         DOTween.Kill(DGID);
         DOTween.To(() => 0.0f, value =>
           {
@@ -117,7 +117,7 @@ public class UIOnEnableInfos : MonoBehaviour, IEventSystem
     }
     private void Update()
     {
-        if (m_CurIconKey == AssetKey.None)
+        if (m_CurIconKey == EAssetKey.None)
         {
             return;
         }

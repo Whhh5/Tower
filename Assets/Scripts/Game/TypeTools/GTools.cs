@@ -82,13 +82,13 @@ public static class GTools
     public static TableMgr TableMgr => TableMgr.Ins;
     public static TerrainMgr TerrainMgr => TerrainMgr.Ins;
     public static WeatherMgr WeatherMgr => WeatherMgr.Ins;
-    public static WorldMapMgr WorldMapMgr  => WorldMapMgr.Ins; 
-    public static PlayerMgr PlayerMgr => PlayerMgr.Ins; 
+    public static WorldMapMgr WorldMapMgr => WorldMapMgr.Ins;
+    public static PlayerMgr PlayerMgr => PlayerMgr.Ins;
     public static CameraMgr CameraMgr => CameraMgr.Ins;
     public static HeroIncubatorPoolMgr HeroIncubatorPoolMgr => HeroIncubatorPoolMgr.Ins;
     public static MonsterMgr MonsterMgr => MonsterMgr.Ins;
     public static UIMgr UIMgr => UIMgr.Ins;
-    public static WorldWindowMgr WorldWindowMgr => WorldWindowMgr.Ins; 
+    public static WorldWindowMgr WorldWindowMgr => WorldWindowMgr.Ins;
     public static EventSystemMgr EventSystemMgr => EventSystemMgr.Ins;
     public static GlobalEventMgr GlobalEventMgr => GlobalEventMgr.Ins;
     public static CardMgr CardMgr => CardMgr.Ins;
@@ -99,6 +99,7 @@ public static class GTools
     public static LoadAssetManager LoadAssetManager => LoadAssetManager.Ins;
     public static CreateMapNew CreateMapNew => CreateMapNew.Ins;
     public static HeroCardPoolMgr HeroCardPoolMgr => HeroCardPoolMgr.Ins;
+    public static AttackMgr AttackMgr => AttackMgr.Ins;
     #endregion
 
     #region Mono 静态类
@@ -218,12 +219,16 @@ public static class GTools
         f_Task.Invoke();
     }
 
-    public static bool UnityObjectIsActive(UnityObjectData f_UnityObject)
+    public static bool UnityObjectIsVaild(UnityObjectData f_UnityObject)
     {
         var result = f_UnityObject != null && f_UnityObject.CurStatus != EPersonStatusType.Die;
         return result;
     }
-
+    public static bool WorldObjectIsActive(WorldObjectBaseData f_UnityObject)
+    {
+        var result = f_UnityObject != null && f_UnityObject.GetObjBehaviorStatus();
+        return result;
+    }
     public static void FloaterHint(string f_Context)
     {
         Debug.Log(f_Context);
@@ -269,5 +274,116 @@ public static class ExtendFunction
     public static bool MoveToChunk(this DependChunkData f_ependData, int f_ChunkIndex)
     {
         return GTools.CreateMapNew.MoveToChunk(f_ependData, f_ChunkIndex);
+    }
+    public static void AddChunkColor(this UnityObjectData f_ObjData, int f_Index, Color? f_Color = null)
+    {
+        var color = f_Color ?? Color.green;
+        GTools.CreateMapNew.AddChunkColor(f_ObjData, f_Index, color);
+    }
+    public static void ClearChunkColor(this UnityObjectData f_ObjData, int f_Index)
+    {
+        GTools.CreateMapNew.ClearChunkColor(f_ObjData, f_Index);
+    }
+    public static void ShowAttackRange(this WorldObjectBaseData f_ObjData, Color? f_Color = null)
+    {
+        var index = f_ObjData.CurrentIndex;
+        var atkRange = f_ObjData.CurAtkRange;
+        var color = f_Color ?? Color.green;
+
+        if (!GTools.CreateMapNew.TryGetRangeChunkByIndex(index, out var listIndex, null, false, atkRange))
+        {
+            return;
+        }
+        foreach (var item in listIndex)
+        {
+            f_ObjData.AddChunkColor(item, color);
+        }
+    }
+    public static void HideAttackRange(this WorldObjectBaseData f_ObjData)
+    {
+        var index = f_ObjData.CurrentIndex;
+        var atkRange = f_ObjData.CurAtkRange;
+
+        if (!GTools.CreateMapNew.TryGetRangeChunkByIndex(index, out var listIndex, null, false, atkRange))
+        {
+            return;
+        }
+        foreach (var item in listIndex)
+        {
+            f_ObjData.ClearChunkColor(item);
+        }
+    }
+    public static bool TryGetRandomNearTarget(this WorldObjectBaseData f_ObjData, out WorldObjectBaseData f_Target)
+    {
+        return GTools.CreateMapNew.TryGetRandomNearTarget(f_ObjData.CurrentIndex, f_ObjData.AttackLayerMask, f_ObjData.CurAtkRange, out f_Target);
+    }
+    public static bool TryGetRandomEnemy(this WorldObjectBaseData f_ObjData, out List<WorldObjectBaseData> f_ResultList)
+    {
+        return GTools.CreateMapNew.TryGetRandomTargetByWorldObjectType(f_ObjData.CurrentIndex, f_ObjData.AttackLayerMask, out f_ResultList, f_ObjData.CurAtkRange);
+    }
+    public static bool TryGetRandomTeam(this WorldObjectBaseData f_ObjData, out List<WorldObjectBaseData> f_ResultList, int f_Range)
+    {
+        return GTools.CreateMapNew.TryGetRandomTargetByWorldObjectType(f_ObjData.CurrentIndex, f_ObjData.LayerMask, out f_ResultList, f_Range);
+    }
+    public static bool TryGetRandomEnemy(this WorldObjectBaseData f_ObjData, int f_Range, out List<WorldObjectBaseData> f_ResultList)
+    {
+        return GTools.CreateMapNew.TryGetRandomTargetByWorldObjectType(f_ObjData.CurrentIndex, f_ObjData.AttackLayerMask, out f_ResultList, f_Range);
+    }
+    public static void EntityDamage(this WorldObjectBaseData f_ObjData, WorldObjectBaseData f_Target, int? f_Harm = null , int f_AddIsMagic = -1)
+    {
+        GTools.AttackMgr.EntityDamage(f_ObjData, f_Target, f_Harm ?? -f_ObjData.CurHarm, f_AddIsMagic);
+    }
+    public static bool TryGetNearTarget(this WorldObjectBaseData f_ObjData, EWorldObjectType f_ObjType, out WorldObjectBaseData f_Target)
+    {
+        f_Target = null;
+        if (GTools.CreateMapNew.TryGetAllObject(f_ObjType, out var list))
+        {
+            var pathNodeCount = int.MaxValue;
+            foreach (var item in list)
+            {
+                if (item is not WorldObjectBaseData objData)
+                {
+                    continue;
+                }
+                if (!GTools.UnityObjectIsVaild(objData))
+                {
+                    continue;
+                }
+                if (!GTools.WorldObjectIsActive(objData))
+                {
+                    continue;
+                }
+                if (!PathManager.Ins.TryGetAStarPath(f_ObjData.CurrentIndex, item.CurrentIndex, out var pathList, f_ObjData.ExtraCondition))
+                {
+                    continue;
+                }
+                if (pathNodeCount > pathList.Count)
+                {
+                    pathNodeCount = pathList.Count;
+                    f_Target = objData;
+                }
+            }
+        }
+        return f_Target != null;
+    }
+    private static bool ExtraCondition(this WorldObjectBaseData f_ObjData, int f_ChunkIndex)
+    {
+        if (!GTools.CreateMapNew.TryGetChunkData(f_ChunkIndex, out var chunkData))
+        {
+            return false;
+        }
+        if (chunkData.IsPass() || chunkData.IsExistObj(f_ObjData.AttackLayerMask, out var _))
+        {
+            return true;
+        }
+        return false;
+    }
+    public static bool TryGetPath(this WorldObjectBaseData f_ObjData, int f_TargetIndex, out ListStack<PathElementData> f_ChunkList)
+    {
+        if (PathManager.Ins.TryGetAStarPath(f_ObjData.CurrentIndex, f_TargetIndex, out f_ChunkList, f_ObjData.ExtraCondition))
+        {
+            return true;
+        }
+        return false;
     }
 }

@@ -13,7 +13,7 @@ public class Entity_Chunk1Data : UnityObjectData
     }
     public override EWorldObjectType ObjectType => EWorldObjectType.None;
 
-    public override AssetKey AssetPrefabID => AssetKey.Chunk1;
+    public override EAssetKey AssetPrefabID => EAssetKey.Chunk1;
     public override void AfterLoad()
     {
         base.AfterLoad();

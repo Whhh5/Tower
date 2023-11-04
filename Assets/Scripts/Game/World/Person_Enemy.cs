@@ -8,10 +8,8 @@ using UnityEngine;
 
 public abstract class Person_EnemyData : WorldObjectBaseData
 {
-    public Person_EnemyData(int f_Index, int f_TargetIndex, Entity_SpawnPointData f_TargetSpawnPoint) : base(f_Index, f_TargetSpawnPoint.CurrentIndex)
+    public Person_EnemyData() : base()
     {
-        SpawnPointData = f_TargetSpawnPoint;
-        TargetIndex = f_TargetIndex;
         CurStatus = EPersonStatusType.None;
     }
 
@@ -20,7 +18,6 @@ public abstract class Person_EnemyData : WorldObjectBaseData
     public int StartIndex { get; protected set; }
     public int TargetIndex { get; protected set; }
     public int CurTargetIndex { get; protected set; }
-    public Entity_SpawnPointData SpawnPointData { get; protected set; }
     public Person_Enemy TargetMonster => GetCom<Person_Enemy>();
     public override EWorldObjectType ObjectType => EWorldObjectType.Preson;
     public ListStack<PathElementData> m_PathPoint = null;
@@ -70,7 +67,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
                 break;
             case EPersonStatusType.Attack:
                 {
-                    if (GTools.UnityObjectIsActive(m_CurTarget)
+                    if (GTools.UnityObjectIsVaild(m_CurTarget)
                         && WorldMapMgr.Ins.IsInNearByObject(CurrentIndex, m_CurTarget, AtkRange))
                     {
                         if (MagicPercent >= 1)
@@ -152,7 +149,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
     {
         get => PathCondition.GetCondition(AssetPrefabID, out var condition)
             ? condition
-            : PathCondition.GetCondition(AssetKey.Person_Enemy, out condition)
+            : PathCondition.GetCondition(EAssetKey.Person_Enemy, out condition)
                 ? condition
                 : condition;
     }
@@ -325,7 +322,7 @@ public abstract class Person_EnemyData : WorldObjectBaseData
     public override void AttackTarget()
     {
         base.AttackTarget();
-        if (GTools.UnityObjectIsActive(m_CurTarget))
+        if (GTools.UnityObjectIsVaild(m_CurTarget))
         {
             GTools.MathfMgr.EntityDamage(this, m_CurTarget, EDamageType.Physical, -CurHarm, false);
             GTools.WorldWindowMgr.CreateAttackEffect(m_CurTarget.CentralPoint, EAttackEffectType.Default1);

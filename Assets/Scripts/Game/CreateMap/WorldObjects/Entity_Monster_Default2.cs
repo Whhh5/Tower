@@ -6,10 +6,10 @@ using UnityEngine.Playables;
 
 public class Entity_Monster_Default2Data : Person_EnemyData
 {
-    public Entity_Monster_Default2Data(int f_Index, int f_TargetIndex, Entity_SpawnPointMonsterData f_TargetSpawnPoint) : base(f_Index, f_TargetIndex, f_TargetSpawnPoint)
+    public Entity_Monster_Default2Data() : base()
     {
     }
-    public override AssetKey AssetPrefabID => AssetKey.Entity_Monster_Default2;
+    public override EAssetKey AssetPrefabID => EAssetKey.Entity_Monster_Default2;
 
     protected override int AtkRange => base.AtkRange + 1;
 

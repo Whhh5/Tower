@@ -9,7 +9,7 @@ public abstract class Effect_BuffBaseData : UnityObjectData
     {
     }
 
-    public abstract override AssetKey AssetPrefabID { get; }
+    public abstract override EAssetKey AssetPrefabID { get; }
 
     public override EWorldObjectType ObjectType => EWorldObjectType.Effect;
 
@@ -74,7 +74,7 @@ public abstract class Effect_BuffBaseData : UnityObjectData
         m_StartTime = GTools.CurTime;
 
 
-        while (m_CurSupCount < m_SuperpositionCount && GTools.UnityObjectIsActive(m_Target))
+        while (m_CurSupCount < m_SuperpositionCount && GTools.UnityObjectIsVaild(m_Target))
         {
             await GTools.WaitSecondAsync(CurIntervalTime);
 

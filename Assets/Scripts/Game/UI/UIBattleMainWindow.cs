@@ -196,7 +196,7 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
             });
         }
     }
-    private void CreateSelectCardItem(int f_Index, string f_Name, Color f_QuaColor, int f_Expenditure, AssetKey f_Icon, Action f_ClickEvent)
+    private void CreateSelectCardItem(int f_Index, string f_Name, Color f_QuaColor, int f_Expenditure, EAssetKey f_Icon, Action f_ClickEvent)
     {
         var item = m_ItemList[f_Index];
         m_Content.GetComponent<HorizontalLayoutGroup>().enabled = true;
@@ -304,7 +304,7 @@ public class UIBattleMainWindow : MonoBehaviour, IUpdateBase
                 Item = null;
             }
         }
-        public async void SetIcon(AssetKey f_AssetKey)
+        public async void SetIcon(EAssetKey f_AssetKey)
         {
             if (GTools.TableMgr.TryGetAssetPath(f_AssetKey, out var path))
             {

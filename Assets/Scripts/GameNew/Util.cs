@@ -8,6 +8,7 @@ public enum EChildName
     Txt_Title,
     Txt_Name,
     Txt_Level,
+    Txt_Count,
     Txt_GoldCount,
 
     Tran_Icon1,

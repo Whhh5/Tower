@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Effect_Buff_AddBloodData : Effect_BuffBaseData
 {
-    public override AssetKey AssetPrefabID => AssetKey.Effect_Buff_AddBlood;
+    public override EAssetKey AssetPrefabID => EAssetKey.Effect_Buff_AddBlood;
 
     public override void Initialization(WorldObjectBaseData f_Original, WorldObjectBaseData f_Target)
     {

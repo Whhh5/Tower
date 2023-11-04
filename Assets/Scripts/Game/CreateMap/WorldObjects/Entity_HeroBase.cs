@@ -50,7 +50,7 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
         Pause,
         Stop,
     }
-    public Entity_HeroBaseData(int f_index, int f_ChunkIndex, EHeroCradStarLevel f_HeroStarLvevl) : base(f_index, f_ChunkIndex)
+    public Entity_HeroBaseData(EHeroCradStarLevel f_HeroStarLvevl) : base()
     {
 
     }
@@ -128,7 +128,7 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
                         var value = Vector3.MoveTowards(Forward, CurAttackTarget.WorldPosition - WorldPosition, Time.deltaTime * 10);
                         SetForward(value);
                     }
-                    if (!GTools.UnityObjectIsActive(CurAttackTarget)
+                    if (!GTools.UnityObjectIsVaild(CurAttackTarget)
                         || Vector3.Distance(CurAttackTarget.WorldPosition, WorldPosition) > AtkRange * 2)
                     {
                         SetPersonStatus(EPersonStatusType.Idle);
@@ -221,7 +221,7 @@ public abstract class Entity_HeroBaseData : WorldObjectBaseData
                         foreach (var target in targets)
                         {
                             var dis = Vector3.Magnitude(target.Value.WorldPosition - WorldPosition);
-                            if (GTools.UnityObjectIsActive(target.Value) && minDis > dis)
+                            if (GTools.UnityObjectIsVaild(target.Value) && minDis > dis)
                             {
                                 if (target.Value is WorldObjectBaseData worldObj)
                                 {

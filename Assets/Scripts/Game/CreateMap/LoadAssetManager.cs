@@ -14,9 +14,9 @@ public class LoadAssetManager : Singleton<LoadAssetManager>
         public Dictionary<int, T> objs = new();
         public LoadAsyncResult result = LoadAsyncResult.Start;
     }
-    Dictionary<AssetKey, LoadData<ObjectPoolBase>> m_DicAsset = new();
+    Dictionary<EAssetKey, LoadData<ObjectPoolBase>> m_DicAsset = new();
 
-    public async UniTask<T> LoadAsync<T>(AssetKey f_ID) where T : ObjectPoolBase
+    public async UniTask<T> LoadAsync<T>(EAssetKey f_ID) where T : ObjectPoolBase
     {
         if (!GTools.TableMgr.TryGetAssetPath(f_ID, out var path)) return null;
         T com = null;

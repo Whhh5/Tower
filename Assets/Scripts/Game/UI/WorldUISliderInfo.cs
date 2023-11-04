@@ -20,7 +20,7 @@ public class WorldUISliderInfoData : UnityObjectData
         m_Condition = FCondition;
         GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(this));
     }
-    public override AssetKey AssetPrefabID => AssetKey.WorldUISliderInfo;
+    public override EAssetKey AssetPrefabID => EAssetKey.WorldUISliderInfo;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.Effect;
 
@@ -30,7 +30,7 @@ public class WorldUISliderInfoData : UnityObjectData
     {
         base.OnUpdate();
 
-        if (GTools.UnityObjectIsActive(m_TargetEntity) && m_Condition.Invoke())
+        if (GTools.UnityObjectIsVaild(m_TargetEntity) && m_Condition.Invoke())
         {
             var value = m_UpdateValue.Invoke();
             UpdateSlider(value);

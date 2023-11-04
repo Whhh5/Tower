@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Entity_MassifData : DependChunkData
 {
-    public Entity_MassifData() : base(0, 0)
+    public Entity_MassifData() : base()
     {
     }
 
@@ -12,7 +12,7 @@ public class Entity_MassifData : DependChunkData
 
     public override ELayer AttackLayerMask => ELayer.Default;
 
-    public override AssetKey AssetPrefabID => AssetKey.Entity_Marrizer;
+    public override EAssetKey AssetPrefabID => EAssetKey.Entity_Marrizer;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.Wall;
 

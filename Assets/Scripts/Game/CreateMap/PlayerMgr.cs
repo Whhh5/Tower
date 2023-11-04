@@ -61,6 +61,10 @@ public class PlayerMgr : Singleton<PlayerMgr>, IUpdateBase
 
         GTools.LifecycleMgr.AddUpdate(this);
     }
+    public int GetGoldCount()
+    {
+        return CurGoldNum;
+    }
     public void SetGoldCount(int f_Count)
     {
         CurGoldNum = f_Count;

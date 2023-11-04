@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Effect_Buff_PoisonData : Effect_BuffBaseData
 {
-    public override AssetKey AssetPrefabID => AssetKey.Effect_Buff_Poison;
+    public override EAssetKey AssetPrefabID => EAssetKey.Effect_Buff_Poison;
 
     public override void Initialization(WorldObjectBaseData f_Original, WorldObjectBaseData f_Target)
     {

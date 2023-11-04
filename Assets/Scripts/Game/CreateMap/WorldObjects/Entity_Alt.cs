@@ -9,16 +9,16 @@ public sealed class WorldObjectBaseObjectDataAlt : DependChunkData
 {
     public float Height { get; private set; }
 
-    public WorldObjectBaseObjectDataAlt(int f_Index, int f_TargetChunk, float f_Height) : base(f_Index, f_TargetChunk)
+    public WorldObjectBaseObjectDataAlt() : base()
     {
-        Height = f_Height;
+        
     }
 
-    private Dictionary<int, AssetKey> m_DicAsset = new()
+    private Dictionary<int, EAssetKey> m_DicAsset = new()
     {
-        { 0, AssetKey.Alp1 },
-        { 1, AssetKey.Alp2 },
-        { 2, AssetKey.Alp3 },
+        { 0, EAssetKey.Alp1 },
+        { 1, EAssetKey.Alp2 },
+        { 2, EAssetKey.Alp3 },
     };
 
     public override EWorldObjectType ObjectType => EWorldObjectType.Wall;
@@ -27,7 +27,7 @@ public sealed class WorldObjectBaseObjectDataAlt : DependChunkData
 
     public override ELayer AttackLayerMask => ELayer.Default;
 
-    public override AssetKey AssetPrefabID
+    public override EAssetKey AssetPrefabID
     {
         get {
             var index = Random.Range(0, m_DicAsset.Count);

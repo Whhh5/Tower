@@ -24,7 +24,7 @@ public class Emitter_SwordHeightData: Emitter_SwordBaseData
     private float m_OneElementRadius = 1.0f;
     private EWeaponStatus m_CurWeaponStatus = EWeaponStatus.Attack;
 
-    public override AssetKey AssetPrefabID => AssetKey.Emitter_SwordHeight;
+    public override EAssetKey AssetPrefabID => EAssetKey.Emitter_SwordHeight;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.Effect;
 

@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class Entity_Tower_Dark1Data : EntityTowerBaseData
 {
-    public Entity_Tower_Dark1Data(int f_index, int f_ChunkIndex) : base(f_index, f_ChunkIndex)
+    public Entity_Tower_Dark1Data() : base()
     {
     }
 
-    public override AssetKey AssetPrefabID => AssetKey.Entity_Tower_Dark1;
+    public override EAssetKey AssetPrefabID => EAssetKey.Entity_Tower_Dark1;
 
     public override ETowerType TowerType =>  ETowerType.Dark;
 

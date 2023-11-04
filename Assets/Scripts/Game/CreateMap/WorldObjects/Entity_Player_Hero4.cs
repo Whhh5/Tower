@@ -5,13 +5,13 @@ using UnityEngine.Playables;
 
 public class Entity_Player_Hero4Data : Entity_HeroBaseData
 {
-    public Entity_Player_Hero4Data(int f_Index, int f_ChunkIndex, EHeroCradStarLevel f_HeroStarLvevl) : base(f_Index, f_ChunkIndex, f_HeroStarLvevl)
+    public Entity_Player_Hero4Data(EHeroCradStarLevel f_HeroStarLvevl) : base(f_HeroStarLvevl)
     {
 
     }
     public override EEntityType EntityType => EEntityType.Dragon;
 
-    public override AssetKey AssetPrefabID => AssetKey.Entity_Player_Hero4;
+    public override EAssetKey AssetPrefabID => EAssetKey.Entity_Player_Hero4;
 
     public override int AtkRange => 5;
     public override float AtkSpeed => 10;

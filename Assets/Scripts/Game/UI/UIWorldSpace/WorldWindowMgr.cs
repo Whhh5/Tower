@@ -38,9 +38,11 @@ public class WorldWindowMgr : Singleton<WorldWindowMgr>
     public Dictionary<int, WorldUIEntityHintData> m_BloodData = new();
     public void UpdateBloodHint(WorldObjectBaseData f_Target)
     {
-
+        if (!GTools.UnityObjectIsVaild(f_Target))
+        {
+            return;
+        }
         var key = f_Target.LoadKey;
-
         if (!m_BloodData.TryGetValue(key, out var value))
         {
             value = new(key, f_Target);

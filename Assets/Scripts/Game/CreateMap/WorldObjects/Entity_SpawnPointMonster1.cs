@@ -6,7 +6,7 @@ using UnityEngine;
 public class Entity_SpawnPointMonsterData : Entity_SpawnPointData
 {
 
-    public Entity_SpawnPointMonsterData(int f_Index, int f_ChunkIndex, EDirection f_Direction) : base(f_Index, f_ChunkIndex, f_Direction)
+    public Entity_SpawnPointMonsterData(EDirection f_Direction) : base(f_Direction)
     {
 
     }
@@ -15,7 +15,7 @@ public class Entity_SpawnPointMonsterData : Entity_SpawnPointData
 
     public override ELayer AttackLayerMask => ELayer.Player;
 
-    public override AssetKey AssetPrefabID => AssetKey.SpawnPointMonster1;
+    public override EAssetKey AssetPrefabID => EAssetKey.SpawnPointMonster1;
 }
 public class Entity_SpawnPointMonster1 : Entity_SpawnPoint
 {

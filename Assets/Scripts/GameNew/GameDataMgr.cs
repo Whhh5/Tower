@@ -10,7 +10,7 @@ public class GameDataMgr : Singleton<GameDataMgr>
     {
         base.Awake();
 
-        if (GTools.TableMgr.TryGetAssetPath(AssetKey.Cache_GameData, out var path))
+        if (GTools.TableMgr.TryGetAssetPath(EAssetKey.Cache_GameData, out var path))
         {
             m_GameData = await GTools.LoadAssetManager.LoadAsync<GameData>(path);
         }
@@ -32,7 +32,11 @@ public class GameDataMgr : Singleton<GameDataMgr>
     public static float WarSeatLength => m_MapConfig.WarSeatLength;
     public static Vector2 WarSeatInterval => m_MapConfig.WarSeatInterval;
     public static int LevelUpdateExpenditure => m_MapConfig.LevelUpdateExpenditure;
-    public int LevelInitGlod => m_MapConfig.LevelInitGlod;
+    public static int LevelInitGlod => m_MapConfig.LevelInitGlod; 
+    public static int CardSkillCount => m_MapConfig.CardSkillCount; 
+    public static float CardSkillProbability => m_MapConfig.CardSkillProbability;
+    public static Dictionary<int, LevelEnergyCrystalData> EnergyCrystalData => m_MapConfig.EnergyCrystalData;
+    public static Dictionary<int, List<LevelMonsterData>> MonsterData => m_MapConfig.MonsterData;
     private void UpdateMapCfg(MapConfig f_MapCfg)
     {
         m_MapConfig = f_MapCfg;
@@ -61,8 +65,9 @@ public class GameDataMgr : Singleton<GameDataMgr>
         UpdateMapCfg(asset);
         EnterNextLevel();
 
-        GTools.CreateMapNew.CreateMap();
+        GTools.CreateMapNew.CreateMapData();
         GTools.HeroCardPoolMgr.CreateHeroCardPoolConfig();
+        GTools.PlayerMgr.SetGoldCount(0);
     }
     private void EnterNextLevel()
     {

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Entity_IncubatorBaseData : WorldObjectBaseData
 {
-    public Entity_IncubatorBaseData() : base(-1, -1)
+    public Entity_IncubatorBaseData() : base()
     {
     }
     public override EEntityType EntityType => EEntityType.Incubator;
@@ -50,7 +50,7 @@ public class Entity_IncubatorBaseData : WorldObjectBaseData
         });
     }
 
-    public override AssetKey AssetPrefabID => AssetKey.Entity_Incubator1;
+    public override EAssetKey AssetPrefabID => EAssetKey.Entity_Incubator1;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.Preson;
 

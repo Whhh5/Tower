@@ -10,20 +10,59 @@ public class Entity_ChunkWarSeatData : UnityObjectData
     {
     }
 
-    public override AssetKey AssetPrefabID => AssetKey.Entity_ChunkWarSeat;
+    public override EAssetKey AssetPrefabID => EAssetKey.Entity_ChunkWarSeat;
     public override EWorldObjectType ObjectType => EWorldObjectType.None;
     public EHeroCardType CurHeroType = EHeroCardType.EnumCount;
+    private Entity_HeroBaseNewData m_CurHeroCardData;
     public void InitData()
     {
 
     }
-    public void AddHeroCard()
+    public bool TryGetHeroData(out Entity_HeroBaseNewData f_HeroData)
     {
-
+        f_HeroData = m_CurHeroCardData;
+        return f_HeroData != null;
+    }
+    public void SetCurHeroCard(Entity_HeroBaseNewData f_HeroData)
+    {
+        m_CurHeroCardData = f_HeroData;
     }
     public void ClearHeroCard()
     {
+        m_CurHeroCardData = null;
+    }
+    public void OnMouseDown()
+    {
+        GTools.HeroCardPoolMgr.EnterWarSeat(this);
 
+        DOTween.Kill(DgID);
+        if (m_CurHeroCardData == null)
+        {
+            return;
+        }
+        m_CurHeroCardData.SetPosition(WorldPosition);
+    }
+    public void OnMouseUp()
+    {
+        GTools.HeroCardPoolMgr.WarSeatUpClick(this);
+    }
+    private string DgID => "Entity_ChunkWarSeatData";
+    public void ResetHeroPosition(bool f_Force = false)
+    {
+        if (m_CurHeroCardData == null)
+        {
+            return;
+        }
+        DOTween.Kill(DgID);
+        var curPos = m_CurHeroCardData.WorldPosition;
+        var time = f_Force ? 0.0f : Vector3.Distance(WorldPosition, curPos);
+        DOTween.To(() => 0.0f, value =>
+          {
+              var target = Vector3.Lerp(curPos, WorldPosition, value);
+              m_CurHeroCardData.SetPosition(target);
+
+          }, 1.0f, time)
+            .SetId(DgID);
     }
 }
 public class Entity_ChunkWarSeat : ObjectPoolBase
@@ -38,7 +77,8 @@ public class Entity_ChunkWarSeat : ObjectPoolBase
     private Color m_OriginalColor;
     [SerializeField]
     private Color m_CurColor;
-    
+    [SerializeField]
+    private bool m_IsEnter = false;
     public override async UniTask OnLoadAsync()
     {
         await base.OnLoadAsync();
@@ -50,14 +90,32 @@ public class Entity_ChunkWarSeat : ObjectPoolBase
         await base.OnUnLoadAsync();
     }
 
+    private void OnMouseDown()
+    {
+        Data.OnMouseDown();
+    }
+    private void OnMouseUp()
+    {
 
+    }
     private void OnMouseEnter()
     {
+        m_IsEnter = true;
         StartEnter();
     }
     private void OnMouseExit()
     {
+        m_IsEnter = false;
         StopEnter();
+    }
+
+    public override void OnUpdate()
+    {
+        base.OnUpdate();
+        if (m_IsEnter && Input.GetMouseButtonUp(0))
+        {
+            Data.OnMouseUp();
+        }
     }
 
     private void StartEnter()

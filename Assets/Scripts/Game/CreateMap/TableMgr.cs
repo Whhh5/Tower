@@ -4,6 +4,30 @@ using UnityEngine;
 using B1;
 using System;
 
+public enum EDGWorldID
+{
+    HeroMove,
+    HeroAttack,
+    HeroSkill,
+
+    EnergyCrystalEffect,
+
+    MonsterMove,
+    MonsterAttack,
+
+    EffectMove,
+}
+public enum EHeroVocationalType
+{
+    // 战士
+    Warrior,
+    // 法师
+    Enchanter,
+    // 辅助
+    Supplementary,
+    // 坦克
+    MainTank,
+}
 [Flags]
 public enum EWorldObjectType : int
 {
@@ -23,7 +47,9 @@ public enum EWorldObjectType : int
     // 特效
     Effect = 1 << 5,
 
-    EnumCount = 6,
+    Resource = 1 << 6,
+
+    EnumCount = 7,
 }
 public enum EEntityType
 {
@@ -33,6 +59,7 @@ public enum EEntityType
     Dragon = 1 << 1,
     Incubator = 1 << 2,
     Item = 1 << 3,
+    EnergyCrystal = 1 << 4,
     God = 1 << 20,
     Max = int.MaxValue,
 }
@@ -56,6 +83,13 @@ public enum EHeroCardType
 
 
     EnumCount,
+}
+public enum EMonsterCardType
+{
+
+    Monster_1,
+    Monster_2,
+    Monster_3,
 }
 public enum EQualityType
 {
@@ -146,7 +180,7 @@ public enum EWeatherEventType
     Ice3,
     EnumCount,
 }
-public enum AssetKey
+public enum EAssetKey
 {
     None,
     Alp1,
@@ -160,6 +194,7 @@ public enum AssetKey
     Entity_Monster_Default1,
     Entity_Player_Default1,
     Entity_Monster_Default2,
+    Entity_Monster_Default3,
     Entity_Player_Default2,
     Entity_Player_Default3,
     TestTimeLine,
@@ -188,6 +223,19 @@ public enum AssetKey
     Entity_Marrizer,
     Entity_ChunkMap,
     Entity_ChunkWarSeat,
+    Entity_EnergyCrystal1,
+    Entity_EnergyCrystal1_Effect1,
+    Entity_Supplementary1SkillEffect,
+
+    Entity_Hero_Warrior1,
+    Entity_Enchanter1,
+    Entity_Supplementary1,
+    Entity_MainTank1,
+    Entity_Monster_Warrior1,
+
+    Entity_Default_SkillElement,
+    Entity_Hero_Warrior1_SkillElement,
+    Entity_Hero_EnchanterEffect,
 
     // 特效
     Hero3SkillEffect,
@@ -337,6 +385,7 @@ public enum AssetKey
     Icon_Hero4,
     Icon_Monster1,
     Icon_Monster2,
+    Icon_Monster3,
 
     // 地图配置文件
     Cfg_MapLevel1,
@@ -420,8 +469,8 @@ public class HeroCradInfo
 {
     public EQualityType QualityLevel;
     public string Name;
-    public AssetKey AssetKet;
-    public AssetKey Icon;
+    public EAssetKey AssetKet;
+    public EAssetKey Icon;
     public PersonSkillInfos SkillLinkInfos;
     public HeroCradLevelInfo QualityLevelInfo => TableMgr.Ins.TryGetHeroCradLevelInfo(QualityLevel, out var levelInfo) ? levelInfo : null;
 
@@ -440,9 +489,9 @@ public class HeroIncubatorInfo : IExpenditure
 {
     public string Name;
     public EQualityType QualityLevel;
-    public AssetKey IncubatorPrefab;
-    public AssetKey IncubatorIcon;
-    public AssetKey IncubatorDebrisIcon;
+    public EAssetKey IncubatorPrefab;
+    public EAssetKey IncubatorIcon;
+    public EAssetKey IncubatorDebrisIcon;
     public float IncubatorTime; // 孵化时间
     public int ExpenditureBase; // 花费
 
@@ -577,6 +626,14 @@ public class PlayerLevelInfo
         return curLevelPro.Count > 0;
     }
 }
+public class EnergyCrystalInfo
+{
+    public EQualityType Quality;
+    public string Name;
+    public int Blood;
+    public int BlastValue;
+    public int BlastRange;
+}
 public enum EPlayerLevel
 {
     Level1,
@@ -598,12 +655,12 @@ public class WeatherGainInfo
     public string Name;
     public EWeatherGainType WeatherGainType;
     public string Describe;
-    public Dictionary<EWeatherGainLevel, AssetKey> IconDic;
+    public Dictionary<EWeatherGainLevel, EAssetKey> IconDic;
     public bool TryGetWeatherGainData(out WeatherGainData f_Result, EWeatherGainLevel f_Level = EWeatherGainLevel.Level1)
     {
         return GTools.TableMgr.TryGetWeatherGainData(WeatherGainType, out f_Result, f_Level);
     }
-    public bool TryGetWeatherGainIcon(out AssetKey f_Result, EWeatherGainLevel f_Level = EWeatherGainLevel.Level1)
+    public bool TryGetWeatherGainIcon(out EAssetKey f_Result, EWeatherGainLevel f_Level = EWeatherGainLevel.Level1)
     {
         return IconDic.TryGetValue(f_Level, out f_Result);
     }
@@ -631,7 +688,7 @@ public class EquipmentInfo
     public PersonPropertys Property;
     public string EquipmentName;
     public string Describes;
-    public AssetKey IconKey;
+    public EAssetKey IconKey;
 }
 public interface IExpenditure
 {
@@ -656,7 +713,7 @@ public class PersonSkillInfo : IExpenditure
     public EQualityType Quality;
     public int ExpenditureBase; // 花费金币
     public int Expenditure => ExpenditureBase; // 花费金币
-    public AssetKey IconKey;
+    public EAssetKey IconKey;
 
     // 技能剪辑
     //public AssetKey AnimaClip => PersonSkillType;
@@ -789,202 +846,217 @@ public class TableMgr : Singleton<TableMgr>
     static string EquipmentIconParentPath = "Icons/Equipment";
     static string HeroIconParentPath = "Icons/HeroIcon";
     static string MapConfigParentPath = "Config/Map";
-    private static readonly Dictionary<AssetKey, string> m_DicIDToPath = new()
+    private static readonly Dictionary<EAssetKey, string> m_DicIDToPath = new()
     {
-        { AssetKey.Alp1, "Prefabs/WorldObject/Entity_Alt1" },
-        { AssetKey.Alp2, "Prefabs/WorldObject/Entity_Alt1" },
-        { AssetKey.Alp3, "Prefabs/WorldObject/Entity_Alt1" },
-        { AssetKey.Road1, "Prefabs/WorldObject/Entity_Road1" },
-        { AssetKey.Chunk1, "Prefabs/WorldObject/Entity_Chunk1" },
-        { AssetKey.SpawnPointMonster1, "Prefabs/WorldObject/Entity_SpawnPointMonster1" },
-        { AssetKey.SpawnPointPlayer1, "Prefabs/WorldObject/Entity_SpawnPointPlayer1" },
-        { AssetKey.Entity_Monster_Default1, "Prefabs/WorldObject/Entity_Monster_Default1" },
-        { AssetKey.Entity_Monster_Default2, "Prefabs/WorldObject/Entity_Monster_Default2" },
-        { AssetKey.Entity_Player_Default1, "Prefabs/WorldObject/Entity_Player_Default1" },
-        { AssetKey.Entity_Player_Default2, "Prefabs/WorldObject/Entity_Player_Default2" },
+        { EAssetKey.Alp1, "Prefabs/WorldObject/Entity_Alt1" },
+        { EAssetKey.Alp2, "Prefabs/WorldObject/Entity_Alt1" },
+        { EAssetKey.Alp3, "Prefabs/WorldObject/Entity_Alt1" },
+        { EAssetKey.Road1, "Prefabs/WorldObject/Entity_Road1" },
+        { EAssetKey.Chunk1, "Prefabs/WorldObject/Entity_Chunk1" },
+        { EAssetKey.SpawnPointMonster1, "Prefabs/WorldObject/Entity_SpawnPointMonster1" },
+        { EAssetKey.SpawnPointPlayer1, "Prefabs/WorldObject/Entity_SpawnPointPlayer1" },
+        { EAssetKey.Entity_Monster_Default1, "Prefabs/WorldObject/Entity_Monster_Default1" },
+        { EAssetKey.Entity_Monster_Default2, "Prefabs/WorldObject/Entity_Monster_Default2" },
+        { EAssetKey.Entity_Player_Default1, "Prefabs/WorldObject/Entity_Player_Default1" },
+        { EAssetKey.Entity_Player_Default2, "Prefabs/WorldObject/Entity_Player_Default2" },
 
-        { AssetKey.Entity_Player_Default3, "Prefabs/WorldObject/Entity_Player_Default3" },
-        { AssetKey.Entity_Player_Hero1, "Prefabs/WorldObject/Entity_Player_Hero1" },
-        { AssetKey.Entity_Player_Hero2, "Prefabs/WorldObject/Entity_Player_Hero2" },
-        { AssetKey.Entity_Player_Hero3, "Prefabs/WorldObject/Entity_Player_Hero3" },
-        { AssetKey.Entity_Player_Hero4, "Prefabs/WorldObject/Entity_Player_Hero4" },
+        { EAssetKey.Entity_Player_Default3, "Prefabs/WorldObject/Entity_Player_Default3" },
+        { EAssetKey.Entity_Player_Hero1, "Prefabs/WorldObject/Entity_Player_Hero1" },
+        { EAssetKey.Entity_Player_Hero2, "Prefabs/WorldObject/Entity_Player_Hero2" },
+        { EAssetKey.Entity_Player_Hero3, "Prefabs/WorldObject/Entity_Player_Hero3" },
+        { EAssetKey.Entity_Player_Hero4, "Prefabs/WorldObject/Entity_Player_Hero4" },
 
         // UI Item
-        { AssetKey.UIItem_WeatherGain, "Prefabs/UI/Item/UIItem_WeatherGain" },
-        { AssetKey.UIItem_CurWeatherGain, "Prefabs/UI/Item/UIItem_CurWeatherGain" },
-        { AssetKey.UIItem_Skill, "Prefabs/UI/Item/UIItem_Skill" },
-        { AssetKey.UIItem_Equipment, "Prefabs/UI/Item/UIItem_Equipment" },
+        { EAssetKey.UIItem_WeatherGain, "Prefabs/UI/Item/UIItem_WeatherGain" },
+        { EAssetKey.UIItem_CurWeatherGain, "Prefabs/UI/Item/UIItem_CurWeatherGain" },
+        { EAssetKey.UIItem_Skill, "Prefabs/UI/Item/UIItem_Skill" },
+        { EAssetKey.UIItem_Equipment, "Prefabs/UI/Item/UIItem_Equipment" },
 
         // 防御塔
-        { AssetKey.Entity_Tower_Light1, "Prefabs/WorldObject/Entity_Tower_Light1" },
-        { AssetKey.Entity_Tower_Dark1, "Prefabs/WorldObject/Entity_Tower_Dark1" },
+        { EAssetKey.Entity_Tower_Light1, "Prefabs/WorldObject/Entity_Tower_Light1" },
+        { EAssetKey.Entity_Tower_Dark1, "Prefabs/WorldObject/Entity_Tower_Dark1" },
 
         // 武器
-        { AssetKey.EmitterElement_GuidedMissile, "Prefabs/WorldObject/EmitterElement_GuidedMissile" },
-        { AssetKey.EmitterElement_SwordLow, "Prefabs/WorldObject/EmitterElement_SwordLow" },
-        { AssetKey.Emitter_SwordLow, "Prefabs/WorldObject/Emitter_SwordLow" },
-        { AssetKey.Emitter_SwordHeight, "Prefabs/WorldObject/Emitter_SwordHeight" },
-        { AssetKey.Emitter_GuidedMissileBaseCommon, "Prefabs/WorldObject/Emitter_GuidedMissileBaseCommon" },
-        { AssetKey.Entity_Incubator1, "Prefabs/WorldObject/Entity_Incubator1" },
-        { AssetKey.Entity_Incubator2, "Prefabs/WorldObject/Entity_Incubator2" },
-        { AssetKey.Entity_Incubator3, "Prefabs/WorldObject/Entity_Incubator3" },
-        { AssetKey.Entity_Incubator4, "Prefabs/WorldObject/Entity_Incubator4" },
+        { EAssetKey.EmitterElement_GuidedMissile, "Prefabs/WorldObject/EmitterElement_GuidedMissile" },
+        { EAssetKey.EmitterElement_SwordLow, "Prefabs/WorldObject/EmitterElement_SwordLow" },
+        { EAssetKey.Emitter_SwordLow, "Prefabs/WorldObject/Emitter_SwordLow" },
+        { EAssetKey.Emitter_SwordHeight, "Prefabs/WorldObject/Emitter_SwordHeight" },
+        { EAssetKey.Emitter_GuidedMissileBaseCommon, "Prefabs/WorldObject/Emitter_GuidedMissileBaseCommon" },
+        { EAssetKey.Entity_Incubator1, "Prefabs/WorldObject/Entity_Incubator1" },
+        { EAssetKey.Entity_Incubator2, "Prefabs/WorldObject/Entity_Incubator2" },
+        { EAssetKey.Entity_Incubator3, "Prefabs/WorldObject/Entity_Incubator3" },
+        { EAssetKey.Entity_Incubator4, "Prefabs/WorldObject/Entity_Incubator4" },
 
 
 
-        { AssetKey.TestTimeLine, "Prefabs/TimeLine/TestTimeLine" },
-        { AssetKey.Hero3SkillEffect, "Prefabs/TimeLine/Hero3SkillEffect" },
-        { AssetKey.WorldUIEntityHint, "Prefabs/WorldUI/WorldUIEntityHint" },
-        { AssetKey.WorldUISliderInfo, "Prefabs/WorldUI/WorldUISliderInfo" },
-        { AssetKey.UISkillInfo, "Prefabs/WorldUI/UISkillInfo" },
+        { EAssetKey.TestTimeLine, "Prefabs/TimeLine/TestTimeLine" },
+        { EAssetKey.Hero3SkillEffect, "Prefabs/TimeLine/Hero3SkillEffect" },
+        { EAssetKey.WorldUIEntityHint, "Prefabs/WorldUI/WorldUIEntityHint" },
+        { EAssetKey.WorldUISliderInfo, "Prefabs/WorldUI/WorldUISliderInfo" },
+        { EAssetKey.UISkillInfo, "Prefabs/WorldUI/UISkillInfo" },
 
-        { AssetKey.Entity_Marrizer , "Prefabs/PerfabNew/Entity_Massif" },
-        { AssetKey.Entity_ChunkMap , "Prefabs/PerfabNew/Entity_ChunkMap" },
-        { AssetKey.Entity_ChunkWarSeat, "Prefabs/PerfabNew/Entity_ChunkWarSeat" },
+        { EAssetKey.Entity_Marrizer, "Prefabs/PerfabNew/Entity_Massif" },
+        { EAssetKey.Entity_ChunkMap, "Prefabs/PerfabNew/Entity_ChunkMap" },
+        { EAssetKey.Entity_ChunkWarSeat, "Prefabs/PerfabNew/Entity_ChunkWarSeat" },
+        { EAssetKey.Entity_EnergyCrystal1, "Prefabs/PerfabNew/Entity_EnergyCrystal1" },
+        { EAssetKey.Entity_EnergyCrystal1_Effect1, "Prefabs/PerfabNew/Entity_EnergyCrystal1_Effect1" },
+        { EAssetKey.Entity_Supplementary1SkillEffect, "Prefabs/PerfabNew/Entity_Supplementary1SkillEffect" },
+
+
+        { EAssetKey.Entity_Hero_Warrior1, "Prefabs/PerfabNew/Entity_Hero_Warrior1" },
+        { EAssetKey.Entity_Enchanter1, "Prefabs/PerfabNew/Entity_Enchanter1" },
+        { EAssetKey.Entity_Supplementary1, "Prefabs/PerfabNew/Entity_Supplementary1" },
+        { EAssetKey.Entity_MainTank1, "Prefabs/PerfabNew/Entity_MainTank1" },
+        { EAssetKey.Entity_Monster_Warrior1, "Prefabs/PerfabNew/Entity_Monster_Warrior1" },
+        { EAssetKey.Entity_Hero_Warrior1_SkillElement, "Prefabs/PerfabNew/Entity_Hero_Warrior1_SkillElement" },
+        { EAssetKey.Entity_Hero_EnchanterEffect, "Prefabs/PerfabNew/Entity_Hero_EnchanterEffect" },
+        
+
 
         // 特效
-        { AssetKey.Effect_Buff_Poison, "Prefabs/Effects/Effect_Buff_Poison" },
-        { AssetKey.Effect_Buff_WeatherGainSpeed, "Prefabs/Effects/Effect_Buff_WeatherGainSpeed" },
-        { AssetKey.Effect_Buff_WeatherBuffAttack, "Prefabs/Effects/Effect_Buff_WeatherBuffAttack" },
-        { AssetKey.Effect_Buff_WeatherBuffMaxBlood, "Prefabs/Effects/Effect_Buff_WeatherBuffMaxBlood" },
-        { AssetKey.Effect_Buff_WeatherBuffDefence, "Prefabs/Effects/Effect_Buff_WeatherBuffDefense" },
-        { AssetKey.Entity_Effect_Tower_Light1_Attack, "Prefabs/Effects/Entity_Effect_Tower_Light1_Attack" },
-        { AssetKey.Entity_Effect_Attack_Default1, "Prefabs/Effects/Entity_Effect_Attack_Default1" },
-        { AssetKey.Effect_Buff_AddBlood, "Prefabs/Effects/Effect_Buff_AddBlood" },
-        { AssetKey.Entity_Gain_Laubch1, "Prefabs/Effects/Entity_Gain_Laubch1" },
-        { AssetKey.Entity_Gain_Collect1, "Prefabs/Effects/Entity_Gain_Collect1" },
-        { AssetKey.Effect_Gain_Volccano1, "Prefabs/Effects/Effect_Gain_Volccano1" },
-        { AssetKey.Effect_Gain_Volccano2, "Prefabs/Effects/Effect_Gain_Volccano2" },
-        { AssetKey.Effect_Gain_Volccano3, "Prefabs/Effects/Effect_Gain_Volccano3" },
+        { EAssetKey.Effect_Buff_Poison, "Prefabs/Effects/Effect_Buff_Poison" },
+        { EAssetKey.Effect_Buff_WeatherGainSpeed, "Prefabs/Effects/Effect_Buff_WeatherGainSpeed" },
+        { EAssetKey.Effect_Buff_WeatherBuffAttack, "Prefabs/Effects/Effect_Buff_WeatherBuffAttack" },
+        { EAssetKey.Effect_Buff_WeatherBuffMaxBlood, "Prefabs/Effects/Effect_Buff_WeatherBuffMaxBlood" },
+        { EAssetKey.Effect_Buff_WeatherBuffDefence, "Prefabs/Effects/Effect_Buff_WeatherBuffDefense" },
+        { EAssetKey.Entity_Effect_Tower_Light1_Attack, "Prefabs/Effects/Entity_Effect_Tower_Light1_Attack" },
+        { EAssetKey.Entity_Effect_Attack_Default1, "Prefabs/Effects/Entity_Effect_Attack_Default1" },
+        { EAssetKey.Effect_Buff_AddBlood, "Prefabs/Effects/Effect_Buff_AddBlood" },
+        { EAssetKey.Entity_Gain_Laubch1, "Prefabs/Effects/Entity_Gain_Laubch1" },
+        { EAssetKey.Entity_Gain_Collect1, "Prefabs/Effects/Entity_Gain_Collect1" },
+        { EAssetKey.Effect_Gain_Volccano1, "Prefabs/Effects/Effect_Gain_Volccano1" },
+        { EAssetKey.Effect_Gain_Volccano2, "Prefabs/Effects/Effect_Gain_Volccano2" },
+        { EAssetKey.Effect_Gain_Volccano3, "Prefabs/Effects/Effect_Gain_Volccano3" },
 
         // icon 
-        { AssetKey.BuffIcon_Poison, $"{BuffIconParentPath}/Poison" },
-        { AssetKey.BuffIcon_AddBlood, $"{BuffIconParentPath}/AddBlood" },
-        { AssetKey.Icon_Incubator1, $"{IncubatorIconParentPath}/Icon_Incubator1" },
-        { AssetKey.Icon_IncubatorDebris1, $"{IncubatorIconParentPath}/Icon_IncubatorDebris1" },
-        { AssetKey.Icon_Incubator2, $"{IncubatorIconParentPath}/Icon_Incubator2" },
-        { AssetKey.Icon_IncubatorDebris2, $"{IncubatorIconParentPath}/Icon_IncubatorDebris2" },
-        { AssetKey.Icon_Incubator3, $"{IncubatorIconParentPath}/Icon_Incubator3" },
-        { AssetKey.Icon_IncubatorDebris3, $"{IncubatorIconParentPath}/Icon_IncubatorDebris3" },
-        { AssetKey.Icon_Incubator4, $"{IncubatorIconParentPath}/Icon_Incubator4" },
-        { AssetKey.Icon_IncubatorDebris4, $"{IncubatorIconParentPath}/Icon_IncubatorDebris4" },
+        { EAssetKey.BuffIcon_Poison, $"{BuffIconParentPath}/Poison" },
+        { EAssetKey.BuffIcon_AddBlood, $"{BuffIconParentPath}/AddBlood" },
+        { EAssetKey.Icon_Incubator1, $"{IncubatorIconParentPath}/Icon_Incubator1" },
+        { EAssetKey.Icon_IncubatorDebris1, $"{IncubatorIconParentPath}/Icon_IncubatorDebris1" },
+        { EAssetKey.Icon_Incubator2, $"{IncubatorIconParentPath}/Icon_Incubator2" },
+        { EAssetKey.Icon_IncubatorDebris2, $"{IncubatorIconParentPath}/Icon_IncubatorDebris2" },
+        { EAssetKey.Icon_Incubator3, $"{IncubatorIconParentPath}/Icon_Incubator3" },
+        { EAssetKey.Icon_IncubatorDebris3, $"{IncubatorIconParentPath}/Icon_IncubatorDebris3" },
+        { EAssetKey.Icon_Incubator4, $"{IncubatorIconParentPath}/Icon_Incubator4" },
+        { EAssetKey.Icon_IncubatorDebris4, $"{IncubatorIconParentPath}/Icon_IncubatorDebris4" },
 
         // 天气增益icon
-        { AssetKey.Icon_WeatherGainLevel1Default1, $"{WeatherGainIconParentPath}/Icon_WeatherGainLevel1Default1" },
-        { AssetKey.Icon_WeatherGainLevel2Default1, $"{WeatherGainIconParentPath}/Icon_WeatherGainLevel2Default1" },
-        { AssetKey.Icon_WeatherGainLevel3Default1, $"{WeatherGainIconParentPath}/Icon_WeatherGainLevel3Default1" },
-        { AssetKey.Icon_WeatherGainLevel4Default1, $"{WeatherGainIconParentPath}/Icon_WeatherGainLevel4Default1" },
-        { AssetKey.Icon_WeatherGainLevelMaxDefault1, $"{WeatherGainIconParentPath}/Icon_WeatherGainLevelMaxDefault1" },
+        { EAssetKey.Icon_WeatherGainLevel1Default1, $"{WeatherGainIconParentPath}/Icon_WeatherGainLevel1Default1" },
+        { EAssetKey.Icon_WeatherGainLevel2Default1, $"{WeatherGainIconParentPath}/Icon_WeatherGainLevel2Default1" },
+        { EAssetKey.Icon_WeatherGainLevel3Default1, $"{WeatherGainIconParentPath}/Icon_WeatherGainLevel3Default1" },
+        { EAssetKey.Icon_WeatherGainLevel4Default1, $"{WeatherGainIconParentPath}/Icon_WeatherGainLevel4Default1" },
+        { EAssetKey.Icon_WeatherGainLevelMaxDefault1, $"{WeatherGainIconParentPath}/Icon_WeatherGainLevelMaxDefault1" },
 
         // 天气增益建筑物
-        { AssetKey.Entity_WeatherGainView, "Prefabs/WorldObject/Entity_WeatherGainView" },
+        { EAssetKey.Entity_WeatherGainView, "Prefabs/WorldObject/Entity_WeatherGainView" },
 
         // 技能体表
-        { AssetKey.Icon_Skill_Hero1_Stage1_Default1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default1" },
-        { AssetKey.Icon_Skill_Hero1_Stage1_Default2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default2" },
-        { AssetKey.Icon_Skill_Hero1_Stage1_Default3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default3" },
-        { AssetKey.Icon_Skill_Hero1_Stage1_Default4, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default4" },
-        { AssetKey.Icon_Skill_Hero1_Stage2_Default1_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss1" },
-        { AssetKey.Icon_Skill_Hero1_Stage2_Default1_Loss2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss2" },
-        { AssetKey.Icon_Skill_Hero1_Stage2_Default1_Loss3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss3" },
-        { AssetKey.Icon_Skill_Hero1_Stage2_Default2_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default2_Loss1" },
-        { AssetKey.Icon_Skill_Hero1_Stage2_Default2_Loss2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default2_Loss2" },
-        { AssetKey.Icon_Skill_Hero1_Stage2_Default3_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default3_Loss1" },
-        { AssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height1" },
-        { AssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss1_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height2" },
-        { AssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss1_Height3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height3" },
-        { AssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss2_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss2_Height1" },
-        { AssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss2_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss2_Height2" },
-        { AssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss3_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss3_Height1" },
-        { AssetKey.Icon_Skill_Hero1_Stage3_Default2_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss1_Height1" },
-        { AssetKey.Icon_Skill_Hero1_Stage3_Default2_Loss1_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss1_Height2" },
-        { AssetKey.Icon_Skill_Hero1_Stage3_Default2_Loss2_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss2_Height1" },
-        { AssetKey.Icon_Skill_Hero1_Stage3_Default3_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default3_Loss1_Height1" },
+        { EAssetKey.Icon_Skill_Hero1_Stage1_Default1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default1" },
+        { EAssetKey.Icon_Skill_Hero1_Stage1_Default2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default2" },
+        { EAssetKey.Icon_Skill_Hero1_Stage1_Default3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default3" },
+        { EAssetKey.Icon_Skill_Hero1_Stage1_Default4, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default4" },
+        { EAssetKey.Icon_Skill_Hero1_Stage2_Default1_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss1" },
+        { EAssetKey.Icon_Skill_Hero1_Stage2_Default1_Loss2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss2" },
+        { EAssetKey.Icon_Skill_Hero1_Stage2_Default1_Loss3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss3" },
+        { EAssetKey.Icon_Skill_Hero1_Stage2_Default2_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default2_Loss1" },
+        { EAssetKey.Icon_Skill_Hero1_Stage2_Default2_Loss2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default2_Loss2" },
+        { EAssetKey.Icon_Skill_Hero1_Stage2_Default3_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default3_Loss1" },
+        { EAssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height1" },
+        { EAssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss1_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height2" },
+        { EAssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss1_Height3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height3" },
+        { EAssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss2_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss2_Height1" },
+        { EAssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss2_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss2_Height2" },
+        { EAssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss3_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss3_Height1" },
+        { EAssetKey.Icon_Skill_Hero1_Stage3_Default2_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss1_Height1" },
+        { EAssetKey.Icon_Skill_Hero1_Stage3_Default2_Loss1_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss1_Height2" },
+        { EAssetKey.Icon_Skill_Hero1_Stage3_Default2_Loss2_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss2_Height1" },
+        { EAssetKey.Icon_Skill_Hero1_Stage3_Default3_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default3_Loss1_Height1" },
 
-        { AssetKey.Icon_Skill_Hero2_Stage1_Default1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default1" },
-        { AssetKey.Icon_Skill_Hero2_Stage1_Default2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default2" },
-        { AssetKey.Icon_Skill_Hero2_Stage1_Default3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default3" },
-        { AssetKey.Icon_Skill_Hero2_Stage1_Default4, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default4" },
-        { AssetKey.Icon_Skill_Hero2_Stage2_Default1_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss1" },
-        { AssetKey.Icon_Skill_Hero2_Stage2_Default1_Loss2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss2" },
-        { AssetKey.Icon_Skill_Hero2_Stage2_Default1_Loss3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss3" },
-        { AssetKey.Icon_Skill_Hero2_Stage2_Default2_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default2_Loss1" },
-        { AssetKey.Icon_Skill_Hero2_Stage2_Default2_Loss2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default2_Loss2" },
-        { AssetKey.Icon_Skill_Hero2_Stage2_Default3_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default3_Loss1" },
-        { AssetKey.Icon_Skill_Hero2_Stage3_Default1_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height1" },
-        { AssetKey.Icon_Skill_Hero2_Stage3_Default1_Loss1_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height2" },
-        { AssetKey.Icon_Skill_Hero2_Stage3_Default1_Loss1_Height3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height3" },
-        { AssetKey.Icon_Skill_Hero2_Stage3_Default1_Loss2_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss2_Height1" },
-        { AssetKey.Icon_Skill_Hero2_Stage3_Default1_Loss2_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss2_Height2" },
-        { AssetKey.Icon_Skill_Hero2_Stage3_Default1_Loss3_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss3_Height1" },
-        { AssetKey.Icon_Skill_Hero2_Stage3_Default2_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss1_Height1" },
-        { AssetKey.Icon_Skill_Hero2_Stage3_Default2_Loss1_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss1_Height2" },
-        { AssetKey.Icon_Skill_Hero2_Stage3_Default2_Loss2_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss2_Height1" },
-        { AssetKey.Icon_Skill_Hero2_Stage3_Default3_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default3_Loss1_Height1" },
+        { EAssetKey.Icon_Skill_Hero2_Stage1_Default1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default1" },
+        { EAssetKey.Icon_Skill_Hero2_Stage1_Default2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default2" },
+        { EAssetKey.Icon_Skill_Hero2_Stage1_Default3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default3" },
+        { EAssetKey.Icon_Skill_Hero2_Stage1_Default4, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default4" },
+        { EAssetKey.Icon_Skill_Hero2_Stage2_Default1_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss1" },
+        { EAssetKey.Icon_Skill_Hero2_Stage2_Default1_Loss2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss2" },
+        { EAssetKey.Icon_Skill_Hero2_Stage2_Default1_Loss3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss3" },
+        { EAssetKey.Icon_Skill_Hero2_Stage2_Default2_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default2_Loss1" },
+        { EAssetKey.Icon_Skill_Hero2_Stage2_Default2_Loss2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default2_Loss2" },
+        { EAssetKey.Icon_Skill_Hero2_Stage2_Default3_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default3_Loss1" },
+        { EAssetKey.Icon_Skill_Hero2_Stage3_Default1_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height1" },
+        { EAssetKey.Icon_Skill_Hero2_Stage3_Default1_Loss1_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height2" },
+        { EAssetKey.Icon_Skill_Hero2_Stage3_Default1_Loss1_Height3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height3" },
+        { EAssetKey.Icon_Skill_Hero2_Stage3_Default1_Loss2_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss2_Height1" },
+        { EAssetKey.Icon_Skill_Hero2_Stage3_Default1_Loss2_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss2_Height2" },
+        { EAssetKey.Icon_Skill_Hero2_Stage3_Default1_Loss3_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss3_Height1" },
+        { EAssetKey.Icon_Skill_Hero2_Stage3_Default2_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss1_Height1" },
+        { EAssetKey.Icon_Skill_Hero2_Stage3_Default2_Loss1_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss1_Height2" },
+        { EAssetKey.Icon_Skill_Hero2_Stage3_Default2_Loss2_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss2_Height1" },
+        { EAssetKey.Icon_Skill_Hero2_Stage3_Default3_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default3_Loss1_Height1" },
 
-        { AssetKey.Icon_Skill_Hero3_Stage1_Default1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default1" },
-        { AssetKey.Icon_Skill_Hero3_Stage1_Default2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default2" },
-        { AssetKey.Icon_Skill_Hero3_Stage1_Default3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default3" },
-        { AssetKey.Icon_Skill_Hero3_Stage1_Default4, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default4" },
-        { AssetKey.Icon_Skill_Hero3_Stage2_Default1_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss1" },
-        { AssetKey.Icon_Skill_Hero3_Stage2_Default1_Loss2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss2" },
-        { AssetKey.Icon_Skill_Hero3_Stage2_Default1_Loss3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss3" },
-        { AssetKey.Icon_Skill_Hero3_Stage2_Default2_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default2_Loss1" },
-        { AssetKey.Icon_Skill_Hero3_Stage2_Default2_Loss2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default2_Loss2" },
-        { AssetKey.Icon_Skill_Hero3_Stage2_Default3_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default3_Loss1" },
-        { AssetKey.Icon_Skill_Hero3_Stage3_Default1_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height1" },
-        { AssetKey.Icon_Skill_Hero3_Stage3_Default1_Loss1_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height2" },
-        { AssetKey.Icon_Skill_Hero3_Stage3_Default1_Loss1_Height3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height3" },
-        { AssetKey.Icon_Skill_Hero3_Stage3_Default1_Loss2_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss2_Height1" },
-        { AssetKey.Icon_Skill_Hero3_Stage3_Default1_Loss2_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss2_Height2" },
-        { AssetKey.Icon_Skill_Hero3_Stage3_Default1_Loss3_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss3_Height1" },
-        { AssetKey.Icon_Skill_Hero3_Stage3_Default2_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss1_Height1" },
-        { AssetKey.Icon_Skill_Hero3_Stage3_Default2_Loss1_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss1_Height2" },
-        { AssetKey.Icon_Skill_Hero3_Stage3_Default2_Loss2_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss2_Height1" },
-        { AssetKey.Icon_Skill_Hero3_Stage3_Default3_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default3_Loss1_Height1" },
+        { EAssetKey.Icon_Skill_Hero3_Stage1_Default1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default1" },
+        { EAssetKey.Icon_Skill_Hero3_Stage1_Default2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default2" },
+        { EAssetKey.Icon_Skill_Hero3_Stage1_Default3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default3" },
+        { EAssetKey.Icon_Skill_Hero3_Stage1_Default4, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default4" },
+        { EAssetKey.Icon_Skill_Hero3_Stage2_Default1_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss1" },
+        { EAssetKey.Icon_Skill_Hero3_Stage2_Default1_Loss2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss2" },
+        { EAssetKey.Icon_Skill_Hero3_Stage2_Default1_Loss3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss3" },
+        { EAssetKey.Icon_Skill_Hero3_Stage2_Default2_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default2_Loss1" },
+        { EAssetKey.Icon_Skill_Hero3_Stage2_Default2_Loss2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default2_Loss2" },
+        { EAssetKey.Icon_Skill_Hero3_Stage2_Default3_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default3_Loss1" },
+        { EAssetKey.Icon_Skill_Hero3_Stage3_Default1_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height1" },
+        { EAssetKey.Icon_Skill_Hero3_Stage3_Default1_Loss1_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height2" },
+        { EAssetKey.Icon_Skill_Hero3_Stage3_Default1_Loss1_Height3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height3" },
+        { EAssetKey.Icon_Skill_Hero3_Stage3_Default1_Loss2_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss2_Height1" },
+        { EAssetKey.Icon_Skill_Hero3_Stage3_Default1_Loss2_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss2_Height2" },
+        { EAssetKey.Icon_Skill_Hero3_Stage3_Default1_Loss3_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss3_Height1" },
+        { EAssetKey.Icon_Skill_Hero3_Stage3_Default2_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss1_Height1" },
+        { EAssetKey.Icon_Skill_Hero3_Stage3_Default2_Loss1_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss1_Height2" },
+        { EAssetKey.Icon_Skill_Hero3_Stage3_Default2_Loss2_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss2_Height1" },
+        { EAssetKey.Icon_Skill_Hero3_Stage3_Default3_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default3_Loss1_Height1" },
 
-        { AssetKey.Icon_Skill_Hero4_Stage1_Default1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default1" },
-        { AssetKey.Icon_Skill_Hero4_Stage1_Default2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default2" },
-        { AssetKey.Icon_Skill_Hero4_Stage1_Default3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default3" },
-        { AssetKey.Icon_Skill_Hero4_Stage1_Default4, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default4" },
-        { AssetKey.Icon_Skill_Hero4_Stage2_Default1_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss1" },
-        { AssetKey.Icon_Skill_Hero4_Stage2_Default1_Loss2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss2" },
-        { AssetKey.Icon_Skill_Hero4_Stage2_Default1_Loss3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss3" },
-        { AssetKey.Icon_Skill_Hero4_Stage2_Default2_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default2_Loss1" },
-        { AssetKey.Icon_Skill_Hero4_Stage2_Default2_Loss2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default2_Loss2" },
-        { AssetKey.Icon_Skill_Hero4_Stage2_Default3_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default3_Loss1" },
-        { AssetKey.Icon_Skill_Hero4_Stage3_Default1_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height1" },
-        { AssetKey.Icon_Skill_Hero4_Stage3_Default1_Loss1_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height2" },
-        { AssetKey.Icon_Skill_Hero4_Stage3_Default1_Loss1_Height3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height3" },
-        { AssetKey.Icon_Skill_Hero4_Stage3_Default1_Loss2_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss2_Height1" },
-        { AssetKey.Icon_Skill_Hero4_Stage3_Default1_Loss2_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss2_Height2" },
-        { AssetKey.Icon_Skill_Hero4_Stage3_Default1_Loss3_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss3_Height1" },
-        { AssetKey.Icon_Skill_Hero4_Stage3_Default2_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss1_Height1" },
-        { AssetKey.Icon_Skill_Hero4_Stage3_Default2_Loss1_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss1_Height2" },
-        { AssetKey.Icon_Skill_Hero4_Stage3_Default2_Loss2_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss2_Height1" },
-        { AssetKey.Icon_Skill_Hero4_Stage3_Default3_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default3_Loss1_Height1" },
+        { EAssetKey.Icon_Skill_Hero4_Stage1_Default1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default1" },
+        { EAssetKey.Icon_Skill_Hero4_Stage1_Default2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default2" },
+        { EAssetKey.Icon_Skill_Hero4_Stage1_Default3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default3" },
+        { EAssetKey.Icon_Skill_Hero4_Stage1_Default4, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage1_Default4" },
+        { EAssetKey.Icon_Skill_Hero4_Stage2_Default1_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss1" },
+        { EAssetKey.Icon_Skill_Hero4_Stage2_Default1_Loss2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss2" },
+        { EAssetKey.Icon_Skill_Hero4_Stage2_Default1_Loss3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default1_Loss3" },
+        { EAssetKey.Icon_Skill_Hero4_Stage2_Default2_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default2_Loss1" },
+        { EAssetKey.Icon_Skill_Hero4_Stage2_Default2_Loss2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default2_Loss2" },
+        { EAssetKey.Icon_Skill_Hero4_Stage2_Default3_Loss1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage2_Default3_Loss1" },
+        { EAssetKey.Icon_Skill_Hero4_Stage3_Default1_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height1" },
+        { EAssetKey.Icon_Skill_Hero4_Stage3_Default1_Loss1_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height2" },
+        { EAssetKey.Icon_Skill_Hero4_Stage3_Default1_Loss1_Height3, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss1_Height3" },
+        { EAssetKey.Icon_Skill_Hero4_Stage3_Default1_Loss2_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss2_Height1" },
+        { EAssetKey.Icon_Skill_Hero4_Stage3_Default1_Loss2_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss2_Height2" },
+        { EAssetKey.Icon_Skill_Hero4_Stage3_Default1_Loss3_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default1_Loss3_Height1" },
+        { EAssetKey.Icon_Skill_Hero4_Stage3_Default2_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss1_Height1" },
+        { EAssetKey.Icon_Skill_Hero4_Stage3_Default2_Loss1_Height2, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss1_Height2" },
+        { EAssetKey.Icon_Skill_Hero4_Stage3_Default2_Loss2_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default2_Loss2_Height1" },
+        { EAssetKey.Icon_Skill_Hero4_Stage3_Default3_Loss1_Height1, $"{SkillIconParentPath}/Icon_Skill_Hero1_Stage3_Default3_Loss1_Height1" },
         // 装备图标
-        { AssetKey.Icon_Equipment_Default1, $"{EquipmentIconParentPath}/Icon_Equipment_Default1" },
-        { AssetKey.Icon_Equipment_Default2, $"{EquipmentIconParentPath}/Icon_Equipment_Default2" },
-        { AssetKey.Icon_Equipment_Default3, $"{EquipmentIconParentPath}/Icon_Equipment_Default3" },
-        { AssetKey.Icon_Equipment_Default4, $"{EquipmentIconParentPath}/Icon_Equipment_Default4" },
+        { EAssetKey.Icon_Equipment_Default1, $"{EquipmentIconParentPath}/Icon_Equipment_Default1" },
+        { EAssetKey.Icon_Equipment_Default2, $"{EquipmentIconParentPath}/Icon_Equipment_Default2" },
+        { EAssetKey.Icon_Equipment_Default3, $"{EquipmentIconParentPath}/Icon_Equipment_Default3" },
+        { EAssetKey.Icon_Equipment_Default4, $"{EquipmentIconParentPath}/Icon_Equipment_Default4" },
 
         // 角色图标
-        { AssetKey.Icon_Hero1, $"{HeroIconParentPath}/Icon_Hero1" },
-        { AssetKey.Icon_Hero2, $"{HeroIconParentPath}/Icon_Hero2" },
-        { AssetKey.Icon_Hero3, $"{HeroIconParentPath}/Icon_Hero3" },
-        { AssetKey.Icon_Hero4, $"{HeroIconParentPath}/Icon_Hero4" },
-        { AssetKey.Icon_Monster1, $"{HeroIconParentPath}/Icon_Monster1" },
-        { AssetKey.Icon_Monster2, $"{HeroIconParentPath}/Icon_Monster2" },
+        { EAssetKey.Icon_Hero1, $"{HeroIconParentPath}/Icon_Hero1" },
+        { EAssetKey.Icon_Hero2, $"{HeroIconParentPath}/Icon_Hero2" },
+        { EAssetKey.Icon_Hero3, $"{HeroIconParentPath}/Icon_Hero3" },
+        { EAssetKey.Icon_Hero4, $"{HeroIconParentPath}/Icon_Hero4" },
+        { EAssetKey.Icon_Monster1, $"{HeroIconParentPath}/Icon_Monster1" },
+        { EAssetKey.Icon_Monster2, $"{HeroIconParentPath}/Icon_Monster2" },
+        { EAssetKey.Icon_Monster3, $"{HeroIconParentPath}/Icon_Monster3" },
 
         // 地图配置文件
-        { AssetKey.Cfg_MapLevel1, $"{MapConfigParentPath}/Cfg_MapLevel1" },
-        { AssetKey.Cfg_MapLevel2, $"{MapConfigParentPath}/Cfg_MapLevel2" },
-        { AssetKey.Cfg_MapLevel3, $"{MapConfigParentPath}/Cfg_MapLevel3" },
-        { AssetKey.Cache_GameData, $"{MapConfigParentPath}/Cache_GameData" },
+        { EAssetKey.Cfg_MapLevel1, $"{MapConfigParentPath}/Cfg_MapLevel1" },
+        { EAssetKey.Cfg_MapLevel2, $"{MapConfigParentPath}/Cfg_MapLevel2" },
+        { EAssetKey.Cfg_MapLevel3, $"{MapConfigParentPath}/Cfg_MapLevel3" },
+        { EAssetKey.Cache_GameData, $"{MapConfigParentPath}/Cache_GameData" },
 
     };
-    public bool TryGetAssetPath(AssetKey f_Key, out string f_Result)
+    public bool TryGetAssetPath(EAssetKey f_Key, out string f_Result)
     {
         return m_DicIDToPath.TryGetValue(f_Key, out f_Result);
     }
@@ -1006,8 +1078,8 @@ public class TableMgr : Singleton<TableMgr>
             {
                 QualityLevel = EQualityType.Quality1,
                 Name = "Hero1",
-                AssetKet = AssetKey.Entity_Player_Hero1,
-                Icon = AssetKey.Icon_Hero1,
+                AssetKet = EAssetKey.Entity_Player_Hero1,
+                Icon = EAssetKey.Icon_Hero1,
                 SkillLinkInfos = new()
                 {
                     Count = 4,
@@ -1131,8 +1203,8 @@ public class TableMgr : Singleton<TableMgr>
             {
                 QualityLevel = EQualityType.Quality2,
                 Name = "Hero2",
-                AssetKet = AssetKey.Entity_Player_Hero2,
-                Icon = AssetKey.Icon_Hero2,
+                AssetKet = EAssetKey.Entity_Player_Hero2,
+                Icon = EAssetKey.Icon_Hero2,
                 SkillLinkInfos = new()
                 {
                     Count = 3,
@@ -1145,8 +1217,8 @@ public class TableMgr : Singleton<TableMgr>
             {
                 QualityLevel = EQualityType.Quality3,
                 Name = "Hero3",
-                AssetKet = AssetKey.Entity_Player_Hero3,
-                Icon = AssetKey.Icon_Hero3,
+                AssetKet = EAssetKey.Entity_Player_Hero3,
+                Icon = EAssetKey.Icon_Hero3,
                 SkillLinkInfos = new()
                 {
                     Count = 3,
@@ -1159,8 +1231,8 @@ public class TableMgr : Singleton<TableMgr>
             {
                 QualityLevel = EQualityType.Quality4,
                 Name = "Hero4",
-                AssetKet = AssetKey.Entity_Player_Hero4,
-                Icon = AssetKey.Icon_Hero4,
+                AssetKet = EAssetKey.Entity_Player_Hero4,
+                Icon = EAssetKey.Icon_Hero4,
                 SkillLinkInfos = new()
                 {
                     Count = 3,
@@ -1173,8 +1245,8 @@ public class TableMgr : Singleton<TableMgr>
             {
                 QualityLevel = EQualityType.Quality1,
                 Name = "monster 1",
-                AssetKet = AssetKey.Entity_Monster_Default1,
-                Icon = AssetKey.Icon_Monster1,
+                AssetKet = EAssetKey.Entity_Monster_Default1,
+                Icon = EAssetKey.Icon_Monster1,
                 SkillLinkInfos = new()
                 {
                     Count = 0,
@@ -1187,8 +1259,22 @@ public class TableMgr : Singleton<TableMgr>
             {
                 QualityLevel = EQualityType.Quality1,
                 Name = "monster 2",
-                AssetKet = AssetKey.Entity_Monster_Default2,
-                Icon = AssetKey.Icon_Monster2,
+                AssetKet = EAssetKey.Entity_Monster_Default2,
+                Icon = EAssetKey.Icon_Monster2,
+                SkillLinkInfos = new()
+                {
+                    Count = 1,
+                }
+            }
+        },
+        {
+            EHeroCardType.Monster_Default3,
+            new()
+            {
+                QualityLevel = EQualityType.Quality1,
+                Name = "monster 2",
+                AssetKet = EAssetKey.Entity_Monster_Default3,
+                Icon = EAssetKey.Icon_Monster3,
                 SkillLinkInfos = new()
                 {
                     Count = 1,
@@ -1362,9 +1448,9 @@ public class TableMgr : Singleton<TableMgr>
                 QualityLevel = EQualityType.Quality1,
                 IncubatorTime = 10,
                 ExpenditureBase = 2,
-                IncubatorPrefab = AssetKey.Entity_Incubator1,
-                IncubatorIcon = AssetKey.Icon_Incubator1,
-                IncubatorDebrisIcon = AssetKey.Icon_IncubatorDebris1,
+                IncubatorPrefab = EAssetKey.Entity_Incubator1,
+                IncubatorIcon = EAssetKey.Icon_Incubator1,
+                IncubatorDebrisIcon = EAssetKey.Icon_IncubatorDebris1,
             }
         },
         {
@@ -1375,9 +1461,9 @@ public class TableMgr : Singleton<TableMgr>
                 QualityLevel = EQualityType.Quality2,
                 IncubatorTime = 20,
                 ExpenditureBase = 4,
-                IncubatorPrefab = AssetKey.Entity_Incubator2,
-                IncubatorIcon = AssetKey.Icon_Incubator2,
-                IncubatorDebrisIcon = AssetKey.Icon_IncubatorDebris2,
+                IncubatorPrefab = EAssetKey.Entity_Incubator2,
+                IncubatorIcon = EAssetKey.Icon_Incubator2,
+                IncubatorDebrisIcon = EAssetKey.Icon_IncubatorDebris2,
             }
         },
         {
@@ -1388,9 +1474,9 @@ public class TableMgr : Singleton<TableMgr>
                 QualityLevel = EQualityType.Quality3,
                 IncubatorTime = 30,
                 ExpenditureBase = 6,
-                IncubatorPrefab = AssetKey.Entity_Incubator3,
-                IncubatorIcon = AssetKey.Icon_Incubator3,
-                IncubatorDebrisIcon = AssetKey.Icon_IncubatorDebris3,
+                IncubatorPrefab = EAssetKey.Entity_Incubator3,
+                IncubatorIcon = EAssetKey.Icon_Incubator3,
+                IncubatorDebrisIcon = EAssetKey.Icon_IncubatorDebris3,
             }
         },
         {
@@ -1401,9 +1487,9 @@ public class TableMgr : Singleton<TableMgr>
                 QualityLevel = EQualityType.Quality4,
                 IncubatorTime = 40,
                 ExpenditureBase = 10,
-                IncubatorPrefab = AssetKey.Entity_Incubator4,
-                IncubatorIcon = AssetKey.Icon_Incubator4,
-                IncubatorDebrisIcon = AssetKey.Icon_IncubatorDebris4,
+                IncubatorPrefab = EAssetKey.Entity_Incubator4,
+                IncubatorIcon = EAssetKey.Icon_Incubator4,
+                IncubatorDebrisIcon = EAssetKey.Icon_IncubatorDebris4,
             }
         },
     };
@@ -1436,44 +1522,99 @@ public class TableMgr : Singleton<TableMgr>
     public bool GetHeroDataByType(EHeroCardType f_HeroType, int f_TargetIndex, EHeroCradStarLevel f_StarLevel, out Entity_HeroBaseData f_Result)
     {
         f_Result = null;
-        if (TryGetCardDataByType(f_HeroType, f_TargetIndex, f_StarLevel, out var result))
+        if (TryGetCardDataByType(f_HeroType, f_StarLevel, out var result))
         {
             if (result is Entity_HeroBaseData heroData)
             {
                 f_Result = heroData;
+                heroData.MoveToChunk(f_TargetIndex);
             }
         }
         return f_Result != null;
     }
-    public bool GetEnemyDataByType(EHeroCardType f_HeroType, int f_TargetIndex, EHeroCradStarLevel f_StarLevel, out Person_EnemyData f_Result)
+    public bool TryGetMonsterBaseNewData(EHeroCardType f_HeroType, int f_TargetIndex, EHeroCradStarLevel f_StarLevel, out Entity_MonsterBaseNewData f_Result)
     {
         f_Result = null;
-        if (TryGetCardDataByType(f_HeroType, f_TargetIndex, f_StarLevel, out var result))
+        if (TryGetMonsterEntityData(f_HeroType, out var result))
         {
-            if (result is Person_EnemyData enemyData)
+            if (result is Entity_MonsterBaseNewData enemyData)
             {
                 f_Result = enemyData;
+                enemyData.MoveToChunk(f_TargetIndex);
+            }
+        }
+        return f_Result != null;
+    }
+    public bool TryGetHeroBaseNewData(EHeroCardType f_HeroType, int f_TargetIndex, EHeroCradStarLevel f_StarLevel, out Entity_HeroBaseNewData f_Result)
+    {
+        f_Result = null;
+        if (TryGetHeroEntityData(f_HeroType, out var result))
+        {
+            if (result is Entity_HeroBaseNewData heroData)
+            {
+                f_Result = heroData;
+                heroData.MoveToChunk(f_TargetIndex);
             }
         }
         return f_Result != null;
     }
 
-    public bool TryGetCardDataByType(EHeroCardType f_HeroType, int f_TargetIndex, EHeroCradStarLevel f_StarLevel, out WorldObjectBaseData f_Result)
+    public bool TryGetCardDataByType(EHeroCardType f_HeroType, EHeroCradStarLevel f_StarLevel, out WorldObjectBaseData f_Result)
     {
         f_Result = null;
         switch (f_HeroType)
         {
             case EHeroCardType.Hero1:
-                f_Result = new Entity_Player_Hero1Data(0, f_TargetIndex, f_StarLevel);
+                f_Result = new Entity_Player_Hero1Data(f_StarLevel);
                 break;
             case EHeroCardType.Hero2:
-                f_Result = new Entity_Player_Hero2Data(0, f_TargetIndex, f_StarLevel);
+                f_Result = new Entity_Player_Hero2Data(f_StarLevel);
                 break;
             case EHeroCardType.Hero3:
-                f_Result = new Entity_Player_Hero3Data(0, f_TargetIndex, f_StarLevel);
+                f_Result = new Entity_Player_Hero3Data(f_StarLevel);
                 break;
             case EHeroCardType.Hero4:
-                f_Result = new Entity_Player_Hero4Data(0, f_TargetIndex, f_StarLevel);
+                f_Result = new Entity_Player_Hero4Data(f_StarLevel);
+                break;
+            case EHeroCardType.EnumCount:
+                break;
+            default:
+                break;
+        }
+        return f_Result != null;
+    }
+
+    public bool TryGetHeroEntityData(EHeroCardType f_HeroType, out WorldObjectBaseData f_Result)
+    {
+        f_Result = null;
+        switch (f_HeroType)
+        {
+            case EHeroCardType.Hero1:
+                f_Result = new Entity_Hero_Warrior1Data();
+                break;
+            case EHeroCardType.Hero2:
+                f_Result = new Entity_Enchanter1Data();
+                break;
+            case EHeroCardType.Hero3:
+                f_Result = new Entity_Supplementary1Data();
+                break;
+            case EHeroCardType.Hero4:
+                f_Result = new Entity_MainTank1Data();
+                break;
+            case EHeroCardType.EnumCount:
+                break;
+            default:
+                break;
+        }
+        return f_Result != null;
+    }
+    public bool TryGetMonsterEntityData(EHeroCardType f_HeroType, out WorldObjectBaseData f_Result)
+    {
+        f_Result = null;
+        switch (f_HeroType)
+        {
+            case EHeroCardType.Monster_Default1:
+                f_Result = new Entity_Monster_Warrior1Data();
                 break;
             case EHeroCardType.EnumCount:
                 break;
@@ -1758,23 +1899,23 @@ public class TableMgr : Singleton<TableMgr>
                 {
                     {
                         EWeatherGainLevel.Level1,
-                        AssetKey.Icon_WeatherGainLevel1Default1
+                        EAssetKey.Icon_WeatherGainLevel1Default1
                     },
                     {
                         EWeatherGainLevel.Level2,
-                        AssetKey.Icon_WeatherGainLevel2Default1
+                        EAssetKey.Icon_WeatherGainLevel2Default1
                     },
                     {
                         EWeatherGainLevel.Level3,
-                        AssetKey.Icon_WeatherGainLevel3Default1
+                        EAssetKey.Icon_WeatherGainLevel3Default1
                     },
                     {
                         EWeatherGainLevel.Level4,
-                        AssetKey.Icon_WeatherGainLevel4Default1
+                        EAssetKey.Icon_WeatherGainLevel4Default1
                     },
                     {
                         EWeatherGainLevel.MaxLevel,
-                        AssetKey.Icon_WeatherGainLevelMaxDefault1
+                        EAssetKey.Icon_WeatherGainLevelMaxDefault1
                     },
                 }
             }
@@ -1790,23 +1931,23 @@ public class TableMgr : Singleton<TableMgr>
                 {
                     {
                         EWeatherGainLevel.Level1,
-                        AssetKey.Icon_WeatherGainLevel1Default1
+                        EAssetKey.Icon_WeatherGainLevel1Default1
                     },
                     {
                         EWeatherGainLevel.Level2,
-                        AssetKey.Icon_WeatherGainLevel2Default1
+                        EAssetKey.Icon_WeatherGainLevel2Default1
                     },
                     {
                         EWeatherGainLevel.Level3,
-                        AssetKey.Icon_WeatherGainLevel3Default1
+                        EAssetKey.Icon_WeatherGainLevel3Default1
                     },
                     {
                         EWeatherGainLevel.Level4,
-                        AssetKey.Icon_WeatherGainLevel4Default1
+                        EAssetKey.Icon_WeatherGainLevel4Default1
                     },
                     {
                         EWeatherGainLevel.MaxLevel,
-                        AssetKey.Icon_WeatherGainLevelMaxDefault1
+                        EAssetKey.Icon_WeatherGainLevelMaxDefault1
                     },
                 }
             }
@@ -1822,23 +1963,23 @@ public class TableMgr : Singleton<TableMgr>
                 {
                     {
                         EWeatherGainLevel.Level1,
-                        AssetKey.Icon_WeatherGainLevel1Default1
+                        EAssetKey.Icon_WeatherGainLevel1Default1
                     },
                     {
                         EWeatherGainLevel.Level2,
-                        AssetKey.Icon_WeatherGainLevel2Default1
+                        EAssetKey.Icon_WeatherGainLevel2Default1
                     },
                     {
                         EWeatherGainLevel.Level3,
-                        AssetKey.Icon_WeatherGainLevel3Default1
+                        EAssetKey.Icon_WeatherGainLevel3Default1
                     },
                     {
                         EWeatherGainLevel.Level4,
-                        AssetKey.Icon_WeatherGainLevel4Default1
+                        EAssetKey.Icon_WeatherGainLevel4Default1
                     },
                     {
                         EWeatherGainLevel.MaxLevel,
-                        AssetKey.Icon_WeatherGainLevelMaxDefault1
+                        EAssetKey.Icon_WeatherGainLevelMaxDefault1
                     },
                 }
             }
@@ -1854,23 +1995,23 @@ public class TableMgr : Singleton<TableMgr>
                 {
                     {
                         EWeatherGainLevel.Level1,
-                        AssetKey.Icon_WeatherGainLevel1Default1
+                        EAssetKey.Icon_WeatherGainLevel1Default1
                     },
                     {
                         EWeatherGainLevel.Level2,
-                        AssetKey.Icon_WeatherGainLevel2Default1
+                        EAssetKey.Icon_WeatherGainLevel2Default1
                     },
                     {
                         EWeatherGainLevel.Level3,
-                        AssetKey.Icon_WeatherGainLevel3Default1
+                        EAssetKey.Icon_WeatherGainLevel3Default1
                     },
                     {
                         EWeatherGainLevel.Level4,
-                        AssetKey.Icon_WeatherGainLevel4Default1
+                        EAssetKey.Icon_WeatherGainLevel4Default1
                     },
                     {
                         EWeatherGainLevel.MaxLevel,
-                        AssetKey.Icon_WeatherGainLevelMaxDefault1
+                        EAssetKey.Icon_WeatherGainLevelMaxDefault1
                     },
                 }
             }
@@ -1886,23 +2027,23 @@ public class TableMgr : Singleton<TableMgr>
                 {
                     {
                         EWeatherGainLevel.Level1,
-                        AssetKey.Icon_WeatherGainLevel1Default1
+                        EAssetKey.Icon_WeatherGainLevel1Default1
                     },
                     {
                         EWeatherGainLevel.Level2,
-                        AssetKey.Icon_WeatherGainLevel2Default1
+                        EAssetKey.Icon_WeatherGainLevel2Default1
                     },
                     {
                         EWeatherGainLevel.Level3,
-                        AssetKey.Icon_WeatherGainLevel3Default1
+                        EAssetKey.Icon_WeatherGainLevel3Default1
                     },
                     {
                         EWeatherGainLevel.Level4,
-                        AssetKey.Icon_WeatherGainLevel4Default1
+                        EAssetKey.Icon_WeatherGainLevel4Default1
                     },
                     {
                         EWeatherGainLevel.MaxLevel,
-                        AssetKey.Icon_WeatherGainLevelMaxDefault1
+                        EAssetKey.Icon_WeatherGainLevelMaxDefault1
                     },
                 }
             }
@@ -1918,23 +2059,23 @@ public class TableMgr : Singleton<TableMgr>
                 {
                     {
                         EWeatherGainLevel.Level1,
-                        AssetKey.Icon_WeatherGainLevel1Default1
+                        EAssetKey.Icon_WeatherGainLevel1Default1
                     },
                     {
                         EWeatherGainLevel.Level2,
-                        AssetKey.Icon_WeatherGainLevel2Default1
+                        EAssetKey.Icon_WeatherGainLevel2Default1
                     },
                     {
                         EWeatherGainLevel.Level3,
-                        AssetKey.Icon_WeatherGainLevel3Default1
+                        EAssetKey.Icon_WeatherGainLevel3Default1
                     },
                     {
                         EWeatherGainLevel.Level4,
-                        AssetKey.Icon_WeatherGainLevel4Default1
+                        EAssetKey.Icon_WeatherGainLevel4Default1
                     },
                     {
                         EWeatherGainLevel.MaxLevel,
-                        AssetKey.Icon_WeatherGainLevelMaxDefault1
+                        EAssetKey.Icon_WeatherGainLevelMaxDefault1
                     },
                 }
             }
@@ -2034,7 +2175,7 @@ public class TableMgr : Singleton<TableMgr>
     {
         public string Name = "";
         public string Desc = "";
-        public AssetKey IconPath;
+        public EAssetKey IconPath;
         public EBuffType BuffType;
         public Effect_BuffBaseData CreateBuffData(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target)
         {
@@ -2054,7 +2195,7 @@ public class TableMgr : Singleton<TableMgr>
                 BuffType = EBuffType.AddBlood,
                 Desc = "持续回血",
                 Name = "治疗",
-                IconPath = AssetKey.BuffIcon_AddBlood
+                IconPath = EAssetKey.BuffIcon_AddBlood
             }
         },
         {
@@ -2065,7 +2206,7 @@ public class TableMgr : Singleton<TableMgr>
                 BuffType = EBuffType.Poison,
                 Desc = "持续减血",
                 Name = "中毒",
-                IconPath = AssetKey.BuffIcon_Poison
+                IconPath = EAssetKey.BuffIcon_Poison
             }
         },
         {
@@ -2076,7 +2217,7 @@ public class TableMgr : Singleton<TableMgr>
                 BuffType = EBuffType.WeatherSpeed,
                 Desc = "增加速度",
                 Name = "速度",
-                IconPath = AssetKey.BuffIcon_Poison
+                IconPath = EAssetKey.BuffIcon_Poison
             }
         },
         {
@@ -2087,7 +2228,7 @@ public class TableMgr : Singleton<TableMgr>
                 BuffType = EBuffType.WeatherAttack,
                 Desc = "增加攻击",
                 Name = "攻击",
-                IconPath = AssetKey.BuffIcon_Poison
+                IconPath = EAssetKey.BuffIcon_Poison
             }
         },
         {
@@ -2098,7 +2239,7 @@ public class TableMgr : Singleton<TableMgr>
                 BuffType = EBuffType.WeatherMaxBlood,
                 Desc = "增加最大生命值",
                 Name = "最大生命值",
-                IconPath = AssetKey.BuffIcon_Poison
+                IconPath = EAssetKey.BuffIcon_Poison
             }
         },
         {
@@ -2109,7 +2250,7 @@ public class TableMgr : Singleton<TableMgr>
                 BuffType = EBuffType.WeatherDefense,
                 Desc = "增加防御力",
                 Name = "防御力",
-                IconPath = AssetKey.BuffIcon_Poison
+                IconPath = EAssetKey.BuffIcon_Poison
             }
         },
     };
@@ -2331,7 +2472,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage1_Default1Hero1_Stage1_Default1Hero1_Stage1_Default1Hero1_Stage1_Default1Hero1_Stage1_Default1Hero1_Stage1_Default1Hero1_Stage1_Default1Hero1_Stage1_Default1",
                 Quality = EQualityType.Quality1,
                 PersonSkillType = EPersonSkillType.Stage1_Default1,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage1_Default1,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage1_Default1,
                 ExpenditureBase = 0,
             }
         },
@@ -2343,7 +2484,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage1_Default2Hero1_Stage1_Default2Hero1_Stage1_Default2Hero1_Stage1_Default2Hero1_Stage1_Default2Hero1_Stage1_Default2",
                 Quality = EQualityType.Quality2,
                 PersonSkillType = EPersonSkillType.Stage1_Default2,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage1_Default2,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage1_Default2,
                 ExpenditureBase = 0,
             }
         },
@@ -2355,7 +2496,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage1_Default3Hero1_Stage1_Default3Hero1_Stage1_Default3",
                 Quality = EQualityType.Quality3,
                 PersonSkillType = EPersonSkillType.Stage1_Default3,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage1_Default3,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage1_Default3,
                 ExpenditureBase = 0,
             }
         },
@@ -2367,7 +2508,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage1_Default4Hero1_Stage1_Default4Hero1_Stage1_Default4Hero1_Stage1_Default4Hero1_Stage1_Default4Hero1_Stage1_Default4Hero1_Stage1_Default4",
                 Quality = EQualityType.Quality4,
                 PersonSkillType = EPersonSkillType.Stage1_Default4,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage1_Default4,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage1_Default4,
                 ExpenditureBase = 0,
             }
         },
@@ -2379,7 +2520,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage2_Default1_Loss1",
                 Quality = EQualityType.Quality1,
                 PersonSkillType = EPersonSkillType.Stage2_Default1_Loss1,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage2_Default1_Loss1,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage2_Default1_Loss1,
                 ExpenditureBase = 0,
             }
         },
@@ -2391,7 +2532,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage2_Default1_Loss2Hero1_Stage2_Default1_Loss2",
                 Quality = EQualityType.Quality2,
                 PersonSkillType = EPersonSkillType.Stage2_Default1_Loss2,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage2_Default1_Loss2,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage2_Default1_Loss2,
                 ExpenditureBase = 0,
             }
         },
@@ -2403,7 +2544,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage2_Default1_Loss3Hero1_Stage2_Default1_Loss3Hero1_Stage2_Default1_Loss3",
                 Quality = EQualityType.Quality2,
                 PersonSkillType = EPersonSkillType.Stage2_Default1_Loss3,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage2_Default1_Loss3,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage2_Default1_Loss3,
                 ExpenditureBase = 0,
             }
         },
@@ -2415,7 +2556,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage3_Default1_Loss1_Height1",
                 Quality = EQualityType.Quality2,
                 PersonSkillType = EPersonSkillType.Stage3_Default1_Loss1_Height1,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss1_Height1,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss1_Height1,
                 ExpenditureBase = 0,
             }
         },
@@ -2427,7 +2568,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage3_Default1_Loss1_Height2Hero1_Stage3_Default1_Loss1_Height2",
                 Quality = EQualityType.Quality4,
                 PersonSkillType = EPersonSkillType.Stage3_Default1_Loss1_Height2,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss1_Height2,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss1_Height2,
                 ExpenditureBase = 0,
             }
         },
@@ -2439,7 +2580,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage3_Default2_Loss1_Height2Hero1_Stage3_Default2_Loss1_Height2",
                 Quality = EQualityType.Quality4,
                 PersonSkillType = EPersonSkillType.Stage3_Default2_Loss1_Height2,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage3_Default2_Loss1_Height2,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage3_Default2_Loss1_Height2,
                 ExpenditureBase = 0,
             }
         },
@@ -2451,7 +2592,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage3_Default2_Loss1_Height1Hero1_Stage3_Default2_Loss1_Height1",
                 Quality = EQualityType.Quality4,
                 PersonSkillType = EPersonSkillType.Stage3_Default2_Loss1_Height1,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage3_Default2_Loss1_Height1,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage3_Default2_Loss1_Height1,
                 ExpenditureBase = 0,
             }
         },
@@ -2463,7 +2604,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage3_Default2_Loss2_Height1Hero1_Stage3_Default2_Loss2_Height1",
                 Quality = EQualityType.Quality4,
                 PersonSkillType = EPersonSkillType.Stage3_Default2_Loss2_Height1,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage3_Default2_Loss2_Height1,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage3_Default2_Loss2_Height1,
                 ExpenditureBase = 0,
             }
         },
@@ -2475,7 +2616,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage3_Default3_Loss1_Height1Hero1_Stage3_Default3_Loss1_Height1Hero1_Stage3_Default3_Loss1_Height1",
                 Quality = EQualityType.Quality4,
                 PersonSkillType = EPersonSkillType.Stage3_Default3_Loss1_Height1,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage3_Default3_Loss1_Height1,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage3_Default3_Loss1_Height1,
                 ExpenditureBase = 0,
             }
         },
@@ -2487,7 +2628,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage2_Default2_Loss1Hero1_Stage2_Default2_Loss1Hero1_Stage2_Default2_Loss1",
                 Quality = EQualityType.Quality4,
                 PersonSkillType = EPersonSkillType.Stage2_Default2_Loss1,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage2_Default2_Loss1,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage2_Default2_Loss1,
                 ExpenditureBase = 0,
             }
         },
@@ -2499,7 +2640,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage2_Default2_Loss2Hero1_Stage2_Default2_Loss2",
                 Quality = EQualityType.Quality4,
                 PersonSkillType = EPersonSkillType.Stage2_Default2_Loss2,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage2_Default2_Loss2,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage2_Default2_Loss2,
                 ExpenditureBase = 0,
             }
         },
@@ -2511,7 +2652,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage2_Default3_Loss1Hero1_Stage2_Default3_Loss1",
                 Quality = EQualityType.Quality4,
                 PersonSkillType = EPersonSkillType.Stage2_Default3_Loss1,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage2_Default3_Loss1,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage2_Default3_Loss1,
                 ExpenditureBase = 0,
             }
         },
@@ -2523,7 +2664,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage3_Default1_Loss1_Height3Hero1_Stage3_Default1_Loss1_Height3",
                 Quality = EQualityType.Quality4,
                 PersonSkillType = EPersonSkillType.Stage3_Default1_Loss1_Height3,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss1_Height3,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss1_Height3,
                 ExpenditureBase = 0,
             }
         },
@@ -2535,7 +2676,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage3_Default1_Loss2_Height1Hero1_Stage3_Default1_Loss2_Height1",
                 Quality = EQualityType.Quality4,
                 PersonSkillType = EPersonSkillType.Stage3_Default1_Loss2_Height1,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss2_Height1,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss2_Height1,
                 ExpenditureBase = 0,
             }
         },
@@ -2547,7 +2688,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage3_Default1_Loss2_Height2Hero1_Stage3_Default1_Loss2_Height2",
                 Quality = EQualityType.Quality4,
                 PersonSkillType = EPersonSkillType.Stage3_Default1_Loss2_Height2,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss2_Height2,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss2_Height2,
                 ExpenditureBase = 0,
             }
         },
@@ -2559,7 +2700,7 @@ public class TableMgr : Singleton<TableMgr>
                 Describes = "Hero1_Stage3_Default1_Loss3_Height1Hero1_Stage3_Default1_Loss3_Height1",
                 Quality = EQualityType.Quality4,
                 PersonSkillType = EPersonSkillType.Stage3_Default1_Loss3_Height1,
-                IconKey = AssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss3_Height1,
+                IconKey = EAssetKey.Icon_Skill_Hero1_Stage3_Default1_Loss3_Height1,
                 ExpenditureBase = 0,
             }
         },
@@ -2665,7 +2806,7 @@ public class TableMgr : Singleton<TableMgr>
                     MoveSpeed = 1.0f,
                 },
                 QualityType = EQualityType.Quality1,
-                IconKey = AssetKey.Icon_Equipment_Default1,
+                IconKey = EAssetKey.Icon_Equipment_Default1,
             }
         },
         {
@@ -2685,7 +2826,7 @@ public class TableMgr : Singleton<TableMgr>
                     MoveSpeed = 1.0f,
                 },
                 QualityType = EQualityType.Quality2,
-                IconKey = AssetKey.Icon_Equipment_Default2,
+                IconKey = EAssetKey.Icon_Equipment_Default2,
             }
         },
         {
@@ -2705,7 +2846,7 @@ public class TableMgr : Singleton<TableMgr>
                     MoveSpeed = 1.0f,
                 },
                 QualityType = EQualityType.Quality3,
-                IconKey = AssetKey.Icon_Equipment_Default3,
+                IconKey = EAssetKey.Icon_Equipment_Default3,
             }
         },
         {
@@ -2725,7 +2866,7 @@ public class TableMgr : Singleton<TableMgr>
                     MoveSpeed = 1.0f,
                 },
                 QualityType = EQualityType.Quality4,
-                IconKey = AssetKey.Icon_Equipment_Default4,
+                IconKey = EAssetKey.Icon_Equipment_Default4,
             }
         },
     };
@@ -2755,11 +2896,58 @@ public class TableMgr : Singleton<TableMgr>
         }
         return f_DataBase != null;
     }
-
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- 能量水晶 篇
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    private Dictionary<EQualityType, EnergyCrystalInfo> m_EnergyCrystalInfos = new()
+    {
+        {
+            EQualityType.Quality1,
+            new()
+            {
+                Quality = EQualityType.Quality1,
+                Name = "下级水晶",
+                Blood = 600,
+                BlastValue = 300,
+                BlastRange = 2,
+            }
+        },
+    };
+    public bool TryGetEnergyCrystalInfo(EQualityType f_Quality, out EnergyCrystalInfo f_Result)
+    {
+        return m_EnergyCrystalInfos.TryGetValue(f_Quality, out f_Result);
+    }
+    public bool TryGetEnergyCrystalData(EQualityType f_Quality, out Entity_EnergyCrystalBaseData f_Result)
+    {
+        f_Result = null;
+        switch (f_Quality)
+        {
+            case EQualityType.None:
+                break;
+            case EQualityType.Quality1:
+                f_Result = new Entity_EnergyCrystal1Data();
+                break;
+            case EQualityType.Quality2:
+                break;
+            case EQualityType.Quality3:
+                break;
+            case EQualityType.Quality4:
+                break;
+            case EQualityType.EnumCount:
+                break;
+            default:
+                break;
+        }
+        return f_Result != null;
+    }
 
     public class MapConfigInfo
     {
-        public AssetKey AssetPath;
+        public EAssetKey AssetPath;
     }
     private Dictionary<EMapLevelType, MapConfigInfo> m_MapConfigDic = new()
     {
@@ -2767,21 +2955,21 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level1,
             new()
             {
-                 AssetPath = AssetKey.Cfg_MapLevel1,
+                AssetPath = EAssetKey.Cfg_MapLevel1,
             }
         },
         {
             EMapLevelType.Level2,
             new()
             {
-                AssetPath = AssetKey.Cfg_MapLevel2,
+                AssetPath = EAssetKey.Cfg_MapLevel2,
             }
         },
         {
             EMapLevelType.Level3,
             new()
             {
-                AssetPath = AssetKey.Cfg_MapLevel3,
+                AssetPath = EAssetKey.Cfg_MapLevel3,
             }
         },
     };

@@ -29,7 +29,7 @@ public class WeatherGainRandomData
 
     public WeatherGainLevelInfo WeatherLevelInfo => GTools.TableMgr.TryGetWeatherGainLevelInfo(Level, out var result) ? result : null;
     public WeatherGainInfo WeatherGainInfo => GTools.TableMgr.TryGetWeatherGainInfo(WeatherGainType, out var WeatherGainInfo) ? WeatherGainInfo : null;
-    public AssetKey WeatherGainIcon => WeatherGainInfo.TryGetWeatherGainIcon(out var iconId, Level) ? iconId : AssetKey.None;
+    public EAssetKey WeatherGainIcon => WeatherGainInfo.TryGetWeatherGainIcon(out var iconId, Level) ? iconId : EAssetKey.None;
 }
 public abstract class WeatherEventBaseData
 {

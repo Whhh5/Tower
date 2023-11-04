@@ -109,7 +109,7 @@ public class MathfMgr : Singleton<MathfMgr>
         for (int i = 0; i < colliders.Length; i++)
         {
             var item = colliders[i];
-            if (item.TryGetComponent<Entity>(out var icom) && icom.EntityData is T data && GTools.UnityObjectIsActive(data))
+            if (item.TryGetComponent<Entity>(out var icom) && icom.EntityData is T data && GTools.UnityObjectIsVaild(data))
             {
                 var targetDirection = (data.WorldPosition - originPoint).normalized;
                 targetDirection.y = 0;
@@ -143,7 +143,7 @@ public class MathfMgr : Singleton<MathfMgr>
         List<T> entitys = new();
         foreach (var item in colliders)
         {
-            if (item.TryGetComponent<WorldObjectBase>(out var icom) && icom.EntityData is T data && GTools.UnityObjectIsActive(data))
+            if (item.TryGetComponent<WorldObjectBase>(out var icom) && icom.EntityData is T data && GTools.UnityObjectIsVaild(data))
             {
                 entitys.Add(data);
             }
@@ -298,7 +298,7 @@ public class MathfMgr : Singleton<MathfMgr>
     public void EntityDamage(WorldObjectBaseData f_Initiator, WorldObjectBaseData f_Target, EDamageType f_DamageType, int f_Value, bool f_IsAddMagic = false)
     {
         //f_Value = 1;
-        if (GTools.UnityObjectIsActive(f_Target))
+        if (GTools.UnityObjectIsVaild(f_Target))
         {
 
             var hitCondition = f_Target.IsHitConditoin();

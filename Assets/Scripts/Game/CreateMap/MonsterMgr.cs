@@ -69,13 +69,13 @@ public class MonsterMgr : Singleton<MonsterMgr>
                 var targetIndex = playerSpawnPoint.Value.CurrentIndex;
                 m_Queue.Add(1, () =>
                 {
-                    var entity = new Entity_Monster_Default1Data(MonsterKey++, targetIndex, spawnPoint);
+                    var entity = new Entity_Monster_Default1Data();
                     CreateEntity(index, entity);
                 });
 
                 m_Queue.Add(2, () =>
                 {
-                    var entity2 = new Entity_Monster_Default2Data(MonsterKey++, targetIndex, spawnPoint);
+                    var entity2 = new Entity_Monster_Default2Data();
                     CreateEntity(index, entity2);
                 });
 
@@ -91,13 +91,13 @@ public class MonsterMgr : Singleton<MonsterMgr>
                 var targetIndex = monsterSpawnPoint.Value.CurrentIndex;
                 m_Queue.Add(1, () =>
                 {
-                    var entity = new Entity_Player_Default1Data(MonsterKey++, targetIndex, spawnPoint);
+                    var entity = new Entity_Player_Default1Data();
                     CreateEntity(index, entity);
                 });
 
                 m_Queue.Add(2, () =>
                 {
-                    var entity2 = new Entity_Player_Default2Data(MonsterKey++, targetIndex, spawnPoint);
+                    var entity2 = new Entity_Player_Default2Data();
                     CreateEntity(index, entity2);
                 });
             }
@@ -144,26 +144,26 @@ public class MonsterMgr : Singleton<MonsterMgr>
     }
     public async UniTask CreateEntityAsync()
     {
-        PathCondition.GetCondition(AssetKey.Person_Enemy, out var condition);
+        PathCondition.GetCondition(EAssetKey.Person_Enemy, out var condition);
         ListStack<int> list = null;
 
         await GTools.ParallelTaskAsync(m_DicMonster, async (key, value) =>
         {
-            foreach (var data in value)
-            {
-                while (!WorldMapMgr.Ins.TryGetRangeChunkByIndex(data.Value.SpawnPointData.CurrentIndex, out list, condition, true, 2))
-                {
-                    if (!m_IsPlay)
-                    {
-                        return;
-                    }
-                    await UniTask.Delay(1000);
-                }
+            //foreach (var data in value)
+            //{
+            //    while (!WorldMapMgr.Ins.TryGetRangeChunkByIndex(data.Value.index, out list, condition, true, 2))
+            //    {
+            //        if (!m_IsPlay)
+            //        {
+            //            return;
+            //        }
+            //        await UniTask.Delay(1000);
+            //    }
 
-                data.Value.SetStartIndex(list[0]);
-                await ILoadPrefabAsync.LoadAsync(data.Value);
-                await UniTask.Delay(1000);
-            }
+            //    data.Value.SetStartIndex(list[0]);
+            //    await ILoadPrefabAsync.LoadAsync(data.Value);
+            //    await UniTask.Delay(1000);
+            //}
         });
     }
 
@@ -328,7 +328,7 @@ public class MonsterMgr : Singleton<MonsterMgr>
 
 public class GodEntityData : WorldObjectBaseData
 {
-    public GodEntityData() : base(0, -1)
+    public GodEntityData() : base()
     {
 
     }
@@ -340,7 +340,7 @@ public class GodEntityData : WorldObjectBaseData
 
     public override ELayer AttackLayerMask => ELayer.All;
 
-    public override AssetKey AssetPrefabID => AssetKey.None;
+    public override EAssetKey AssetPrefabID => EAssetKey.None;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.EnumCount;
 }

@@ -17,6 +17,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase, IWo
     }
 
 
+
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------
@@ -28,7 +29,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase, IWo
 
     public ObjectPoolBase PrefabTarget { get; set; }
     public LoadAsyncResult LoadResult { get; set; }
-    public abstract AssetKey AssetPrefabID { get; }
+    public abstract EAssetKey AssetPrefabID { get; }
     public EPersonStatusType CurStatus { get; protected set; } = EPersonStatusType.Idle;
     public virtual void AfterLoad()
     {
@@ -87,8 +88,9 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase, IWo
     public bool Active = true;
     public Transform Parent { get; private set; } = null;
     public Vector3 WorldPosition { get; private set; } = new Vector3();
-    public Vector3 LocalPosition { get; private set; } = new Vector3();
+    public Vector3 LocalPosition { get; private set; } = new Vector3(); 
     public Vector3 Forward { get; private set; } = new Vector3(0, 0, 1);
+    public Vector3 Up { get; private set; } = new Vector3(0, 1, 0);
     public Vector3 LocalRotation { get; private set; } = new Vector3();
     public Vector3 LocalScale { get; private set; } = new Vector3(1, 1, 1);
 
@@ -168,6 +170,15 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase, IWo
         }
     }
 
+    public void SetUp(Vector3 f_ToUp)
+    {
+        Up = f_ToUp.normalized;
+        if (PrefabTarget != null)
+        {
+            PrefabTarget.SetUp();
+        }
+    }
+
     public void SetColor(Color f_ToColor)
     {
         Color = f_ToColor;
@@ -184,7 +195,7 @@ public abstract class ObjectPoolBase : TransformBase, IObjectPoolBase
     public float UpdateDelta { get; set; }
     public float LasteUpdateTime { get; set; }
     public bool UpdateInteractable = false;
-    public AssetKey AssetKey { get; set; }
+    public EAssetKey AssetKey { get; set; }
     public int SaveID { get; set; }
     public string PoolKey { get; set; }
     public int AssetName { get; set; }
@@ -242,7 +253,6 @@ public abstract class ObjectPoolBase : TransformBase, IObjectPoolBase
         SetColor();
         SetActive();
         SetName();
-
     }
 
 
@@ -299,6 +309,10 @@ public abstract class ObjectPoolBase : TransformBase, IObjectPoolBase
     public void SetForward()
     {
         transform.forward = UnityObjectData.Forward;
+    }
+    public void SetUp()
+    {
+        transform.up = UnityObjectData.Up;
     }
     public void SetColor()
     {

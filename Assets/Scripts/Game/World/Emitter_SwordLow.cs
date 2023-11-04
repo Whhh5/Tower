@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Emitter_SwordLowData: Emitter_SwordBaseData
 {
-    public override AssetKey AssetPrefabID => AssetKey.Emitter_SwordLow;
+    public override EAssetKey AssetPrefabID => EAssetKey.Emitter_SwordLow;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.Effect;
 

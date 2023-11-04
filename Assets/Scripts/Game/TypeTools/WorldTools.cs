@@ -84,7 +84,7 @@ public interface ILoadSpriteAsync
         var request = await Resources.LoadAsync<Sprite>(f_Path) as Sprite;
         return request;
     }
-    public static async UniTask<Sprite> LoadAsync(AssetKey f_SpriteKey)
+    public static async UniTask<Sprite> LoadAsync(EAssetKey f_SpriteKey)
     {
         Sprite result = null;
         if (GTools.TableMgr.TryGetAssetPath(f_SpriteKey, out var path))
@@ -103,7 +103,7 @@ public interface ILoadPrefabAsync
     public int LoadKey { get; set; }
     public ObjectPoolBase PrefabTarget { get; set; }
     public LoadAsyncResult LoadResult { get; set; }
-    public AssetKey AssetPrefabID { get; }
+    public EAssetKey AssetPrefabID { get; }
 
     public void AfterLoad();
     public void OnUnLoad();
@@ -169,7 +169,6 @@ public interface ILoadPrefabAsync
             f_Target.LoadResult = LoadAsyncResult.Defeated;
         }
     }
-
     public static void UnLoad<TLoad>(TLoad f_Target)
         where TLoad : UnityObjectData
     {
@@ -189,6 +188,21 @@ public interface ILoadPrefabAsync
 
         f_Target.LoadResult = LoadAsyncResult.UnLoad;
 
+    }
+    public static void UnLoadAll()
+    {
+        List<UnityObjectData> list = new();
+        foreach (var item in m_DicEntity)
+        {
+            foreach (var data in item.Value)
+            {
+                list.Add(data.Value);
+            }
+        }
+        foreach (var item in list)
+        {
+            UnLoad(item);
+        }
     }
     public static bool TryGetEntityByType<T>(EWorldObjectType f_ObjectType, out Dictionary<int, T> f_Result)
         where T : UnityObjectData

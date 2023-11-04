@@ -10,7 +10,7 @@ public class EmitterElement_GuidedMissileData : WeaponElementBaseData
     {
 
     }
-    public override AssetKey AssetPrefabID => AssetKey.EmitterElement_GuidedMissile;
+    public override EAssetKey AssetPrefabID => EAssetKey.EmitterElement_GuidedMissile;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.Effect;
 

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 public class UIItem_WeatherGainData : UIItemBaseData<WeatherGainRandomData>
 {
-    public override AssetKey AssetPrefabID => AssetKey.UIItem_WeatherGain;
+    public override EAssetKey AssetPrefabID => EAssetKey.UIItem_WeatherGain;
 
     private UIItem_WeatherGain TargetIns => GetCom<UIItem_WeatherGain>();
     public override void UpdateItemData(WeatherGainRandomData f_Data, Transform f_Parent = null)

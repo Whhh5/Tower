@@ -38,7 +38,7 @@ public class UISelectHeroInfo : MonoBehaviour
 
     public static UISelectHeroInfo Ins = null;
 
-    private Dictionary<AssetKey, SpriteAsset<Sprite>> sprite_dir = null;
+    private Dictionary<EAssetKey, SpriteAsset<Sprite>> sprite_dir = null;
     void Start()
     {
         Ins = this;
@@ -126,11 +126,11 @@ public class UISelectHeroInfo : MonoBehaviour
         }
     }
 
-    private Sprite GetSprite(AssetKey assetKey)
+    private Sprite GetSprite(EAssetKey assetKey)
     {
         if (sprite_dir == null)
         {
-            sprite_dir = new Dictionary<AssetKey, SpriteAsset<Sprite>>();
+            sprite_dir = new Dictionary<EAssetKey, SpriteAsset<Sprite>>();
         }
         if(sprite_dir.TryGetValue(assetKey,out SpriteAsset<Sprite> spriteAsset))
         {
@@ -161,8 +161,8 @@ public class UISelectHeroInfo : MonoBehaviour
 public class SpriteAsset<T> {
     public int refrence = 0;
     public T asset;
-    public AssetKey key;
-    public SpriteAsset(int refrence , T asset, AssetKey  key){
+    public EAssetKey key;
+    public SpriteAsset(int refrence , T asset, EAssetKey  key){
         this.refrence = refrence;
         this.asset = asset;
         this.key = key;

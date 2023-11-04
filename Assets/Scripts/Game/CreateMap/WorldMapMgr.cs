@@ -577,7 +577,7 @@ public class WorldMapMgr : Singleton<WorldMapMgr>
                 }
 
                 var height = 1 + range / 30.0f * 2;
-                var worldObject = new WorldObjectBaseObjectDataAlt(data.Key, data.Key, height);
+                var worldObject = new WorldObjectBaseObjectDataAlt();
                 worldObject.ApplyCurrentChunk();
                 worldObject.SetPosition(data.Value.PointUp);
             }
@@ -636,7 +636,7 @@ public class WorldMapMgr : Singleton<WorldMapMgr>
             var pathData = item.Value;
             if (TryGetChunkData(pathData.ChunkIndex, out var chunkData) && chunkData.CurObjectType == EWorldObjectType.None)
             {
-                var roadData = new WorldBaseObjectDataRoad(pathData.Index, pathData.ChunkIndex);
+                var roadData = new WorldBaseObjectDataRoad();
                 roadData.ApplyCurrentChunk();
                 m_DicRoad.TryAdd(pathData.ChunkIndex, roadData);
             }
@@ -678,7 +678,7 @@ public class WorldMapMgr : Singleton<WorldMapMgr>
         {
             if (!TryGetChunkData(VARIABLE.Value, out var chunkData)) continue;
 
-            var roadData2 = new WorldBaseObjectDataRoad(VARIABLE.Key, VARIABLE.Value);
+            var roadData2 = new WorldBaseObjectDataRoad();
             roadData2.ApplyCurrentChunk();
         }
 
@@ -872,7 +872,7 @@ public class WorldMapMgr : Singleton<WorldMapMgr>
         foreach (var VARIABLE in playerSpawnPoint)
         {
             var key = SpawnPointIndex++;
-            var spawnPointData = new Entity_SpawnPointPlayerData(key, VARIABLE.Key, VARIABLE.Value);
+            var spawnPointData = new Entity_SpawnPointPlayerData(VARIABLE.Value);
 
             m_DicPlayerSpawnPoint.Add(key, spawnPointData);
         }
@@ -884,7 +884,7 @@ public class WorldMapMgr : Singleton<WorldMapMgr>
         foreach (var VARIABLE in monsterSpawnPoint)
         {
             var key = SpawnPointIndex++;
-            var spawnPointData = new Entity_SpawnPointMonsterData(key, VARIABLE.Key, VARIABLE.Value);
+            var spawnPointData = new Entity_SpawnPointMonsterData(VARIABLE.Value);
 
             m_DicMonsterSpawnPoint.Add(key, spawnPointData);
         }
@@ -967,7 +967,7 @@ public class WorldMapMgr : Singleton<WorldMapMgr>
                 if (TryGetChunkData(pathInfo.ChunkIndex, out var chunkData) && chunkData.CurObjectType == EWorldObjectType.Road)
                 {
                     var key = m_DicTowers.Count;
-                    var towerData = new Entity_Tower_Light1Data(key, chunkData.Index);
+                    var towerData = new Entity_Tower_Light1Data();
                     m_DicTowers.Add(key, towerData);
                 }
             }

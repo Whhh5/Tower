@@ -4,13 +4,69 @@ using UnityEngine;
 using B1;
 using Cysharp.Threading.Tasks;
 
-public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
+public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
 {
+
+    //===============================----------------------========================================
+    //=====-----                                                                         -----=====
+    //                                catalogue -- 英雄实体
+    //=====-----                                                                         -----=====
+    //===============================----------------------========================================
+    public Entity_HeroBaseNewData CreateHeroCardEntity(
+        EHeroCardType f_HeroType,
+        EHeroCradStarLevel f_StarLevel = EHeroCradStarLevel.Level1,
+        int f_TargetIndex = -1)
+    {
+        if (!GTools.TableMgr.TryGetHeroBaseNewData(f_HeroType, -1, f_StarLevel, out var heroData))
+        {
+            LogError($"获取英雄实体失败 type = {f_HeroType}, level = {f_StarLevel}");
+            return null;
+        }
+        heroData.InitData(f_TargetIndex);
+        heroData.SetObjBehaviorStatus(true);
+        return heroData;
+    }
+    public void RemoveHeroCardData(Entity_HeroBaseData f_HeroData)
+    {
+        GTools.CreateMapNew.ClearChunkElement(f_HeroData);
+        ILoadPrefabAsync.UnLoad(f_HeroData);
+    }
+    public Entity_MonsterBaseNewData CreateMonsterEntity(
+        EHeroCardType f_MonsterType,
+        EHeroCradStarLevel f_StarLevel = EHeroCradStarLevel.Level1,
+        int f_TargetIndex = -1)
+    {
+        if (!GTools.TableMgr.TryGetMonsterBaseNewData(f_MonsterType, -1, f_StarLevel, out var monsterData))
+        {
+            LogError($"获取怪物实体失败 type = {f_MonsterType}, level = {f_StarLevel}");
+            return null;
+        }
+        if (f_TargetIndex >= 0 && GTools.CreateMapNew.TryGetChunkData(f_TargetIndex, out var _))
+        {
+            monsterData.InitData(f_TargetIndex);
+        }
+        return monsterData;
+    }
+
+
+
+    //===============================----------------------========================================
+    //=====-----                                                                         -----=====
+    //                                catalogue -- 备战席
+    //=====-----                                                                         -----=====
+    //===============================----------------------========================================
     private int WarSeatCount => GameDataMgr.WarSeatCount;
     private int HeroPoolCount => GameDataMgr.HeroPoolCount;
     private int WarSeatRowCount => GameDataMgr.WarSeatRowCount;
     private float WarSeatLength => GameDataMgr.WarSeatLength;
     public Vector2 WarSeatInterval => GameDataMgr.WarSeatInterval;
+
+    public int UpdateLevelID { get; set; }
+
+    public EUpdateLevel UpdateLevel => EUpdateLevel.Level2;
+
+    public float LasteUpdateTime { get; set; }
+    public float UpdateDelta { get; set; }
 
     private Transform m_Root = null;
     private Dictionary<int, Entity_ChunkWarSeatData> m_WarSeatList = new();
@@ -59,7 +115,7 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
         foreach (var item in m_WarSeatList)
         {
             await ILoadPrefabAsync.LoadAsync(item.Value);
-            await UniTask.Delay(100);
+            await UniTask.Delay(10);
         }
     }
     private void ClearWarSeatEntityAsync()
@@ -77,13 +133,103 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
         ClearWarSeatEntityAsync();
         m_WarSeatList.Clear();
     }
+    private async void AddWarSeatList(EHeroCardType f_HeroCard)
+    {
+        var heroData = CreateHeroCardEntity(f_HeroCard, EHeroCradStarLevel.Level1, -1);
+        if (TryGetWarSeatItem(out var chunkData))
+        {
+            chunkData.SetCurHeroCard(heroData);
+            heroData.SetPosition(chunkData.PointUp);
+        }
+        await ILoadPrefabAsync.LoadAsync(heroData);
+    }
+    private void RemoveWarSearList(Entity_ChunkWarSeatData f_WarSeatData)
+    {
+        f_WarSeatData.ClearHeroCard();
+    }
+    private bool TryGetWarSeatItem(out Entity_ChunkWarSeatData f_WarSeatData)
+    {
+        f_WarSeatData = null;
+        foreach (var item in m_WarSeatList)
+        {
+            if (item.Value.TryGetHeroData(out var heroData))
+            {
+                continue;
+            }
+            f_WarSeatData = item.Value;
+            break;
+        }
+        return f_WarSeatData != null;
+    }
 
-
+    //===============================----------------------========================================
+    //=====-----                                                                         -----=====
+    //                                catalogue -- 英雄抽卡
+    //=====-----                                                                         -----=====
+    //===============================----------------------========================================
+    // 全部卡牌数量信息
     private Dictionary<EQualityType, Dictionary<EHeroCardType, HeroCradPoolInfo>> m_HeroCradPool = new();
 
-    private Dictionary<EHeroCardType, HeroCradPoolInfo> m_CurCrad = new();
-    public int CardGroupCount => 5;
-    private List<EHeroCardType> m_CurCradList = new();
+    // 已经购买的卡牌
+    private Dictionary<EHeroCardType, HeroCradPoolInfo> m_CurCradList = new();
+    // 当前在刷新列表中，但是未购买的卡牌
+    private Dictionary<EHeroCardType, int> m_CurCradViewList = new();
+    public int GetHeroCardResidueCount(EHeroCardType f_HeroType)
+    {
+        var count1 = GetHeroCardPoolCount(f_HeroType);
+        var count2 = GetHeroCardListCount(f_HeroType);
+        var count = count1 + count2;
+        return count;
+    }
+    public int GetHeroCardPoolCount(EHeroCardType f_HeroType)
+    {
+        if (!GTools.TableMgr.TryGetHeroCradInfo(f_HeroType, out var heroInfo))
+        {
+            return 0;
+        }
+        if (!m_HeroCradPool.TryGetValue(heroInfo.QualityLevel, out var list))
+        {
+            return 0;
+        }
+        if (!list.TryGetValue(f_HeroType, out var cardPoolData))
+        {
+            return 0;
+        }
+        return cardPoolData.ResidueCount;
+    }
+    private void AddCurCardViewListData(EHeroCardType f_HeroType, int f_Count = 1)
+    {
+        if (!m_CurCradViewList.TryGetValue(f_HeroType, out var count))
+        {
+            count = 0;
+            m_CurCradViewList.Add(f_HeroType, count);
+        }
+        m_CurCradViewList[f_HeroType] = count + f_Count;
+    }
+    private bool RemoveCurCardViewListData(EHeroCardType f_HeroType, int f_Count = 1)
+    {
+        if (!m_CurCradViewList.TryGetValue(f_HeroType, out var count))
+        {
+            return false;
+        }
+        if (count > f_Count)
+        {
+            m_CurCradViewList[f_HeroType] = count - f_Count;
+        }
+        else
+        {
+            m_CurCradViewList.Remove(f_HeroType);
+        }
+        return true;
+    }
+    public int GetHeroCardListCount(EHeroCardType f_HeroType)
+    {
+        if (!m_CurCradViewList.TryGetValue(f_HeroType, out var count))
+        {
+            return 0;
+        }
+        return count;
+    }
     public override void Awake()
     {
         m_HeroCradPool.Clear();
@@ -109,11 +255,11 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
 
     public bool TryGetCurCardInfo(EHeroCardType f_BuyTarget, out HeroCradPoolInfo f_Result)
     {
-        return m_CurCrad.TryGetValue(f_BuyTarget, out f_Result);
+        return m_CurCradList.TryGetValue(f_BuyTarget, out f_Result);
     }
     public void UpdateAllCurCardInfo()
     {
-        foreach (var item in m_CurCrad)
+        foreach (var item in m_CurCradList)
         {
             //m_MainWindow.UpdateHeroInfo(item.Key);
         }
@@ -123,37 +269,32 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
     /// </summary>
     public bool BuyCard(EHeroCardType f_BuyTarget)
     {
-        if (GTools.TableMgr.TryGetHeroCradInfo(f_BuyTarget, out var cardInfo))
+        if (!GTools.TableMgr.TryGetHeroCradInfo(f_BuyTarget, out var cardInfo))
         {
-            if (GTools.PlayerMgr.TryExpenditure(cardInfo.QualityLevelInfo.Expenditure))
-            {
-                if (m_CurCradList.Contains(f_BuyTarget))
-                {
-                    if (!m_CurCrad.TryGetValue(f_BuyTarget, out var value))
-                    {
-                        value = new(f_BuyTarget, 0);
-                        m_CurCrad.Add(f_BuyTarget, value);
-                    }
-                    value.Push();
-
-                    m_CurCradList.Remove(f_BuyTarget);
-                    //m_MainWindow.ClearCardItem(f_BuyTarget);
-                    return true;
-                }
-            }
-            else
-            {
-                GTools.FloaterHint("<color=#FF0000FF>金币不足!!!</color>");
-            }
+            return false;
         }
-        return false;
+        if (!GTools.PlayerMgr.TryExpenditure(cardInfo.QualityLevelInfo.Expenditure))
+        {
+            return false;
+        }
+        if (!m_CurCradList.TryGetValue(f_BuyTarget, out var value))
+        {
+            value = new(f_BuyTarget, 0);
+            m_CurCradList.Add(f_BuyTarget, value);
+        }
+        if (!RemoveCurCardViewListData(f_BuyTarget))
+        {
+            return false;
+        }
+        AddWarSeatList(f_BuyTarget);
+        return true;
     }
     /// <summary>
     /// 卖卡牌
     /// </summary>
     public void SellCard(EHeroCardType f_CellTarget, int f_Count = 1)
     {
-        if (m_CurCrad.TryGetValue(f_CellTarget, out var value))
+        if (m_CurCradList.TryGetValue(f_CellTarget, out var value))
         {
             var recycleCount = Mathf.Min(value.ResidueCount, f_Count);
             RecycleGroupCrad(f_CellTarget, recycleCount);
@@ -161,7 +302,7 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
             value.Pop(recycleCount);
             if (value.ResidueCount <= 0)
             {
-                m_CurCrad.Remove(f_CellTarget);
+                m_CurCradList.Remove(f_CellTarget);
             }
 
             //m_MainWindow.UpdateCardInfo(f_CellTarget);
@@ -172,8 +313,9 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
     /// 获取一组卡牌
     /// </summary>
     /// <returns></returns>
-    public bool TryGetGroupCrad(out List<EHeroCardType> f_Result)
+    public bool TryGetGroupCrad(out List<EHeroCardType> f_Result, int? f_Count = null)
     {
+        var getCount = f_Count ?? GameDataMgr.HeroPoolCount;
         // 想要获取的卡牌数量
         var playerLevel = EPlayerLevel.Level1;
         f_Result = null;
@@ -182,21 +324,28 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
             return false;
         }
 
-        foreach (var item in m_CurCradList)
-        {
-            RecycleGroupCrad(item);
-        }
+        //foreach (var item in m_CurCradList)
+        //{
+        //    RecycleGroupCrad(item);
+        //}
 
         // 拿取固定数量
         f_Result = new();
-        for (int i = 0; i < CardGroupCount; i++)
+        for (int i = 0; i < getCount; i++)
         {
-            if (TryGetRangeCrad(out var target))
+            if (!TryGetRangeCrad(out var target))
             {
-                f_Result.Add(target);
+                continue;
             }
+            f_Result.Add(target);
+
+            if (!m_CurCradViewList.TryGetValue(target, out var count))
+            {
+                count = 0;
+                m_CurCradViewList.Add(target, count);
+            }
+            m_CurCradViewList[target] = count + 1;
         }
-        m_CurCradList = f_Result;
         return f_Result.Count > 0;
 
 
@@ -306,16 +455,20 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
     /// </summary>
     public void RecycleGroupCrad(EHeroCardType f_EHeroCradType, int f_Count = 1)
     {
-        if (TableMgr.Ins.TryGetHeroCradInfo(f_EHeroCradType, out var heroCardInfo))
+        if (!TableMgr.Ins.TryGetHeroCradInfo(f_EHeroCradType, out var heroCardInfo))
         {
-            if (m_HeroCradPool.TryGetValue(heroCardInfo.QualityLevel, out var poolInfo))
-            {
-                if (poolInfo.TryGetValue(f_EHeroCradType, out var cradPoolInfo))
-                {
-                    cradPoolInfo.Push(f_Count);
-                }
-            }
+            return;
         }
+        if (!m_HeroCradPool.TryGetValue(heroCardInfo.QualityLevel, out var poolInfo))
+        {
+            return;
+        }
+        if (!poolInfo.TryGetValue(f_EHeroCradType, out var cradPoolInfo))
+        {
+            return;
+        }
+        cradPoolInfo.Push(f_Count);
+        RemoveCurCardViewListData(f_EHeroCradType, f_Count);
     }
 
 
@@ -383,11 +536,169 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>
         }
         return result.Count > 0;
     }
+    public int TryGetGroupSkill(out List<CardGroupInfos> f_Result)
+    {
+        f_Result = new();
+        if (!ILoadPrefabAsync.TryGetEntityByType<Entity_HeroBaseData>(EWorldObjectType.Preson, out var listData))
+        {
+            return 0;
+        }
+        if (HeroMgr.Ins.TryGetSkillCards(out var skillList, GameDataMgr.CardSkillCount))
+        {
+            foreach (var skillItem in skillList)
+            {
+                var probaility = GTools.MathfMgr.GetRandomValue(0.0f, 1.0f);
+                if (probaility > GameDataMgr.CardSkillProbability)
+                {
+                    continue;
+                }
+                var cardInfo = new CardGroupInfos()
+                {
+                    CardType = ECardType.Skill,
+                    TypeData = skillItem,
+                };
+                f_Result.Add(cardInfo);
+            }
+        }
+        return f_Result.Count;
+    }
 
+    public bool TryGetGroup(out List<CardGroupInfos> f_Result)
+    {
+        var count = TryGetGroupSkill(out f_Result);
+        var heroCardCount = GameDataMgr.HeroPoolCount - count;
+        if (TryGetGroupCrad(out var heroCard, heroCardCount))
+        {
+            foreach (var item in heroCard)
+            {
+                CardGroupInfos cardGroupInfo = new()
+                {
+                    CardType = ECardType.HeroPerson,
+                    TypeData = new HeroCardInfo()
+                    {
+                        HeroType = item,
+                    },
+                };
+                f_Result.Add(cardGroupInfo);
+            }
+        }
+        return f_Result.Count > 0;
+    }
+    public bool TryGetHeroCrad(out CardGroupInfos f_Result)
+    {
+        f_Result = null;
+        if (TryGetGroupCrad(out var heroCard, 1))
+        {
+            CardGroupInfos cardGroupInfo = new()
+            {
+                CardType = ECardType.HeroPerson,
+                TypeData = new HeroCardInfo()
+                {
+                    HeroType = heroCard[0],
+                },
+            };
+            f_Result = cardGroupInfo;
+        }
+        return f_Result != null;
+    }
 
+    //===============================----------------------========================================
+    //=====-----                                                                         -----=====
+    //                                catalogue -- 备战席移动
+    //=====-----                                                                         -----=====
+    //===============================----------------------========================================
+    private Entity_ChunkWarSeatData m_CurEnterWarSeat = null;
+    public void EnterWarSeat(Entity_ChunkWarSeatData f_WarSeat)
+    {
+        if (!f_WarSeat.TryGetHeroData(out var heroData))
+        {
+            return;
+        }
+        m_CurEnterWarSeat = f_WarSeat;
+    }
+    public void ExitWarSeat(Entity_ChunkWarSeatData f_WarSeat)
+    {
+        if (m_CurEnterWarSeat == f_WarSeat)
+        {
+            m_CurEnterWarSeat = null;
+        }
+    }
+    public void PathPointUpClick(Entity_ChunkMapData f_ChunkData)
+    {
+        var data = m_CurEnterWarSeat;
+        if (data == null)
+        {
+            return;
+        }
+        m_CurEnterWarSeat = null;
+        if (!data.TryGetHeroData(out var heroData))
+        {
+            return;
+        }
+        if (!f_ChunkData.IsPass())
+        {
+            data.ResetHeroPosition();
+            return;
+        }
+        heroData.MoveToChunk(f_ChunkData.ChunkIndex);
+        heroData.SetPosition(f_ChunkData.WorldPosition);
+        data.ClearHeroCard();
+    }
+    public void WarSeatUpClick(Entity_ChunkWarSeatData f_ChunkData)
+    {
+        var data = m_CurEnterWarSeat;
+        if (data == null)
+        {
+            return;
+        }
+        m_CurEnterWarSeat = null;
+        if (f_ChunkData == data)
+        {
+            data.ResetHeroPosition();
+            return;
+        }
+        if (!data.TryGetHeroData(out var targetHerpData))
+        {
+            return;
+        }
+        if (f_ChunkData.TryGetHeroData(out var curHeroData))
+        {
+            data.SetCurHeroCard(curHeroData);
+            curHeroData.SetPosition(data.WorldPosition);
+        }
+        else
+        {
+            data.ClearHeroCard();
+        }
+        f_ChunkData.SetCurHeroCard(targetHerpData);
+        targetHerpData.SetPosition(f_ChunkData.WorldPosition);
+    }
+    public void OnUpdate()
+    {
+        if (m_CurEnterWarSeat == null)
+        {
+            return;
+        }
+        if (m_CurEnterWarSeat.TryGetHeroData(out var heroData))
+        {
 
-
-
+        }
+    }
+}
+public enum EHeroCardWarSeatType
+{
+    WarSeat,
+    PathPoint,
+}
+public class CardWarSeatData
+{
+    public EHeroCardWarSeatType ChunkType;
+    public UnityObjectData TargetChunk; // Entity_HeroBaseData
+    public T GetTargetData<T>()
+        where T : UnityObjectData
+    {
+        return TargetChunk as T;
+    }
 }
 public class HeroCradPoolInfo
 {

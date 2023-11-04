@@ -20,7 +20,7 @@ public class TestTimeLineData : EntityEffectBaseData
         m_IsChangeMagic = f_IsChangeMagic;
 
     }
-    public override AssetKey AssetPrefabID => AssetKey.TestTimeLine;
+    public override EAssetKey AssetPrefabID => EAssetKey.TestTimeLine;
 
     public override EWorldObjectType ObjectType => EWorldObjectType.Effect;
 

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class UIItem_SkillData : UIItemBaseData<PersonSkillInfo>
 {
-    public override AssetKey AssetPrefabID => AssetKey.UIItem_Skill;
+    public override EAssetKey AssetPrefabID => EAssetKey.UIItem_Skill;
     public UIItem_Skill UIItem_Skill => GetCom<UIItem_Skill>();
     public ELockStatus LockStatus = ELockStatus.UnLock;
     public override void UpdateItemData(PersonSkillInfo f_Data, Transform f_Parent)

@@ -7,8 +7,8 @@ using System;
 
 public class PathManager : Singleton<PathManager>
 {
-    private Vector2Int GetRowCol(int f_Index) => WorldMapMgr.Ins.GetRowCol(f_Index);
-    private int ChunkCount => WorldMapMgr.Ins.ChunkCount;
+    private Vector2Int GetRowCol(int f_Index) => GTools.CreateMapNew.IndexToRowCol(f_Index);
+    private int ChunkCount => GameDataMgr.MapWH.x * GameDataMgr.MapWH.y;
 
     public bool TryGetAStarPath(int f_Start, int f_End, out ListStack<PathElementData> f_Result, Func<int, bool> f_ExtraCondition = null)
     {
@@ -62,7 +62,7 @@ public class PathManager : Singleton<PathManager>
 
             void AddList(EDirection f_Dir)
             {
-                var isNext = WorldMapMgr.Ins.GetDirectionChunk(f_Target.Index, f_Dir, out var result);
+                var isNext = GTools.CreateMapNew.GetDirectionChunk(f_Target.Index, f_Dir, out var result);
                 if (!isNext || backIndexDix.ContainsKey(result) ||
                     (!(result == f_End || (f_ExtraCondition?.Invoke(result) ?? true)))) return;
                 
@@ -89,8 +89,18 @@ public class PathManager : Singleton<PathManager>
 
         float GetPrice(Vector2Int f_RowCol)
         {
-            var pos1 = WorldMapMgr.Ins.GetChunkPoint(f_RowCol);
-            var pos2 = WorldMapMgr.Ins.GetChunkPoint(endRowCol);
+            var index = GTools.CreateMapNew.RowColToIndex(f_RowCol);
+            var index2 = GTools.CreateMapNew.RowColToIndex(endRowCol);
+            if (GTools.CreateMapNew.TryGetChunkData(index, out var pos1))
+            {
+
+            }
+            if (GTools.CreateMapNew.TryGetChunkData(index, out var pos2))
+            {
+
+            }
+            //var pos1 = GTools.CreateMapNew.GetChunkPoint(f_RowCol);
+            //var pos2 = GTools.CreateMapNew.GetChunkPoint(endRowCol);
             return Mathf.Abs(f_RowCol.x - endRowCol.x) + Mathf.Abs(f_RowCol.y - endRowCol.y);
         }
     }
@@ -100,12 +110,12 @@ public class PathManager : Singleton<PathManager>
 
 public static class PathCondition
 {
-    private static Dictionary<AssetKey, Func<int, bool>> m_DicCondition = new()
+    private static Dictionary<EAssetKey, Func<int, bool>> m_DicCondition = new()
     {
-        { AssetKey.SpawnPointMonster1, Person_Enemy },
-        { AssetKey.Person_Enemy, Person_Enemy }
+        { EAssetKey.SpawnPointMonster1, Person_Enemy },
+        { EAssetKey.Person_Enemy, Person_Enemy }
     };
-    public static bool GetCondition(AssetKey f_Target, out Func<int, bool> f_Condition)
+    public static bool GetCondition(EAssetKey f_Target, out Func<int, bool> f_Condition)
     {
         if (m_DicCondition.TryGetValue(f_Target, out var value))
         {

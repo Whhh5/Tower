@@ -13,7 +13,7 @@ public class Entity_Effect_Tower_Light1_AttackData : EntityEffectBaseData
 
     }
 
-    public override AssetKey AssetPrefabID => AssetKey.Entity_Effect_Tower_Light1_Attack;
+    public override EAssetKey AssetPrefabID => EAssetKey.Entity_Effect_Tower_Light1_Attack;
 
     private bool m_IsAddMagic;
     private int m_DamageValue = 0;

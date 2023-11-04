@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using B1;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Serialization;
@@ -18,21 +19,9 @@ public class ChangeBloodData
 public abstract class WorldObjectBaseData : DependChunkData
 {
     public virtual string ObjectName { get; }
-    protected WorldObjectBaseData(int f_index, int f_ChunkIndex) : base(f_index, f_ChunkIndex)
+    protected WorldObjectBaseData() : base()
     {
-        CurrentMapKey = WorldMapMgr.Ins.CurrentMapKey;
-
-        WorldMapMgr.Ins.MoveChunkElement(this, f_ChunkIndex);
-
-        if (WorldMapMgr.Ins.TryGetChunkData(f_ChunkIndex, out var targetChunk))
-        {
-            SetPosition(targetChunk.PointUp);
-        }
-
-        if (GTools.TableMgr.TryGetColorByObjectType(ObjectType, out var color))
-        {
-            SetColor(color);
-        }
+        CurrentBlood = MaxBlood;
     }
     public virtual void Initialization(int f_index, int f_ChunkIndex)
     {
@@ -41,7 +30,16 @@ public abstract class WorldObjectBaseData : DependChunkData
 
     public abstract EEntityType EntityType { get; }
     public WorldObjectBase WorldObjectTarget => GetCom<WorldObjectBase>();
-    public int CurrentMapKey { get; private set; }
+    public virtual EHeroVocationalType EntityVocationalType { get; } = EHeroVocationalType.Warrior; 
+    private bool m_CurObjBehaviorStatus = false;
+    public bool GetObjBehaviorStatus()
+    {
+        return m_CurObjBehaviorStatus;
+    }
+    public void SetObjBehaviorStatus(bool f_IsActiveStatus)
+    {
+        m_CurObjBehaviorStatus = f_IsActiveStatus;
+    }
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------
@@ -58,12 +56,15 @@ public abstract class WorldObjectBaseData : DependChunkData
     }
     public override void OnUnLoad()
     {
+        GTools.WorldWindowMgr.RemoveBloodHint(this);
         base.OnUnLoad();
     }
     // 复活
     public virtual void Resurgence()
     {
         SetPersonStatus(EPersonStatusType.Entrance);
+        SetAllElementColorAlpha(1);
+        return;
         WorldWindowMgr.Ins.UpdateBloodHint(this);
     }
     public override void OnUpdate()
@@ -76,8 +77,8 @@ public abstract class WorldObjectBaseData : DependChunkData
     public virtual void Death()
     {
         m_BuffDic.Clear();
-        WorldMapMgr.Ins.RemoveChunkElement(this);
-        WorldWindowMgr.Ins.RemoveBloodHint(this);
+        GTools.WorldWindowMgr.RemoveBloodHint(this);
+        GTools.CreateMapNew.ClearChunkElement(this);
     }
     //--
     //===============================----------------------========================================
@@ -106,9 +107,9 @@ public abstract class WorldObjectBaseData : DependChunkData
     {
         var result = new ResultData<string>(EResult.Succeed);
         var rangeVallue = GTools.MathfMgr.GetRandomValue(0, 1.0f);
-        if (rangeVallue < 0.2f)
+        if (rangeVallue < 0.0f)
         {
-            result.SetData($"-N-", EResult.Defeated);
+            result.SetData($"miss", EResult.Defeated);
         }
         return result;
     }
@@ -136,6 +137,7 @@ public abstract class WorldObjectBaseData : DependChunkData
     public virtual int MaxBloodBase { get; private set; } = 523;
     public int MaxBlood => Mathf.Clamp(Mathf.CeilToInt((1 + m_AddMaxBlood) * MaxBloodBase), 100, 5000);
     public int CurrentMagic { get; protected set; } = 300;
+    public virtual int AtkAddMagic => 30;
     public virtual int MaxMagic { get; private set; } = 653;
     public float MagicPercent => (float)CurrentMagic / MaxMagic;
     public virtual int DefenceBase => 20;
@@ -150,6 +152,7 @@ public abstract class WorldObjectBaseData : DependChunkData
         if (value <= 0)
         {
             SetPersonStatus(EPersonStatusType.Die, EAnimatorStatus.Stop);
+            Death();
         }
         return CurrentBlood;
     }
@@ -160,6 +163,14 @@ public abstract class WorldObjectBaseData : DependChunkData
         CurrentMagic = Mathf.Clamp(value, 0, MaxMagic);
 
         return CurrentMagic;
+    }
+    public virtual void ResetMagic()
+    {
+        CurrentMagic = 0;
+    }
+    public virtual bool IsPassSkill()
+    {
+        return MagicPercent >= 1;
     }
     public virtual void ChangeMaxBlood(float f_Ratio)
     {
@@ -347,20 +358,27 @@ public abstract class WorldObjectBaseData : DependChunkData
     }
 
     // 当前动画播放速度
-    public virtual float AtkSpeedBase { get; set; } = 1;
+    public virtual float AtkSpeedBase { get; } = 1;
     protected float m_AddAtkSpeed = 0;
+    public float CurAtkSpeed => AtkSpeedBase * (1 + m_AddAtkSpeed);
+
+    public virtual int AtkRangeBase { get; } = 1;
+    protected int m_AddAtkRange = 0;
+    public int CurAtkRange => AtkRangeBase + m_AddAtkRange;
+
+
     public float CurAnimaSpeed => Mathf.Clamp(AtkSpeedBase * (1 + m_AddAtkSpeed), 0.1f, 10);
     public void ChangeReleaseSpeed(float f_Value)
     {
         m_AddAtkSpeed += f_Value;
     }
     // 移动速度
-    protected virtual float m_BaseMoveSpeed { get; set; } = 1;
+    protected virtual float m_MoveSpeedBase { get; } = 1;
     protected float m_AddMoveSpeed = 0;
-    public float CurMoveSpeed => Mathf.Clamp(m_BaseMoveSpeed + m_AddMoveSpeed, 0.1f, 10);
+    public float CurMoveSpeed => Mathf.Clamp(m_MoveSpeedBase + m_AddMoveSpeed, 0.1f, 10);
     public void ChangeMoveSpeed(float f_Value)
     {
-        var value = f_Value * m_BaseMoveSpeed;
+        var value = f_Value * m_MoveSpeedBase;
         m_AddMoveSpeed += value;
     }
     // 动画状态
@@ -516,16 +534,7 @@ public abstract class WorldObjectBaseData : DependChunkData
 
     public virtual void AnimatorCallback000()
     {
-        switch (CurStatus)
-        {
-            case EPersonStatusType.Die:
-                {
-                    Death();
-                }
-                break;
-            default:
-                break;
-        }
+
     }
     public virtual void AnimatorCallback020()
     {
@@ -557,15 +566,44 @@ public abstract class WorldObjectBaseData : DependChunkData
                 break;
         }
     }
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- 鼠标范围检测
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+
+    public virtual void OnMouseEnterRange()
+    {
+        
+    }
+    public virtual void OnMouseExitRange()
+    {
+        
+    }
+    public float AllElementAlpha = 1.0f;
+    public void SetAllElementColorAlpha(float f_Alpha)
+    {
+        AllElementAlpha = f_Alpha;
+        if (WorldObjectTarget != null)
+        {
+            WorldObjectTarget.SetAllElementColorAlpha();
+        }
+    }
 
 }
 
 public class WorldObjectBase : DependChunk, IUpdateBase
 {
-
+    public WorldObjectBaseData ObjData => GetData<WorldObjectBaseData>();
     public override EUpdateLevel UpdateLevel => EUpdateLevel.Level1;
     public WorldObjectBaseData WorldObjectBaseData => GetData<WorldObjectBaseData>();
 
+    [SerializeField]
+    private float m_Range = 10;
+    [SerializeField]
+    private bool m_IsEnter = false;
     public override async UniTask OnStartAsync(params object[] f_Params)
     {
         await base.OnStartAsync(f_Params);
@@ -577,9 +615,15 @@ public class WorldObjectBase : DependChunk, IUpdateBase
         base.OnUpdate();
 
 
-        if (Input.GetMouseButtonUp(0))
+        Vector3 screenPoint = Camera.main.WorldToScreenPoint(ObjData.WorldPosition);
+        var isEnter = Vector3.SqrMagnitude(screenPoint - Input.mousePosition) > m_Range;
+        if (!m_IsEnter && isEnter)
         {
-
+            ObjData.OnMouseEnterRange();
+        }
+        else if (m_IsEnter && !isEnter)
+        {
+            ObjData.OnMouseExitRange();
         }
     }
     public override async UniTask OnLoadAsync()
@@ -609,6 +653,19 @@ public class WorldObjectBase : DependChunk, IUpdateBase
         UISelectHeroInfo.Ins.SetData(null);
     }
 
+    public void SetAllElementColorAlpha()
+    {
+        var coms = GetComponentsInChildren<SpriteRenderer>();
+        if (coms != null)
+        {
+            foreach (var item in coms)
+            {
+                var color = item.color;
+                color.a = WorldObjectBaseData.AllElementAlpha;
+                item.color = color;
+            }
+        }
+    }
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------
@@ -653,9 +710,9 @@ public class WorldObjectBase : DependChunk, IUpdateBase
     private PlayableGraph m_AnimatorGraph;
     public void PlayerAnimation()
     {
-        var animaName = WorldObjectBaseData.GetCurrentAnimationName();
         if (CurAnim != null)
         {
+            var animaName = WorldObjectBaseData.GetCurrentAnimationName();
 
             CurAnim.Play(animaName, 0, WorldObjectBaseData.CurAnimaNormalizedTime);
 

@@ -6,10 +6,10 @@ using UnityEngine;
 
 public class Entity_Monster_Default1Data : Person_EnemyData
 {
-    public Entity_Monster_Default1Data(int f_Index, int f_TargetIndex, Entity_SpawnPointMonsterData f_TargetSpawnPoint) : base(f_Index, f_TargetIndex, f_TargetSpawnPoint)
+    public Entity_Monster_Default1Data() : base()
     {
     }
-    public override AssetKey AssetPrefabID => AssetKey.Entity_Monster_Default1;
+    public override EAssetKey AssetPrefabID => EAssetKey.Entity_Monster_Default1;
 
     public override ELayer LayerMask => ELayer.Enemy;
 

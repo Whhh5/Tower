@@ -32,12 +32,13 @@ public class GameManager
         //GTools.MonsterMgr,
         //GTools.CameraMgr,
         GTools.HeroIncubatorPoolMgr,
-        //GTools.PlayerMgr,
+        GTools.PlayerMgr,
         GTools.UIMgr,
         GTools.WorldWindowMgr,
         GTools.GameDataMgr,
         GTools.CreateMapNew,
         GTools.HeroCardPoolMgr,
+        GTools.AttackMgr,
     };
 
 
@@ -47,7 +48,7 @@ public class GameManager
     {
         Application.targetFrameRate = GTools.MaxFrameRate;
 
-        Cursor.lockState = CursorLockMode.Confined;
+        // Cursor.lockState = CursorLockMode.Confined;
 
         CurGameStatus = EGameStatus.Playing;
 
@@ -70,6 +71,17 @@ public class GameManager
         }
     }
 
+    public static async void ReturnSelectWindow()
+    {
+        //var cts = new CancellationTokenSource();
+        //CancellationToken ctk = cts.Token;
+        //cts.Cancel();
+        ILoadPrefabAsync.UnLoadAll();
+        GTools.CreateMapNew.ClearMapAssets();
+        GTools.UIWindowManager.CloseAllWindow();
+        GTools.HeroCardPoolMgr.ClearHeroCardPoolConfig();
+        await GTools.UIWindowManager.LoadWindowAsync<UIGameLevel>(EAssetName.UIGameLevel);
+    }
 
 }
 
