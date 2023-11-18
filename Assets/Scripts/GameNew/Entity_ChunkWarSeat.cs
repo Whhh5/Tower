@@ -44,7 +44,10 @@ public class Entity_ChunkWarSeatData : UnityObjectData
     }
     public void OnMouseUp()
     {
-        GTools.HeroCardPoolMgr.WarSeatUpClick(this);
+        if (GTools.HeroCardPoolMgr.WarSeatUpClick(this))
+        {
+            GTools.AudioMgr.PlayAudio(EAudioType.Scene_ChangeWarSeat);
+        }
     }
     private string DgID => "Entity_ChunkWarSeatData";
     public void ResetHeroPosition(bool f_Force = false)
@@ -120,6 +123,7 @@ public class Entity_ChunkWarSeat : ObjectPoolBase
 
     private void StartEnter()
     {
+        GTools.AudioMgr.PlayAudio(EAudioType.Scene_EnterWarSeat);
         DOTween.Kill(DGID);
         var curColor = m_CurColor;
         var interval = curColor - m_EnterToColor;
@@ -135,6 +139,7 @@ public class Entity_ChunkWarSeat : ObjectPoolBase
     }
     private void StopEnter()
     {
+        GTools.AudioMgr.PlayAudio(EAudioType.Scene_ExitWarSeat);
         DOTween.Kill(DGID);
         var curColor = m_CurColor;
         var interval = curColor - m_OriginalColor;

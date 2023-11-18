@@ -18,9 +18,9 @@ public class Entity_Chunk1Data : UnityObjectData
     {
         base.AfterLoad();
     }
-    public override void OnUnLoad()
+    public override void UnLoad()
     {
-        base.OnUnLoad();
+        base.UnLoad();
         RemoveAllElement();
     }
 

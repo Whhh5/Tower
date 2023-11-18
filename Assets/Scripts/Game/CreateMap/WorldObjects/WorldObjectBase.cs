@@ -21,7 +21,12 @@ public abstract class WorldObjectBaseData : DependChunkData
     public virtual string ObjectName { get; }
     protected WorldObjectBaseData() : base()
     {
+        
+    }
+    public override void InitData(int f_ChunkIndex = -1)
+    {
         CurrentBlood = MaxBlood;
+        base.InitData(f_ChunkIndex);
     }
     public virtual void Initialization(int f_index, int f_ChunkIndex)
     {
@@ -30,7 +35,6 @@ public abstract class WorldObjectBaseData : DependChunkData
 
     public abstract EEntityType EntityType { get; }
     public WorldObjectBase WorldObjectTarget => GetCom<WorldObjectBase>();
-    public virtual EHeroVocationalType EntityVocationalType { get; } = EHeroVocationalType.Warrior; 
     private bool m_CurObjBehaviorStatus = false;
     public bool GetObjBehaviorStatus()
     {
@@ -54,10 +58,10 @@ public abstract class WorldObjectBaseData : DependChunkData
         InitAnimatorParams();
         SetPersonStatus(EPersonStatusType.Idle);
     }
-    public override void OnUnLoad()
+    public override void UnLoad()
     {
         GTools.WorldWindowMgr.RemoveBloodHint(this);
-        base.OnUnLoad();
+        base.UnLoad();
     }
     // ¸´»î
     public virtual void Resurgence()
@@ -144,7 +148,7 @@ public abstract class WorldObjectBaseData : DependChunkData
     public int CurrentBlood { get; private set; } = 400;
     private float m_AddMaxBlood = 0;
     public virtual int MaxBloodBase { get; private set; } = 523;
-    public int MaxBlood => Mathf.Clamp(Mathf.CeilToInt((1 + m_AddMaxBlood) * MaxBloodBase), 100, 5000);
+    public int MaxBlood => Mathf.Clamp(Mathf.CeilToInt((1 + m_AddMaxBlood) * MaxBloodBase), 100, 20000);
     public int CurrentMagic { get; protected set; } = 300;
     public virtual int AtkAddMagic => 30;
     public virtual int MaxMagic { get; private set; } = 653;

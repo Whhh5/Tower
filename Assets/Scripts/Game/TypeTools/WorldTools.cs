@@ -105,8 +105,9 @@ public interface ILoadPrefabAsync
     public LoadAsyncResult LoadResult { get; set; }
     public EAssetKey AssetPrefabID { get; }
 
+    public void OnLoad();
     public void AfterLoad();
-    public void OnUnLoad();
+    public void UnLoad();
 
 
 
@@ -134,6 +135,7 @@ public interface ILoadPrefabAsync
         var lastLoadKey = GetLoadKey();
         f_Target.LoadKey = lastLoadKey;
         f_Target.LoadResult = LoadAsyncResult.Loading;
+        f_Target.OnLoad();
         var result = await LoadAssetManager.Ins.LoadAsync<ObjectPoolBase>(f_Target.AssetPrefabID);
         if (result != null)
         {
@@ -172,7 +174,7 @@ public interface ILoadPrefabAsync
     public static void UnLoad<TLoad>(TLoad f_Target)
         where TLoad : UnityObjectData
     {
-        f_Target.OnUnLoad();
+        f_Target.UnLoad();
         var loadKey = f_Target.LoadKey;
         f_Target.LoadKey = int.MinValue;
         if (f_Target.LoadResult == LoadAsyncResult.Succeed)

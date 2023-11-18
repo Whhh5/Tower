@@ -17,9 +17,9 @@ public class Entity_Effect_Tower_Light1_AttackData : EntityEffectBaseData
 
     private bool m_IsAddMagic;
     private int m_DamageValue = 0;
-    public override void OnUnLoad()
+    public override void UnLoad()
     {
-        base.OnUnLoad();
+        base.UnLoad();
     }
     public override void ExecuteEffect(WorldObjectBaseData m_TargetEnemy)
     {

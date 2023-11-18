@@ -84,5 +84,10 @@ public class GameManager
         await GTools.UIWindowManager.LoadWindowAsync<UIGameLevel>(EAssetName.UIGameLevel);
     }
 
+    public static void SetGameScale(float f_TimeScale)
+    {
+        Time.timeScale = f_TimeScale;
+    }
+
 }
 

@@ -25,10 +25,18 @@ public class LevelEnergyCrystalData
     public int StartIndex;
     public EQualityType Quality;
 }
-public class LevelMonsterData
+[Serializable]
+public class LevelMonsterInfo
 {
     public int StartIndex;
     public EHeroCardType MonsterType;
+    public IncubatorAttributeInfo AttributeInfoOffset;
+} 
+[Serializable]
+public class LevelWaveInfo
+{
+    public float ActiveTime;
+    public List<LevelMonsterInfo> MonsterList;
 }
 [CreateAssetMenu(fileName = "NewMapData", menuName = "ScriptableObject/MapData", order = 0)]
 public class MapConfig : SerializedScriptableObject
@@ -38,7 +46,7 @@ public class MapConfig : SerializedScriptableObject
     public Vector2 MapChunkInterval;
     public Dictionary<EBarrierType, List<BarrierData>> BarrierData = new();
     public Dictionary<int, LevelEnergyCrystalData> EnergyCrystalData = new();
-    public Dictionary<int, List<LevelMonsterData>> MonsterData = new();
+    public Dictionary<int, LevelWaveInfo> MonsterData = new();
 
     public int WarSeatCount;
     public int WarSeatRowCount;

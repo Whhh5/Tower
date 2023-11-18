@@ -10,14 +10,20 @@ public enum EChildName
     Txt_Level,
     Txt_Count,
     Txt_GoldCount,
+    Txt_Describes,
 
     Tran_Icon1,
     Tran_Icon2,
+    Tran_Point,
+
+    Item_Point,
 
     Img_Quality,
     Img_Icon,
+    Img_Vocational,
 
     Btn_Click,
+    Btn_Close,
 
 }
 public static class Util

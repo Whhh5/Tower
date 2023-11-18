@@ -23,7 +23,6 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
             return null;
         }
         heroData.InitData(f_TargetIndex);
-        heroData.SetObjBehaviorStatus(true);
         return heroData;
     }
     public void RemoveHeroCardData(Entity_HeroBaseData f_HeroData)
@@ -33,6 +32,7 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
     }
     public Entity_MonsterBaseNewData CreateMonsterEntity(
         EHeroCardType f_MonsterType,
+        IncubatorAttributeInfo? f_AttributeOffset = null,
         EHeroCradStarLevel f_StarLevel = EHeroCradStarLevel.Level1,
         int f_TargetIndex = -1)
     {
@@ -43,6 +43,7 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
         }
         if (f_TargetIndex >= 0 && GTools.CreateMapNew.TryGetChunkData(f_TargetIndex, out var _))
         {
+            monsterData.UpdateAddAttributes(f_AttributeOffset ?? new());
             monsterData.InitData(f_TargetIndex);
         }
         return monsterData;
@@ -104,6 +105,8 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
 
         // 创建 ui 卡池列表
         m_MainWindow = await GTools.UIWindowManager.LoadWindowAsync<UIHeroCardSelect>(EAssetName.UIHeroCardSelect);
+        await GTools.UIWindowManager.LoadWindowAsync<UIGameMonster>(EAssetName.UIGameMonster);
+        await GTools.UIWindowManager.LoadWindowAsync<UIGameFinish>(EAssetName.UIGameFinish); 
 
 
 
@@ -644,44 +647,46 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
             m_CurEnterWarSeat = null;
         }
     }
-    public void PathPointUpClick(Entity_ChunkMapData f_ChunkData)
+    public bool PathPointUpClick(Entity_ChunkMapData f_ChunkData)
     {
         var data = m_CurEnterWarSeat;
         if (data == null)
         {
-            return;
+            return false;
         }
         m_CurEnterWarSeat = null;
         if (!data.TryGetHeroData(out var heroData))
         {
-            return;
+            return false;
         }
         if (!f_ChunkData.IsPass())
         {
             data.ResetHeroPosition();
-            return;
+            return false;
         }
+        heroData.SetObjBehaviorStatus(true);
         heroData.MoveToChunk(f_ChunkData.ChunkIndex);
         heroData.SetPosition(f_ChunkData.WorldPosition);
         GTools.FormationMgr.FormationDetection(heroData);
         data.ClearHeroCard();
+        return true;
     }
-    public void WarSeatUpClick(Entity_ChunkWarSeatData f_ChunkData)
+    public bool WarSeatUpClick(Entity_ChunkWarSeatData f_ChunkData)
     {
         var data = m_CurEnterWarSeat;
         if (data == null)
         {
-            return;
+            return false;
         }
         m_CurEnterWarSeat = null;
         if (f_ChunkData == data)
         {
             data.ResetHeroPosition();
-            return;
+            return false;
         }
         if (!data.TryGetHeroData(out var targetHerpData))
         {
-            return;
+            return false;
         }
         if (f_ChunkData.TryGetHeroData(out var curHeroData))
         {
@@ -694,6 +699,7 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
         }
         f_ChunkData.SetCurHeroCard(targetHerpData);
         targetHerpData.SetPosition(f_ChunkData.WorldPosition);
+        return true;
     }
     public void OnUpdate()
     {

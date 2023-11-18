@@ -23,9 +23,9 @@ public class Hero3SkillEffectData : EntityEffectBaseData
         base.ExecuteEffect(f_Target);
         GTools.MathfMgr.EntityDamage(Initiator, f_Target, EDamageType.AddBlood, m_HarmValue);
     }
-    public override void OnUnLoad()
+    public override void UnLoad()
     {
-        base.OnUnLoad();
+        base.UnLoad();
     }
 }
 

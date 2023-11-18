@@ -73,9 +73,9 @@ public abstract class Emitter_SwordBaseData : WeaponBaseData
         }
     }
 
-    public override async void OnUnLoad()
+    public override async void UnLoad()
     {
-        base.OnUnLoad();
+        base.UnLoad();
         await GTools.ParallelTaskAsync(m_AllSwordElements, async (key, value) =>
         {
             while (value.TryPop(out var element))

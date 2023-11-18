@@ -11,7 +11,7 @@ public class WorldWindowMgr : Singleton<WorldWindowMgr>
 {
 
     [SerializeField]
-    private Transform m_Root => GTools.UIWindowManager.GetUIRootAsync(EUIAppRoot.System);
+    private Transform m_Root => GTools.UIWindowManager.GetUIRootAsync(EUIAppRoot.Scene);
 
     public override async void Awake()
     {

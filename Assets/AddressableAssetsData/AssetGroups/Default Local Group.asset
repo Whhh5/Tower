@@ -95,6 +95,18 @@ MonoBehaviour:
     m_Address: UIHeroCardSelect
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 273b2a28b58714446a46931b645fc53b
+    m_Address: UIGameMonster
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 7d5b8826c5cb7f2449741ffe45771e38
+    m_Address: UIGameFinish
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: cd19f7b6a0f59094182436f6568aba15
+    m_Address: UIFormationInfo
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 056db3dee3486459a9eb7c3820ef1dcd, type: 2}
   m_SchemaSet:

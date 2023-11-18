@@ -1,0 +1,73 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fddd7d1e10971ae4a93e3b4f5c8eef17, type: 3}
+  m_Name: Cfg_Formation_Near
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: ArrayIndex
+      Entry: 7
+      Data: 0|System.Int32[,], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 9
+    - Name: ranks
+      Entry: 1
+      Data: 3|3
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 3
+      Data: 2
+    - Name: 
+      Entry: 3
+      Data: 3
+    - Name: 
+      Entry: 3
+      Data: 4
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 0
+    - Name: 
+      Entry: 3
+      Data: 1
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+  Name: "\u51B2\u950B\u9635"
+  Describes: "\u5F62\u6210\u4E00\u4E2A\u5C16\u523A,  \u6BCF <color=#00FF00FF>1</color>s
+    \u5BF9\u6B63\u524D\u65B9 <color=#FFFF00FF>18</color> \u683C\u5185\u7684\u654C\u4EBA\u9020\u6210
+    <color=#00FFFFFF>30</color> \u7684\u56FA\u5B9A\u4F24\u5BB3\n<color=#f5f500>\xB7</color>
+    <color=#FF9100>\u5355\u6B21\u7206\u53D1\u4F24\u5BB3</color>"
+  FormationType: 0
+  CentreIndex: 5
+  ArraySize: {x: 3, y: 3}

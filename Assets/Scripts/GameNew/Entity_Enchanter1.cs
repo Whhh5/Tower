@@ -35,6 +35,7 @@ public class Entity_Enchanter1Data : Entity_Hero_EnchanterBaseData
         var startRot = Quaternion.Euler(LocalRotation).z;
         var rotAngle = startRot + 360 * 5;
 
+        GTools.AudioMgr.PlayAudio(EAudioType.Hero_Enchanter1_Skill1);
         await DOTween.To(() => 0.0f, slider =>
           {
               var pos = Vector3.Lerp(startPos, endPos1, slider);
@@ -117,6 +118,7 @@ public class Entity_Enchanter1Data : Entity_Hero_EnchanterBaseData
                 effect.SetMainColor(new Color(colorR, colorG, colorB, 1));
                 await ILoadPrefabAsync.LoadAsync(effect);
 
+                GTools.AudioMgr.PlayAudio(EAudioType.Hero_Enchanter1_Skill2);
                 await DOTween.To(() => 0.0f, slider =>
                   {
                       var pos = Vector3.Lerp(startPos, targetPos, slider);
@@ -126,6 +128,7 @@ public class Entity_Enchanter1Data : Entity_Hero_EnchanterBaseData
 
                   }, 1.0f, moveTime)
                     .SetId(DGID_Skill);
+                GTools.AudioMgr.PlayAudio(EAudioType.Hero_Enchanter1_Skill3);
                 this.EntityDamage(f_TargetData, -SkillDamage);
                 effect.DestroyAsync();
             });

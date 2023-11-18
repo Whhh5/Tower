@@ -11,6 +11,7 @@ public class AttackMgr : Singleton<AttackMgr>
         int f_Value,
         int f_AddMagicValue = -1)
     {
+        f_Initiator ??= GTools.MonsterMgr.GodEntityData;
         //f_Value = 1;
         if (GTools.UnityObjectIsVaild(f_Target))
         {

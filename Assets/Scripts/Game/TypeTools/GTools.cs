@@ -101,6 +101,7 @@ public static class GTools
     public static HeroCardPoolMgr HeroCardPoolMgr => HeroCardPoolMgr.Ins;
     public static AttackMgr AttackMgr => AttackMgr.Ins;
     public static FormationMgr FormationMgr => FormationMgr.Ins;
+    public static AudioMgr AudioMgr => AudioMgr.Ins;
     #endregion
 
     #region Mono 静态类

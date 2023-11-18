@@ -17,6 +17,7 @@ public class UICardSelectData
     public string Name;
     public Action OnClick;
     public EAssetKey Icon;
+    public EAssetKey VocationalIcon;
     public EQualityType Quality;
 }
 public class UICardInfo
@@ -78,6 +79,15 @@ public class UICardInfo
             m_Item.GetChildCom<TextMeshProUGUI>(EChildName.Txt_Name).text = cardData.Name;
             m_Item.GetChildCom<TextMeshProUGUI>(EChildName.Txt_GoldCount).text = cardData.Expenditure.ToString();
 
+            var sprite2 = await ILoadSpriteAsync.LoadAsync(cardData.VocationalIcon);
+            m_Item.GetChildCom<Image>(EChildName.Img_Vocational).gameObject.SetActive(false);
+            if (sprite2 != null)
+            {
+                m_Item.GetChildCom<Image>(EChildName.Img_Vocational).sprite = sprite2;
+                m_Item.GetChildCom<Image>(EChildName.Img_Vocational).gameObject.SetActive(true);
+            }
+
+
             m_Item.GetChildCom<Button>(EChildName.Btn_Click).onClick.RemoveAllListeners();
             m_Item.GetChildCom<Button>(EChildName.Btn_Click).onClick.AddListener(() =>
             {
@@ -98,8 +108,9 @@ public class UICardInfo
     {
         f_HeroData = null;
         var heroType = f_HeroType;
-        if (GTools.TableMgr.TryGetHeroCradInfo(heroType, out var heroInfo) &&
-            GTools.TableMgr.TryGetHeroCradLevelInfo(heroInfo.QualityLevel, out var levelInfo))
+        if (GTools.TableMgr.TryGetHeroCradInfo(heroType, out var heroInfo)
+            && GTools.TableMgr.TryGetHeroCradLevelInfo(heroInfo.QualityLevel, out var levelInfo)
+            && GTools.TableMgr.TryGetHeroVocationalInfo(heroInfo.Vocational, out var vocationalInfo))
         {
             f_HeroData = new UICardSelectData();
             f_HeroData.HeroType = heroType;
@@ -107,9 +118,11 @@ public class UICardInfo
             f_HeroData.Icon = heroInfo.Icon;
             f_HeroData.Quality = heroInfo.QualityLevel;
             f_HeroData.Expenditure = levelInfo.Expenditure;
+            f_HeroData.VocationalIcon = vocationalInfo.IconID;
             f_HeroData.OnClick = () =>
             {
                 // 添加到备战席
+                GTools.AudioMgr.PlayAudio(EAudioType.Scene_BuyCard);
                 GTools.HeroCardPoolMgr.BuyCard(heroType);
             };
         }
@@ -182,10 +195,6 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
     private Button m_UpdateList = null;
     [SerializeField]
     private HorizontalLayoutGroup m_MainLayoutGroup = null;
-    [SerializeField]
-    private Button m_ReturnBtn = null;
-    [SerializeField]
-    private Button m_ActionBtn = null;
     private int HeroPoolCount => GameDataMgr.HeroPoolCount;
 
     [SerializeField]
@@ -211,22 +220,69 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
     [SerializeField]
     private TextMeshProUGUI m_CurEnergyCount = null;
 
+    [SerializeField, Header("按钮根节点"), Space(30)]
+    private CanvasGroup m_BtnGroup = null;
+    [SerializeField, Header("设置界面"), Space(30)]
+    private GameObject m_SettingWindow = null;
+    [SerializeField]
+    private Button m_SettingBtn = null;
+    [SerializeField]
+    private Button m_SettingCloseBtn = null;
+    [SerializeField]
+    private RectTransform m_SettingBtnItem = null;
+
+    [SerializeField, Header("阵型界面"), Space(30)]
+    private Button m_FormationBtn = null;
+
+    private class SettingData
+    {
+        public string name;
+        public Action click;
+        public RectTransform item;
+        public void InitData(RectTransform f_TargetItem)
+        {
+            var itemObj = GameObject.Instantiate(f_TargetItem, f_TargetItem.parent);
+            var btn = itemObj.GetChildCom<Button>(EChildName.Btn_Click);
+            var title = itemObj.GetChildCom<TextMeshProUGUI>(EChildName.Txt_Title);
+            btn.onClick.RemoveAllListeners();
+            btn.onClick.AddListener(() => click());
+            title.text = name;
+            itemObj.gameObject.SetActive(true);
+            item = itemObj;
+        }
+        public void Destroy()
+        {
+            GameObject.Destroy(item.gameObject);
+        }
+    }
+    private Dictionary<int, SettingData> m_SettingFuncList = new()
+    {
+        {
+            1,
+            new()
+            {
+                name = "返回",
+                click = ()=>
+                {
+                    GameManager.ReturnSelectWindow();
+                    GameManager.SetGameScale(1);
+                },
+                item = null,
+            }
+        },
+
+    };
+
     public override async UniTask AwakeAsync()
     {
+        GTools.AudioMgr.PlayAudio(EAudioType.Scene_Background);
         m_CardItem.gameObject.SetActive(false);
         m_ItemHeroCardResidueCount.gameObject.SetActive(false);
+        m_UpdateList.onClick.RemoveAllListeners();
         m_UpdateList.onClick.AddListener(() =>
         {
             //UpdateCardList(GameDataMgr.LevelUpdateExpenditure);
 
-        });
-        m_ReturnBtn.onClick.AddListener(() =>
-        {
-            GameManager.ReturnSelectWindow();
-        });
-        m_ActionBtn.onClick.AddListener(() =>
-        {
-            GTools.CreateMapNew.SetWaveMonsterActive();
         });
         m_CurTime = 0;
 
@@ -255,10 +311,42 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
             {
                 continue;
             }
+            if (!GTools.TableMgr.TryGetHeroCradInfo(heroType, out var heroInfo))
+            {
+                continue;
+            }
+            if (heroInfo.QualityLevelInfo.MaxCount <= 0)
+            {
+                continue;
+            }
             HeroResidueCountData data = new();
             data.InitData(heroType, m_ItemHeroCardResidueCount);
             m_HeroCardResidueList.Add(data);
         }
+        // 初始化设置列表
+        m_SettingBtnItem.gameObject.SetActive(false);
+        foreach (var item in m_SettingFuncList)
+        {
+            item.Value.InitData(m_SettingBtnItem);
+        }
+        m_SettingBtn.onClick.RemoveAllListeners();
+        m_SettingBtn.onClick.AddListener(() =>
+        {
+            m_SettingWindow.SetActive(true);
+            GameManager.SetGameScale(0);
+        });
+        m_FormationBtn.onClick.RemoveAllListeners();
+        m_FormationBtn.onClick.AddListener(async () =>
+        {
+            await UIWindowManager.Ins.LoadWindowAsync<UIFormationInfo>(EAssetName.UIFormationInfo);
+        });
+        m_SettingCloseBtn.onClick.RemoveAllListeners();
+        m_SettingCloseBtn.onClick.AddListener(() =>
+        {
+            m_SettingWindow.SetActive(false);
+            GameManager.SetGameScale(1);
+        });
+        m_SettingWindow.SetActive(false);
     }
 
     private float m_CurTime = 0.0f;
@@ -292,7 +380,7 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
         m_CurGlodCount.text = $"{GTools.PlayerMgr.GetGoldCount()}";
 
         // 刷新当前怪物波数
-        m_CurMonsterWave.text = $"{mapNewMgr.GetCurWaveCount()}/{mapNewMgr.GetMaxWaveCount()}";
+        m_CurMonsterWave.text = $"{mapNewMgr.GetCurWaveCount() + 1}/{mapNewMgr.GetMaxWaveCount()}";
 
         // 刷新当前怪物数量
         m_CurWaveMonsterCount.text = $"{mapNewMgr.GetCurWaveMonsterActiveCount()}/{mapNewMgr.GetCurWaveMonsterCount()}";
@@ -318,6 +406,10 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
             item.OnDestroy();
         }
         m_HeroCardResidueList.Clear();
+        foreach (var item in m_SettingFuncList)
+        {
+            item.Value.Destroy();
+        }
         await base.OnUnLoadAsync();
     }
 
@@ -332,6 +424,7 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
           {
               var alpha = Mathf.Lerp(curAlpha, 1, slider);
               HeroResidueRootGroup.alpha = alpha;
+              m_BtnGroup.alpha = alpha;
 
           }, 1.0f, time * 0.5f)
             .SetId(DG_ID);
@@ -346,8 +439,14 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
         {
             var alpha = Mathf.Lerp(curAlpha, 0, slider);
             HeroResidueRootGroup.alpha = alpha;
+            m_BtnGroup.alpha = alpha;
 
         }, 1.0f, time * 0.2f)
             .SetId(DG_ID);
+    }
+
+    private void ReturnSelectWindow()
+    {
+
     }
 }

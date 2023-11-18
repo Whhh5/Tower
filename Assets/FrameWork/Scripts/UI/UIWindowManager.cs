@@ -198,7 +198,7 @@ namespace B1.UI
             {
                 return true;
             }
-            else if(m_DicPage.TryGetValue(f_Type, out f_UIWindowPage))
+            else if (m_DicPage.TryGetValue(f_Type, out f_UIWindowPage))
             {
                 return true;
             }
@@ -264,11 +264,11 @@ namespace B1.UI
             LogWarning($"卸载窗口    f_EWindow = {f_Obj.AssetName} ");
 
         }
-        public async void CloseAllWindow()
+        public void CloseAllWindow()
         {
             foreach (var item in m_CurAllWindows)
             {
-                await AssetsMgr.Ins.UnLoadPrefabAsync(item.Value.AssetName, EAssetLable.Prefab, item.Value);
+                GTools.RunUniTask(AssetsMgr.Ins.UnLoadPrefabAsync(item.Value.AssetName, EAssetLable.Prefab, item.Value));
             }
             m_CurAllWindows.Clear();
 

@@ -129,6 +129,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4be5cc6a30c16464daa8f4234caab0ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects: []
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes: []
   UpdateInteractable: 0
   m_MainBody: {fileID: 0}
   m_MainObject: {fileID: 0}
@@ -138,7 +147,7 @@ MonoBehaviour:
   m_BuffPoint: {fileID: 0}
   m_EffectPoint: {fileID: 0}
   m_TrailPoint: {fileID: 0}
-  m_WeaponPoint: {fileID: 0}
+  m_AttackSpeedPoint: {fileID: 0}
   m_Range: 10
   m_IsEnter: 0
   m_CurAnim: {fileID: 0}

@@ -28,11 +28,11 @@ public class TestTimeLineData : EntityEffectBaseData
     public WorldObjectBaseData TargetEnemy = null;
     public bool m_IsChangeMagic;
 
-    public override void OnUnLoad()
+    public override void UnLoad()
     {
         GTools.MathfMgr.EntityDamage(Initiator, TargetEnemy, EDamageType.True, DamageValue, m_IsChangeMagic);
 
-        base.OnUnLoad();
+        base.UnLoad();
     }
 }
 public class TestTimeLine : EntityEffectBase

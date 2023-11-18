@@ -36,6 +36,7 @@ public class Entity_Supplementary1Data : Entity_Hero_SupplementaryBaseData
         var curScale = GetWeaponLocalSacle();
         var toScale = UtilWidth * (SkillRange + 1) * WeaponStartScale;
 
+        GTools.AudioMgr.PlayAudio(EAudioType.Hero_Supplementary1_Skill1);
         await MainLoop(SkillToTime);
 
         curPos = GetWeaponPosition();
@@ -45,6 +46,7 @@ public class Entity_Supplementary1Data : Entity_Hero_SupplementaryBaseData
         curScale = GetWeaponLocalSacle();
         toScale = UtilWidth * SkillRange * WeaponStartScale;
         await MainLoop(SkillFromTime1);
+        GTools.AudioMgr.PlayAudio(EAudioType.Hero_Supplementary1_Skill2);
 
         AddRangeEntityBlood();
         await UniTask.Delay(Mathf.CeilToInt(SkillFromTime2 * 1000));

@@ -20,8 +20,21 @@ public class GameDataMgr : Singleton<GameDataMgr>
     {
         return m_GameData.TryGetLevelData(f_MapLevel, out f_LevelData);
     }
+    public void PassCurLevel()
+    {
+        PassLevel(CurMapLevel);
+    }
+    public void PassLevel(EMapLevelType f_MapLevel)
+    {
+        if (!TryGetLevelData(f_MapLevel, out var mapInfo))
+        {
+            return;
+        }
+        mapInfo.IsPass = true;
+    }
 
-    private static MapConfig m_MapConfig = null;
+    public EMapLevelType CurMapLevel { get; private set; }
+    private static MapLevelInfo m_MapConfig = null;
     public static Vector2Int MapWH => m_MapConfig.MapWH;
     public static Dictionary<EBarrierType, List<BarrierData>> BarrierData => m_MapConfig.BarrierData;
     public static float MapChunkLength => m_MapConfig.MapChunkLength;
@@ -36,38 +49,50 @@ public class GameDataMgr : Singleton<GameDataMgr>
     public static int CardSkillCount => m_MapConfig.CardSkillCount; 
     public static float CardSkillProbability => m_MapConfig.CardSkillProbability;
     public static Dictionary<int, LevelEnergyCrystalData> EnergyCrystalData => m_MapConfig.EnergyCrystalData;
-    public static Dictionary<int, List<LevelMonsterData>> MonsterData => m_MapConfig.MonsterData;
-    private void UpdateMapCfg(MapConfig f_MapCfg)
+    public static Dictionary<int, LevelWaveInfo> MonsterData => m_MapConfig.MonsterData;
+    private void UpdateMapCfg(MapLevelInfo f_MapCfg)
     {
         m_MapConfig = f_MapCfg;
     }
     public async void SetMapData(EMapLevelType f_LevelType)
     {
-        if (!GTools.TableMgr.TryGetMapConfigInfo(f_LevelType, out var levelInfo))
+        if (false)
         {
-            LogError("加载场景数据失败，找不到相应配置");
-            return;
-        }
+            if (!GTools.TableMgr.TryGetMapConfigInfo(f_LevelType, out var levelInfo))
+            {
+                LogError("加载场景数据失败，找不到相应配置");
+                return;
+            }
 
-        if (!GTools.TableMgr.TryGetAssetPath(levelInfo.AssetPath, out var assetPath))
-        {
-            LogError("加载场景数据失败，未找到配置路径");
-            return;
-        }
+            if (!GTools.TableMgr.TryGetAssetPath(levelInfo.AssetPath, out var assetPath))
+            {
+                LogError("加载场景数据失败，未找到配置路径");
+                return;
+            }
 
-        var asset = await LoadAssetManager.Ins.LoadAsync<MapConfig>(assetPath);
-        if (asset == null)
+            var asset = await LoadAssetManager.Ins.LoadAsync<MapConfig>(assetPath);
+            if (asset == null)
+            {
+                LogError($"加载场景数据失败，加载资源失败 {assetPath}");
+                return;
+            }
+        }
+        else
         {
-            LogError($"加载场景数据失败，加载资源失败 {assetPath}");
+
+        }
+        if (!GTools.TableMgr.TryGetLevelWaveInfo(f_LevelType, out var mapInfo))
+        {
             return;
         }
+        CurMapLevel = f_LevelType;
         ExitCurLevel();
-        UpdateMapCfg(asset);
+        UpdateMapCfg(mapInfo);
         EnterNextLevel();
 
         GTools.CreateMapNew.CreateMapData();
         GTools.HeroCardPoolMgr.CreateHeroCardPoolConfig();
-        GTools.PlayerMgr.SetGoldCount(200);
+        GTools.PlayerMgr.SetGoldCount(LevelInitGlod);
         GTools.HeroCardPoolMgr.InitCardPoolList();
     }
     private void EnterNextLevel()

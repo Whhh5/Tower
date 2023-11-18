@@ -37,10 +37,8 @@ public class CreateMapNew : Singleton<CreateMapNew>
         // 创建水晶数据
         CreateEnergyCrystalAssets();
         // 创建怪物数据
-        if (TrySetWaveCount(1))
-        {
-            CreateMonsterAssets();
-        }
+
+        CreateMonsterAssets();
 
         CreateMapEntityAssets();
     }
@@ -273,8 +271,9 @@ public class CreateMapNew : Singleton<CreateMapNew>
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
-    private int CurWaveCount = 0;
-    public Dictionary<int, List<LevelMonsterData>> MonsterData => GameDataMgr.MonsterData;
+    private int CurWaveCount = -1;
+    public float LastWaveTime = 0.0f;
+    public Dictionary<int, LevelWaveInfo> MonsterData => GameDataMgr.MonsterData;
     private Dictionary<int, List<Entity_MonsterBaseNewData>> m_CurWaveMonsterList = new();
     public int GetCurWaveCount()
     {
@@ -283,6 +282,20 @@ public class CreateMapNew : Singleton<CreateMapNew>
     public int GetMaxWaveCount()
     {
         return m_CurWaveMonsterList.Count;
+    }
+    public float GetCurWaveTime()
+    {
+        if (MonsterData.TryGetValue(CurWaveCount + 1, out var waveInfo))
+        {
+            return waveInfo.ActiveTime;
+        }
+        return 0;
+    }
+    public bool TryGetNextWaveTime(out float f_NextWaveTime)
+    {
+        var curWaveTime = GetCurWaveTime();
+        f_NextWaveTime = curWaveTime > 0 ? LastWaveTime + curWaveTime : 0;
+        return f_NextWaveTime > 0;
     }
     public int GetCurWaveMonsterCount()
     {
@@ -307,7 +320,8 @@ public class CreateMapNew : Singleton<CreateMapNew>
     }
     public void InitWaveCache()
     {
-        CurWaveCount = 0;
+        CurWaveCount = -1;
+        LastWaveTime = Time.time;
         m_CurWaveMonsterList.Clear();
     }
     public bool TrySetWaveCount(int f_WaveCount)
@@ -322,20 +336,33 @@ public class CreateMapNew : Singleton<CreateMapNew>
             LogError($"不存在怪物波数 WaveCount = {f_WaveCount}");
             return false;
         }
+        if (!TryGetNextWaveTime(out var _))
+        {
+            GTools.AudioMgr.PlayAudio(EAudioType.Scene_LastWave);
+        }
+        else
+        {
+            GTools.AudioMgr.PlayAudio(EAudioType.Scene_NextWave);
+        }
         Log($"下一波怪物 当前波数 = {f_WaveCount}");
         CurWaveCount = f_WaveCount;
+        LastWaveTime = Time.time;
         return true;
+    }
+    public bool NextWave()
+    {
+        return TrySetWaveCount(CurWaveCount + 1);
     }
     public void CreateMonsterAssets()
     {
         m_CurWaveMonsterList.Clear();
         foreach (var list in MonsterData)
         {
-            foreach (var item in list.Value)
+            foreach (var item in list.Value.MonsterList)
             {
                 var index = item.StartIndex;
                 var monsterType = item.MonsterType;
-                var monsterData = GTools.HeroCardPoolMgr.CreateMonsterEntity(monsterType, f_TargetIndex: index);
+                var monsterData = GTools.HeroCardPoolMgr.CreateMonsterEntity(monsterType, item.AttributeInfoOffset, f_TargetIndex: index);
                 if (!m_CurWaveMonsterList.TryGetValue(list.Key, out var curList))
                 {
                     curList = new();
@@ -389,10 +416,18 @@ public class CreateMapNew : Singleton<CreateMapNew>
     //--
     public int RowColToIndex(Vector2Int f_RowCol)
     {
+        if (f_RowCol.x < 0 || f_RowCol.y < 0 || f_RowCol.x >= MapWH.x || f_RowCol.y >= MapWH.y)
+        {
+            return -1;
+        }
         return f_RowCol.x * MapWH.y + f_RowCol.y;
     }
     public Vector2Int IndexToRowCol(int f_Index)
     {
+        if (f_Index < 0 || f_Index >= MapWH.x * MapWH.y)
+        {
+            return Vector2Int.one * -1;
+        }
         return new Vector2Int(f_Index / MapWH.y, f_Index % MapWH.y);
     }
     public bool TryGetChunkData(int f_Index, out Entity_ChunkMapData f_ChunkData)
@@ -469,6 +504,26 @@ public class CreateMapNew : Singleton<CreateMapNew>
             }
         }
         return f_DataList.Count > 0;
+    }
+    // 根据索引获得一格范围内的方向
+    public bool GetDirectionByIndex(int f_Original, int f_TargetIndex, out EDirection f_Result)
+    {
+        f_Result = EDirection.None;
+        for (int i = 0; i < (int)EDirection.EnumCount; i++)
+        {
+            var dir = (EDirection)(1 << i);
+            if (!GetDirectionChunk(f_Original, dir, out var index))
+            {
+                continue;
+            }
+            if (f_TargetIndex != index)
+            {
+                continue;
+            }
+            f_Result = dir;
+            return true;
+        }
+        return false;
     }
     // 根据方向获取块索引
     public bool GetDirectionChunk(int f_Index, EDirection f_Dir, out int f_Result)

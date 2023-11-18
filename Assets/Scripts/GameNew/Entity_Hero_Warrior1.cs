@@ -89,6 +89,7 @@ public class Entity_Hero_Warrior1Data : Entity_Hero_WarriorBaseData
             {
                 item.Load();
 
+                GTools.AudioMgr.PlayAudio(EAudioType.Hero_Warrior1_Skill1);
                 var curPosZ = item.Pos1.z;
                 var centreOffset = Vector3.up * 0.0f;
                 await DOTween.To(() => 0.0f, slider =>
@@ -100,6 +101,7 @@ public class Entity_Hero_Warrior1Data : Entity_Hero_WarriorBaseData
 
                 }, 1.0f, item.PosMoveTime);
 
+                GTools.AudioMgr.PlayAudio(EAudioType.Hero_Warrior1_Skill2);
                 var curPos = item.Pos1 + item.PosOffset;
                 await DOTween.To(() => 0.0f, slider =>
                 {
@@ -112,6 +114,7 @@ public class Entity_Hero_Warrior1Data : Entity_Hero_WarriorBaseData
                     .SetId(DGID_Skill);
                 await UniTask.Delay(Mathf.CeilToInt(item.DelayTime * 1000));
 
+                GTools.AudioMgr.PlayAudio(EAudioType.Hero_Warrior1_Skill3);
                 item.SetUp(-item.TargetOffset);
                 var targetPos = item.GetTargetPosition() + centreOffset;
                 await DOTween.To(() => 0.0f, slider =>

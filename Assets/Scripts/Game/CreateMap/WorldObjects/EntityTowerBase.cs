@@ -56,9 +56,9 @@ public abstract class EntityTowerBaseData : WorldObjectBaseData
     {
         base.AfterLoad();
     }
-    public override void OnUnLoad()
+    public override void UnLoad()
     {
-        base.OnUnLoad();
+        base.UnLoad();
     }
     // Update 
     public override bool IsUpdateEnable => true;

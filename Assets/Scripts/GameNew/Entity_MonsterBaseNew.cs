@@ -27,6 +27,7 @@ public abstract class Entity_MonsterBaseNewData : WorldObjectBaseData
     protected WorldObjectBaseData m_CurAttackTarget = null;
     private bool m_IsAttacking = false;
     // ¹¥»÷Ïà¹Ø
+    protected virtual bool IsSkill => false;
     protected virtual Vector3 WeaponStartPosOffset => new Vector3(0.5f, 0, -2f);
     public Vector3 WeaponStartPos => WeaponStartPosOffset + WorldPosition;
     protected virtual Vector3 WeaponStartUpOffset => Vector3.zero;
@@ -49,9 +50,9 @@ public abstract class Entity_MonsterBaseNewData : WorldObjectBaseData
         UpdateDirectionUp(WeaponStartUp);
         SetPersonStatus(EPersonStatusType.Idle);
     }
-    public override void OnUnLoad()
+    public override void UnLoad()
     {
-        base.OnUnLoad();
+        base.UnLoad();
         DOTween.Kill(DGID_Move);
     }
     public override void Death()
@@ -86,6 +87,10 @@ public abstract class Entity_MonsterBaseNewData : WorldObjectBaseData
                 if (false)
                 {
 
+                }
+                else if (IsPassSkill())
+                {
+                    SetPersonStatus(EPersonStatusType.Skill);
                 }
                 else if (TryAttackDetection())
                 {
@@ -145,6 +150,18 @@ public abstract class Entity_MonsterBaseNewData : WorldObjectBaseData
                 }
                 break;
             case EPersonStatusType.Skill:
+                if (!Skilling)
+                {
+                    if (GTools.UnityObjectIsVaild(m_CurAttackTarget) || this.TryGetRandomNearTarget(out m_CurAttackTarget))
+                    {
+                        Skilling = true;
+                        SkillBehavior();
+                    }
+                    else
+                    {
+                        SetPersonStatus(EPersonStatusType.Idle);
+                    }
+                }
                 break;
             case EPersonStatusType.Die:
                 break;
@@ -153,6 +170,16 @@ public abstract class Entity_MonsterBaseNewData : WorldObjectBaseData
             default:
                 break;
         }
+    }
+    public override bool IsPassSkill()
+    {
+        return base.IsPassSkill() && IsSkill;
+    }
+    public virtual void SkillBehavior()
+    {
+        Skilling = false;
+        ResetMagic();
+        SetPersonStatus(EPersonStatusType.Idle);
     }
     private bool IsAttack()
     {

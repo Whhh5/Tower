@@ -4,6 +4,110 @@ using UnityEngine;
 using B1;
 using System;
 
+public enum EAudioType
+{
+    // 攻击起手
+    Hero_Warrior1_Attack1,
+    // 击中目标
+    Hero_Warrior1_Attack2,
+    // 技能分散
+    Hero_Warrior1_Skill1,
+    // 向上缓冲
+    Hero_Warrior1_Skill2,
+    // 向下攻击
+    Hero_Warrior1_Skill3,
+    // 击中目标
+    Hero_Warrior1_Skill4,
+
+    // 攻击起手
+    Hero_Enchanter1_Attack1,
+    // 创建粒子
+    Hero_Enchanter1_Attack2,
+    // 击中敌人
+    Hero_Enchanter1_Attack3,
+    // 技能动画
+    Hero_Enchanter1_Skill1,
+    // 向下坠落
+    Hero_Enchanter1_Skill2,
+    // 集中敌人
+    Hero_Enchanter1_Skill3,
+
+    // 攻击起手
+    Hero_Supplementary1_Attack1,
+    // 击中敌人
+    Hero_Supplementary1_Attack2,
+    // 光圈变大
+    Hero_Supplementary1_Skill1,
+    // 光圈缩小
+    Hero_Supplementary1_Skill2,
+
+    // 怪物1 开始攻击
+    Monster_Warrior1_Attack1,
+    // 怪物1 击中敌人
+    Monster_Warrior1_Attack2,
+    // 怪物2 开始攻击
+    Monster_Warrior2_Attack1,
+    // 怪物2 攻击到敌人
+    Monster_Warrior2_Attack2,
+    // 怪物2 磁场击中音效
+    Monster_Warrior2_Skill1,
+    // 怪物2 磁场音效
+    Monster_Warrior2_Skill2,
+    // 怪物3 开始攻击
+    Monster_Warrior3_Attack1,
+    // 怪物3 攻击到敌人
+    Monster_Warrior3_Attack2,
+    // 怪物3 技能集中敌人
+    Monster_Warrior3_Skill1,
+    // 怪物3 技能起手
+    Monster_Warrior3_Skill2,
+    // 怪物3 技能到达
+    Monster_Warrior3_Skill3,
+    // 怪物3 技能返回
+    Monster_Warrior3_Skill4,
+    // boss 攻击开始
+    Monster_Boss1_Attack1,
+    // boss 集中敌人
+    Monster_Boss1_Attack2,
+    // boss 磁场音效
+    Monster_Boss1_Skill1,
+    // boss 磁场集中敌人音效
+    Monster_Boss1_Skill2,
+    // boss 技能击中敌人
+    Monster_Boss1_Skill3,
+    // boss 技能起手
+    Monster_Boss1_Skill4,
+    // boss 技能到达
+    Monster_Boss1_Skill5,
+    // boss 技能返回
+    Monster_Boss1_Skill6,
+
+    // 游戏入口界面背景音乐
+    Scene_GameEntrance,
+    // 游戏选择关卡界面背景音乐
+    Scene_SelectLevel,
+    // 游戏中背景音乐
+    Scene_Background,
+    // 下一波提示音效
+    Scene_NextWave,
+    // 最后一搏提示音效
+    Scene_LastWave,
+    // 购买卡牌音效
+    Scene_BuyCard,
+    // 卡牌备战席换位音效
+    Scene_ChangeWarSeat,
+    // 卡牌放置到场景音效
+    Scene_Place,
+    // 鼠标进入备战席声音
+    Scene_EnterWarSeat,
+    // 鼠标退出备战席声音
+    Scene_ExitWarSeat,
+    // 鼠标进入格子声音
+    Scene_EnterChunk,
+    // 鼠标退出格子声音
+    Scene_ExitChunk,
+    EnumCount,
+}
 public enum EDGWorldID
 {
     HeroMove,
@@ -16,9 +120,12 @@ public enum EDGWorldID
     MonsterAttack,
 
     EffectMove,
+
+    Boss1EffectAlpha,
 }
 public enum EHeroVocationalType
 {
+    None,
     // 战士
     Warrior,
     // 法师
@@ -79,6 +186,7 @@ public enum EHeroCardType
     Monster_Default1,
     Monster_Default2,
     Monster_Default3,
+    Monster_Boss1,
 
 
 
@@ -195,6 +303,7 @@ public enum EAssetKey
     Entity_Player_Default1,
     Entity_Monster_Default2,
     Entity_Monster_Default3,
+    Entity_Monster_Boss1,
     Entity_Player_Default2,
     Entity_Player_Default3,
     TestTimeLine,
@@ -226,12 +335,18 @@ public enum EAssetKey
     Entity_EnergyCrystal1,
     Entity_EnergyCrystal1_Effect1,
     Entity_Supplementary1SkillEffect,
+    Entity_Formation_Near,
+    Entity_Formation_Near_Effect,
+    Entity_Formation_Sphere,
+    Entity_Formation_Sphere_Effect,
 
     Entity_Hero_Warrior1,
     Entity_Enchanter1,
     Entity_Supplementary1,
     Entity_MainTank1,
     Entity_Monster_Warrior1,
+    Entity_Monster_Warrior2,
+    Entity_Monster_Warrior3,
 
     Entity_Default_SkillElement,
     Entity_Hero_Warrior1_SkillElement,
@@ -247,7 +362,7 @@ public enum EAssetKey
     Effect_Buff_WeatherBuffDefence,
     Entity_Effect_Tower_Light1_Attack,
     Entity_Effect_Attack_Default1,
-
+    Entity_Monster_Boss1Effect,
     // buff图标路径
     BuffIcon_Poison,
     BuffIcon_AddBlood,
@@ -375,6 +490,11 @@ public enum EAssetKey
     Icon_Equipment_Default2,
     Icon_Equipment_Default3,
     Icon_Equipment_Default4,
+    // 职业图标
+    Icon_Warrior,
+    Icon_Enchanter,
+    Icon_Supplementary,
+    Icon_MainTank,
     // 天气增益建筑物
     Entity_WeatherGainView,
 
@@ -390,12 +510,69 @@ public enum EAssetKey
     Icon_Monster1,
     Icon_Monster2,
     Icon_Monster3,
+    Icon_Boss1,
 
     // 地图配置文件
     Cfg_MapLevel1,
     Cfg_MapLevel2,
     Cfg_MapLevel3,
     Cache_GameData,
+    // 阵型配置文件
+    Cfg_Formation_Near,
+    Cfg_Formation_Sphere,
+
+    // 音效部分
+    // 英雄音效
+    Audio_Hero_Warrior1_Attack1,
+    Audio_Hero_Warrior1_Attack2,
+    Audio_Hero_Warrior1_Skill1,
+    Audio_Hero_Warrior1_Skill2,
+    Audio_Hero_Warrior1_Skill3,
+    Audio_Hero_Warrior1_Skill4,
+    Audio_Hero_Enchanter1_Attack1,
+    Audio_Hero_Enchanter1_Attack2,
+    Audio_Hero_Enchanter1_Attack3,
+    Audio_Hero_Enchanter1_Skill1,
+    Audio_Hero_Enchanter1_Skill2,
+    Audio_Hero_Enchanter1_Skill3,
+    Audio_Hero_Supplementary1_Attack1,
+    Audio_Hero_Supplementary1_Attack2,
+    Audio_Hero_Supplementary1_Skill1,
+    Audio_Hero_Supplementary1_Skill2,
+    Audio_Monster_Warrior1_Attack1,
+    Audio_Monster_Warrior1_Attack2,
+    Audio_Monster_Warrior2_Attack1,
+    Audio_Monster_Warrior2_Attack2,
+    Audio_Monster_Warrior2_Skill1,
+    Audio_Monster_Warrior2_Skill2,
+    Audio_Monster_Warrior3_Attack1,
+    Audio_Monster_Warrior3_Attack2,
+    Audio_Monster_Warrior3_Skill1,
+    Audio_Monster_Warrior3_Skill2,
+    Audio_Monster_Warrior3_Skill3,
+    Audio_Monster_Warrior3_Skill4,
+    Audio_Monster_Boss1_Attack1,
+    Audio_Monster_Boss1_Attack2,
+    Audio_Monster_Boss1_Skill1,
+    Audio_Monster_Boss1_Skill2,
+    Audio_Monster_Boss1_Skill3,
+    Audio_Monster_Boss1_Skill4,
+    Audio_Monster_Boss1_Skill5,
+    Audio_Monster_Boss1_Skill6,
+
+    // 场景音效
+    Audio_Scene_Background,
+    Audio_Scene_SelectLevel,
+    Audio_Scene_GameEntrance,
+    Audio_Scene_NextWave,
+    Audio_Scene_LastWave,
+    Audio_Scene_BuyCard,
+    Audio_Scene_ChangeWarSeat,
+    Audio_Scene_Place,
+    Audio_Scene_EnterWarSeat,
+    Audio_Scene_ExitWarSeat,
+    Audio_Scene_EnterChunk,
+    Audio_Scene_ExitChunk,
 }
 public enum EAttackEffectType
 {
@@ -457,6 +634,7 @@ public enum EMapLevelType
     Level1,
     Level2,
     Level3,
+    Level4,
     EnumCount,
 }
 public class SkillLink
@@ -472,12 +650,19 @@ public class PersonSkillInfos
 public class HeroCradInfo
 {
     public EQualityType QualityLevel;
+    public EHeroVocationalType Vocational;
     public string Name;
     public EAssetKey AssetKet;
     public EAssetKey Icon;
     public PersonSkillInfos SkillLinkInfos;
     public HeroCradLevelInfo QualityLevelInfo => TableMgr.Ins.TryGetHeroCradLevelInfo(QualityLevel, out var levelInfo) ? levelInfo : null;
 
+}
+public class HeroVocationalInfo
+{
+    public EHeroVocationalType VocationalType;
+    public EAssetKey IconID;
+    public string Name;
 }
 public class HeroCradLevelInfo : IExpenditure
 {
@@ -709,6 +894,12 @@ public class AnimationItemData
     public EAnimationEvent EventType;
     public int Parmas;
 }
+public class AudioInfo
+{
+    public string Name;
+    public bool IsLoop;
+    public EAssetKey AudioAssetKey;
+}
 public class PersonSkillInfo : IExpenditure
 {
     public EPersonSkillType PersonSkillType;
@@ -839,6 +1030,32 @@ public class WeatherEventInfo
         return null;
     }
 }
+
+public class MapLevelInfo
+{
+    public Vector2Int MapWH;
+    public float MapChunkLength;
+    public Vector2 MapChunkInterval;
+    public Dictionary<EBarrierType, List<BarrierData>> BarrierData = new();
+    public Dictionary<int, LevelEnergyCrystalData> EnergyCrystalData = new();
+    public Dictionary<int, LevelWaveInfo> MonsterData = new();
+
+    public int WarSeatCount;
+    public int WarSeatRowCount;
+    public int HeroPoolCount;
+    public float WarSeatLength;
+    public Vector2 WarSeatInterval;
+
+    [Space(10), Header("刷新列表花费")]
+    public int LevelUpdateExpenditure;
+    [Header("游戏初始金币")]
+    public int LevelInitGlod;
+
+    [Space(50), Header("刷出技能数量")]
+    public int CardSkillCount;
+    [Header("技能出现的概率")]
+    public float CardSkillProbability;
+}
 public class TableMgr : Singleton<TableMgr>
 {
 
@@ -877,8 +1094,11 @@ public class TableMgr : Singleton<TableMgr>
     static string WeatherGainIconParentPath = "Icons/WeatherGainIcon";
     static string SkillIconParentPath = "Icons/Skills";
     static string EquipmentIconParentPath = "Icons/Equipment";
+    static string VoctionalIconParentPath = "Icons/Vocational";
     static string HeroIconParentPath = "Icons/HeroIcon";
     static string MapConfigParentPath = "Config/Map";
+    static string FormationConfigParentPath = "Config/Formation";
+    static string AudioParentPath = "Audio";
     private static readonly Dictionary<EAssetKey, string> m_DicIDToPath = new()
     {
         { EAssetKey.Alp1, "Prefabs/WorldObject/Entity_Alt1" },
@@ -890,10 +1110,12 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.SpawnPointPlayer1, "Prefabs/WorldObject/Entity_SpawnPointPlayer1" },
         { EAssetKey.Entity_Monster_Default1, "Prefabs/WorldObject/Entity_Monster_Default1" },
         { EAssetKey.Entity_Monster_Default2, "Prefabs/WorldObject/Entity_Monster_Default2" },
-        { EAssetKey.Entity_Player_Default1, "Prefabs/WorldObject/Entity_Player_Default1" },
-        { EAssetKey.Entity_Player_Default2, "Prefabs/WorldObject/Entity_Player_Default2" },
+        { EAssetKey.Entity_Monster_Default3, "Prefabs/WorldObject/Entity_Monster_Default3" },
+        { EAssetKey.Entity_Monster_Boss1, "Prefabs/PerfabNew/Entity_Monster_Boss1" },
+        { EAssetKey.Entity_Player_Default1, "Prefabs/PerfabNew/Entity_Player_Default1" },
+        { EAssetKey.Entity_Player_Default2, "Prefabs/PerfabNew/Entity_Player_Default2" },
 
-        { EAssetKey.Entity_Player_Default3, "Prefabs/WorldObject/Entity_Player_Default3" },
+        { EAssetKey.Entity_Player_Default3, "Prefabs/PerfabNew/Entity_Player_Default3" },
         { EAssetKey.Entity_Player_Hero1, "Prefabs/WorldObject/Entity_Player_Hero1" },
         { EAssetKey.Entity_Player_Hero2, "Prefabs/WorldObject/Entity_Player_Hero2" },
         { EAssetKey.Entity_Player_Hero3, "Prefabs/WorldObject/Entity_Player_Hero3" },
@@ -934,6 +1156,14 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Entity_EnergyCrystal1, "Prefabs/PerfabNew/Entity_EnergyCrystal1" },
         { EAssetKey.Entity_EnergyCrystal1_Effect1, "Prefabs/PerfabNew/Entity_EnergyCrystal1_Effect1" },
         { EAssetKey.Entity_Supplementary1SkillEffect, "Prefabs/PerfabNew/Entity_Supplementary1SkillEffect" },
+        { EAssetKey.Entity_Formation_Near, "Prefabs/PerfabNew/Entity_Formation_Near" },
+        { EAssetKey.Entity_Formation_Near_Effect, "Prefabs/PerfabNew/Entity_Formation_Near_Effect" },
+        { EAssetKey.Entity_Formation_Sphere, "Prefabs/PerfabNew/Entity_Formation_Sphere" },
+        { EAssetKey.Entity_Formation_Sphere_Effect, "Prefabs/PerfabNew/Entity_Formation_Sphere_Effect" },
+
+
+
+
 
 
         { EAssetKey.Entity_Hero_Warrior1, "Prefabs/PerfabNew/Entity_Hero_Warrior1" },
@@ -942,8 +1172,12 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Entity_MainTank1, "Prefabs/PerfabNew/Entity_MainTank1" },
         { EAssetKey.Entity_Monster_Warrior1, "Prefabs/PerfabNew/Entity_Monster_Warrior1" },
         { EAssetKey.Entity_Hero_Warrior1_SkillElement, "Prefabs/PerfabNew/Entity_Hero_Warrior1_SkillElement" },
+        { EAssetKey.Entity_Monster_Warrior2, "Prefabs/PerfabNew/Entity_Monster_Warrior2" },
+        { EAssetKey.Entity_Monster_Warrior3, "Prefabs/PerfabNew/Entity_Monster_Warrior3" },
         { EAssetKey.Entity_Hero_EnchanterEffect, "Prefabs/PerfabNew/Entity_Hero_EnchanterEffect" },
-        
+        { EAssetKey.Entity_Monster_Boss1Effect, "Prefabs/PerfabNew/Entity_Monster_Boss1Effect" },
+
+
 
 
         // 特效
@@ -1076,6 +1310,12 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Icon_Equipment_Default2, $"{EquipmentIconParentPath}/Icon_Equipment_Default2" },
         { EAssetKey.Icon_Equipment_Default3, $"{EquipmentIconParentPath}/Icon_Equipment_Default3" },
         { EAssetKey.Icon_Equipment_Default4, $"{EquipmentIconParentPath}/Icon_Equipment_Default4" },
+        // 职业图标
+        { EAssetKey.Icon_Warrior, $"{VoctionalIconParentPath}/Icon_Warrior" },
+        { EAssetKey.Icon_Enchanter, $"{VoctionalIconParentPath}/Icon_Enchanter" },
+        { EAssetKey.Icon_Supplementary, $"{VoctionalIconParentPath}/Icon_Supplementary" },
+        { EAssetKey.Icon_MainTank, $"{VoctionalIconParentPath}/Icon_MainTank" },
+
 
         // 角色图标
         { EAssetKey.Icon_Hero1, $"{HeroIconParentPath}/Icon_Hero1" },
@@ -1085,13 +1325,59 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Icon_Monster1, $"{HeroIconParentPath}/Icon_Monster1" },
         { EAssetKey.Icon_Monster2, $"{HeroIconParentPath}/Icon_Monster2" },
         { EAssetKey.Icon_Monster3, $"{HeroIconParentPath}/Icon_Monster3" },
+        { EAssetKey.Icon_Boss1, $"{HeroIconParentPath}/Icon_Boss1" },
 
         // 地图配置文件
         { EAssetKey.Cfg_MapLevel1, $"{MapConfigParentPath}/Cfg_MapLevel1" },
         { EAssetKey.Cfg_MapLevel2, $"{MapConfigParentPath}/Cfg_MapLevel2" },
         { EAssetKey.Cfg_MapLevel3, $"{MapConfigParentPath}/Cfg_MapLevel3" },
         { EAssetKey.Cache_GameData, $"{MapConfigParentPath}/Cache_GameData" },
+        // 阵型配置文件
+        { EAssetKey.Cfg_Formation_Near, $"{FormationConfigParentPath}/Cfg_Formation_Near" },
+        { EAssetKey.Cfg_Formation_Sphere, $"{FormationConfigParentPath}/Cfg_Formation_Sphere" },
+        // 音效部分
+        { EAssetKey.Audio_Hero_Warrior1_Attack1, $"{AudioParentPath}/Audio_Hero_Warrior1_Attack1" },
+        { EAssetKey.Audio_Hero_Warrior1_Attack2, $"{AudioParentPath}/Audio_Hero_Warrior1_Attack2" },
+        { EAssetKey.Audio_Hero_Warrior1_Skill1, $"{AudioParentPath}/Audio_Hero_Warrior1_Skill1" },
+        { EAssetKey.Audio_Hero_Warrior1_Skill2, $"{AudioParentPath}/Audio_Hero_Warrior1_Skill2" },
+        { EAssetKey.Audio_Hero_Warrior1_Skill3, $"{AudioParentPath}/Audio_Hero_Warrior1_Skill3" },
+        { EAssetKey.Audio_Hero_Warrior1_Skill4, $"{AudioParentPath}/Audio_Hero_Warrior1_Skill4" },
+        { EAssetKey.Audio_Hero_Enchanter1_Attack1, $"{AudioParentPath}/Audio_Hero_Enchanter1_Attack1" },
+        { EAssetKey.Audio_Hero_Enchanter1_Attack2, $"{AudioParentPath}/Audio_Hero_Enchanter1_Attack2" },
+        { EAssetKey.Audio_Hero_Enchanter1_Attack3, $"{AudioParentPath}/Audio_Hero_Enchanter1_Attack3" },
+        { EAssetKey.Audio_Hero_Enchanter1_Skill1, $"{AudioParentPath}/Audio_Hero_Enchanter1_Skill1" },
+        { EAssetKey.Audio_Hero_Enchanter1_Skill2, $"{AudioParentPath}/Audio_Hero_Enchanter1_Skill2" },
+        { EAssetKey.Audio_Hero_Enchanter1_Skill3, $"{AudioParentPath}/Audio_Hero_Enchanter1_Skill3" },
+        { EAssetKey.Audio_Hero_Supplementary1_Attack1, $"{AudioParentPath}/Audio_Hero_Supplementary1_Attack1" },
+        { EAssetKey.Audio_Hero_Supplementary1_Attack2, $"{AudioParentPath}/Audio_Hero_Supplementary1_Attack2" },
+        { EAssetKey.Audio_Hero_Supplementary1_Skill1, $"{AudioParentPath}/Audio_Hero_Supplementary1_Skill1" },
+        { EAssetKey.Audio_Hero_Supplementary1_Skill2, $"{AudioParentPath}/Audio_Hero_Supplementary1_Skill2" },
+        { EAssetKey.Audio_Monster_Warrior1_Attack1, $"{AudioParentPath}/Audio_Monster_Warrior1_Attack1" },
+        { EAssetKey.Audio_Monster_Warrior1_Attack2, $"{AudioParentPath}/Audio_Monster_Warrior1_Attack2" },
+        { EAssetKey.Audio_Monster_Warrior2_Attack1, $"{AudioParentPath}/Audio_Monster_Warrior2_Attack1" },
+        { EAssetKey.Audio_Monster_Warrior2_Attack2, $"{AudioParentPath}/Audio_Monster_Warrior2_Attack2" },
+        { EAssetKey.Audio_Monster_Warrior2_Skill1, $"{AudioParentPath}/Audio_Monster_Warrior2_Skill1" },
+        { EAssetKey.Audio_Monster_Warrior3_Attack1, $"{AudioParentPath}/Audio_Monster_Warrior3_Attack1" },
+        { EAssetKey.Audio_Monster_Warrior3_Attack2, $"{AudioParentPath}/Audio_Monster_Warrior3_Attack2" },
+        { EAssetKey.Audio_Monster_Warrior3_Skill1, $"{AudioParentPath}/Audio_Monster_Warrior3_Skill1" },
+        { EAssetKey.Audio_Monster_Boss1_Attack1, $"{AudioParentPath}/Audio_Monster_Boss1_Attack" },
+        { EAssetKey.Audio_Monster_Boss1_Attack2, $"{AudioParentPath}/Audio_Monster_Boss1_Attack" },
+        { EAssetKey.Audio_Monster_Boss1_Skill1, $"{AudioParentPath}/Audio_Monster_Boss1_Skill1" },
+        { EAssetKey.Audio_Monster_Boss1_Skill2, $"{AudioParentPath}/Audio_Monster_Boss1_Skill2" },
+        { EAssetKey.Audio_Monster_Boss1_Skill3, $"{AudioParentPath}/Audio_Monster_Boss1_Skill3" },
+        { EAssetKey.Audio_Scene_GameEntrance, $"{AudioParentPath}/Audio_Scene_GameEntrance" },
+        { EAssetKey.Audio_Scene_Background, $"{AudioParentPath}/Audio_Scene_Background" },
+        { EAssetKey.Audio_Scene_SelectLevel, $"{AudioParentPath}/Audio_Scene_SelectLevel" },
+        { EAssetKey.Audio_Scene_NextWave, $"{AudioParentPath}/Audio_Scene_NextWave" },
+        { EAssetKey.Audio_Scene_LastWave, $"{AudioParentPath}/Audio_Scene_LastWave" },
 
+        { EAssetKey.Audio_Scene_BuyCard, $"{AudioParentPath}/Audio_Scene_BuyCard" },
+        { EAssetKey.Audio_Scene_ChangeWarSeat, $"{AudioParentPath}/Audio_Scene_ChangeWarSeat" },
+        { EAssetKey.Audio_Scene_Place, $"{AudioParentPath}/Audio_Scene_Place" },
+        { EAssetKey.Audio_Scene_EnterWarSeat, $"{AudioParentPath}/Audio_Scene_EnterWarSeat" },
+        { EAssetKey.Audio_Scene_ExitWarSeat,$"{AudioParentPath}/Audio_Scene_ExitWarSeat" },
+        { EAssetKey.Audio_Scene_EnterChunk, $"{AudioParentPath}/Audio_Scene_EnterChunk" },
+        { EAssetKey.Audio_Scene_ExitChunk, $"{AudioParentPath}/Audio_Scene_ExitChunk" },
     };
     public bool TryGetAssetPath(EAssetKey f_Key, out string f_Result)
     {
@@ -1114,6 +1400,7 @@ public class TableMgr : Singleton<TableMgr>
             new()
             {
                 QualityLevel = EQualityType.Quality1,
+                Vocational = EHeroVocationalType.Warrior,
                 Name = "Hero1",
                 AssetKet = EAssetKey.Entity_Player_Hero1,
                 Icon = EAssetKey.Icon_Hero1,
@@ -1239,6 +1526,7 @@ public class TableMgr : Singleton<TableMgr>
             new()
             {
                 QualityLevel = EQualityType.Quality2,
+                Vocational = EHeroVocationalType.Enchanter,
                 Name = "Hero2",
                 AssetKet = EAssetKey.Entity_Player_Hero2,
                 Icon = EAssetKey.Icon_Hero2,
@@ -1253,6 +1541,7 @@ public class TableMgr : Singleton<TableMgr>
             new()
             {
                 QualityLevel = EQualityType.Quality3,
+                Vocational = EHeroVocationalType.Supplementary,
                 Name = "Hero3",
                 AssetKet = EAssetKey.Entity_Player_Hero3,
                 Icon = EAssetKey.Icon_Hero3,
@@ -1267,6 +1556,7 @@ public class TableMgr : Singleton<TableMgr>
             new()
             {
                 QualityLevel = EQualityType.Quality4,
+                Vocational = EHeroVocationalType.MainTank,
                 Name = "Hero4",
                 AssetKet = EAssetKey.Entity_Player_Hero4,
                 Icon = EAssetKey.Icon_Hero4,
@@ -1280,7 +1570,7 @@ public class TableMgr : Singleton<TableMgr>
             EHeroCardType.Monster_Default1,
             new()
             {
-                QualityLevel = EQualityType.Quality1,
+                QualityLevel = EQualityType.None,
                 Name = "monster 1",
                 AssetKet = EAssetKey.Entity_Monster_Default1,
                 Icon = EAssetKey.Icon_Monster1,
@@ -1294,7 +1584,7 @@ public class TableMgr : Singleton<TableMgr>
             EHeroCardType.Monster_Default2,
             new()
             {
-                QualityLevel = EQualityType.Quality1,
+                QualityLevel = EQualityType.None,
                 Name = "monster 2",
                 AssetKet = EAssetKey.Entity_Monster_Default2,
                 Icon = EAssetKey.Icon_Monster2,
@@ -1308,10 +1598,24 @@ public class TableMgr : Singleton<TableMgr>
             EHeroCardType.Monster_Default3,
             new()
             {
-                QualityLevel = EQualityType.Quality1,
+                QualityLevel = EQualityType.None,
                 Name = "monster 2",
                 AssetKet = EAssetKey.Entity_Monster_Default3,
                 Icon = EAssetKey.Icon_Monster3,
+                SkillLinkInfos = new()
+                {
+                    Count = 1,
+                }
+            }
+        },
+        {
+            EHeroCardType.Monster_Boss1,
+            new()
+            {
+                QualityLevel = EQualityType.None,
+                Name = "Boss 1",
+                AssetKet = EAssetKey.Entity_Monster_Boss1,
+                Icon = EAssetKey.Icon_Boss1,
                 SkillLinkInfos = new()
                 {
                     Count = 1,
@@ -1341,11 +1645,21 @@ public class TableMgr : Singleton<TableMgr>
     private Dictionary<EQualityType, HeroCradLevelInfo> m_HeroCradLevelInfo = new()
     {
         {
+            EQualityType.None,
+            new()
+            {
+                Name = "普通",
+                MaxCount = 0,
+                Color = Color.gray,
+                ExpenditureBase = 1,
+            }
+        },
+        {
             EQualityType.Quality1,
             new()
             {
                 Name = "普通",
-                MaxCount = 30,
+                MaxCount = 50,
                 Color = Color.gray,
                 ExpenditureBase = 3,
             }
@@ -1355,7 +1669,7 @@ public class TableMgr : Singleton<TableMgr>
             new()
             {
                 Name = "罕见",
-                MaxCount = 20,
+                MaxCount = 50,
                 Color = Color.yellow,
                 ExpenditureBase = 4,
             }
@@ -1365,7 +1679,7 @@ public class TableMgr : Singleton<TableMgr>
             new()
             {
                 Name = "传说",
-                MaxCount = 10,
+                MaxCount = 50,
                 Color = Color.red,
                 ExpenditureBase = 5,
             }
@@ -1375,7 +1689,7 @@ public class TableMgr : Singleton<TableMgr>
             new()
             {
                 Name = "史诗",
-                MaxCount = 5,
+                MaxCount = 50,
                 Color = Color.cyan,
                 ExpenditureBase = 6,
             }
@@ -1571,14 +1885,9 @@ public class TableMgr : Singleton<TableMgr>
     }
     public bool TryGetMonsterBaseNewData(EHeroCardType f_HeroType, int f_TargetIndex, EHeroCradStarLevel f_StarLevel, out Entity_MonsterBaseNewData f_Result)
     {
-        f_Result = null;
-        if (TryGetMonsterEntityData(f_HeroType, out var result))
+        if (TryGetMonsterEntityData(f_HeroType, out f_Result))
         {
-            if (result is Entity_MonsterBaseNewData enemyData)
-            {
-                f_Result = enemyData;
-                enemyData.MoveToChunk(f_TargetIndex);
-            }
+            f_Result.MoveToChunk(f_TargetIndex);
         }
         return f_Result != null;
     }
@@ -1645,13 +1954,22 @@ public class TableMgr : Singleton<TableMgr>
         }
         return f_Result != null;
     }
-    public bool TryGetMonsterEntityData(EHeroCardType f_HeroType, out WorldObjectBaseData f_Result)
+    public bool TryGetMonsterEntityData(EHeroCardType f_HeroType, out Entity_MonsterBaseNewData f_Result)
     {
         f_Result = null;
         switch (f_HeroType)
         {
             case EHeroCardType.Monster_Default1:
                 f_Result = new Entity_Monster_Warrior1Data();
+                break;
+            case EHeroCardType.Monster_Default2:
+                f_Result = new Entity_Monster_Warrior2Data();
+                break;
+            case EHeroCardType.Monster_Default3:
+                f_Result = new Entity_Monster_Warrior3Data();
+                break;
+            case EHeroCardType.Monster_Boss1:
+                f_Result = new Entity_Monster_Boss1Data();
                 break;
             case EHeroCardType.EnumCount:
                 break;
@@ -3028,5 +3346,1461 @@ public class TableMgr : Singleton<TableMgr>
     public bool TryGetMapConfigInfo(EMapLevelType f_LevelType, out MapConfigInfo f_LevelInfo)
     {
         return m_MapConfigDic.TryGetValue(f_LevelType, out f_LevelInfo);
+    }
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- 阵型实例 篇
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+
+    public bool TryGetFormationData(EFormationType f_Type, out Entity_FormationBaseData f_Data)
+    {
+        f_Data = null;
+        switch (f_Type)
+        {
+            case EFormationType.Near:
+                f_Data = new Entity_Formation_NearData();
+                break;
+            case EFormationType.Sphere:
+                f_Data = new Entity_Formation_SphereData();
+                break;
+            default:
+                break;
+        }
+        return f_Data != null;
+    }
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- 职业 篇
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    private Dictionary<EHeroVocationalType, HeroVocationalInfo> m_HeroVocationalInfo = new()
+    {
+        {
+            EHeroVocationalType.Warrior,
+            new()
+            {
+                VocationalType = EHeroVocationalType.Warrior,
+                IconID = EAssetKey.Icon_Warrior,
+                Name = "战士",
+            }
+        },
+        {
+            EHeroVocationalType.Enchanter,
+            new()
+            {
+                VocationalType = EHeroVocationalType.Enchanter,
+                IconID = EAssetKey.Icon_Enchanter,
+                Name = "法师",
+            }
+        },
+        {
+            EHeroVocationalType.Supplementary,
+            new()
+            {
+                VocationalType = EHeroVocationalType.Supplementary,
+                IconID = EAssetKey.Icon_Supplementary,
+                Name = "辅助",
+            }
+        },
+        {
+            EHeroVocationalType.MainTank,
+            new()
+            {
+                VocationalType = EHeroVocationalType.MainTank,
+                IconID = EAssetKey.Icon_MainTank,
+                Name = "肉盾",
+            }
+        },
+    };
+    public bool TryGetHeroVocationalInfo(EHeroVocationalType f_HeroVocation, out HeroVocationalInfo f_HeroVocationalInfo)
+    {
+        return m_HeroVocationalInfo.TryGetValue(f_HeroVocation, out f_HeroVocationalInfo);
+    }
+
+
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- 关卡信息
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    private Dictionary<EMapLevelType, MapLevelInfo> m_LevelWaveInfos = new()
+    {
+        {
+            EMapLevelType.Level0,
+            new()
+            {
+                MapWH = new(12, 24),
+                MapChunkLength = 1,
+                MapChunkInterval = new(0.05f, 0.05f),
+                BarrierData = new()
+                {
+                    {
+                        EBarrierType.Massif,
+                        new()
+                        {
+                            new()
+                            {
+                                Index = new(1, 1)
+                            },
+                            new()
+                            {
+                                Index = new(7, 5)
+                            },
+                            new()
+                            {
+                                Index = new(7, 6)
+                            },
+                            new()
+                            {
+                                Index = new(3, 15)
+                            },
+                            new()
+                            {
+                                Index = new(1, 6)
+                            },
+                            new()
+                            {
+                                Index = new(2, 6)
+                            },
+                            new()
+                            {
+                                Index = new(3, 8)
+                            },
+                            new()
+                            {
+                                Index = new(3, 5)
+                            },
+                        }
+                    }
+                },
+                EnergyCrystalData = new()
+                {
+                    {
+                        0,
+                        new()
+                        {
+                            StartIndex = 0,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        1,
+                        new()
+                        {
+                            StartIndex = 24,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        2,
+                        new()
+                        {
+                            StartIndex = 48,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        3,
+                        new()
+                        {
+                            StartIndex = 72,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        4,
+                        new()
+                        {
+                            StartIndex = 96,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                },
+                MonsterData = new()
+                {
+                    {
+                        0,
+                        new()
+                        {
+                            ActiveTime = 30.0f,
+                            MonsterList = new()
+                            {
+                                new()
+                                {
+                                    StartIndex = 36,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 108,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 84,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 133,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                            }
+                        }
+                    },
+                    {
+                        1,
+                        new()
+                        {
+                            ActiveTime = 60.0f,
+                            MonsterList = new()
+                            {
+                                new()
+                                {
+                                    StartIndex = 62,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 10,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 86,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 10,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 110,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 10,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 138,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 10,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                            }
+                        }
+                    },
+                },
+
+                WarSeatCount = 15,
+                WarSeatRowCount = 8,
+                HeroPoolCount = 10,
+                WarSeatLength = 1.8f,
+                WarSeatInterval = new(0.1f, 0.1f),
+
+                LevelUpdateExpenditure = 2,
+                LevelInitGlod = 20,
+            }
+        },
+        {
+            EMapLevelType.Level1,
+            new()
+            {
+                MapWH = new(12, 24),
+                MapChunkLength = 1,
+                MapChunkInterval = new(0.05f, 0.05f),
+                BarrierData = new()
+                {
+                    {
+                        EBarrierType.Massif,
+                        new()
+                        {
+                            new()
+                            {
+                                Index = new(1, 1)
+                            },
+                            new()
+                            {
+                                Index = new(7, 5)
+                            },
+                            new()
+                            {
+                                Index = new(7, 6)
+                            },
+                            new()
+                            {
+                                Index = new(3, 15)
+                            },
+                            new()
+                            {
+                                Index = new(1, 6)
+                            },
+                            new()
+                            {
+                                Index = new(2, 6)
+                            },
+                            new()
+                            {
+                                Index = new(3, 8)
+                            },
+                            new()
+                            {
+                                Index = new(3, 5)
+                            },
+                        }
+                    }
+                },
+                EnergyCrystalData = new()
+                {
+                    {
+                        0,
+                        new()
+                        {
+                            StartIndex = 0,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        1,
+                        new()
+                        {
+                            StartIndex = 24,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        2,
+                        new()
+                        {
+                            StartIndex = 48,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        3,
+                        new()
+                        {
+                            StartIndex = 72,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        4,
+                        new()
+                        {
+                            StartIndex = 96,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                },
+                MonsterData = new()
+                {
+                    {
+                        0,
+                        new()
+                        {
+                            ActiveTime = 30.0f,
+                            MonsterList = new()
+                            {
+                                new()
+                                {
+                                    StartIndex = 36,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 108,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 84,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 133,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                            }
+                        }
+                    },
+                    {
+                        1,
+                        new()
+                        {
+                            ActiveTime = 60.0f,
+                            MonsterList = new()
+                            {
+                                new()
+                                {
+                                    StartIndex = 62,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 86,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 110,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 138,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                            }
+                        }
+                    },
+                },
+
+                WarSeatCount = 15,
+                WarSeatRowCount = 8,
+                HeroPoolCount = 10,
+                WarSeatLength = 1.8f,
+                WarSeatInterval = new(0.1f, 0.1f),
+
+                LevelUpdateExpenditure = 2,
+                LevelInitGlod = 20,
+            }
+        },
+        {
+            EMapLevelType.Level2,
+            new()
+            {
+                MapWH = new(12, 24),
+                MapChunkLength = 1,
+                MapChunkInterval = new(0.05f, 0.05f),
+                BarrierData = new()
+                {
+                    {
+                        EBarrierType.Massif,
+                        new()
+                        {
+                            new()
+                            {
+                                Index = new(1, 1)
+                            },
+                            new()
+                            {
+                                Index = new(7, 5)
+                            },
+                            new()
+                            {
+                                Index = new(7, 6)
+                            },
+                            new()
+                            {
+                                Index = new(3, 15)
+                            },
+                            new()
+                            {
+                                Index = new(1, 6)
+                            },
+                            new()
+                            {
+                                Index = new(2, 6)
+                            },
+                            new()
+                            {
+                                Index = new(3, 8)
+                            },
+                            new()
+                            {
+                                Index = new(3, 5)
+                            },
+                        }
+                    }
+                },
+                EnergyCrystalData = new()
+                {
+                    {
+                        0,
+                        new()
+                        {
+                            StartIndex = 0,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        1,
+                        new()
+                        {
+                            StartIndex = 24,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        2,
+                        new()
+                        {
+                            StartIndex = 48,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        3,
+                        new()
+                        {
+                            StartIndex = 72,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        4,
+                        new()
+                        {
+                            StartIndex = 96,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                },
+                MonsterData = new()
+                {
+                    {
+                        0,
+                        new()
+                        {
+                            ActiveTime = 30.0f,
+                            MonsterList = new()
+                            {
+                                new()
+                                {
+                                    StartIndex = 36,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 108,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 84,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 133,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                            }
+                        }
+                    },
+                    {
+                        1,
+                        new()
+                        {
+                            ActiveTime = 60.0f,
+                            MonsterList = new()
+                            {
+                                new()
+                                {
+                                    StartIndex = 62,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 86,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 110,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 138,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                            }
+                        }
+                    },
+                    {
+                        2,
+                        new()
+                        {
+                            ActiveTime = 120f,
+                            MonsterList = new()
+                            {
+                                new()
+                                {
+                                    StartIndex = 64,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 89,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 112,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 141,
+                                    MonsterType = EHeroCardType.Monster_Boss1,
+                                },
+                            }
+                        }
+                    },
+                },
+
+                WarSeatCount = 15,
+                WarSeatRowCount = 8,
+                HeroPoolCount = 10,
+                WarSeatLength = 1.8f,
+                WarSeatInterval = new(0.1f, 0.1f),
+
+                LevelUpdateExpenditure = 2,
+                LevelInitGlod = 20,
+            }
+        },
+        {
+            EMapLevelType.Level3,
+            new()
+            {
+                MapWH = new(12, 24),
+                MapChunkLength = 1,
+                MapChunkInterval = new(0.05f, 0.05f),
+                BarrierData = new()
+                {
+                    {
+                        EBarrierType.Massif,
+                        new()
+                        {
+                            new()
+                            {
+                                Index = new(1, 1)
+                            },
+                            new()
+                            {
+                                Index = new(7, 5)
+                            },
+                            new()
+                            {
+                                Index = new(7, 6)
+                            },
+                            new()
+                            {
+                                Index = new(3, 15)
+                            },
+                            new()
+                            {
+                                Index = new(1, 6)
+                            },
+                            new()
+                            {
+                                Index = new(2, 6)
+                            },
+                            new()
+                            {
+                                Index = new(3, 8)
+                            },
+                            new()
+                            {
+                                Index = new(3, 5)
+                            },
+                        }
+                    }
+                },
+                EnergyCrystalData = new()
+                {
+                    {
+                        0,
+                        new()
+                        {
+                            StartIndex = 0,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        1,
+                        new()
+                        {
+                            StartIndex = 24,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        2,
+                        new()
+                        {
+                            StartIndex = 48,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        3,
+                        new()
+                        {
+                            StartIndex = 72,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        4,
+                        new()
+                        {
+                            StartIndex = 96,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                },
+                MonsterData = new()
+                {
+                    {
+                        0,
+                        new()
+                        {
+                            ActiveTime = 30.0f,
+                            MonsterList = new()
+                            {
+                                new()
+                                {
+                                    StartIndex = 36,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 108,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 84,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 133,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                            }
+                        }
+                    },
+                    {
+                        1,
+                        new()
+                        {
+                            ActiveTime = 60.0f,
+                            MonsterList = new()
+                            {
+                                new()
+                                {
+                                    StartIndex = 62,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 86,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 110,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 138,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                            }
+                        }
+                    },
+                    {
+                        2,
+                        new()
+                        {
+                            ActiveTime = 120,
+                            MonsterList = new()
+                            {
+                                new()
+                                {
+                                    StartIndex = 65,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 111,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 38,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 116,
+                                    MonsterType = EHeroCardType.Monster_Boss1,
+                                },
+                            }
+                        }
+                    },
+                    {
+                        3,
+                        new()
+                        {
+                            ActiveTime = 180.0f,
+                            MonsterList = new()
+                            {
+                                new()
+                                {
+                                    StartIndex = 136,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 69,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 143,
+                                    MonsterType = EHeroCardType.Monster_Boss1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 71,
+                                    MonsterType = EHeroCardType.Monster_Boss1,
+                                },
+                            }
+                        }
+                    },
+                },
+
+                WarSeatCount = 15,
+                WarSeatRowCount = 8,
+                HeroPoolCount = 10,
+                WarSeatLength = 1.8f,
+                WarSeatInterval = new(0.1f, 0.1f),
+
+                LevelUpdateExpenditure = 2,
+                LevelInitGlod = 20,
+            }
+        },
+        {
+            EMapLevelType.Level4,
+            new()
+            {
+                MapWH = new(12, 24),
+                MapChunkLength = 1,
+                MapChunkInterval = new(0.05f, 0.05f),
+                BarrierData = new()
+                {
+                    {
+                        EBarrierType.Massif,
+                        new()
+                        {
+                            new()
+                            {
+                                Index = new(1, 1)
+                            },
+                            new()
+                            {
+                                Index = new(7, 5)
+                            },
+                            new()
+                            {
+                                Index = new(7, 6)
+                            },
+                            new()
+                            {
+                                Index = new(3, 15)
+                            },
+                            new()
+                            {
+                                Index = new(1, 6)
+                            },
+                            new()
+                            {
+                                Index = new(2, 6)
+                            },
+                            new()
+                            {
+                                Index = new(3, 8)
+                            },
+                            new()
+                            {
+                                Index = new(3, 5)
+                            },
+                        }
+                    }
+                },
+                EnergyCrystalData = new()
+                {
+                    {
+                        0,
+                        new()
+                        {
+                            StartIndex = 0,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        1,
+                        new()
+                        {
+                            StartIndex = 24,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        2,
+                        new()
+                        {
+                            StartIndex = 48,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        3,
+                        new()
+                        {
+                            StartIndex = 72,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        4,
+                        new()
+                        {
+                            StartIndex = 96,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                },
+                MonsterData = new()
+                {
+                    {
+                        0,
+                        new()
+                        {
+                            ActiveTime = 5,
+                            MonsterList = new()
+                            {
+                                new()
+                                {
+                                    StartIndex = 108,
+                                    MonsterType = EHeroCardType.Monster_Boss1,
+                                },
+                            }
+                        }
+                    },
+                },
+                WarSeatCount = 15,
+                WarSeatRowCount = 8,
+                HeroPoolCount = 10,
+                WarSeatLength = 1.8f,
+                WarSeatInterval = new(0.1f, 0.1f),
+
+                LevelUpdateExpenditure = 2,
+                LevelInitGlod = 20,
+            }
+        },
+    };
+    public bool TryGetLevelWaveInfo(EMapLevelType f_MapLevel, out MapLevelInfo f_MapLevelInfo)
+    {
+        return m_LevelWaveInfos.TryGetValue(f_MapLevel, out f_MapLevelInfo);
+    }
+
+    private Dictionary<EAudioType, AudioInfo> m_AudioInfoList = new()
+    {
+        {
+            EAudioType.Hero_Warrior1_Attack1,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Hero_Warrior1_Attack2,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Hero_Warrior1_Attack2,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Hero_Warrior1_Attack2,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Hero_Warrior1_Skill1,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Hero_Warrior1_Skill1,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Hero_Warrior1_Skill2,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Hero_Warrior1_Skill2,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Hero_Warrior1_Skill3,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Hero_Warrior1_Skill3,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Hero_Warrior1_Skill4,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Hero_Warrior1_Skill4,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Hero_Enchanter1_Attack1,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Hero_Enchanter1_Attack1,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Hero_Enchanter1_Attack2,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Hero_Enchanter1_Attack2,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Hero_Enchanter1_Attack3,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Hero_Enchanter1_Attack3,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Hero_Enchanter1_Skill1,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Hero_Enchanter1_Skill1,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Hero_Enchanter1_Skill2,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Hero_Enchanter1_Skill2,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Hero_Enchanter1_Skill3,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Hero_Enchanter1_Skill3,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Hero_Supplementary1_Attack1,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Hero_Supplementary1_Attack1,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Hero_Supplementary1_Attack2,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Hero_Supplementary1_Attack2,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Hero_Supplementary1_Skill1,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Hero_Supplementary1_Skill1,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Hero_Supplementary1_Skill2,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Hero_Supplementary1_Skill2,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Warrior1_Attack1,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Warrior1_Attack1,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Warrior1_Attack2,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Warrior1_Attack2,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Warrior2_Attack1,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Warrior2_Attack1,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Warrior2_Attack2,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Warrior2_Attack2,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Warrior2_Skill1,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Warrior2_Skill1,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Warrior2_Skill2,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Warrior2_Skill2,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Warrior3_Attack1,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Warrior3_Attack1,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Warrior3_Attack2,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Warrior3_Attack2,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Warrior3_Skill1,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Warrior3_Skill1,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Warrior3_Skill2,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Warrior3_Skill2,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Warrior3_Skill3,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Warrior3_Skill3,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Warrior3_Skill4,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Warrior3_Skill4,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Boss1_Attack1,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Boss1_Attack1,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Boss1_Attack2,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Boss1_Attack2,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Boss1_Skill1,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Boss1_Skill1,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Boss1_Skill2,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Boss1_Skill2,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Boss1_Skill3,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Boss1_Skill3,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Boss1_Skill4,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Boss1_Skill4,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Boss1_Skill5,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Boss1_Skill5,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Monster_Boss1_Skill6,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Monster_Boss1_Skill6,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Scene_Background,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Scene_Background,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Scene_SelectLevel,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Scene_SelectLevel,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Scene_GameEntrance,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Scene_GameEntrance,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Scene_NextWave,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Scene_NextWave,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Scene_LastWave,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Scene_LastWave,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Scene_BuyCard,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Scene_BuyCard,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Scene_ChangeWarSeat,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Scene_ChangeWarSeat,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Scene_Place,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Scene_Place,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Scene_EnterWarSeat,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Scene_EnterWarSeat,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Scene_ExitWarSeat,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Scene_ExitWarSeat,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Scene_EnterChunk,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Scene_EnterChunk,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Scene_ExitChunk,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Scene_ExitChunk,
+                IsLoop = false,
+            }
+        },
+
+    };
+    public bool TryGetAudioInfo(EAudioType f_AudioType, out AudioInfo f_AudioInfo)
+    {
+        return m_AudioInfoList.TryGetValue(f_AudioType, out f_AudioInfo);
     }
 }

@@ -17,7 +17,6 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase, IWo
     }
 
 
-
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------
@@ -31,6 +30,10 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase, IWo
     public LoadAsyncResult LoadResult { get; set; }
     public abstract EAssetKey AssetPrefabID { get; }
     public EPersonStatusType CurStatus { get; protected set; } = EPersonStatusType.Idle;
+    public virtual void OnLoad()
+    {
+
+    }
     public virtual void AfterLoad()
     {
         if (IsUpdateEnable)
@@ -38,7 +41,7 @@ public abstract class UnityObjectData : Base, ILoadPrefabAsync, IUpdateBase, IWo
             GTools.LifecycleMgr.AddUpdate(this);
         }
     }
-    public virtual void OnUnLoad()
+    public virtual void UnLoad()
     {
         if (IsUpdateEnable)
         {

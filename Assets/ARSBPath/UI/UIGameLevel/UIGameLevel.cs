@@ -13,6 +13,7 @@ public class UIGameLevel : UIWindow
     private Dictionary<EMapLevelType, Transform> m_LevelList = new();
     public override async UniTask AwakeAsync()
     {
+        GTools.AudioMgr.PlayAudio(EAudioType.Scene_SelectLevel);
         m_LevelListItem.gameObject.SetActive(false);
 
         for (int i = 0; i < (int)EMapLevelType.EnumCount; i++)
@@ -22,13 +23,23 @@ public class UIGameLevel : UIWindow
             {
                 continue;
             }
+            var isLock = false;
+            if (i == 0)
+            {
+
+            }
+            else if (GTools.GameDataMgr.TryGetLevelData(level - 1, out var leveldata))
+            {
+                isLock = !leveldata.IsPass;
+            }
+            else
+            {
+                continue;
+            }
             var obj = GameObject.Instantiate(m_LevelListItem, m_LevelListItem.parent);
 
             obj.GetChildCom<TextMeshProUGUI>(EChildName.Txt_Level).SetText(i.ToString());
-            if (GTools.GameDataMgr.TryGetLevelData(level, out var leveldata))
-            {
-                obj.GetChildCom<Transform>(EChildName.Tran_Icon1).gameObject.SetActive(leveldata.IsPass);
-            }
+            obj.GetChildCom<Transform>(EChildName.Tran_Icon1).gameObject.SetActive(isLock);
 
             obj.GetChildCom<Button>(EChildName.Btn_Click).onClick.AddListener(async () =>
             {

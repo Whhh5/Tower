@@ -7,7 +7,6 @@ using UnityEngine;
 public abstract class Entity_Hero_WarriorBaseData : Entity_HeroBaseNewData
 {
     public override int AtkRangeBase => 2;
-    public override EHeroVocationalType EntityVocationalType => EHeroVocationalType.Warrior;
     public new Entity_Hero_WarriorBase EntityTarget => GetCom<Entity_Hero_WarriorBase>();
     public override async void AttackBehavior()
     {
@@ -15,6 +14,7 @@ public abstract class Entity_Hero_WarriorBaseData : Entity_HeroBaseNewData
         var curPos = GetWeaponPosition();
         var curUp = GetWeaponUp();
         bool isArrive = false;
+        GTools.AudioMgr.PlayAudio(EAudioType.Hero_Warrior1_Attack1);
         await DOTween.To(() => 0.0f, value =>
         {
             var goValue = 0.7f;
@@ -34,6 +34,7 @@ public abstract class Entity_Hero_WarriorBaseData : Entity_HeroBaseNewData
                     curUp = GetWeaponUp();
                     isArrive = true;
                     this.EntityDamage(m_CurAttackTarget, null, 200);
+                    GTools.AudioMgr.PlayAudio(EAudioType.Hero_Warrior1_Attack2);
                 }
                 var goSilder = (value - goValue) / (1 - goValue);
                 pos = Vector2.Lerp(curPos, WeaponStartPos, goSilder);

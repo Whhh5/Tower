@@ -61,10 +61,10 @@ public abstract class EntityEffectBaseData : UnityObjectData
         m_IsPlay = true;
         UpdateScheme();
     }
-    public override void OnUnLoad()
+    public override void UnLoad()
     {
         m_IsPlay = false;
-        base.OnUnLoad();
+        base.UnLoad();
     }
     public void UpdateScheme()
     {

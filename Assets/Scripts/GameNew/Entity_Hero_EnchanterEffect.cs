@@ -17,9 +17,9 @@ public class Entity_Hero_EnchanterEffectData : UnityObjectData
 
     public string DGID_Move => $"{EDGWorldID.EffectMove}_{LoadKey}";
 
-    public override void OnUnLoad()
+    public override void UnLoad()
     {
-        base.OnUnLoad();
+        base.UnLoad();
 
         SetMainColor(StartMainColor);
     }

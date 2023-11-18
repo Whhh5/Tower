@@ -6,7 +6,6 @@ using UnityEngine;
 public abstract class Entity_Hero_EnchanterBaseData : Entity_HeroBaseNewData
 {
     public override int AtkRangeBase => 5;
-    public override EHeroVocationalType EntityVocationalType => EHeroVocationalType.Enchanter;
     public new Entity_Hero_EnchanterBase EntityTarget => GetCom<Entity_Hero_EnchanterBase>();
 
 
@@ -26,6 +25,7 @@ public abstract class Entity_Hero_EnchanterBaseData : Entity_HeroBaseNewData
 
         Vector3 pos = Vector3.zero;
         Vector3 up = Vector3.zero;
+        GTools.AudioMgr.PlayAudio(EAudioType.Hero_Enchanter1_Attack1);
         DOTween.To(() => 0.0f, slider =>
         {
             if (slider < goTime)
@@ -65,6 +65,7 @@ public abstract class Entity_Hero_EnchanterBaseData : Entity_HeroBaseNewData
         var effect = new Entity_Hero_EnchanterEffectData();
         effect.SetPosition(startPos);
 
+        GTools.AudioMgr.PlayAudio(EAudioType.Hero_Enchanter1_Attack2);
         DOTween.To(() => 0.0f, slider =>
         {
             if (GTools.UnityObjectIsVaild(m_CurAttackTarget))
@@ -81,6 +82,7 @@ public abstract class Entity_Hero_EnchanterBaseData : Entity_HeroBaseNewData
             {
                 effect.DestroyAsync();
                 this.EntityDamage(m_CurAttackTarget, null, AtkAddMagic);
+                GTools.AudioMgr.PlayAudio(EAudioType.Hero_Enchanter1_Attack3);
             });
 
         await ILoadPrefabAsync.LoadAsync(effect);

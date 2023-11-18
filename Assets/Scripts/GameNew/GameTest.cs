@@ -49,4 +49,9 @@ public class GameTest : MonoBehaviour
         }
         f_EnemyEntity.Data.MonsterEnter();
     }
+    [Button, PropertySpace(50)]
+    public void TestFormation()
+    {
+        GTools.FormationMgr.TestFormation();
+    }
 }

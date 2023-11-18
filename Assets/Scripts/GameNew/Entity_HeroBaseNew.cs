@@ -8,6 +8,15 @@ using Cysharp.Threading.Tasks;
 public abstract class Entity_HeroBaseNewData : WorldObjectBaseData
 {
     public abstract EHeroCardType HeroType { get; }
+    //public virtual EHeroVocationalType EntityVocationalType => ;
+    public EHeroVocationalType GetVocationalType()
+    {
+        if (!GTools.TableMgr.TryGetHeroCradInfo(HeroType, out var info))
+        {
+            return EHeroVocationalType.None;
+        }
+        return info.Vocational;
+    }
     public override EEntityType EntityType => EEntityType.Person;
 
     public override ELayer LayerMask => ELayer.Player;

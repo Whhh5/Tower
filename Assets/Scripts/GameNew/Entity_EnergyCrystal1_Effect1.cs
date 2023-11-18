@@ -21,10 +21,10 @@ public class Entity_EnergyCrystal1_Effect1Data : UnityObjectData
         await EntityTarget.PlayDoTweenAsync();
         ILoadPrefabAsync.UnLoad(this);
     }
-    public override void OnUnLoad()
+    public override void UnLoad()
     {
         DOTween.Kill(DGIDPlayEffect);
-        base.OnUnLoad();
+        base.UnLoad();
     }
 }
 public class Entity_EnergyCrystal1_Effect1 : ObjectPoolBase

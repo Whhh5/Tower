@@ -51,10 +51,10 @@ public class Entity_Tower_Light1Data : EntityTowerBaseData
         m_IsStartSkill3 = false;
     }
 
-    public override void OnUnLoad()
+    public override void UnLoad()
     {
         m_IsStartSkill3 = false;
-        base.OnUnLoad();
+        base.UnLoad();
 
         SetTowerStatus(ETowerStatus.Start);
     }

@@ -7,7 +7,6 @@ using UnityEngine;
 public abstract class Entity_Hero_SupplementaryBaseData : Entity_HeroBaseNewData
 {
     public override int AtkRangeBase => 3;
-    public override EHeroVocationalType EntityVocationalType => EHeroVocationalType.Supplementary;
 
     public float ToTargetTime => AtkBehavior * 0.5f;
     public override async void AttackBehavior()
@@ -22,8 +21,11 @@ public abstract class Entity_Hero_SupplementaryBaseData : Entity_HeroBaseNewData
         var dir = (targetPos - curPos).normalized;
         var toDir = new Vector2(dir.y, -dir.x);
 
+
+        GTools.AudioMgr.PlayAudio(EAudioType.Hero_Supplementary1_Attack1);
         await MainLoop();
         this.EntityDamage(m_CurAttackTarget, null, AtkAddMagic);
+        GTools.AudioMgr.PlayAudio(EAudioType.Hero_Supplementary1_Attack2);
 
         targetPos = WeaponStartPos;
         curPos = GetWeaponPosition();

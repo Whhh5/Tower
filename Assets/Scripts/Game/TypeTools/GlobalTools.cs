@@ -28,6 +28,9 @@ public enum EAssetName : int
     UINavigationBar,
     UIGameLevel,
     UIHeroCardSelect,
+    UIGameMonster,
+    UIGameFinish,
+    UIFormationInfo,
     #endregion
 
     #region UIAppPlane

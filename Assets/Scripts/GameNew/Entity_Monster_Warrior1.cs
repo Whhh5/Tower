@@ -8,7 +8,7 @@ using UnityEngine;
 public class Entity_Monster_Warrior1Data : Entity_Monster_WarriorBaseData
 {
     public override EAssetKey AssetPrefabID => EAssetKey.Entity_Monster_Warrior1;
-    public override int HarmBase => 50;
+    public override int HarmBase => 30;
 }
 public class Entity_Monster_Warrior1 : Entity_Monster_MarriorBase
 {
