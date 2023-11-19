@@ -16,12 +16,13 @@ public class UIDrawWindow : UIWindow
     private RectTransform m_MouseImg = null;
     public override async UniTask AwakeAsync()
     {
-        
+        m_IsMouseDown = false;
+        OnMouseUp();
     }
 
     public override async UniTask OnShowAsync()
     {
-        m_IsMouseDown = false;
+        
     }
 
     private bool m_IsMouseDown = false;

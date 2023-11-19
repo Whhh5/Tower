@@ -50,6 +50,7 @@ public class AttackMgr : Singleton<AttackMgr>
             if (damageValue < 0)
             {
                 damageType = EDamageType.Physical;
+                PlayAttackEffect(f_Target.WorldPosition);
             }
             else
             {
@@ -58,8 +59,10 @@ public class AttackMgr : Singleton<AttackMgr>
             WorldMgr.Ins.DamageText(hintTex, damageType, f_Target.CentralPoint + new Vector3(xOffset, yOffset));
         }
     }
-    public void PlayAttackEffect()
+    public void PlayAttackEffect(Vector3 f_Position)
     {
-
+        var effectData = new Entity_AttackEffect1Data();
+        effectData.SetPosition(f_Position);
+        GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(effectData));
     }
 }

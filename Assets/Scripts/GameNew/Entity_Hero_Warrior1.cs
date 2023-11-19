@@ -22,7 +22,7 @@ public class Entity_Hero_Warrior1Data : Entity_Hero_WarriorBaseData
         private Vector3 m_TempTargetPos = Vector3.zero;
         public Vector3 GetTargetPosition()
         {
-            if (GTools.UnityObjectIsVaild(Target))
+            if (GTools.UnityObjectIsVaild(Target) && GTools.WorldObjectIsActive(Target))
             {
                 m_TempTargetPos = Target.WorldPosition;
             }

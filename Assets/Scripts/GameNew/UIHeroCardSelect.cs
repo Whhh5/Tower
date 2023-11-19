@@ -275,7 +275,7 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
 
     public override async UniTask AwakeAsync()
     {
-        GTools.AudioMgr.PlayAudio(EAudioType.Scene_Background);
+        GTools.AudioMgr.PlayBackground(EAudioType.Scene_Background);
         m_CardItem.gameObject.SetActive(false);
         m_ItemHeroCardResidueCount.gameObject.SetActive(false);
         m_UpdateList.onClick.RemoveAllListeners();

@@ -64,7 +64,7 @@ public abstract class Entity_HeroBaseNewData : WorldObjectBaseData
     {
         base.Death();
         GTools.FormationMgr.FormationRemove(this);
-        GTools.HeroCardPoolMgr.RecycleGroupCrad(HeroType);
+        //GTools.HeroCardPoolMgr.RecycleGroupCrad(HeroType);
         DOTween.To(() => 0.0f, slider =>
         {
             SetAllElementColorAlpha(1 - slider);

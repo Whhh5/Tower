@@ -122,6 +122,8 @@ public enum EDGWorldID
     EffectMove,
 
     Boss1EffectAlpha,
+
+    AttackEffect1Data,
 }
 public enum EHeroVocationalType
 {
@@ -363,6 +365,8 @@ public enum EAssetKey
     Entity_Effect_Tower_Light1_Attack,
     Entity_Effect_Attack_Default1,
     Entity_Monster_Boss1Effect,
+    Entity_AttackEffect1,
+    Entity_Background,
     // buff图标路径
     BuffIcon_Poison,
     BuffIcon_AddBlood,
@@ -1176,6 +1180,9 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Entity_Monster_Warrior3, "Prefabs/PerfabNew/Entity_Monster_Warrior3" },
         { EAssetKey.Entity_Hero_EnchanterEffect, "Prefabs/PerfabNew/Entity_Hero_EnchanterEffect" },
         { EAssetKey.Entity_Monster_Boss1Effect, "Prefabs/PerfabNew/Entity_Monster_Boss1Effect" },
+        { EAssetKey.Entity_AttackEffect1, "Prefabs/PerfabNew/Entity_AttackEffect1" },
+        { EAssetKey.Entity_Background, "Prefabs/PerfabNew/Entity_Background" },
+        
 
 
 

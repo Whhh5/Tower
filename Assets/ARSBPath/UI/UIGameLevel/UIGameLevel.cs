@@ -13,7 +13,7 @@ public class UIGameLevel : UIWindow
     private Dictionary<EMapLevelType, Transform> m_LevelList = new();
     public override async UniTask AwakeAsync()
     {
-        GTools.AudioMgr.PlayAudio(EAudioType.Scene_SelectLevel);
+        GTools.AudioMgr.PlayBackground(EAudioType.Scene_SelectLevel);
         m_LevelListItem.gameObject.SetActive(false);
 
         for (int i = 0; i < (int)EMapLevelType.EnumCount; i++)

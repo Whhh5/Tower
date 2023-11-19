@@ -49,12 +49,12 @@ public class AudioMgr : MonoSingleton<AudioMgr>
     }
     public void PlayBackground(EAudioType f_AudioType)
     {
-        return;
         if (!m_AudioClipList.TryGetValue(f_AudioType, out var audioClip))
         {
             return;
         }
         //m_AudioSource.clip = audioClip;
+        //m_AudioSource.Pause();
         m_AudioSource.Stop();
         m_AudioSource.clip = audioClip;
         m_AudioSource.Play();

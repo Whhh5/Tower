@@ -122,7 +122,6 @@ public class Entity_ChunkMapData : UnityObjectData
     {
         if (GTools.HeroCardPoolMgr.PathPointUpClick(this))
         {
-            return;
             GTools.AudioMgr.PlayAudio(EAudioType.Scene_Place);
         }
     }
@@ -132,7 +131,7 @@ public class Entity_ChunkMapData : UnityObjectData
     }
     public void OnMouseExit()
     {
-        
+
     }
     public Color BaseColor => Color.white;
     public Color MainColor = Color.white;
@@ -236,10 +235,9 @@ public class Entity_ChunkMap : ObjectPoolBase
 
     private void StartEnter()
     {
-        if (false)
-        {
-            GTools.AudioMgr.PlayAudio(EAudioType.Scene_EnterChunk);
-        }
+
+        GTools.AudioMgr.PlayAudio(EAudioType.Scene_EnterChunk);
+
         DOTween.Kill(DGID);
         var curColor = m_CurColor;
         var interval = curColor - m_EnterToColor;
@@ -255,10 +253,8 @@ public class Entity_ChunkMap : ObjectPoolBase
     }
     private void StopEnter()
     {
-        if (false)
-        {
             GTools.AudioMgr.PlayAudio(EAudioType.Scene_ExitChunk);
-        }
+
         DOTween.Kill(DGID);
         var curColor = m_CurColor;
         var interval = curColor - m_OriginalColor;

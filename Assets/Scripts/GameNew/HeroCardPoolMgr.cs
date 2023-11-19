@@ -296,10 +296,12 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
     {
         if (!GTools.TableMgr.TryGetHeroCradInfo(f_BuyTarget, out var cardInfo))
         {
+            LogError($"选卡失败，{f_BuyTarget}, 获取不到卡牌信息");
             return false;
         }
         if (!GTools.PlayerMgr.TryExpenditure(cardInfo.QualityLevelInfo.Expenditure))
         {
+            LogError($"选卡失败，{f_BuyTarget}, 金币不足");
             return false;
         }
         if (!m_CurCradList.TryGetValue(f_BuyTarget, out var value))
@@ -309,6 +311,7 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
         }
         if (!RemoveCurCardViewListData(f_BuyTarget))
         {
+            LogError($"选卡失败，{f_BuyTarget}, 不存在当前卡牌列表");
             return false;
         }
         AddWarSeatList(f_BuyTarget);
