@@ -358,7 +358,7 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  MapWH: {x: 12, y: 24}
+  MapWH: {x: 8, y: 24}
   MapChunkLength: 1
   MapChunkInterval: {x: 0.05, y: 0.05}
   WarSeatCount: 12

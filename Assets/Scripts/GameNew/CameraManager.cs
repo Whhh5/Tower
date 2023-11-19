@@ -40,5 +40,6 @@ public class CameraManager : MonoSingleton<CameraManager>
             transform.position = pos;
 
         }, 1.0f, MoveTime);
+        GTools.HeroCardPoolMgr.StartShowElement();
     }
 }

@@ -117,6 +117,10 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
 
         CameraManager.Ins.StartMove();
     }
+    public void StartShowElement()
+    {
+        m_MainWindow.StartShowElement();
+    }
     private async UniTask CreateWarSeatEntityAsync()
     {
         foreach (var item in m_WarSeatList)

@@ -195,6 +195,8 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
     private Button m_UpdateList = null;
     [SerializeField]
     private HorizontalLayoutGroup m_MainLayoutGroup = null;
+    private RectTransform MainListRect => m_MainLayoutGroup.GetComponent<RectTransform>();
+    private Vector3 MainListStartPos => new Vector3(0, -200, 0);
     private int HeroPoolCount => GameDataMgr.HeroPoolCount;
 
     [SerializeField]
@@ -222,6 +224,12 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
 
     [SerializeField, Header("按钮根节点"), Space(30)]
     private CanvasGroup m_BtnGroup = null;
+    private RectTransform BtnGroupRect => m_BtnGroup.GetComponent<RectTransform>();
+    private Vector3 BtnGroupStartPos => new Vector3(0, 100, 0);
+    [SerializeField]
+    private RectTransform m_GameInfo = null;
+    private Vector3 GameInfostartPos => new Vector3(-230, 200, 0);
+
     [SerializeField, Header("设置界面"), Space(30)]
     private GameObject m_SettingWindow = null;
     [SerializeField]
@@ -275,6 +283,7 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
 
     public override async UniTask AwakeAsync()
     {
+        InitShowElement();
         GTools.AudioMgr.PlayBackground(EAudioType.Scene_Background);
         m_CardItem.gameObject.SetActive(false);
         m_ItemHeroCardResidueCount.gameObject.SetActive(false);
@@ -424,7 +433,7 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
           {
               var alpha = Mathf.Lerp(curAlpha, 1, slider);
               HeroResidueRootGroup.alpha = alpha;
-              m_BtnGroup.alpha = alpha;
+              //m_BtnGroup.alpha = alpha;
 
           }, 1.0f, time * 0.5f)
             .SetId(DG_ID);
@@ -439,10 +448,32 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
         {
             var alpha = Mathf.Lerp(curAlpha, 0, slider);
             HeroResidueRootGroup.alpha = alpha;
-            m_BtnGroup.alpha = alpha;
+            //m_BtnGroup.alpha = alpha;
 
         }, 1.0f, time * 0.2f)
             .SetId(DG_ID);
+    }
+
+    private void InitShowElement()
+    {
+        BtnGroupRect.anchoredPosition3D = BtnGroupStartPos;
+        MainListRect.anchoredPosition3D = MainListStartPos;
+        m_GameInfo.anchoredPosition3D = GameInfostartPos;
+        HeroResidueRootGroup.alpha = 0;
+    }
+    public void StartShowElement()
+    {
+        DOTween.To(() => 0.0f, slider =>
+          {
+              var pos1 = Vector3.Lerp(BtnGroupStartPos, Vector3.zero, slider);
+              var pos2 = Vector3.Lerp(MainListStartPos, Vector3.zero, slider);
+              var pos3 = Vector3.Lerp(GameInfostartPos, Vector3.up * 200f, slider);
+
+              BtnGroupRect.anchoredPosition3D = pos1;
+              MainListRect.anchoredPosition3D = pos2;
+              m_GameInfo.anchoredPosition3D = pos3;
+
+          }, 1.0f, 0.5f);
     }
 
     private void ReturnSelectWindow()
