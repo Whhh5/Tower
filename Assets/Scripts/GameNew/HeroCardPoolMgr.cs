@@ -106,7 +106,8 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
         // 创建 ui 卡池列表
         m_MainWindow = await GTools.UIWindowManager.LoadWindowAsync<UIHeroCardSelect>(EAssetName.UIHeroCardSelect);
         await GTools.UIWindowManager.LoadWindowAsync<UIGameMonster>(EAssetName.UIGameMonster);
-        await GTools.UIWindowManager.LoadWindowAsync<UIGameFinish>(EAssetName.UIGameFinish); 
+        await GTools.UIWindowManager.LoadWindowAsync<UIGameFinish>(EAssetName.UIGameFinish);
+        await GTools.UIWindowManager.LoadWindowAsync<UIDrawWindow>(EAssetName.UIDrawWindow);
 
 
 

@@ -345,6 +345,8 @@ MonoBehaviour:
   m_TxtBloodHint: {fileID: 4895157355227911784}
   m_ImgBloodTarget: {fileID: 2508595982608861665}
   m_ImgCurBlood: {fileID: 5785561006074210943}
+  m_ImgBloodMiddleTarget: {fileID: 4010136133022140509}
+  m_ImgCurUpBlood: {fileID: 8042166648894950742}
   m_TxtMagicHint: {fileID: 2430588012297286769}
   m_ImgCurMagic: {fileID: 7872805300376933465}
 --- !u!1 &4302030861717101106

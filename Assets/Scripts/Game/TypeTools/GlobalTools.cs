@@ -31,6 +31,7 @@ public enum EAssetName : int
     UIGameMonster,
     UIGameFinish,
     UIFormationInfo,
+    UIDrawWindow,
     #endregion
 
     #region UIAppPlane

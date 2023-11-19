@@ -46,7 +46,20 @@ public class AttackMgr : Singleton<AttackMgr>
 
             var xOffset = GTools.MathfMgr.GetRandomValue(-0.3f, 0.3f);
             var yOffset = GTools.MathfMgr.GetRandomValue(-0.3f, 0.3f);
-            WorldMgr.Ins.DamageText(hintTex, damageValue < 0 ? EDamageType.Physical : EDamageType.AddBlood, f_Target.CentralPoint + new Vector3(xOffset, yOffset));
+            EDamageType damageType;
+            if (damageValue < 0)
+            {
+                damageType = EDamageType.Physical;
+            }
+            else
+            {
+                damageType = EDamageType.AddBlood;
+            }
+            WorldMgr.Ins.DamageText(hintTex, damageType, f_Target.CentralPoint + new Vector3(xOffset, yOffset));
         }
+    }
+    public void PlayAttackEffect()
+    {
+
     }
 }
