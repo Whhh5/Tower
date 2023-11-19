@@ -37,8 +37,8 @@ public class AudioMgr : MonoSingleton<AudioMgr>
         //    return;
         //}
         //var audio = await IAudioUtil.LoadAudioAsync(audioInfo.AudioAssetKey);
-        ////audio.
-        ///
+        //audio.
+        //
 
         if (!m_AudioClipList.TryGetValue(f_AudioType, out var audioClip))
         {
@@ -49,6 +49,7 @@ public class AudioMgr : MonoSingleton<AudioMgr>
     }
     public void PlayBackground(EAudioType f_AudioType)
     {
+        return;
         if (!m_AudioClipList.TryGetValue(f_AudioType, out var audioClip))
         {
             return;
