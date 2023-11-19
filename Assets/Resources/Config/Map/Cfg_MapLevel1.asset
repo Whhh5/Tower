@@ -361,8 +361,8 @@ MonoBehaviour:
   MapWH: {x: 12, y: 24}
   MapChunkLength: 1
   MapChunkInterval: {x: 0.05, y: 0.05}
-  WarSeatCount: 15
-  WarSeatRowCount: 8
+  WarSeatCount: 12
+  WarSeatRowCount: 6
   HeroPoolCount: 10
   WarSeatLength: 1.8
   WarSeatInterval: {x: 0.1, y: 0.1}

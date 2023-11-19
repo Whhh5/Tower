@@ -3443,9 +3443,9 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level0,
             new()
             {
-                MapWH = new(12, 24),
+                MapWH = new(8, 24),
                 MapChunkLength = 1,
-                MapChunkInterval = new(0.05f, 0.05f),
+                MapChunkInterval = new(0, 0),
                 BarrierData = new()
                 {
                     {
@@ -3650,8 +3650,8 @@ public class TableMgr : Singleton<TableMgr>
                     },
                 },
 
-                WarSeatCount = 15,
-                WarSeatRowCount = 8,
+                WarSeatCount = 12,
+                WarSeatRowCount = 6,
                 HeroPoolCount = 10,
                 WarSeatLength = 1.8f,
                 WarSeatInterval = new(0.1f, 0.1f),
@@ -3664,9 +3664,9 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level1,
             new()
             {
-                MapWH = new(12, 24),
+                MapWH = new(8, 24),
                 MapChunkLength = 1,
-                MapChunkInterval = new(0.05f, 0.05f),
+                MapChunkInterval = new(0, 0),
                 BarrierData = new()
                 {
                     {
@@ -3815,8 +3815,8 @@ public class TableMgr : Singleton<TableMgr>
                     },
                 },
 
-                WarSeatCount = 15,
-                WarSeatRowCount = 8,
+                WarSeatCount = 12,
+                WarSeatRowCount = 6,
                 HeroPoolCount = 10,
                 WarSeatLength = 1.8f,
                 WarSeatInterval = new(0.1f, 0.1f),
@@ -3829,9 +3829,9 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level2,
             new()
             {
-                MapWH = new(12, 24),
+                MapWH = new(8, 24),
                 MapChunkLength = 1,
-                MapChunkInterval = new(0.05f, 0.05f),
+                MapChunkInterval = new(0, 0),
                 BarrierData = new()
                 {
                     {
@@ -4010,8 +4010,8 @@ public class TableMgr : Singleton<TableMgr>
                     },
                 },
 
-                WarSeatCount = 15,
-                WarSeatRowCount = 8,
+                WarSeatCount = 12,
+                WarSeatRowCount = 6,
                 HeroPoolCount = 10,
                 WarSeatLength = 1.8f,
                 WarSeatInterval = new(0.1f, 0.1f),
@@ -4024,9 +4024,9 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level3,
             new()
             {
-                MapWH = new(12, 24),
+                MapWH = new(8, 24),
                 MapChunkLength = 1,
-                MapChunkInterval = new(0.05f, 0.05f),
+                MapChunkInterval = new(0, 0),
                 BarrierData = new()
                 {
                     {
@@ -4235,8 +4235,8 @@ public class TableMgr : Singleton<TableMgr>
                     },
                 },
 
-                WarSeatCount = 15,
-                WarSeatRowCount = 8,
+                WarSeatCount = 12,
+                WarSeatRowCount = 6,
                 HeroPoolCount = 10,
                 WarSeatLength = 1.8f,
                 WarSeatInterval = new(0.1f, 0.1f),
@@ -4249,9 +4249,9 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level4,
             new()
             {
-                MapWH = new(12, 24),
+                MapWH = new(8, 24),
                 MapChunkLength = 1,
-                MapChunkInterval = new(0.05f, 0.05f),
+                MapChunkInterval = new(0, 0),
                 BarrierData = new()
                 {
                     {
@@ -4354,8 +4354,9 @@ public class TableMgr : Singleton<TableMgr>
                         }
                     },
                 },
-                WarSeatCount = 15,
-                WarSeatRowCount = 8,
+
+                WarSeatCount = 12,
+                WarSeatRowCount = 6,
                 HeroPoolCount = 10,
                 WarSeatLength = 1.8f,
                 WarSeatInterval = new(0.1f, 0.1f),

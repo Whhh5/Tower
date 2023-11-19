@@ -84,7 +84,7 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
         {
             var root = new GameObject("Root_WarSeat");
             var tran = root.transform;
-            tran.SetPositionAndRotation(Vector3.left * 2, Quaternion.Euler(Vector3.zero));
+            tran.SetPositionAndRotation(new Vector3(-0.5f, 2, 0), Quaternion.Euler(Vector3.zero));
             m_Root = tran;
         }
         // 初始化备战席列表
@@ -112,9 +112,12 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
 
 
         // 开始实例化
-        CreateWarSeatEntityAsync();
+        await CreateWarSeatEntityAsync();
+        await UniTask.Delay(1000);
+
+        CameraManager.Ins.StartMove();
     }
-    private async void CreateWarSeatEntityAsync()
+    private async UniTask CreateWarSeatEntityAsync()
     {
         foreach (var item in m_WarSeatList)
         {
@@ -236,22 +239,22 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
     }
     public override void Awake()
     {
-       //m_HeroCradPool.Clear();
-       // for (int i = 0; i < (int)EHeroCardType.EnumCount; i++)
-       // {
-       //     var type = (EHeroCardType)i;
-       //     if (TableMgr.Ins.TryGetHeroCradInfo(type, out var info))
-       //     {
-       //         if (!m_HeroCradPool.TryGetValue(info.QualityLevel, out var value))
-       //         {
-       //             value = new();
-       //             m_HeroCradPool.Add(info.QualityLevel, value);
-       //         }
+        //m_HeroCradPool.Clear();
+        // for (int i = 0; i < (int)EHeroCardType.EnumCount; i++)
+        // {
+        //     var type = (EHeroCardType)i;
+        //     if (TableMgr.Ins.TryGetHeroCradInfo(type, out var info))
+        //     {
+        //         if (!m_HeroCradPool.TryGetValue(info.QualityLevel, out var value))
+        //         {
+        //             value = new();
+        //             m_HeroCradPool.Add(info.QualityLevel, value);
+        //         }
 
-       //         var poolInfo = new HeroCradPoolInfo(type);
-       //         value.Add(type, poolInfo);
-       //     }
-       // } 
+        //         var poolInfo = new HeroCradPoolInfo(type);
+        //         value.Add(type, poolInfo);
+        //     }
+        // } 
 
 
         InitHeroCradList();
