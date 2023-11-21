@@ -341,6 +341,8 @@ public enum EAssetKey
     Entity_Formation_Near_Effect,
     Entity_Formation_Sphere,
     Entity_Formation_Sphere_Effect,
+    Entity_Enchanter1SkillItem,
+    Entity_Monster_Boss1SkillItem,
 
     Entity_Hero_Warrior1,
     Entity_Enchanter1,
@@ -353,6 +355,7 @@ public enum EAssetKey
     Entity_Default_SkillElement,
     Entity_Hero_Warrior1_SkillElement,
     Entity_Hero_EnchanterEffect,
+    Entity_Hero_EnchanterAttackEffect,
 
     // 特效
     Hero3SkillEffect,
@@ -1164,6 +1167,9 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Entity_Formation_Near_Effect, "Prefabs/PerfabNew/Entity_Formation_Near_Effect" },
         { EAssetKey.Entity_Formation_Sphere, "Prefabs/PerfabNew/Entity_Formation_Sphere" },
         { EAssetKey.Entity_Formation_Sphere_Effect, "Prefabs/PerfabNew/Entity_Formation_Sphere_Effect" },
+        { EAssetKey.Entity_Enchanter1SkillItem, "Prefabs/PerfabNew/Entity_Enchanter1SkillItem" },
+        { EAssetKey.Entity_Monster_Boss1SkillItem, "Prefabs/PerfabNew/Entity_Monster_Boss1SkillItem" },
+        
 
 
 
@@ -1179,6 +1185,7 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Entity_Monster_Warrior2, "Prefabs/PerfabNew/Entity_Monster_Warrior2" },
         { EAssetKey.Entity_Monster_Warrior3, "Prefabs/PerfabNew/Entity_Monster_Warrior3" },
         { EAssetKey.Entity_Hero_EnchanterEffect, "Prefabs/PerfabNew/Entity_Hero_EnchanterEffect" },
+        { EAssetKey.Entity_Hero_EnchanterAttackEffect, "Prefabs/PerfabNew/Entity_Hero_EnchanterAttackEffect" },
         { EAssetKey.Entity_Monster_Boss1Effect, "Prefabs/PerfabNew/Entity_Monster_Boss1Effect" },
         { EAssetKey.Entity_AttackEffect1, "Prefabs/PerfabNew/Entity_AttackEffect1" },
         { EAssetKey.Entity_Background, "Prefabs/PerfabNew/Entity_Background" },

@@ -30,7 +30,7 @@ public class Entity_Supplementary1SkillEffectData : UnityObjectData
 
         var time = f_HeroData.SkillToTime + f_HeroData.SkillFromTime1;
         var curColor = new Color(CurMainColorStart.r, CurMainColorStart.g, CurMainColorStart.b, 0);
-        var toColor = new Color(curColor.r, curColor.g, curColor.b, 1);
+        var toColor = new Color(curColor.r, curColor.g, curColor.b, 0.5f);
 
         await DOTween.To(() => 0.0f, slider =>
           {

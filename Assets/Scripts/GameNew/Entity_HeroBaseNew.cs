@@ -110,7 +110,7 @@ public abstract class Entity_HeroBaseNewData : WorldObjectBaseData
                 {
                     if (Attacking)
                     {
-                        if (Time.time - m_LastAtkTime > AtkInterval)
+                        if (Time.time - m_LastAtkTime > AtkInterval && this.TryGetRandomNearTarget(out m_CurAttackTarget))
                         {
                             m_LastAtkTime = Time.time;
                             if (IsAttack())

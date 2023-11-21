@@ -44,6 +44,7 @@ public class UIGameLevel : UIWindow
             obj.GetChildCom<Button>(EChildName.Btn_Click).onClick.AddListener(async () =>
             {
                 GameDataMgr.Ins.SetMapData(level);
+
                 await GTools.UIWindowManager.UnloadWindowAsync(this);
             });
 

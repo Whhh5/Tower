@@ -12,9 +12,12 @@ public class Entity_Enchanter1Data : Entity_Hero_EnchanterBaseData
     public Vector2Int SkillAtkCountRange => new Vector2Int(10, 20);
     public float SkillTime => 2.0f;
     public int SkillDamage => Mathf.CeilToInt(CurHarm * 0.3f);
-
     public override EHeroCardType HeroType => EHeroCardType.Hero2;
-
+    public override void AfterLoad()
+    {
+        base.AfterLoad();
+        SetWeaponAlpha(1.0f);
+    }
     public override async void SkillBehavior()
     {
         // 
@@ -35,6 +38,12 @@ public class Entity_Enchanter1Data : Entity_Hero_EnchanterBaseData
         var startRot = Quaternion.Euler(LocalRotation).z;
         var rotAngle = startRot + 360 * 5;
 
+        var effectItem = new Entity_Enchanter1SkillItemData();
+        effectItem.SetPosition(GetWeaponPosition());
+        effectItem.SetUp(GetWeaponUp());
+        GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(effectItem));
+        SetWeaponAlpha(0.0f);
+
         GTools.AudioMgr.PlayAudio(EAudioType.Hero_Enchanter1_Skill1);
         await DOTween.To(() => 0.0f, slider =>
           {
@@ -46,38 +55,39 @@ public class Entity_Enchanter1Data : Entity_Hero_EnchanterBaseData
               var dirY = Mathf.Sin(rot);
               var dirX = Mathf.Cos(rot);
 
-              UpdateWeaponDirectionUp(new Vector3(dirX, dirY, 0));
-              UpdateWeaponPosition(pos);
+              effectItem.SetUp(new Vector3(dirX, dirY, 0));
+              effectItem.SetPosition(pos);
 
           }, 1.0f, time1)
             .SetId(DGID_Skill);
 
-        var curPos = GetWeaponPosition();
-        var curUp = GetWeaponUp();
+        var curPos = effectItem.WorldPosition;
+        var curUp = effectItem.Up;
         await DOTween.To(() => 0.0f, slider =>
           {
               var pos = Vector3.Lerp(curPos, endPos2, slider);
               var up = Vector3.Lerp(curPos, Vector3.right, slider);
 
-              UpdateWeaponDirectionUp(up);
-              UpdateWeaponPosition(pos);
+              effectItem.SetUp(up);
+              effectItem.SetPosition(pos);
           }, 1.0f, time2)
             .SetId(DGID_Skill);
 
         await UniTask.Delay(300);
-        curPos = GetWeaponPosition();
-        curUp = GetWeaponUp();
+        curPos = effectItem.WorldPosition;
+        curUp = effectItem.Up;
         await DOTween.To(() => 0.0f, slider =>
         {
             var pos = Vector3.Lerp(curPos, WeaponStartPos, slider);
             var up = Vector3.Lerp(curPos, WeaponStartUp, slider);
 
-            UpdateWeaponDirectionUp(up);
-            UpdateWeaponPosition(pos);
+            effectItem.SetUp(up);
+            effectItem.SetPosition(pos);
 
         }, 1.0f, time3)
             .SetId(DGID_Skill);
-
+        SetWeaponAlpha(1.0f);
+        ILoadPrefabAsync.UnLoad(effectItem);
         base.SkillBehavior();
     }
     public async void AttackTargetOne(WorldObjectBaseData f_TargetData)
@@ -115,6 +125,7 @@ public class Entity_Enchanter1Data : Entity_Hero_EnchanterBaseData
                 var colorB = GTools.MathfMgr.GetRandomValue(0, 1.0f);
                 var effect = new Entity_Hero_EnchanterEffectData();
                 effect.SetPosition(startPos);
+                effect.SetUp((startPos - targetPos).normalized);
                 effect.SetMainColor(new Color(colorR, colorG, colorB, 1));
                 await ILoadPrefabAsync.LoadAsync(effect);
 
@@ -135,8 +146,17 @@ public class Entity_Enchanter1Data : Entity_Hero_EnchanterBaseData
         }
         await UniTask.WhenAll(tasks);
     }
+
+    public void SetWeaponAlpha(float f_ToAlpha)
+    {
+        var color = WeaponColor;
+        color.a = f_ToAlpha;
+        SetWeaponColor(color);
+
+    }
 }
 public class Entity_Enchanter1 : Entity_Hero_EnchanterBase
 {
+    private new Entity_Enchanter1Data EntityData => GetData<Entity_Enchanter1Data>();
 
 }

@@ -62,7 +62,7 @@ public abstract class Entity_Hero_EnchanterBaseData : Entity_HeroBaseNewData
         var startPos = GetAtkPoint();
         var targetPos = m_CurAttackTarget.WorldPosition;
         var moveTime = Vector3.Distance(startPos, targetPos) * 0.3f;
-        var effect = new Entity_Hero_EnchanterEffectData();
+        var effect = new Entity_Hero_EnchanterAttackEffectData();
         effect.SetPosition(startPos);
 
         GTools.AudioMgr.PlayAudio(EAudioType.Hero_Enchanter1_Attack2);

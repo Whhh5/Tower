@@ -28,22 +28,12 @@ public class Entity_Monster_Boss1Data : Entity_Monster_WarriorBaseData
     private float m_EffectAtkInterval => 0.2f;
     private int m_EffectAtkHarm => 2;
 
-    public class RoationData
-    {
-        public Vector3 Angle;
-    }
-    public Dictionary<int, RoationData> WeaponChildRotation = new();
 
     public override bool IsUpdateEnable => true;
 
     public override void InitData(int f_ChunkIndex = -1)
     {
         base.InitData(f_ChunkIndex);
-        WeaponChildRotation.Clear();
-        for (int i = 0; i < WeaponChildCount; i++)
-        {
-            WeaponChildRotation.Add(i, new());
-        }
     }
     public override void OnUpdate()
     {
@@ -117,10 +107,7 @@ public class Entity_Monster_Boss1Data : Entity_Monster_WarriorBaseData
     {
         base.AfterLoad();
 
-        SetWeaponRootPosition(WeaponStartPos);
-        UpdateWeaponChildRotation();
         SetMainWeaponAlpha(MainWeaponAlpha);
-        SetWeaponChildAlpha(0.0f);
     }
     public override void UnLoad()
     {
@@ -172,22 +159,30 @@ public class Entity_Monster_Boss1Data : Entity_Monster_WarriorBaseData
         }
         var endPos = chunkData.WorldPosition;
 
+        var effectItem = new Entity_Monster_Boss1SkillItemData();
+        effectItem.SetPosition(WeaponStartPos);
+        effectItem.SetRootPosition(WeaponStartPos);
+        effectItem.InitItemList(WeaponChildCount);
+        GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(effectItem));
+
+
         var curMainAlpha = MainWeaponAlpha;
-        var curChildAlpha = WeaponChildAlpha;
+        var curChildAlpha = effectItem.GetCurItemAlpha();
         var unitChildAngle = 360.0f / WeaponChildCount;
         await DOTween.To(() => 0.0f, slider =>
         {
             var value = Mathf.Lerp(curMainAlpha, 0.0f, slider);
             SetMainWeaponAlpha(value);
-            SetWeaponChildAlpha(slider);
-            var childValue = Mathf.Lerp(curChildAlpha, 1.0f, slider * 2);
 
-            foreach (var item in WeaponChildRotation)
+
+            effectItem.SetItemsAlpha(slider);
+            for (int i = 0; i < WeaponChildCount; i++)
             {
-                var angle = Mathf.Lerp(0, unitChildAngle * (item.Key + WeaponChildRotation.Count / 2), Mathf.Sin(slider * Mathf.PI * 0.5f));
-                SetWeaponChildRotation(item.Key, Vector3.forward * angle);
+                var angle = Mathf.Lerp(0, unitChildAngle * (i + WeaponChildCount / 2), Mathf.Sin(slider * Mathf.PI * 0.5f));
+                effectItem.SetItemRotation(i, angle);
             }
-            UpdateWeaponChildRotation();
+
+
 
         }, 1.0f, atkTime1);
 
@@ -215,14 +210,14 @@ public class Entity_Monster_Boss1Data : Entity_Monster_WarriorBaseData
             aktPath[aktPath.Count - 1 - i] = item;
         }
         curIndex = aktPath.Count;
-        curPos = WeaponRootPos;
+        curPos = effectItem.GetWeaponRootPosition();
         endPos = WeaponStartPos;
         maxDis = Vector2.SqrMagnitude(curPos - endPos);
         await DOTween.To(() => 0.0f, slider =>
         {
             LerpMove(slider);
             LoopRotation();
-            SetWeaponChildAlpha(1 - slider);
+            effectItem.SetItemsAlpha(1 - slider);
 
         }, 1.0f, atkTime4);
 
@@ -234,6 +229,7 @@ public class Entity_Monster_Boss1Data : Entity_Monster_WarriorBaseData
             LoopRotation();
 
         }, 1.0f, atkTime5);
+        ILoadPrefabAsync.UnLoad(effectItem);
 
         void LerpMove(float slider)
         {
@@ -246,18 +242,20 @@ public class Entity_Monster_Boss1Data : Entity_Monster_WarriorBaseData
                 AtkRange(index);
                 curIndex = moveIndex;
             }
-            SetWeaponRootPosition(pos);
+            effectItem.SetRootPosition(pos);
         }
         void LoopRotation()
         {
-            foreach (var item in WeaponChildRotation)
+            for (int i = 0; i < WeaponChildCount; i++)
             {
-                var angle = item.Value.Angle.z + Time.deltaTime * 360 * 3;
-                SetWeaponChildRotation(item.Key, Vector3.forward * angle);
+                if (!effectItem.TryGetItemData(i, out var data))
+                {
+                    continue;
+                }
+                var angle = data.Angle + Time.deltaTime * 360 * 3;
+                effectItem.SetItemRotation(i, angle);
             }
-            UpdateWeaponChildRotation();
         }
-
 
 
         base.SkillBehavior();
@@ -296,23 +294,7 @@ public class Entity_Monster_Boss1Data : Entity_Monster_WarriorBaseData
         }
     }
 
-    public Vector3 WeaponRootPos;
-    public void SetWeaponRootPosition(Vector3 f_Pos)
-    {
-        WeaponRootPos = f_Pos;
-        if (EntityTarget != null)
-        {
-            EntityTarget.SetWeaponRootPosition();
-        }
-    }
-    private void SetWeaponChildRotation(int f_Index, Vector3 f_Angle)
-    {
-        if (!WeaponChildRotation.TryGetValue(f_Index, out var data))
-        {
-            return;
-        }
-        data.Angle = f_Angle;
-    }
+    
     public float MainWeaponAlpha = 1.0f;
     private void SetMainWeaponAlpha(float f_Alpha)
     {
@@ -322,22 +304,7 @@ public class Entity_Monster_Boss1Data : Entity_Monster_WarriorBaseData
             EntityTarget.SetMainWeaponAlpha();
         }
     }
-    public float WeaponChildAlpha = 0.0f;
-    private void SetWeaponChildAlpha(float f_Alpha)
-    {
-        WeaponChildAlpha = f_Alpha;
-        if (EntityTarget != null)
-        {
-            EntityTarget.SetWeaponChildAlpha();
-        }
-    }
-    private void UpdateWeaponChildRotation()
-    {
-        if (EntityTarget != null)
-        {
-            EntityTarget.SetWeaponChildRotation();
-        }
-    }
+    
 
 }
 public class Entity_Monster_Boss1 : Entity_Monster_MarriorBase
@@ -345,11 +312,6 @@ public class Entity_Monster_Boss1 : Entity_Monster_MarriorBase
     public new Entity_Monster_Boss1Data EntityData => GetData<Entity_Monster_Boss1Data>();
     [SerializeField]
     private List<SpriteRenderer> m_MainWeaponList = new();
-    [SerializeField]
-    private Transform m_WeaponsRoot = null;
-    [SerializeField]
-    private Transform m_WeaponChildItem = null;
-    private List<Transform> m_WeaponChilds = new();
 
     public override async UniTask OnLoadAsync()
     {
@@ -360,38 +322,13 @@ public class Entity_Monster_Boss1 : Entity_Monster_MarriorBase
     public override async UniTask OnStartAsync(params object[] f_Params)
     {
         await base.OnStartAsync(f_Params);
-        m_WeaponChildItem.gameObject.SetActive(false);
-        for (int i = 0; i < EntityData.WeaponChildCount; i++)
-        {
-            var item = GameObject.Instantiate(m_WeaponChildItem, m_WeaponChildItem.parent);
-            item.gameObject.SetActive(true);
-            m_WeaponChilds.Add(item);
-        }
-        SetWeaponRootPosition();
-        SetWeaponChildRotation();
         SetMainWeaponAlpha();
-        SetWeaponChildAlpha();
     }
     public override async UniTask OnUnLoadAsync()
     {
-        foreach (var item in m_WeaponChilds)
-        {
-            GameObject.Destroy(item.gameObject);
-        }
-        m_WeaponChilds.Clear();
         await base.OnUnLoadAsync();
     }
-    public void SetWeaponChildRotation()
-    {
-        foreach (var item in EntityData.WeaponChildRotation)
-        {
-            m_WeaponChilds[item.Key].eulerAngles = item.Value.Angle;
-        }
-    }
-    public void SetWeaponRootPosition()
-    {
-        m_WeaponsRoot.position = EntityData.WeaponRootPos;
-    }
+
     public void SetMainWeaponAlpha()
     {
         var color = m_MainWeaponList[0].color;
@@ -399,19 +336,6 @@ public class Entity_Monster_Boss1 : Entity_Monster_MarriorBase
         foreach (var item in m_MainWeaponList)
         {
             item.color = color;
-        }
-    }
-    public void SetWeaponChildAlpha()
-    {
-        foreach (var item in m_WeaponChilds)
-        {
-            var coms = item.gameObject.GetComponentsInChildren<SpriteRenderer>();
-            foreach (var com in coms)
-            {
-                var color = com.color;
-                color.a = EntityData.WeaponChildAlpha;
-                com.color = color;
-            }
         }
     }
 }
