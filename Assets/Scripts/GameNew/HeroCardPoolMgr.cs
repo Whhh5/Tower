@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using B1;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 
 public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
 {
@@ -144,15 +145,27 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
         ClearWarSeatEntityAsync();
         m_WarSeatList.Clear();
     }
-    private async void AddWarSeatList(EHeroCardType f_HeroCard)
+    private bool TryAddWarSeatList(EHeroCardType f_HeroCard)
     {
-        var heroData = CreateHeroCardEntity(f_HeroCard, EHeroCradStarLevel.Level1, -1);
-        if (TryGetWarSeatItem(out var chunkData))
+        if (!TryGetWarSeatItem(out var chunkData))
         {
-            chunkData.SetCurHeroCard(heroData);
-            heroData.SetPosition(chunkData.PointUp);
+            return false;
         }
-        await ILoadPrefabAsync.LoadAsync(heroData);
+        var heroData = CreateHeroCardEntity(f_HeroCard, EHeroCradStarLevel.Level1, -1);
+        GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(heroData));
+        chunkData.SetCurHeroCard(heroData);
+        var toPos = chunkData.PointUp;
+        var mousePos = GTools.GetMousePosToScene();
+        mousePos.z = toPos.z;
+        heroData.SetPosition(mousePos);
+        //DOTween.To(() => 0.0f, slider =>
+        // {
+        //     var pos = Vector3.Lerp(mousePos, toPos, slider);
+        //     heroData.SetPosition(pos);
+
+        // }, 1.0f, 1.0f);
+        heroData.DoMovePosition(toPos, 0.5f);
+        return true;
     }
     private void RemoveWarSearList(Entity_ChunkWarSeatData f_WarSeatData)
     {
@@ -321,7 +334,10 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
             LogError($"选卡失败，{f_BuyTarget}, 不存在当前卡牌列表");
             return false;
         }
-        AddWarSeatList(f_BuyTarget);
+        if (TryAddWarSeatList(f_BuyTarget))
+        {
+
+        }
         return true;
     }
     /// <summary>
@@ -677,7 +693,8 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
         }
         heroData.SetObjBehaviorStatus(true);
         heroData.MoveToChunk(f_ChunkData.ChunkIndex);
-        heroData.SetPosition(f_ChunkData.WorldPosition);
+        heroData.DoMovePosition(f_ChunkData.WorldPosition, 0.5f);
+        //heroData.SetPosition(f_ChunkData.WorldPosition);
         GTools.FormationMgr.FormationDetection(heroData);
         data.ClearHeroCard();
         return true;
@@ -702,14 +719,16 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
         if (f_ChunkData.TryGetHeroData(out var curHeroData))
         {
             data.SetCurHeroCard(curHeroData);
-            curHeroData.SetPosition(data.WorldPosition);
+            //curHeroData.SetPosition(data.WorldPosition);
+            curHeroData.DoMovePosition(data.WorldPosition, 0.2f);
         }
         else
         {
             data.ClearHeroCard();
         }
         f_ChunkData.SetCurHeroCard(targetHerpData);
-        targetHerpData.SetPosition(f_ChunkData.WorldPosition);
+        //targetHerpData.SetPosition(f_ChunkData.WorldPosition);
+        targetHerpData.DoMovePosition(f_ChunkData.WorldPosition, 0.2f);
         return true;
     }
     public void OnUpdate()

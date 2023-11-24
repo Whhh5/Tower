@@ -15,7 +15,7 @@ public class UICardSelectData
     public EHeroCardType HeroType;
     public int Expenditure;
     public string Name;
-    public Action OnClick;
+    public Func<bool> OnClick;
     public EAssetKey Icon;
     public EAssetKey VocationalIcon;
     public EQualityType Quality;
@@ -91,7 +91,10 @@ public class UICardInfo
             m_Item.GetChildCom<Button>(EChildName.Btn_Click).onClick.RemoveAllListeners();
             m_Item.GetChildCom<Button>(EChildName.Btn_Click).onClick.AddListener(() =>
             {
-                cardData.OnClick();
+                if (!cardData.OnClick())
+                {
+                    return;
+                }
                 m_Item.gameObject.SetActive(false);
                 m_CurCardData = null;
             });
@@ -123,7 +126,8 @@ public class UICardInfo
             {
                 // 添加到备战席
                 GTools.AudioMgr.PlayAudio(EAudioType.Scene_BuyCard);
-                GTools.HeroCardPoolMgr.BuyCard(heroType);
+                var result = GTools.HeroCardPoolMgr.BuyCard(heroType);
+                return result;
             };
         }
         return f_HeroData != null;
@@ -463,6 +467,7 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
     }
     public void StartShowElement()
     {
+        GTools.AudioMgr.PlayAudio(EAudioType.Scene_GameStart);
         DOTween.To(() => 0.0f, slider =>
           {
               var pos1 = Vector3.Lerp(BtnGroupStartPos, Vector3.zero, slider);

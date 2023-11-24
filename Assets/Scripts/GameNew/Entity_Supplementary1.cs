@@ -87,18 +87,30 @@ public class Entity_Supplementary1Data : Entity_Hero_SupplementaryBaseData
         base.SkillBehavior();
     }
 
-    private void AddRangeEntityBlood()
+    private async void AddRangeEntityBlood()
     {
         if (this.TryGetRandomTeam(out var list, SkillRange))
         {
-            foreach (var item in list)
+            UniTask[] tasks = new UniTask[list.Count];
+            for (int i = 0; i < list.Count; i++)
             {
-                this.EntityDamage(item, SkillDamage);
-                if (item.EntityType == EEntityType.Person)
+                var item = list[i];
+                tasks[i] = UniTask.Create(async () =>
                 {
-                    this.InflictionGain(item, EGainType.AttackSpeed1);
-                }
+                    this.EntityDamage(item, SkillDamage);
+                    var effect = new Entity_Effect_AddBloodData();
+                    effect.SetPosition(item.WorldPosition);
+                    if (item.EntityType == EEntityType.Person)
+                    {
+                        this.InflictionGain(item, EGainType.AttackSpeed1);
+                    }
+                    GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(effect));
+                    await UniTask.Delay(3000);
+                    ILoadPrefabAsync.UnLoad(effect);
+                });
             }
+
+            await UniTask.WhenAll(tasks);
         }
     }
 }

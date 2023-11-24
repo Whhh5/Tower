@@ -106,6 +106,8 @@ public enum EAudioType
     Scene_EnterChunk,
     // 鼠标退出格子声音
     Scene_ExitChunk,
+    // 游戏开始音效
+    Scene_GameStart,
     EnumCount,
 }
 public enum EDGWorldID
@@ -124,6 +126,8 @@ public enum EDGWorldID
     Boss1EffectAlpha,
 
     AttackEffect1Data,
+
+    WorldObjDoMovePosition,
 }
 public enum EHeroVocationalType
 {
@@ -343,6 +347,7 @@ public enum EAssetKey
     Entity_Formation_Sphere_Effect,
     Entity_Enchanter1SkillItem,
     Entity_Monster_Boss1SkillItem,
+    Entity_Effect_AddBlood,
 
     Entity_Hero_Warrior1,
     Entity_Enchanter1,
@@ -580,6 +585,7 @@ public enum EAssetKey
     Audio_Scene_ExitWarSeat,
     Audio_Scene_EnterChunk,
     Audio_Scene_ExitChunk,
+    Audio_Scene_GameStart,
 }
 public enum EAttackEffectType
 {
@@ -1169,7 +1175,8 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Entity_Formation_Sphere_Effect, "Prefabs/PerfabNew/Entity_Formation_Sphere_Effect" },
         { EAssetKey.Entity_Enchanter1SkillItem, "Prefabs/PerfabNew/Entity_Enchanter1SkillItem" },
         { EAssetKey.Entity_Monster_Boss1SkillItem, "Prefabs/PerfabNew/Entity_Monster_Boss1SkillItem" },
-        
+        { EAssetKey.Entity_Effect_AddBlood, "Prefabs/PerfabNew/Entity_Effect_AddBlood" },
+
 
 
 
@@ -1189,7 +1196,7 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Entity_Monster_Boss1Effect, "Prefabs/PerfabNew/Entity_Monster_Boss1Effect" },
         { EAssetKey.Entity_AttackEffect1, "Prefabs/PerfabNew/Entity_AttackEffect1" },
         { EAssetKey.Entity_Background, "Prefabs/PerfabNew/Entity_Background" },
-        
+
 
 
 
@@ -1389,9 +1396,10 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Audio_Scene_ChangeWarSeat, $"{AudioParentPath}/Audio_Scene_ChangeWarSeat" },
         { EAssetKey.Audio_Scene_Place, $"{AudioParentPath}/Audio_Scene_Place" },
         { EAssetKey.Audio_Scene_EnterWarSeat, $"{AudioParentPath}/Audio_Scene_EnterWarSeat" },
-        { EAssetKey.Audio_Scene_ExitWarSeat,$"{AudioParentPath}/Audio_Scene_ExitWarSeat" },
+        { EAssetKey.Audio_Scene_ExitWarSeat, $"{AudioParentPath}/Audio_Scene_ExitWarSeat" },
         { EAssetKey.Audio_Scene_EnterChunk, $"{AudioParentPath}/Audio_Scene_EnterChunk" },
         { EAssetKey.Audio_Scene_ExitChunk, $"{AudioParentPath}/Audio_Scene_ExitChunk" },
+        { EAssetKey.Audio_Scene_GameStart, $"{AudioParentPath}/Audio_Scene_GameStart" },
     };
     public bool TryGetAssetPath(EAssetKey f_Key, out string f_Result)
     {
@@ -1415,7 +1423,7 @@ public class TableMgr : Singleton<TableMgr>
             {
                 QualityLevel = EQualityType.Quality1,
                 Vocational = EHeroVocationalType.Warrior,
-                Name = "Hero1",
+                Name = "战士",
                 AssetKet = EAssetKey.Entity_Player_Hero1,
                 Icon = EAssetKey.Icon_Hero1,
                 SkillLinkInfos = new()
@@ -1541,7 +1549,7 @@ public class TableMgr : Singleton<TableMgr>
             {
                 QualityLevel = EQualityType.Quality2,
                 Vocational = EHeroVocationalType.Enchanter,
-                Name = "Hero2",
+                Name = "法师",
                 AssetKet = EAssetKey.Entity_Player_Hero2,
                 Icon = EAssetKey.Icon_Hero2,
                 SkillLinkInfos = new()
@@ -1556,7 +1564,7 @@ public class TableMgr : Singleton<TableMgr>
             {
                 QualityLevel = EQualityType.Quality3,
                 Vocational = EHeroVocationalType.Supplementary,
-                Name = "Hero3",
+                Name = "牧师",
                 AssetKet = EAssetKey.Entity_Player_Hero3,
                 Icon = EAssetKey.Icon_Hero3,
                 SkillLinkInfos = new()
@@ -1571,7 +1579,7 @@ public class TableMgr : Singleton<TableMgr>
             {
                 QualityLevel = EQualityType.Quality4,
                 Vocational = EHeroVocationalType.MainTank,
-                Name = "Hero4",
+                Name = "坦克",
                 AssetKet = EAssetKey.Entity_Player_Hero4,
                 Icon = EAssetKey.Icon_Hero4,
                 SkillLinkInfos = new()
@@ -2807,7 +2815,7 @@ public class TableMgr : Singleton<TableMgr>
             new()
             {
                 QualityType = EQualityType.Quality1,
-                Color = Color.gray,
+                Color = new Color32(128, 128, 128, 255),
             }
         },
         {
@@ -2815,7 +2823,7 @@ public class TableMgr : Singleton<TableMgr>
             new()
             {
                 QualityType = EQualityType.Quality2,
-                Color = Color.green,
+                Color = new Color32(80, 231, 182, 255),
             }
         },
         {
@@ -2823,7 +2831,7 @@ public class TableMgr : Singleton<TableMgr>
             new()
             {
                 QualityType = EQualityType.Quality3,
-                Color = Color.cyan,
+                Color = new Color32(231, 152, 80, 255),
             }
         },
         {
@@ -2831,7 +2839,7 @@ public class TableMgr : Singleton<TableMgr>
             new()
             {
                 QualityType = EQualityType.Quality4,
-                Color = Color.red,
+                Color = new Color32(243, 89, 49, 255),
             }
         },
     };

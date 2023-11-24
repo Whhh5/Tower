@@ -207,6 +207,7 @@ MonoBehaviour:
   m_Range: 10
   m_IsEnter: 0
   m_CurAnim: {fileID: 0}
+  m_QualitySprite: {fileID: 4761406358114229452}
   m_AtkWeapon: {fileID: 135839868312554077}
   m_PointAtk: {fileID: 6585517851303106620}
 --- !u!1 &7817458261007308948

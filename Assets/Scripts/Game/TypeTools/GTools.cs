@@ -231,11 +231,31 @@ public static class GTools
         var result = f_UnityObject != null && f_UnityObject.GetObjBehaviorStatus();
         return result;
     }
+    public static bool WorldObjectIsVaild(WorldObjectBaseData f_UnityObject)
+    {
+        if (!UnityObjectIsVaild(f_UnityObject))
+        {
+            return false;
+        }
+        if (!WorldObjectIsActive(f_UnityObject))
+        {
+            return false;
+        }
+        return true;
+    }
     public static void FloaterHint(string f_Context)
     {
         Debug.Log(f_Context);
     }
 
+    public static Vector3 GetMousePosToScene()
+    {
+        var viewPos = Input.mousePosition - new Vector3(Screen.width, Screen.height, 0) * 0.5f;
+        var cameraPos = MainCamera.transform.position;
+
+        var curPos = cameraPos + viewPos / 100;
+        return curPos;
+    }
 
 }
 

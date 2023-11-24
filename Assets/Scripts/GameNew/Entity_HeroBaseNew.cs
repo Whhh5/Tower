@@ -304,6 +304,8 @@ public abstract class Entity_HeroBaseNewData : WorldObjectBaseData
 public abstract class Entity_HeroBaseNew : WorldObjectBase
 {
     protected Entity_HeroBaseNewData HeroBaseData => GetData<Entity_HeroBaseNewData>();
+    [SerializeField]
+    private SpriteRenderer m_QualitySprite = null;
 
     public override void OnUpdate()
     {
@@ -318,6 +320,14 @@ public abstract class Entity_HeroBaseNew : WorldObjectBase
         UpdateWeaponPos();
         UpdateWeaponUp();
         SetWeaponLocalScale();
+
+        if (GTools.TableMgr.TryGetHeroCradInfo(HeroBaseData.HeroType, out var heroInfo))
+        {
+            if (GTools.TableMgr.TryGetQualityInfo(heroInfo.QualityLevel, out var qualityInfo))
+            {
+                m_QualitySprite.color = qualityInfo.Color;
+            }
+        }
     }
 
     [SerializeField]

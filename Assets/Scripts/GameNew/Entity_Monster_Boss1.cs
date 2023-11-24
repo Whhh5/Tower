@@ -169,11 +169,11 @@ public class Entity_Monster_Boss1Data : Entity_Monster_WarriorBaseData
         var curMainAlpha = MainWeaponAlpha;
         var curChildAlpha = effectItem.GetCurItemAlpha();
         var unitChildAngle = 360.0f / WeaponChildCount;
+        GTools.AudioMgr.PlayAudio(EAudioType.Monster_Boss1_Skill4);
         await DOTween.To(() => 0.0f, slider =>
         {
             var value = Mathf.Lerp(curMainAlpha, 0.0f, slider);
             SetMainWeaponAlpha(value);
-
 
             effectItem.SetItemsAlpha(slider);
             for (int i = 0; i < WeaponChildCount; i++)
@@ -182,14 +182,13 @@ public class Entity_Monster_Boss1Data : Entity_Monster_WarriorBaseData
                 effectItem.SetItemRotation(i, angle);
             }
 
-
-
         }, 1.0f, atkTime1);
 
         var curPos = WeaponStartPos;
         var maxDis = Vector2.SqrMagnitude(curPos - endPos);
         var unitChunkSlider = maxDis / aktPath.Count / maxDis;
         var curIndex = -1;
+        GTools.AudioMgr.PlayAudio(EAudioType.Monster_Boss1_Skill5);
         await DOTween.To(() => 0.0f, slider =>
         {
             LerpMove(slider);
@@ -213,6 +212,7 @@ public class Entity_Monster_Boss1Data : Entity_Monster_WarriorBaseData
         curPos = effectItem.GetWeaponRootPosition();
         endPos = WeaponStartPos;
         maxDis = Vector2.SqrMagnitude(curPos - endPos);
+        GTools.AudioMgr.PlayAudio(EAudioType.Monster_Boss1_Skill6);
         await DOTween.To(() => 0.0f, slider =>
         {
             LerpMove(slider);

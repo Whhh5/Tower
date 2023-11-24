@@ -152,7 +152,7 @@ public abstract class Entity_MonsterBaseNewData : WorldObjectBaseData
             case EPersonStatusType.Skill:
                 if (!Skilling)
                 {
-                    if (GTools.UnityObjectIsVaild(m_CurAttackTarget) || this.TryGetRandomNearTarget(out m_CurAttackTarget))
+                    if (GTools.UnityObjectIsVaild(m_CurAttackTarget))
                     {
                         Skilling = true;
                         SkillBehavior();
@@ -173,7 +173,7 @@ public abstract class Entity_MonsterBaseNewData : WorldObjectBaseData
     }
     public override bool IsPassSkill()
     {
-        return base.IsPassSkill() && IsSkill;
+        return base.IsPassSkill() && IsSkill && GTools.UnityObjectIsVaild(m_CurAttackTarget);
     }
     public virtual void SkillBehavior()
     {

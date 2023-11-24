@@ -21,7 +21,7 @@ public abstract class WorldObjectBaseData : DependChunkData
     public virtual string ObjectName { get; }
     protected WorldObjectBaseData() : base()
     {
-        
+
     }
     public override void InitData(int f_ChunkIndex = -1)
     {
@@ -60,6 +60,7 @@ public abstract class WorldObjectBaseData : DependChunkData
     }
     public override void UnLoad()
     {
+        StopDoMovePosition();
         GTools.WorldWindowMgr.RemoveBloodHint(this);
         base.UnLoad();
     }
@@ -356,6 +357,33 @@ public abstract class WorldObjectBaseData : DependChunkData
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------
+    //                                catalogue -- Î»ÒÆÆª
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+
+    private string DoGMoveID => $"{EDGWorldID.WorldObjDoMovePosition}_{LoadKey}";
+    public async void DoMovePosition(Vector3 f_ToPosition, float f_Time)
+    {
+        StopDoMovePosition();
+        var startPos = WorldPosition;
+        var toPosition = f_ToPosition;
+        await DOTween.To(() => 0.0f, slider =>
+          {
+              var pos = Vector3.Lerp(startPos, toPosition, slider);
+              SetPosition(pos);
+
+          }, 1.0f, f_Time)
+            .SetId(DoGMoveID);
+    }
+    public void StopDoMovePosition()
+    {
+        DOTween.Kill(DoGMoveID);
+    }
+
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
     //                                catalogue -- ¶¯»­Æª
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
@@ -599,11 +627,11 @@ public abstract class WorldObjectBaseData : DependChunkData
 
     public virtual void OnMouseEnterRange()
     {
-        
+
     }
     public virtual void OnMouseExitRange()
     {
-        
+
     }
     public float AllElementAlpha = 1.0f;
     public void SetAllElementColorAlpha(float f_Alpha)
