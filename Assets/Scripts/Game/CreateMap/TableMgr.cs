@@ -572,6 +572,7 @@ public enum EAssetKey
     Audio_Monster_Boss1_Skill5,
     Audio_Monster_Boss1_Skill6,
 
+
     // 场景音效
     Audio_Scene_Background,
     Audio_Scene_SelectLevel,
@@ -1386,6 +1387,9 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Audio_Monster_Boss1_Skill1, $"{AudioParentPath}/Audio_Monster_Boss1_Skill1" },
         { EAssetKey.Audio_Monster_Boss1_Skill2, $"{AudioParentPath}/Audio_Monster_Boss1_Skill2" },
         { EAssetKey.Audio_Monster_Boss1_Skill3, $"{AudioParentPath}/Audio_Monster_Boss1_Skill3" },
+        { EAssetKey.Audio_Monster_Boss1_Skill4, $"{AudioParentPath}/Audio_Monster_Boss1_Skill4" },
+        { EAssetKey.Audio_Monster_Boss1_Skill5, $"{AudioParentPath}/Audio_Monster_Boss1_Skill5" },
+        { EAssetKey.Audio_Monster_Boss1_Skill6, $"{AudioParentPath}/Audio_Monster_Boss1_Skill6" },
         { EAssetKey.Audio_Scene_GameEntrance, $"{AudioParentPath}/Audio_Scene_GameEntrance" },
         { EAssetKey.Audio_Scene_Background, $"{AudioParentPath}/Audio_Scene_Background" },
         { EAssetKey.Audio_Scene_SelectLevel, $"{AudioParentPath}/Audio_Scene_SelectLevel" },
