@@ -348,6 +348,7 @@ public enum EAssetKey
     Entity_Enchanter1SkillItem,
     Entity_Monster_Boss1SkillItem,
     Entity_Effect_AddBlood,
+    Entity_GameBackground,
 
     Entity_Hero_Warrior1,
     Entity_Enchanter1,
