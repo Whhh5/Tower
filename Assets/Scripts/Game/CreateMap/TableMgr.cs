@@ -1048,7 +1048,7 @@ public class WeatherEventInfo
 public class MapLevelInfo
 {
     public Vector2Int MapWH;
-    public float MapChunkLength;
+    public Vector2 MapChunkSize;
     public Vector2 MapChunkInterval;
     public Dictionary<EBarrierType, List<BarrierData>> BarrierData = new();
     public Dictionary<int, LevelEnergyCrystalData> EnergyCrystalData = new();
@@ -3462,8 +3462,8 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level0,
             new()
             {
-                MapWH = new(8, 24),
-                MapChunkLength = 1,
+                MapWH = new(9, 24),
+                MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
                 BarrierData = new()
                 {
@@ -3683,8 +3683,8 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level1,
             new()
             {
-                MapWH = new(8, 24),
-                MapChunkLength = 1,
+                MapWH = new(9, 24),
+                MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
                 BarrierData = new()
                 {
@@ -3848,8 +3848,8 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level2,
             new()
             {
-                MapWH = new(8, 24),
-                MapChunkLength = 1,
+                MapWH = new(9, 24),
+                MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
                 BarrierData = new()
                 {
@@ -4043,8 +4043,8 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level3,
             new()
             {
-                MapWH = new(8, 24),
-                MapChunkLength = 1,
+                MapWH = new(9, 24),
+                MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
                 BarrierData = new()
                 {
@@ -4268,8 +4268,8 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level4,
             new()
             {
-                MapWH = new(8, 24),
-                MapChunkLength = 1,
+                MapWH = new(9, 24),
+                MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
                 BarrierData = new()
                 {
@@ -4821,6 +4821,15 @@ public class TableMgr : Singleton<TableMgr>
             {
                 Name = "",
                 AudioAssetKey = EAssetKey.Audio_Scene_ExitChunk,
+                IsLoop = false,
+            }
+        },
+        {
+            EAudioType.Scene_GameStart,
+            new()
+            {
+                Name = "",
+                AudioAssetKey = EAssetKey.Audio_Scene_GameStart,
                 IsLoop = false,
             }
         },

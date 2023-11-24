@@ -319,11 +319,6 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
             LogError($"选卡失败，{f_BuyTarget}, 获取不到卡牌信息");
             return false;
         }
-        if (!GTools.PlayerMgr.TryExpenditure(cardInfo.QualityLevelInfo.Expenditure))
-        {
-            LogError($"选卡失败，{f_BuyTarget}, 金币不足");
-            return false;
-        }
         if (!m_CurCradList.TryGetValue(f_BuyTarget, out var value))
         {
             value = new(f_BuyTarget, 0);
@@ -334,9 +329,16 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
             LogError($"选卡失败，{f_BuyTarget}, 不存在当前卡牌列表");
             return false;
         }
-        if (TryAddWarSeatList(f_BuyTarget))
+        if (!TryAddWarSeatList(f_BuyTarget))
         {
-
+            LogError($"选卡失败，{f_BuyTarget}, 备战席已满");
+            return false;
+        }
+        // 花费放到最后，防止后面条件不通过减少金币的情况
+        if (!GTools.PlayerMgr.TryExpenditure(cardInfo.QualityLevelInfo.Expenditure))
+        {
+            LogError($"选卡失败，{f_BuyTarget}, 金币不足");
+            return false;
         }
         return true;
     }

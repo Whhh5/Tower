@@ -9,7 +9,7 @@ public class CreateMapNew : Singleton<CreateMapNew>
 {
     private Vector2Int MapWH => GameDataMgr.MapWH;
     private Dictionary<EBarrierType, List<BarrierData>> BarrierData => GameDataMgr.BarrierData;
-    private float MapChunkLength => GameDataMgr.MapChunkLength;
+    private Vector2 MapChunkSize => GameDataMgr.MapChunkSize;
     private Vector2 MapChunkInterval => GameDataMgr.MapChunkInterval;
 
 
@@ -91,11 +91,11 @@ public class CreateMapNew : Singleton<CreateMapNew>
         m_ChunkDataList.Add(f_Index, chunkData);
 
         // pos math
-        var xInterval = Mathf.Pow(0.75f * MapChunkLength, 0.5f) * 2;
-        var yInterval = MapChunkLength * 2;
+        var xInterval = MapChunkSize.x;
+        var yInterval = MapChunkSize.y * 0.75f;
         var pos = new Vector3(
-            xInterval * 0.5f + f_Col * (yInterval + MapChunkInterval.x),
-            yInterval * 0.5f + f_Row * (xInterval + MapChunkInterval.y), 0);
+            xInterval * 0.5f + f_Col * (xInterval + MapChunkInterval.x),
+            yInterval * 0.5f + f_Row * (yInterval + MapChunkInterval.y), 0);
         var posOffsetX = f_Row % 2 * (xInterval + MapChunkInterval.x) * 0.5f;
         pos.x += posOffsetX;
         chunkData.SetPosition(pos + m_MapRoot.position);

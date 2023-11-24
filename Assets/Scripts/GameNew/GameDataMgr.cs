@@ -37,7 +37,7 @@ public class GameDataMgr : Singleton<GameDataMgr>
     private static MapLevelInfo m_MapConfig = null;
     public static Vector2Int MapWH => m_MapConfig.MapWH;
     public static Dictionary<EBarrierType, List<BarrierData>> BarrierData => m_MapConfig.BarrierData;
-    public static float MapChunkLength => m_MapConfig.MapChunkLength;
+    public static Vector2 MapChunkSize => m_MapConfig.MapChunkSize;
     public static Vector2 MapChunkInterval => m_MapConfig.MapChunkInterval;
     public static int WarSeatCount => m_MapConfig.WarSeatCount;
     public static int WarSeatRowCount => m_MapConfig.WarSeatRowCount;
