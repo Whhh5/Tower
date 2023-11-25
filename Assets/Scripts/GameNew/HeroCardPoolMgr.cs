@@ -119,6 +119,11 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
         await CreateWarSeatEntityAsync();
         await UniTask.Delay(1000);
 
+        if (GameDataMgr.GameNewHelpInfo != EGameHelpType.None)
+        {
+            GTools.ShowGameHelpWindow(GameDataMgr.GameNewHelpInfo);
+        }
+
         CameraManager.Ins.StartMove();
     }
     public void StartShowElement()

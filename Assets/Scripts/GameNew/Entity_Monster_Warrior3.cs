@@ -77,22 +77,28 @@ public class Entity_Monster_Warrior3Data : Entity_Monster_WarriorBaseData
         }
         var endPos = chunkData.WorldPosition;
 
+        var effectItem = new Entity_Monster_Warrior3SkillItemData();
+        effectItem.SetPosition(WeaponStartPos);
+        effectItem.SetRootPosition(WeaponStartPos);
+        effectItem.InitItemList(WeaponChildCount);
+        GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(effectItem));
+
+
         var curMainAlpha = MainWeaponAlpha;
-        var curChildAlpha = WeaponChildAlpha;
+        var curChildAlpha = effectItem.GetCurItemAlpha();
         var unitChildAngle = 360.0f / WeaponChildCount;
+        GTools.AudioMgr.PlayAudio(EAudioType.Monster_Warrior3_Skill2);
         await DOTween.To(() => 0.0f, slider =>
         {
             var value = Mathf.Lerp(curMainAlpha, 0.0f, slider);
             SetMainWeaponAlpha(value);
-            SetWeaponChildAlpha(slider);
-            var childValue = Mathf.Lerp(curChildAlpha, 1.0f, slider * 2);
 
-            foreach (var item in WeaponChildRotation)
+            effectItem.SetItemsAlpha(slider);
+            for (int i = 0; i < WeaponChildCount; i++)
             {
-                var angle = Mathf.Lerp(0, unitChildAngle * (item.Key + WeaponChildRotation.Count / 2), Mathf.Sin(slider * Mathf.PI * 0.5f));
-                SetWeaponChildRotation(item.Key, Vector3.forward * angle);
+                var angle = Mathf.Lerp(0, unitChildAngle * (i + WeaponChildCount / 2), Mathf.Sin(slider * Mathf.PI * 0.5f));
+                effectItem.SetItemRotation(i, angle);
             }
-            UpdateWeaponChildRotation();
 
         }, 1.0f, atkTime1);
 
@@ -100,6 +106,7 @@ public class Entity_Monster_Warrior3Data : Entity_Monster_WarriorBaseData
         var maxDis = Vector2.SqrMagnitude(curPos - endPos);
         var unitChunkSlider = maxDis / aktPath.Count / maxDis;
         var curIndex = -1;
+        GTools.AudioMgr.PlayAudio(EAudioType.Monster_Warrior3_Skill3);
         await DOTween.To(() => 0.0f, slider =>
         {
             LerpMove(slider);
@@ -120,14 +127,15 @@ public class Entity_Monster_Warrior3Data : Entity_Monster_WarriorBaseData
             aktPath[aktPath.Count - 1 - i] = item;
         }
         curIndex = aktPath.Count;
-        curPos = WeaponRootPos;
+        curPos = effectItem.GetWeaponRootPosition();
         endPos = WeaponStartPos;
         maxDis = Vector2.SqrMagnitude(curPos - endPos);
+        GTools.AudioMgr.PlayAudio(EAudioType.Monster_Warrior3_Skill4);
         await DOTween.To(() => 0.0f, slider =>
         {
             LerpMove(slider);
             LoopRotation();
-            SetWeaponChildAlpha(1 - slider);
+            effectItem.SetItemsAlpha(1 - slider);
 
         }, 1.0f, atkTime4);
 
@@ -139,6 +147,7 @@ public class Entity_Monster_Warrior3Data : Entity_Monster_WarriorBaseData
             LoopRotation();
 
         }, 1.0f, atkTime5);
+        ILoadPrefabAsync.UnLoad(effectItem);
 
         void LerpMove(float slider)
         {
@@ -151,16 +160,19 @@ public class Entity_Monster_Warrior3Data : Entity_Monster_WarriorBaseData
                 AtkRange(index);
                 curIndex = moveIndex;
             }
-            SetWeaponRootPosition(pos);
+            effectItem.SetRootPosition(pos);
         }
         void LoopRotation()
         {
-            foreach (var item in WeaponChildRotation)
+            for (int i = 0; i < WeaponChildCount; i++)
             {
-                var angle = item.Value.Angle.z + Time.deltaTime * 360 * 3;
-                SetWeaponChildRotation(item.Key, Vector3.forward * angle);
+                if (!effectItem.TryGetItemData(i, out var data))
+                {
+                    continue;
+                }
+                var angle = data.Angle + Time.deltaTime * 360 * 3;
+                effectItem.SetItemRotation(i, angle);
             }
-            UpdateWeaponChildRotation();
         }
 
 
@@ -176,7 +188,7 @@ public class Entity_Monster_Warrior3Data : Entity_Monster_WarriorBaseData
                 return false;
             }
             return chunkData.IsExistObj(AttackLayerMask, out var _);
-        }, true, 1))
+        }, true, 0))
         {
             return;
         }
