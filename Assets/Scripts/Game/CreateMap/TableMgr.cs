@@ -4139,12 +4139,12 @@ public class TableMgr : Singleton<TableMgr>
                                 },
                                 new()
                                 {
-                                    StartIndex = 94,
+                                    StartIndex = 68,
                                     MonsterType = EHeroCardType.Monster_Default2,
                                 },
                                 new()
                                 {
-                                    StartIndex = 68,
+                                    StartIndex = 116,
                                     MonsterType = EHeroCardType.Monster_Default3,
                                 },
                                 
