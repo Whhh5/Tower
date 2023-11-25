@@ -380,7 +380,14 @@ public abstract class WorldObjectBaseData : DependChunkData
     {
         DOTween.Kill(DoGMoveID);
     }
-
+    public Vector3 GetCurChunkPos()
+    {
+        if (!GTools.CreateMapNew.TryGetChunkData(CurrentIndex, out var chunkData))
+        {
+            return WorldPosition;
+        }
+        return chunkData.WorldPosition;
+    }
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------

@@ -36,7 +36,7 @@ public class Entity_Formation_SphereData : Entity_FormationBaseData
 
         foreach (var item in FormationData.Map)
         {
-            var pos = item.Value.WorldPosition;
+            var pos = item.Value.GetCurChunkPos();
             var effectData = new Entity_Formation_Sphere_EffectData();
             effectData.SetPosition(pos);
             effectData.SetChildTargetPosition(pos);

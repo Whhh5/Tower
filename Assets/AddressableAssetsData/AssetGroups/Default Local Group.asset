@@ -111,6 +111,10 @@ MonoBehaviour:
     m_Address: UIDrawWindow
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: 1fc20e5d52f75d240b7cd10645e90ad7
+    m_Address: UIGameHelp
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: 056db3dee3486459a9eb7c3820ef1dcd, type: 2}
   m_SchemaSet:

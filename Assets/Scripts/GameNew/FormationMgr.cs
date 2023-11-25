@@ -341,7 +341,7 @@ public class FormationMgr : Singleton<FormationMgr>, IUpdateBase
                     if (GTools.TableMgr.TryGetFormationData(item.Key, out forData))
                     {
                         forData.SetFormationData(data);
-                        forData.SetPosition(data.CentreHero.WorldPosition);
+                        forData.SetPosition(data.CentreHero.GetCurChunkPos());
                         GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(forData));
                     }
                 }

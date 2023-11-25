@@ -32,6 +32,7 @@ public enum EAssetName : int
     UIGameFinish,
     UIFormationInfo,
     UIDrawWindow,
+    UIGameHelp,
     #endregion
 
     #region UIAppPlane
