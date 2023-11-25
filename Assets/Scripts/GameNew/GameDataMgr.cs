@@ -5,20 +5,34 @@ using B1;
 
 public class GameDataMgr : Singleton<GameDataMgr>
 {
+    private class GameData
+    {
+        
+    }
     private GameData m_GameData = null;
+    Dictionary<EMapLevelType, bool> m_CacheData = new();
     public override async void Awake()
     {
         base.Awake();
 
-        if (GTools.TableMgr.TryGetAssetPath(EAssetKey.Cache_GameData, out var path))
+        //if (GTools.TableMgr.TryGetAssetPath(EAssetKey.Cache_GameData, out var path))
+        //{
+        //    m_GameData = await GTools.LoadAssetManager.LoadAsync<GameData>(path);
+        //}
+
+        for (int i = 0; i < (int)EMapLevelType.EnumCount; i++)
         {
-            m_GameData = await GTools.LoadAssetManager.LoadAsync<GameData>(path);
+            var level = (EMapLevelType)i;
+
+            var data = PlayerPrefs.GetInt(level.ToString(), 0);
+            m_CacheData.Add(level, data > 0);
         }
+        
     }
 
-    public bool TryGetLevelData(EMapLevelType f_MapLevel, out LevelData f_LevelData)
+    public bool TryGetLevelData(EMapLevelType f_MapLevel, out bool f_IsPass)
     {
-        return m_GameData.TryGetLevelData(f_MapLevel, out f_LevelData);
+        return m_CacheData.TryGetValue(f_MapLevel, out f_IsPass);
     }
     public void PassCurLevel()
     {
@@ -30,7 +44,9 @@ public class GameDataMgr : Singleton<GameDataMgr>
         {
             return;
         }
-        mapInfo.IsPass = true;
+        //mapInfo.IsPass = true;
+        m_CacheData[f_MapLevel] = true;
+        PlayerPrefs.SetInt(f_MapLevel.ToString(), 1);
     }
 
     public EMapLevelType CurMapLevel { get; private set; }

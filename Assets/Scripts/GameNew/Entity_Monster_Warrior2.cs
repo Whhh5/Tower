@@ -45,7 +45,7 @@ public class Entity_Monster_Warrior2Data : Entity_Monster_WarriorBaseData
             if (Effect == null)
             {
                 Effect = new Entity_Monster_Boss1EffectData();
-                Effect.InitData((1 + m_EffectRadius) * (GameDataMgr.MapChunkSize.x + GameDataMgr.MapChunkInterval.x) * 1.8f);
+                Effect.InitData((1 + m_EffectRadius) * (GameDataMgr.MapChunkSize.x + GameDataMgr.MapChunkInterval.x));
                 GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(Effect));
             }
 

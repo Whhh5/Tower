@@ -36,9 +36,9 @@ public class UIGameLevel : UIWindow
             {
 
             }
-            else if (GTools.GameDataMgr.TryGetLevelData(level - 1, out var leveldata))
+            else if (GTools.GameDataMgr.TryGetLevelData(level - 1, out var isPass))
             {
-                isLock = !leveldata.IsPass;
+                isLock = !isPass;
             }
             else
             {

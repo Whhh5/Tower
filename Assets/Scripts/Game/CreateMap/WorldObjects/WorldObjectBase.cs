@@ -95,7 +95,7 @@ public abstract class WorldObjectBaseData : DependChunkData
     //--
     public virtual int HarmBase => 12;
     protected float m_AddHarm = 0;
-    public int CurHarm => Mathf.Clamp(Mathf.FloorToInt((1 + m_AddHarm) * HarmBase), 1, 200);
+    public int CurHarm => Mathf.Max(Mathf.FloorToInt((1 + m_AddHarm) * HarmBase), 1);
     // 暴击率 0 - 1
     public float CriticalChance { get; private set; } = 0.2f;
     // 暴击倍数, 相当于攻击的多少倍 1 - n
