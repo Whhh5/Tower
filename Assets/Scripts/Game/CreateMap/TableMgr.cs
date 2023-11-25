@@ -130,6 +130,8 @@ public enum EDGWorldID
     WorldObjDoMovePosition,
 
     UIGameHelp,
+
+    Entity_Effect_GoldAddData,
 }
 public enum EHeroVocationalType
 {
@@ -352,6 +354,7 @@ public enum EAssetKey
     Entity_Monster_Warrior3SkillItem,
     Entity_Effect_AddBlood,
     Entity_GameBackground,
+    Entity_Effect_GoldAdd,
 
     Entity_Hero_Warrior1,
     Entity_Enchanter1,
@@ -599,6 +602,8 @@ public enum EAssetKey
     Img_Help_Common_3,
     Img_Help_Common_4,
     Img_Help_Common_5,
+    Img_Help_Common_6,
+    Img_Help_Common_7,
 
 
     Img_Help_Level0_1,
@@ -1223,7 +1228,8 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Entity_Monster_Warrior3SkillItem, "Prefabs/PerfabNew/Entity_Monster_Warrior3SkillItem" },
         { EAssetKey.Entity_Effect_AddBlood, "Prefabs/PerfabNew/Entity_Effect_AddBlood" },
         { EAssetKey.Entity_GameBackground, "Prefabs/PerfabNew/Entity_GameBackground" },
-
+        { EAssetKey.Entity_Effect_GoldAdd, "Prefabs/PerfabNew/Entity_Effect_GoldAdd" },
+        
 
 
 
@@ -1457,6 +1463,8 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Img_Help_Common_3, $"{GameHelpParentPath}/Img_Help_Common_3" },
         { EAssetKey.Img_Help_Common_4, $"{GameHelpParentPath}/Img_Help_Common_4" },
         { EAssetKey.Img_Help_Common_5, $"{GameHelpParentPath}/Img_Help_Common_5" },
+        { EAssetKey.Img_Help_Common_6, $"{GameHelpParentPath}/Img_Help_Common_6" },
+        { EAssetKey.Img_Help_Common_7, $"{GameHelpParentPath}/Img_Help_Common_7" },
         { EAssetKey.Img_Help_Level0_1, $"{GameHelpParentPath}/Img_Help_Level0_1" },
         { EAssetKey.Img_Help_Level1_1, $"{GameHelpParentPath}/Img_Help_Level1_1" },
         { EAssetKey.Img_Help_Level2_1, $"{GameHelpParentPath}/Img_Help_Level2_1" },
@@ -4000,7 +4008,7 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level2,
             new()
             {
-                GameNewHelpInfo = EGameHelpType.Level1,
+                GameNewHelpInfo = EGameHelpType.Level2,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
@@ -4160,7 +4168,7 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level3,
             new()
             {
-                GameNewHelpInfo = EGameHelpType.Level1,
+                GameNewHelpInfo = EGameHelpType.Level3,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
@@ -4920,7 +4928,6 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level6,
             new()
             {
-                GameNewHelpInfo = EGameHelpType.Level3,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
@@ -5215,7 +5222,6 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level7,
             new()
             {
-                GameNewHelpInfo = EGameHelpType.Level4,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
@@ -5953,6 +5959,8 @@ public class TableMgr : Singleton<TableMgr>
                     EAssetKey.Img_Help_Common_3,
                     EAssetKey.Img_Help_Common_4,
                     EAssetKey.Img_Help_Common_5,
+                    EAssetKey.Img_Help_Common_6,
+                    EAssetKey.Img_Help_Common_7,
                 },
             }
         },

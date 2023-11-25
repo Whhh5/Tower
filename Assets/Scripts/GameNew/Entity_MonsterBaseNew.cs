@@ -59,6 +59,10 @@ public abstract class Entity_MonsterBaseNewData : WorldObjectBaseData
     {
         base.Death();
         GTools.PlayerMgr.Increases(5);
+        var goldEffect = new Entity_Effect_GoldAddData();
+        goldEffect.SetPosition(WorldPosition);
+        GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(goldEffect));
+
         DOTween.To(() => 0.0f, slider =>
         {
             SetAllElementColorAlpha(1 - slider);
