@@ -4692,7 +4692,19 @@ public class TableMgr : Singleton<TableMgr>
                         {
                             new()
                             {
-                                Index = new(1, 1)
+                                Index = new(1, 0)
+                            },
+                            new()
+                            {
+                                Index = new(2, 1)
+                            },
+                            new()
+                            {
+                                Index = new(7, 0)
+                            },
+                            new()
+                            {
+                                Index = new(6, 1)
                             },
                         }
                     }
@@ -4746,7 +4758,7 @@ public class TableMgr : Singleton<TableMgr>
                         0,
                         new()
                         {
-                            ActiveTime = 30.0f,
+                            ActiveTime = 50.0f,
                             MonsterList = new()
                             {
                                 new()
@@ -4796,7 +4808,7 @@ public class TableMgr : Singleton<TableMgr>
                         1,
                         new()
                         {
-                            ActiveTime = 30.0f,
+                            ActiveTime = 50.0f,
                             MonsterList = new()
                             {
                                 new()
@@ -4841,7 +4853,7 @@ public class TableMgr : Singleton<TableMgr>
                         2,
                         new()
                         {
-                            ActiveTime = 30,
+                            ActiveTime = 50,
                             MonsterList = new()
                             {
                                 new()
@@ -4928,7 +4940,7 @@ public class TableMgr : Singleton<TableMgr>
                 WarSeatInterval = new(0.1f, 0.1f),
 
                 LevelUpdateExpenditure = 2,
-                LevelInitGlod = 40,
+                LevelInitGlod = 70,
             }
         },
     };
