@@ -28,15 +28,15 @@ public class CreateMapNew : Singleton<CreateMapNew>
     public void CreateMapData()
     {
         InitWaveCache();
-        // ÇåÀíÊý¾Ý
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         ClearMapAssets();
-        // ´´½¨µØÍ¼¿éÊý¾Ý
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         CreateMapAssets();
-        // ²ð¹¦ÄÜ¼üÕÏ°­ÎïÊý¾Ý
+        // ï¿½ï¿½ï¿½Ü¼ï¿½ï¿½Ï°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         CreateMapBarrizer();
-        // ´´½¨Ë®¾§Êý¾Ý
+        // ï¿½ï¿½ï¿½ï¿½Ë®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
         CreateEnergyCrystalAssets();
-        // ´´½¨¹ÖÎïÊý¾Ý
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
         CreateMonsterAssets();
 
@@ -44,17 +44,18 @@ public class CreateMapNew : Singleton<CreateMapNew>
     }
     public async void CreateMapEntityAssets()
     {
-        // ´´½¨µØÍ¼¿ì×ÊÔ´
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½Ô´
         await CreateMapChunkEntityAsync();
-        // ´´½¨ÕÏ°­Îï
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ï¿½ï¿½
         await CreateMapBarrizerEntityAsync();
-        // ´´½¨ÄÜÁ¿Ë®¾§
+        // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë®ï¿½ï¿½
         await CreateEnergyCrystalEntityAsync();
-        // ²ð¹¦ÄÜ¼ü¹ÖÎï
+        // ï¿½ï¿½ï¿½Ü¼ï¿½ï¿½ï¿½ï¿½ï¿½
         await CreateMonsterEntityAsync();
     }
     public void ClearMapAssets()
     {
+        // ClearMapBg();
         ClearMonster();
         ClearEnergyCrystal();
         ClearMapBarrizer();
@@ -64,13 +65,14 @@ public class CreateMapNew : Singleton<CreateMapNew>
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------
-    //                                catalogue -- µØÍ¼¿ì
+    //                                catalogue -- ï¿½ï¿½Í¼ï¿½ï¿½
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
     private Dictionary<int, Entity_ChunkMapData> m_ChunkDataList = new();
     private void CreateMapAssets()
     {
+        // CreateMapBg();
         for (int i = 0; i < MapWH.x; i++)
         {
             for (int j = 0; j < MapWH.y; j++)
@@ -81,6 +83,20 @@ public class CreateMapNew : Singleton<CreateMapNew>
         }
 
     }
+
+    // public static GameObject bgPrefabAsset;
+    // public static GameObject bgPrefabPrefabPrefab;
+    // private void CreateMapBg(){
+    //     string prefabPath = "Prefabs/UI/BG";
+    //     if(bgPrefabAsset == null){
+    //         bgPrefabAsset = Resources.Load<GameObject>(prefabPath);
+    //     }
+    //     bgPrefabPrefabPrefab = GameObject.Instantiate(bgPrefabAsset);
+
+    // }
+    // private void ClearMapBg(){
+    //     GameObject.Destroy(bgPrefabPrefabPrefab);
+    // }
 
 
     private void CreateMapChunk(int f_Row, int f_Col, int f_Index)
@@ -150,7 +166,7 @@ public class CreateMapNew : Singleton<CreateMapNew>
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------
-    //                                catalogue -- µØÍ¼ÕÏ°­Îï
+    //                                catalogue -- ï¿½ï¿½Í¼ï¿½Ï°ï¿½ï¿½ï¿½
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
@@ -198,7 +214,7 @@ public class CreateMapNew : Singleton<CreateMapNew>
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------
-    //                                catalogue -- ÄÜÁ¿Ë®¾§
+    //                                catalogue -- ï¿½ï¿½ï¿½ï¿½Ë®ï¿½ï¿½
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
@@ -226,12 +242,12 @@ public class CreateMapNew : Singleton<CreateMapNew>
             var quality = item.Value.Quality;
             if (!GTools.TableMgr.TryGetEnergyCrystalData(quality, out var data))
             {
-                LogError("²»´æÔÚË®¾§ÊµÀýÐÅÏ¢");
+                LogError("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë®ï¿½ï¿½Êµï¿½ï¿½ï¿½ï¿½Ï¢");
                 continue;
             }
             if (!TryGetChunkData(index, out var chunkData))
             {
-                LogError($"²»´æÔÚË®¾§¿é index = {index}");
+                LogError($"ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ë®ï¿½ï¿½ï¿½ï¿½ index = {index}");
                 continue;
             }
             data.InitData(index);
@@ -267,7 +283,7 @@ public class CreateMapNew : Singleton<CreateMapNew>
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------
-    //                                catalogue -- ¹ÖÎï
+    //                                catalogue -- ï¿½ï¿½ï¿½ï¿½
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
@@ -328,12 +344,12 @@ public class CreateMapNew : Singleton<CreateMapNew>
     {
         if (CurWaveCount == f_WaveCount)
         {
-            LogError($"ÏàÍ¬²¨Êý²»ÐèÒªÇÐ»» wave count = {CurWaveCount}");
+            LogError($"ï¿½ï¿½Í¬ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½Ð»ï¿½ wave count = {CurWaveCount}");
             return false;
         }
         if (!MonsterData.ContainsKey(f_WaveCount))
         {
-            LogError($"²»´æÔÚ¹ÖÎï²¨Êý WaveCount = {f_WaveCount}");
+            LogError($"ï¿½ï¿½ï¿½ï¿½ï¿½Ú¹ï¿½ï¿½ï²¨ï¿½ï¿½ WaveCount = {f_WaveCount}");
             return false;
         }
         if (!TryGetNextWaveTime(out var _))
@@ -344,7 +360,7 @@ public class CreateMapNew : Singleton<CreateMapNew>
         {
             GTools.AudioMgr.PlayAudio(EAudioType.Scene_NextWave);
         }
-        Log($"ÏÂÒ»²¨¹ÖÎï µ±Ç°²¨Êý = {f_WaveCount}");
+        Log($"ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ = {f_WaveCount}");
         CurWaveCount = f_WaveCount;
         LastWaveTime = Time.time;
         return true;
@@ -410,7 +426,7 @@ public class CreateMapNew : Singleton<CreateMapNew>
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------
-    //                                catalogue -- ×ª»»
+    //                                catalogue -- ×ªï¿½ï¿½
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
@@ -505,7 +521,7 @@ public class CreateMapNew : Singleton<CreateMapNew>
         }
         return f_DataList.Count > 0;
     }
-    // ¸ù¾ÝË÷Òý»ñµÃÒ»¸ñ·¶Î§ÄÚµÄ·½Ïò
+    // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Î§ï¿½ÚµÄ·ï¿½ï¿½ï¿½
     public bool GetDirectionByIndex(int f_Original, int f_TargetIndex, out EDirection f_Result)
     {
         f_Result = EDirection.None;
@@ -525,7 +541,7 @@ public class CreateMapNew : Singleton<CreateMapNew>
         }
         return false;
     }
-    // ¸ù¾Ý·½Ïò»ñÈ¡¿éË÷Òý
+    // ï¿½ï¿½ï¿½Ý·ï¿½ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
     public bool GetDirectionChunk(int f_Index, EDirection f_Dir, out int f_Result)
     {
         var curRowCol = IndexToRowCol(f_Index);
@@ -589,20 +605,20 @@ public class CreateMapNew : Singleton<CreateMapNew>
         f_Result = RowColToIndex(curRowCol);
         return m_ChunkDataList.ContainsKey(f_Result);
     }
-    // »ñµÃÖÜÎ§µÄ¿é
+    // ï¿½ï¿½ï¿½ï¿½ï¿½Î§ï¿½Ä¿ï¿½
     public bool TryGetRangeChunkByIndex(int f_Index, out List<int> f_IndexList, Func<int, bool> f_Condition = null,
         bool f_IsThis = false, int f_Extend = 1)
     {
-        // ×îÖÕ½á¹ûÁÐ±í
+        // ï¿½ï¿½ï¿½Õ½ï¿½ï¿½ï¿½Ð±ï¿½
         List<int> resultList = new();
-        // ÒÑ¾­±éÀú¹ýµÄÁÐ±í
+        // ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
         Dictionary<int, bool> already = new();
         var loopNum = 0;
 
         void Loop(Dictionary<int, bool> f_In)
         {
             if (loopNum++ >= f_Extend) return;
-            // ÏÂÒ»´ÎÑ­»·ÐèÒª±ãÀûµÄÁÐ±í
+            // ï¿½ï¿½Ò»ï¿½ï¿½Ñ­ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð±ï¿½
             Dictionary<int, bool> nextDic = new();
             foreach (var target in f_In)
             {
@@ -702,7 +718,7 @@ public class CreateMapNew : Singleton<CreateMapNew>
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------
-    //                                catalogue -- ¿é±ê¼ÇÑÕÉ«
+    //                                catalogue -- ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½É«
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
