@@ -55,7 +55,7 @@ public class CreateMapNew : Singleton<CreateMapNew>
     }
     public void ClearMapAssets()
     {
-        ClearMapBg();
+        // ClearMapBg();
         ClearMonster();
         ClearEnergyCrystal();
         ClearMapBarrizer();
@@ -72,7 +72,7 @@ public class CreateMapNew : Singleton<CreateMapNew>
     private Dictionary<int, Entity_ChunkMapData> m_ChunkDataList = new();
     private void CreateMapAssets()
     {
-        CreateMapBg();
+        // CreateMapBg();
         for (int i = 0; i < MapWH.x; i++)
         {
             for (int j = 0; j < MapWH.y; j++)
@@ -84,19 +84,19 @@ public class CreateMapNew : Singleton<CreateMapNew>
 
     }
 
-    public static GameObject bgPrefabAsset;
-    public static GameObject bgPrefabPrefabPrefab;
-    private void CreateMapBg(){
-        string prefabPath = "Prefabs/UI/BG";
-        if(bgPrefabAsset == null){
-            bgPrefabAsset = Resources.Load<GameObject>(prefabPath);
-        }
-        bgPrefabPrefabPrefab = GameObject.Instantiate(bgPrefabAsset);
+    // public static GameObject bgPrefabAsset;
+    // public static GameObject bgPrefabPrefabPrefab;
+    // private void CreateMapBg(){
+    //     string prefabPath = "Prefabs/UI/BG";
+    //     if(bgPrefabAsset == null){
+    //         bgPrefabAsset = Resources.Load<GameObject>(prefabPath);
+    //     }
+    //     bgPrefabPrefabPrefab = GameObject.Instantiate(bgPrefabAsset);
 
-    }
-    private void ClearMapBg(){
-        GameObject.Destroy(bgPrefabPrefabPrefab);
-    }
+    // }
+    // private void ClearMapBg(){
+    //     GameObject.Destroy(bgPrefabPrefabPrefab);
+    // }
 
 
     private void CreateMapChunk(int f_Row, int f_Col, int f_Index)
