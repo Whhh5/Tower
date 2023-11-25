@@ -597,10 +597,11 @@ public enum EAssetKey
     Img_Help_Common_1,
     Img_Help_Common_2,
     Img_Help_Common_3,
+    Img_Help_Common_4,
+    Img_Help_Common_5,
 
 
     Img_Help_Level0_1,
-    Img_Help_Level0_2,
 
     Img_Help_Level1_1,
 
@@ -1453,8 +1454,9 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Img_Help_Common_1, $"{GameHelpParentPath}/Img_Help_Common_1" },
         { EAssetKey.Img_Help_Common_2, $"{GameHelpParentPath}/Img_Help_Common_2" },
         { EAssetKey.Img_Help_Common_3, $"{GameHelpParentPath}/Img_Help_Common_3" },
+        { EAssetKey.Img_Help_Common_4, $"{GameHelpParentPath}/Img_Help_Common_4" },
+        { EAssetKey.Img_Help_Common_5, $"{GameHelpParentPath}/Img_Help_Common_5" },
         { EAssetKey.Img_Help_Level0_1, $"{GameHelpParentPath}/Img_Help_Level0_1" },
-        { EAssetKey.Img_Help_Level0_2, $"{GameHelpParentPath}/Img_Help_Level0_2" },
         { EAssetKey.Img_Help_Level1_1, $"{GameHelpParentPath}/Img_Help_Level1_1" },
         { EAssetKey.Img_Help_Level2_1, $"{GameHelpParentPath}/Img_Help_Level2_1" },
         { EAssetKey.Img_Help_Level3_1, $"{GameHelpParentPath}/Img_Help_Level3_1" },
@@ -5740,6 +5742,8 @@ public class TableMgr : Singleton<TableMgr>
                     EAssetKey.Img_Help_Common_1,
                     EAssetKey.Img_Help_Common_2,
                     EAssetKey.Img_Help_Common_3,
+                    EAssetKey.Img_Help_Common_4,
+                    EAssetKey.Img_Help_Common_5,
                 },
             }
         },
@@ -5750,7 +5754,6 @@ public class TableMgr : Singleton<TableMgr>
                 InfoAssetKeyList = new()
                 {
                     EAssetKey.Img_Help_Level0_1,
-                    EAssetKey.Img_Help_Level0_2,
                 },
             }
         },
