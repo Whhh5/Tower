@@ -48,6 +48,7 @@ public class GameDataMgr : Singleton<GameDataMgr>
     public static int LevelInitGlod => m_MapConfig.LevelInitGlod; 
     public static int CardSkillCount => m_MapConfig.CardSkillCount; 
     public static float CardSkillProbability => m_MapConfig.CardSkillProbability;
+    public static EGameHelpType GameNewHelpInfo => m_MapConfig.GameNewHelpInfo;
     public static Dictionary<int, LevelEnergyCrystalData> EnergyCrystalData => m_MapConfig.EnergyCrystalData;
     public static Dictionary<int, LevelWaveInfo> MonsterData => m_MapConfig.MonsterData;
     private void UpdateMapCfg(MapLevelInfo f_MapCfg)

@@ -246,6 +246,9 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
     [SerializeField, Header("阵型界面"), Space(30)]
     private Button m_FormationBtn = null;
 
+    [SerializeField, Header("帮助界面"), Space(30)]
+    private Button m_GameHelpBtn = null;
+
     private class SettingData
     {
         public string name;
@@ -297,6 +300,13 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
             //UpdateCardList(GameDataMgr.LevelUpdateExpenditure);
 
         });
+
+        m_GameHelpBtn.onClick.RemoveAllListeners();
+        m_GameHelpBtn.onClick.AddListener(() =>
+        {
+            GTools.ShowGameHelpWindow(EGameHelpType.Common);
+        });
+
         m_CurTime = 0;
 
         // 初始化列表

@@ -109,12 +109,20 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
         await GTools.UIWindowManager.LoadWindowAsync<UIGameMonster>(EAssetName.UIGameMonster);
         await GTools.UIWindowManager.LoadWindowAsync<UIGameFinish>(EAssetName.UIGameFinish);
         await GTools.UIWindowManager.LoadWindowAsync<UIDrawWindow>(EAssetName.UIDrawWindow);
-
+        // 创建背景
+        var bgData = new Entity_GameBackgroundData();
+        bgData.SetPosition(Vector3.zero);
+        await ILoadPrefabAsync.LoadAsync(bgData);
 
 
         // 开始实例化
         await CreateWarSeatEntityAsync();
         await UniTask.Delay(1000);
+
+        if (GameDataMgr.GameNewHelpInfo != EGameHelpType.None)
+        {
+            GTools.ShowGameHelpWindow(GameDataMgr.GameNewHelpInfo);
+        }
 
         CameraManager.Ins.StartMove();
     }
@@ -164,7 +172,13 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
         //     heroData.SetPosition(pos);
 
         // }, 1.0f, 1.0f);
-        heroData.DoMovePosition(toPos, 0.5f);
+        //heroData.DoMovePosition(toPos, 0.5f);
+
+        heroData.SetPosition(toPos);
+        var effect = new Entity_Effect_HeroToWarSeatData();
+        effect.SetPosition(toPos);
+        GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(effect));
+
         return true;
     }
     private void RemoveWarSearList(Entity_ChunkWarSeatData f_WarSeatData)
@@ -721,7 +735,7 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
         if (f_ChunkData.TryGetHeroData(out var curHeroData))
         {
             data.SetCurHeroCard(curHeroData);
-            //curHeroData.SetPosition(data.WorldPosition);
+            curHeroData.SetPosition(data.WorldPosition);
             curHeroData.DoMovePosition(data.WorldPosition, 0.2f);
         }
         else

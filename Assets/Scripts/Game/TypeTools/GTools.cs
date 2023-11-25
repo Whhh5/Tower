@@ -257,6 +257,15 @@ public static class GTools
         return curPos;
     }
 
+    public static async void ShowGameHelpWindow(EGameHelpType f_GameHelpType)
+    {
+        if (!GTools.TableMgr.TryGetGameHelpInfo(f_GameHelpType, out var helpInfo))
+        {
+            return;
+        }
+        var window = await GTools.UIWindowManager.LoadWindowAsync<UIGameHelp>(EAssetName.UIGameHelp);
+        window.InitHelpInfo(helpInfo);
+    }
 }
 
 public static class ExtendFunction

@@ -128,6 +128,8 @@ public enum EDGWorldID
     AttackEffect1Data,
 
     WorldObjDoMovePosition,
+
+    UIGameHelp,
 }
 public enum EHeroVocationalType
 {
@@ -347,7 +349,9 @@ public enum EAssetKey
     Entity_Formation_Sphere_Effect,
     Entity_Enchanter1SkillItem,
     Entity_Monster_Boss1SkillItem,
+    Entity_Monster_Warrior3SkillItem,
     Entity_Effect_AddBlood,
+    Entity_GameBackground,
 
     Entity_Hero_Warrior1,
     Entity_Enchanter1,
@@ -389,6 +393,7 @@ public enum EAssetKey
     Entity_Gain_AddAttackHarm1,
     Entity_Gain_AddDeffense1,
     Entity_Gain_AddAttackRange1,
+    Entity_Effect_HeroToWarSeat,
 
     // 防御塔
     Entity_Tower_Light1,
@@ -587,6 +592,23 @@ public enum EAssetKey
     Audio_Scene_EnterChunk,
     Audio_Scene_ExitChunk,
     Audio_Scene_GameStart,
+
+    // 游戏提示
+    Img_Help_Common_1,
+    Img_Help_Common_2,
+    Img_Help_Common_3,
+
+
+    Img_Help_Level0_1,
+    Img_Help_Level0_2,
+
+    Img_Help_Level1_1,
+
+    Img_Help_Level2_1,
+
+    Img_Help_Level3_1,
+
+
 }
 public enum EAttackEffectType
 {
@@ -642,6 +664,17 @@ public enum EPersonSkillType
     Stage3_Default3_Loss1_Height1,
 
 }
+
+public enum EGameHelpType
+{
+    None,
+    Common,
+    Level0,
+    Level1,
+    Level2,
+    Level3,
+    Level4,
+}
 public enum EMapLevelType
 {
     Level0,
@@ -650,6 +683,11 @@ public enum EMapLevelType
     Level3,
     Level4,
     EnumCount,
+}
+public class GameHelpInfo
+{
+    public int Count => InfoAssetKeyList.Count;
+    public List<EAssetKey> InfoAssetKeyList;
 }
 public class SkillLink
 {
@@ -1059,6 +1097,7 @@ public class MapLevelInfo
     public int HeroPoolCount;
     public float WarSeatLength;
     public Vector2 WarSeatInterval;
+    public EGameHelpType GameNewHelpInfo;
 
     [Space(10), Header("刷新列表花费")]
     public int LevelUpdateExpenditure;
@@ -1113,6 +1152,7 @@ public class TableMgr : Singleton<TableMgr>
     static string MapConfigParentPath = "Config/Map";
     static string FormationConfigParentPath = "Config/Formation";
     static string AudioParentPath = "Audio";
+    static string GameHelpParentPath = "Icons/GameHelpInfo";
     private static readonly Dictionary<EAssetKey, string> m_DicIDToPath = new()
     {
         { EAssetKey.Alp1, "Prefabs/WorldObject/Entity_Alt1" },
@@ -1176,10 +1216,9 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Entity_Formation_Sphere_Effect, "Prefabs/PerfabNew/Entity_Formation_Sphere_Effect" },
         { EAssetKey.Entity_Enchanter1SkillItem, "Prefabs/PerfabNew/Entity_Enchanter1SkillItem" },
         { EAssetKey.Entity_Monster_Boss1SkillItem, "Prefabs/PerfabNew/Entity_Monster_Boss1SkillItem" },
+        { EAssetKey.Entity_Monster_Warrior3SkillItem, "Prefabs/PerfabNew/Entity_Monster_Warrior3SkillItem" },
         { EAssetKey.Entity_Effect_AddBlood, "Prefabs/PerfabNew/Entity_Effect_AddBlood" },
-
-
-
+        { EAssetKey.Entity_GameBackground, "Prefabs/PerfabNew/Entity_GameBackground" },
 
 
 
@@ -1197,6 +1236,7 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Entity_Monster_Boss1Effect, "Prefabs/PerfabNew/Entity_Monster_Boss1Effect" },
         { EAssetKey.Entity_AttackEffect1, "Prefabs/PerfabNew/Entity_AttackEffect1" },
         { EAssetKey.Entity_Background, "Prefabs/PerfabNew/Entity_Background" },
+        { EAssetKey.Entity_Effect_HeroToWarSeat, "Prefabs/PerfabNew/Entity_Effect_HeroToWarSeat" },
 
 
 
@@ -1382,6 +1422,9 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Audio_Monster_Warrior3_Attack1, $"{AudioParentPath}/Audio_Monster_Warrior3_Attack1" },
         { EAssetKey.Audio_Monster_Warrior3_Attack2, $"{AudioParentPath}/Audio_Monster_Warrior3_Attack2" },
         { EAssetKey.Audio_Monster_Warrior3_Skill1, $"{AudioParentPath}/Audio_Monster_Warrior3_Skill1" },
+        { EAssetKey.Audio_Monster_Warrior3_Skill2, $"{AudioParentPath}/Audio_Monster_Warrior3_Skill2" },
+        { EAssetKey.Audio_Monster_Warrior3_Skill3, $"{AudioParentPath}/Audio_Monster_Warrior3_Skill3" },
+        { EAssetKey.Audio_Monster_Warrior3_Skill4, $"{AudioParentPath}/Audio_Monster_Warrior3_Skill4" },
         { EAssetKey.Audio_Monster_Boss1_Attack1, $"{AudioParentPath}/Audio_Monster_Boss1_Attack" },
         { EAssetKey.Audio_Monster_Boss1_Attack2, $"{AudioParentPath}/Audio_Monster_Boss1_Attack" },
         { EAssetKey.Audio_Monster_Boss1_Skill1, $"{AudioParentPath}/Audio_Monster_Boss1_Skill1" },
@@ -1404,6 +1447,16 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Audio_Scene_EnterChunk, $"{AudioParentPath}/Audio_Scene_EnterChunk" },
         { EAssetKey.Audio_Scene_ExitChunk, $"{AudioParentPath}/Audio_Scene_ExitChunk" },
         { EAssetKey.Audio_Scene_GameStart, $"{AudioParentPath}/Audio_Scene_GameStart" },
+
+        { EAssetKey.Img_Help_Common_1, $"{GameHelpParentPath}/Img_Help_Common_1" },
+        { EAssetKey.Img_Help_Common_2, $"{GameHelpParentPath}/Img_Help_Common_2" },
+        { EAssetKey.Img_Help_Common_3, $"{GameHelpParentPath}/Img_Help_Common_3" },
+        { EAssetKey.Img_Help_Level0_1, $"{GameHelpParentPath}/Img_Help_Level0_1" },
+        { EAssetKey.Img_Help_Level0_2, $"{GameHelpParentPath}/Img_Help_Level0_2" },
+        { EAssetKey.Img_Help_Level1_1, $"{GameHelpParentPath}/Img_Help_Level1_1" },
+        { EAssetKey.Img_Help_Level2_1, $"{GameHelpParentPath}/Img_Help_Level2_1" },
+        { EAssetKey.Img_Help_Level3_1, $"{GameHelpParentPath}/Img_Help_Level3_1" },
+
     };
     public bool TryGetAssetPath(EAssetKey f_Key, out string f_Result)
     {
@@ -3483,6 +3536,7 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level0,
             new()
             {
+                GameNewHelpInfo = EGameHelpType.Level0,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
@@ -3777,6 +3831,7 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level1,
             new()
             {
+                GameNewHelpInfo = EGameHelpType.Level1,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
@@ -3984,6 +4039,7 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level2,
             new()
             {
+                GameNewHelpInfo = EGameHelpType.Level2,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
@@ -4327,6 +4383,7 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level3,
             new()
             {
+                GameNewHelpInfo = EGameHelpType.Level3,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
@@ -4552,6 +4609,7 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level4,
             new()
             {
+                GameNewHelpInfo = EGameHelpType.Level4,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
@@ -4645,13 +4703,13 @@ public class TableMgr : Singleton<TableMgr>
                         0,
                         new()
                         {
-                            ActiveTime = 5,
+                            ActiveTime = 10,
                             MonsterList = new()
                             {
                                 new()
                                 {
                                     StartIndex = 108,
-                                    MonsterType = EHeroCardType.Monster_Boss1,
+                                    MonsterType = EHeroCardType.Monster_Default3,
                                 },
                             }
                         }
@@ -5122,5 +5180,72 @@ public class TableMgr : Singleton<TableMgr>
     public bool TryGetAudioInfo(EAudioType f_AudioType, out AudioInfo f_AudioInfo)
     {
         return m_AudioInfoList.TryGetValue(f_AudioType, out f_AudioInfo);
+    }
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
+    //                                catalogue -- 游戏帮助提示 篇
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    private Dictionary<EGameHelpType, GameHelpInfo> m_GameHelpInfos = new()
+    {
+        {
+            EGameHelpType.Common,
+            new()
+            {
+                InfoAssetKeyList = new()
+                {
+                    EAssetKey.Img_Help_Common_1,
+                    EAssetKey.Img_Help_Common_2,
+                    EAssetKey.Img_Help_Common_3,
+                },
+            }
+        },
+        {
+            EGameHelpType.Level0,
+            new()
+            {
+                InfoAssetKeyList = new()
+                {
+                    EAssetKey.Img_Help_Level0_1,
+                    EAssetKey.Img_Help_Level0_2,
+                },
+            }
+        },
+        {
+            EGameHelpType.Level1,
+            new()
+            {
+                InfoAssetKeyList = new()
+                {
+                    EAssetKey.Img_Help_Level1_1,
+                },
+            }
+        },
+        {
+            EGameHelpType.Level2,
+            new()
+            {
+                InfoAssetKeyList = new()
+                {
+                    EAssetKey.Img_Help_Level2_1,
+                },
+            }
+        },
+        {
+            EGameHelpType.Level3,
+            new()
+            {
+                InfoAssetKeyList = new()
+                {
+                    EAssetKey.Img_Help_Level3_1,
+                },
+            }
+        },
+    };
+    public bool TryGetGameHelpInfo(EGameHelpType f_GameHelpType, out GameHelpInfo f_GameHelpInfo)
+    {
+        return m_GameHelpInfos.TryGetValue(f_GameHelpType, out f_GameHelpInfo);
     }
 }

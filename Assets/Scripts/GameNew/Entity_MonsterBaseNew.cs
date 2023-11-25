@@ -179,7 +179,10 @@ public abstract class Entity_MonsterBaseNewData : WorldObjectBaseData
     {
         Skilling = false;
         ResetMagic();
-        SetPersonStatus(EPersonStatusType.Idle);
+        if (GTools.WorldObjectIsVaild(this))
+        {
+            SetPersonStatus(EPersonStatusType.Idle);
+        }
     }
     private bool IsAttack()
     {
