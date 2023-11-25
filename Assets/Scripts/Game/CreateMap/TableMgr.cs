@@ -130,6 +130,8 @@ public enum EDGWorldID
     WorldObjDoMovePosition,
 
     UIGameHelp,
+
+    Entity_Effect_GoldAddData,
 }
 public enum EHeroVocationalType
 {
@@ -352,6 +354,7 @@ public enum EAssetKey
     Entity_Monster_Warrior3SkillItem,
     Entity_Effect_AddBlood,
     Entity_GameBackground,
+    Entity_Effect_GoldAdd,
 
     Entity_Hero_Warrior1,
     Entity_Enchanter1,
@@ -1220,7 +1223,8 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Entity_Monster_Warrior3SkillItem, "Prefabs/PerfabNew/Entity_Monster_Warrior3SkillItem" },
         { EAssetKey.Entity_Effect_AddBlood, "Prefabs/PerfabNew/Entity_Effect_AddBlood" },
         { EAssetKey.Entity_GameBackground, "Prefabs/PerfabNew/Entity_GameBackground" },
-
+        { EAssetKey.Entity_Effect_GoldAdd, "Prefabs/PerfabNew/Entity_Effect_GoldAdd" },
+        
 
 
 

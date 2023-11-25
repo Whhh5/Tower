@@ -10,11 +10,19 @@ public class UIGameLevel : UIWindow
 {
     [SerializeField]
     private Transform m_LevelListItem = null;
+    [SerializeField]
+    private Button m_ReturnBtn = null;
     private Dictionary<EMapLevelType, Transform> m_LevelList = new();
     public override async UniTask AwakeAsync()
     {
         GTools.AudioMgr.PlayBackground(EAudioType.Scene_SelectLevel);
         m_LevelListItem.gameObject.SetActive(false);
+        m_ReturnBtn.onClick.RemoveAllListeners();
+        m_ReturnBtn.onClick.AddListener(async () =>
+        {
+            await GTools.UIWindowManager.UnloadWindowAsync(this);
+            await GTools.UIWindowManager.LoadWindowAsync<UIGameStart>(EAssetName.UIGameStart);
+        });
 
         for (int i = 0; i < (int)EMapLevelType.EnumCount; i++)
         {
