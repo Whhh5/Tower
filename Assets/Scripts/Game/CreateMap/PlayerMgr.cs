@@ -117,7 +117,7 @@ public class PlayerMgr : Singleton<PlayerMgr>, IUpdateBase
     public int UpdateLevelID { get; set; }
     public EUpdateLevel UpdateLevel => EUpdateLevel.Level1;
     private float m_LastIncreasesTime = 0;
-    private float m_IncreasesInterval = 1;
+    private float m_IncreasesInterval = 3;
     public void OnUpdate()
     {
         if (Time.time - m_LastIncreasesTime > m_IncreasesInterval)

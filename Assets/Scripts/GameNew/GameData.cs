@@ -1,7 +1,6 @@
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
 public class LevelData
@@ -34,7 +33,9 @@ public class GameData : SerializedScriptableObject
             MapLevelData.Add(item, new());
         }
 
-        AssetDatabase.SaveAssetIfDirty(this);
+#if UNITY_EDITOR
+        UnityEditor.AssetDatabase.SaveAssetIfDirty(this);
+#endif
     }
     public void SaveGameLevelData_LevelPass(EMapLevelType f_MapLevel, bool f_ToStaus = true)
     {

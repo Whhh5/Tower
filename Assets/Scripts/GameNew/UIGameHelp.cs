@@ -110,17 +110,18 @@ public class UIGameHelp : UIWindow
     private void ApplyCurIndex(bool f_IsForce = false)
     {
         DOTween.Kill(DGMoveImgID);
-        var moveTime = f_IsForce ? 0 : 1.0f;
+        var moveTime = f_IsForce ? 0 : 0.3f;
         var startPos = m_HelpInfoRoot.anchoredPosition.x;
-        var toPos = (ItemRootHor.spacing + m_HelpInfoItem.sizeDelta.x) * m_CurIndex;
-        //DOTween.To(() => 0.0f, slider =>
-        //  {
-        //      var pos = Mathf.Lerp(startPos, toPos, slider);
-        //      m_HelpInfoRoot.anchoredPosition = Vector2.right * pos;
+        var toPos = -(ItemRootHor.spacing + m_HelpInfoItem.sizeDelta.x) * m_CurIndex;
+        DOTween.To(() => 0.0f, slider =>
+          {
+              var pos = Mathf.Lerp(startPos, toPos, slider);
+              m_HelpInfoRoot.anchoredPosition = Vector2.right * pos;
 
-        //  }, 1.0f, moveTime)
-        //    .SetId(DGMoveImgID);
-        m_HelpInfoRoot.anchoredPosition = -Vector2.right * toPos;
+          }, 1.0f, moveTime)
+            .SetId(DGMoveImgID)
+            .SetUpdate(true);
+        //m_HelpInfoRoot.anchoredPosition = -Vector2.right * toPos;
     }
     private async UniTask<RectTransform> CreateGameInfoItem(EAssetKey f_ImgAssetPath)
     {

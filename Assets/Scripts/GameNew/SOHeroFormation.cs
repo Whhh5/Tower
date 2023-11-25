@@ -61,11 +61,13 @@ public class SOHeroFormation : SerializedScriptableObject
     [Button]
     public void OpenWindow()
     {
+#if UNITY_EDITOR
         var window = UnityEditor.EditorWindow.GetWindow<SOHeroFormationWindow2>();
         window.InitData(this);
+#endif
     }
 }
-
+#if UNITY_EDITOR
 public class SOHeroFormationWindow2 : UnityEditor.EditorWindow
 {
     public SOHeroFormation TargetData = null;
@@ -168,3 +170,4 @@ public class SOHeroFormationWindow2 : UnityEditor.EditorWindow
         }
     }
 }
+#endif
