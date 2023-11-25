@@ -4279,13 +4279,18 @@ public class TableMgr : Singleton<TableMgr>
                             {
                                 new()
                                 {
-                                    StartIndex = 110,
+                                    StartIndex = 156,
                                     MonsterType = EHeroCardType.Monster_Default1,
                                 },
                                 new()
                                 {
                                     StartIndex = 108,
                                     MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 60,
+                                    MonsterType = EHeroCardType.Monster_Default3,
                                 }
                             }
                         }
@@ -4299,63 +4304,15 @@ public class TableMgr : Singleton<TableMgr>
                             {
                                 new()
                                 {
-                                    StartIndex = 190,
-                                    MonsterType = EHeroCardType.Monster_Default1,
-                                },
-                                new()
-                                {
-                                    StartIndex = 142,
-                                    MonsterType = EHeroCardType.Monster_Default1,
-                                },
-                                new()
-                                {
-                                    StartIndex = 94,
-                                    MonsterType = EHeroCardType.Monster_Default1,
-                                },
-                                new()
-                                {
-                                    StartIndex = 46,
-                                    MonsterType = EHeroCardType.Monster_Default1,
-                                },
-                                new()
-                                {
-                                    StartIndex = 188,
-                                    MonsterType = EHeroCardType.Monster_Default2,
-                                },
-                                new()
-                                {
-                                    StartIndex = 140,
-                                    MonsterType = EHeroCardType.Monster_Default2,
-                                },
-                                new()
-                                {
-                                    StartIndex = 92,
-                                    MonsterType = EHeroCardType.Monster_Default2,
-                                },
-                                new()
-                                {
-                                    StartIndex = 44,
-                                    MonsterType = EHeroCardType.Monster_Default2,
-                                },
-                                new()
-                                {
-                                    StartIndex = 186,
-                                    MonsterType = EHeroCardType.Monster_Default1,
-                                },
-                                new()
-                                {
-                                    StartIndex = 138,
-                                    MonsterType = EHeroCardType.Monster_Default1,
-                                },
-                                new()
-                                {
-                                    StartIndex = 90,
-                                    MonsterType = EHeroCardType.Monster_Default1,
-                                },
-                                new()
-                                {
-                                    StartIndex = 42,
-                                    MonsterType = EHeroCardType.Monster_Default1,
+                                    StartIndex = 116,
+                                    MonsterType = EHeroCardType.Monster_Boss1,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = -0.3f,
+                                    },
                                 },
                             }
                         }
@@ -4939,6 +4896,272 @@ public class TableMgr : Singleton<TableMgr>
                         {
                             new()
                             {
+                                Index = new(1, 0)
+                            },
+                            new()
+                            {
+                                Index = new(2, 1)
+                            },
+                            new()
+                            {
+                                Index = new(7, 0)
+                            },
+                            new()
+                            {
+                                Index = new(6, 1)
+                            },
+                        }
+                    }
+                },
+                EnergyCrystalData = new()
+                {
+                    {
+                        0,
+                        new()
+                        {
+                            StartIndex = 144,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        1,
+                        new()
+                        {
+                            StartIndex = 120,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        2,
+                        new()
+                        {
+                            StartIndex = 96,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        3,
+                        new()
+                        {
+                            StartIndex = 72,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        4,
+                        new()
+                        {
+                            StartIndex = 48,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                },
+                MonsterData = new()
+                {
+                    {
+                        0,
+                        new()
+                        {
+                            ActiveTime = 50.0f,
+                            MonsterList = new()
+                            {
+                                new()
+                                {
+                                    StartIndex = 179,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 131,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 83,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 35,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 180,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 132,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 84,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 36,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                            }
+                        }
+                    },
+                    {
+                        1,
+                        new()
+                        {
+                            ActiveTime = 50.0f,
+                            MonsterList = new()
+                            {
+                                new()
+                                {
+                                    StartIndex = 112,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 136,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 161,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 185,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 88,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 65,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 41,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                            }
+                        }
+                    },
+                    {
+                        2,
+                        new()
+                        {
+                            ActiveTime = 50,
+                            MonsterList = new()
+                            {
+                                new()
+                                {
+                                    StartIndex = 114,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 138,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 163,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 164,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 165,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 141,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 118,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 93,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 69,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 68,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 67,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 90,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 116,
+                                    MonsterType = EHeroCardType.Monster_Boss1,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0.2f,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                            }
+                        }
+                    },
+                },
+
+                WarSeatCount = 12,
+                WarSeatRowCount = 6,
+                HeroPoolCount = 10,
+                WarSeatLength = 1.8f,
+                WarSeatInterval = new(0.1f, 0.1f),
+
+                LevelUpdateExpenditure = 2,
+                LevelInitGlod = 70,
+            }
+        },
+        {
+            EMapLevelType.Level7,
+            new()
+            {
+                MapWH = new(9, 24),
+                MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
+                MapChunkInterval = new(0, 0),
+                BarrierData = new()
+                {
+                    {
+                        EBarrierType.Massif,
+                        new()
+                        {
+                            new()
+                            {
                                 Index = new(1, 1)
                             },
                             new()
@@ -5216,272 +5439,6 @@ public class TableMgr : Singleton<TableMgr>
 
                 LevelUpdateExpenditure = 2,
                 LevelInitGlod = 30,
-            }
-        },
-        {
-            EMapLevelType.Level7,
-            new()
-            {
-                MapWH = new(9, 24),
-                MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
-                MapChunkInterval = new(0, 0),
-                BarrierData = new()
-                {
-                    {
-                        EBarrierType.Massif,
-                        new()
-                        {
-                            new()
-                            {
-                                Index = new(1, 0)
-                            },
-                            new()
-                            {
-                                Index = new(2, 1)
-                            },
-                            new()
-                            {
-                                Index = new(7, 0)
-                            },
-                            new()
-                            {
-                                Index = new(6, 1)
-                            },
-                        }
-                    }
-                },
-                EnergyCrystalData = new()
-                {
-                    {
-                        0,
-                        new()
-                        {
-                            StartIndex = 144,
-                            Quality = EQualityType.Quality1,
-                        }
-                    },
-                    {
-                        1,
-                        new()
-                        {
-                            StartIndex = 120,
-                            Quality = EQualityType.Quality1,
-                        }
-                    },
-                    {
-                        2,
-                        new()
-                        {
-                            StartIndex = 96,
-                            Quality = EQualityType.Quality1,
-                        }
-                    },
-                    {
-                        3,
-                        new()
-                        {
-                            StartIndex = 72,
-                            Quality = EQualityType.Quality1,
-                        }
-                    },
-                    {
-                        4,
-                        new()
-                        {
-                            StartIndex = 48,
-                            Quality = EQualityType.Quality1,
-                        }
-                    },
-                },
-                MonsterData = new()
-                {
-                    {
-                        0,
-                        new()
-                        {
-                            ActiveTime = 50.0f,
-                            MonsterList = new()
-                            {
-                                new()
-                                {
-                                    StartIndex = 179,
-                                    MonsterType = EHeroCardType.Monster_Default1,
-                                },
-                                new()
-                                {
-                                    StartIndex = 131,
-                                    MonsterType = EHeroCardType.Monster_Default1,
-                                },
-                                new()
-                                {
-                                    StartIndex = 83,
-                                    MonsterType = EHeroCardType.Monster_Default1,
-                                },
-                                new()
-                                {
-                                    StartIndex = 35,
-                                    MonsterType = EHeroCardType.Monster_Default1,
-                                },
-                                new()
-                                {
-                                    StartIndex = 180,
-                                    MonsterType = EHeroCardType.Monster_Default3,
-                                },
-                                new()
-                                {
-                                    StartIndex = 132,
-                                    MonsterType = EHeroCardType.Monster_Default3,
-                                },
-                                new()
-                                {
-                                    StartIndex = 84,
-                                    MonsterType = EHeroCardType.Monster_Default3,
-                                },
-                                new()
-                                {
-                                    StartIndex = 36,
-                                    MonsterType = EHeroCardType.Monster_Default3,
-                                },
-                            }
-                        }
-                    },
-                    {
-                        1,
-                        new()
-                        {
-                            ActiveTime = 50.0f,
-                            MonsterList = new()
-                            {
-                                new()
-                                {
-                                    StartIndex = 112,
-                                    MonsterType = EHeroCardType.Monster_Default2,
-                                },
-                                new()
-                                {
-                                    StartIndex = 136,
-                                    MonsterType = EHeroCardType.Monster_Default2,
-                                },
-                                new()
-                                {
-                                    StartIndex = 161,
-                                    MonsterType = EHeroCardType.Monster_Default2,
-                                },
-                                new()
-                                {
-                                    StartIndex = 185,
-                                    MonsterType = EHeroCardType.Monster_Default2,
-                                },
-                                new()
-                                {
-                                    StartIndex = 88,
-                                    MonsterType = EHeroCardType.Monster_Default2,
-                                },
-                                new()
-                                {
-                                    StartIndex = 65,
-                                    MonsterType = EHeroCardType.Monster_Default2,
-                                },
-                                new()
-                                {
-                                    StartIndex = 41,
-                                    MonsterType = EHeroCardType.Monster_Default2,
-                                },
-                            }
-                        }
-                    },
-                    {
-                        2,
-                        new()
-                        {
-                            ActiveTime = 50,
-                            MonsterList = new()
-                            {
-                                new()
-                                {
-                                    StartIndex = 114,
-                                    MonsterType = EHeroCardType.Monster_Default3,
-                                },
-                                new()
-                                {
-                                    StartIndex = 138,
-                                    MonsterType = EHeroCardType.Monster_Default3,
-                                },
-                                new()
-                                {
-                                    StartIndex = 163,
-                                    MonsterType = EHeroCardType.Monster_Default3,
-                                },
-                                new()
-                                {
-                                    StartIndex = 164,
-                                    MonsterType = EHeroCardType.Monster_Default3,
-                                },
-                                new()
-                                {
-                                    StartIndex = 165,
-                                    MonsterType = EHeroCardType.Monster_Default3,
-                                },
-                                new()
-                                {
-                                    StartIndex = 141,
-                                    MonsterType = EHeroCardType.Monster_Default3,
-                                },
-                                new()
-                                {
-                                    StartIndex = 118,
-                                    MonsterType = EHeroCardType.Monster_Default3,
-                                },
-                                new()
-                                {
-                                    StartIndex = 93,
-                                    MonsterType = EHeroCardType.Monster_Default3,
-                                },
-                                new()
-                                {
-                                    StartIndex = 69,
-                                    MonsterType = EHeroCardType.Monster_Default3,
-                                },
-                                new()
-                                {
-                                    StartIndex = 68,
-                                    MonsterType = EHeroCardType.Monster_Default3,
-                                },
-                                new()
-                                {
-                                    StartIndex = 67,
-                                    MonsterType = EHeroCardType.Monster_Default3,
-                                },
-                                new()
-                                {
-                                    StartIndex = 90,
-                                    MonsterType = EHeroCardType.Monster_Default3,
-                                },
-                                new()
-                                {
-                                    StartIndex = 116,
-                                    MonsterType = EHeroCardType.Monster_Boss1,
-                                    AttributeInfoOffset = new()
-                                    {
-                                        BloodRatio = 0,
-                                        HarmRatio = 0.2f,
-                                        AtkSpeedRatio = 0,
-                                        DefenceRatio = 0,
-                                    },
-                                },
-                            }
-                        }
-                    },
-                },
-
-                WarSeatCount = 12,
-                WarSeatRowCount = 6,
-                HeroPoolCount = 10,
-                WarSeatLength = 1.8f,
-                WarSeatInterval = new(0.1f, 0.1f),
-
-                LevelUpdateExpenditure = 2,
-                LevelInitGlod = 70,
             }
         },
     };
