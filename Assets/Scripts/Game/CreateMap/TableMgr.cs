@@ -4007,7 +4007,7 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level2,
             new()
             {
-                GameNewHelpInfo = EGameHelpType.Level1,
+                GameNewHelpInfo = EGameHelpType.Level2,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
@@ -4167,7 +4167,7 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level3,
             new()
             {
-                GameNewHelpInfo = EGameHelpType.Level1,
+                GameNewHelpInfo = EGameHelpType.Level3,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
@@ -4375,7 +4375,6 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level4,
             new()
             {
-                GameNewHelpInfo = EGameHelpType.Level2,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
@@ -4719,7 +4718,6 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level5,
             new()
             {
-                GameNewHelpInfo = EGameHelpType.Level3,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
@@ -5014,7 +5012,6 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level6,
             new()
             {
-                GameNewHelpInfo = EGameHelpType.Level4,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
