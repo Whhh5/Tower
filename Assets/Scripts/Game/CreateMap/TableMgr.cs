@@ -685,6 +685,7 @@ public enum EMapLevelType
     Level4,
     Level5,
     Level6,
+    Level7,
     EnumCount,
 }
 public class GameHelpInfo
@@ -4367,6 +4368,214 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level4,
             new()
             {
+                GameNewHelpInfo = EGameHelpType.Level1,
+                MapWH = new(9, 24),
+                MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
+                MapChunkInterval = new(0, 0),
+                BarrierData = new()
+                {
+                    {
+                        EBarrierType.Massif,
+                        new()
+                        {
+                            new()
+                            {
+                                Index = new(0, 8)
+                            },
+                            new()
+                            {
+                                Index = new(0, 5)
+                            },
+                            new()
+                            {
+                                Index = new(1, 7)
+                            },
+                            new()
+                            {
+                                Index = new(2, 7)
+                            },
+                            new()
+                            {
+                                Index = new(1, 5)
+                            },
+                            new()
+                            {
+                                Index = new(2, 6)
+                            },
+                            new()
+                            {
+                                Index = new(6, 7)
+                            },
+                            new()
+                            {
+                                Index = new(7, 6)
+                            },
+                            new()
+                            {
+                                Index = new(8, 6)
+                            },
+                            new()
+                            {
+                                Index = new(7, 7)
+                            },
+                            new()
+                            {
+                                Index = new(8, 8)
+                            },
+                        }
+                    }
+                },
+                EnergyCrystalData = new()
+                {
+                    {
+                        0,
+                        new()
+                        {
+                            StartIndex = 144,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        1,
+                        new()
+                        {
+                            StartIndex = 120,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        2,
+                        new()
+                        {
+                            StartIndex = 96,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        3,
+                        new()
+                        {
+                            StartIndex = 72,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                    {
+                        4,
+                        new()
+                        {
+                            StartIndex = 48,
+                            Quality = EQualityType.Quality1,
+                        }
+                    },
+                },
+                MonsterData = new()
+                {
+                    {
+                        0,
+                        new()
+                        {
+                            ActiveTime = 30.0f,
+                            MonsterList = new()
+                            {
+                                new()
+                                {
+                                    StartIndex = 110,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 108,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                }
+                            }
+                        }
+                    },
+                    {
+                        1,
+                        new()
+                        {
+                            ActiveTime = 30.0f,
+                            MonsterList = new()
+                            {
+                                new()
+                                {
+                                    StartIndex = 190,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 142,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 94,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 46,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 188,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 140,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 92,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 44,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 186,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 138,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 90,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 42,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                            }
+                        }
+                    },
+                },
+
+                WarSeatCount = 12,
+                WarSeatRowCount = 6,
+                HeroPoolCount = 10,
+                WarSeatLength = 1.8f,
+                WarSeatInterval = new(0.1f, 0.1f),
+
+                LevelUpdateExpenditure = 2,
+                LevelInitGlod = 50,
+            }
+        },
+        {
+            EMapLevelType.Level5,
+            new()
+            {
                 GameNewHelpInfo = EGameHelpType.Level2,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
@@ -4708,7 +4917,7 @@ public class TableMgr : Singleton<TableMgr>
             }
         },
         {
-            EMapLevelType.Level5,
+            EMapLevelType.Level6,
             new()
             {
                 GameNewHelpInfo = EGameHelpType.Level3,
@@ -5003,7 +5212,7 @@ public class TableMgr : Singleton<TableMgr>
             }
         },
         {
-            EMapLevelType.Level6,
+            EMapLevelType.Level7,
             new()
             {
                 GameNewHelpInfo = EGameHelpType.Level4,
