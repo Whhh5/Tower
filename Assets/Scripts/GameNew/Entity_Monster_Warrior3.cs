@@ -16,9 +16,10 @@ public class Entity_Monster_Warrior3Data : Entity_Monster_WarriorBaseData
     public int SkillDamage => CurHarm * 2;
     public float SkillTime = 4.0f;
     protected override float AtkSpeedBase => 1f;
-    public override int MaxBloodBase => 600;
     public int WeaponChildCount => 5;
-    public override int HarmBase => 80;
+    public override int HarmBase => TableMgr.monsterBaseInfo[2,0];
+    public override int MaxBloodBase => TableMgr.monsterBaseInfo[2,1];
+    public override int DefenceBase => TableMgr.monsterBaseInfo[2,2];
     public class RoationData
     {
         public Vector3 Angle;

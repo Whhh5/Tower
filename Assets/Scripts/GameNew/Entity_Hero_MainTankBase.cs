@@ -6,7 +6,9 @@ public abstract class Entity_Hero_MainTankBaseData : Entity_HeroBaseNewData
 {
     public override int AtkRangeBase => 1;
     protected override float AtkSpeedBase => 0;
-    public override int MaxBloodBase => base.MaxBloodBase * 5;
+    // public override int MaxBloodBase => base.MaxBloodBase * 5;
+    public override int MaxBloodBase => TableMgr.MainTankBlood;
+    public override int DefenceBase => TableMgr.MainTankDefence;
     protected override Vector3 WeaponStartPosOffset => new Vector3(0.4f, 0.1f, -2f);
     public override void AttackBehavior()
     {

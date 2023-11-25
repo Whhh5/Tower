@@ -7,6 +7,9 @@ using UnityEngine;
 public abstract class Entity_Hero_WarriorBaseData : Entity_HeroBaseNewData
 {
     public override int AtkRangeBase => 2;
+    public override int MaxBloodBase => TableMgr.WarriorBlood;
+    public override int HarmBase => TableMgr.WarriorAtk;
+
     public new Entity_Hero_WarriorBase EntityTarget => GetCom<Entity_Hero_WarriorBase>();
     public override async void AttackBehavior()
     {

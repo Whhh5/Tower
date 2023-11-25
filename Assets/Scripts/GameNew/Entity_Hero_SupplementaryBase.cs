@@ -7,7 +7,9 @@ using UnityEngine;
 public abstract class Entity_Hero_SupplementaryBaseData : Entity_HeroBaseNewData
 {
     public override int AtkRangeBase => 3;
-
+    public override int MaxBloodBase => TableMgr.SupplementaryBlood;
+    public override int HarmBase => TableMgr.SupplementaryAtk;
+    public override int DefenceBase => TableMgr.SupplementaryDefence;
     public float ToTargetTime => AtkBehavior * 0.5f;
     public override async void AttackBehavior()
     {

@@ -16,8 +16,6 @@ public class Entity_Monster_Boss1Data : Entity_Monster_WarriorBaseData
     public int SkillDamage => CurHarm * 2;
     public float SkillTime = 4.0f;
     protected override float AtkSpeedBase => 1f;
-    public override int HarmBase => 100;
-    public override int MaxBloodBase => 10000;
     public int WeaponChildCount => 5;
     private Entity_Monster_Boss1EffectData Effect = null;
 
@@ -28,7 +26,9 @@ public class Entity_Monster_Boss1Data : Entity_Monster_WarriorBaseData
     private float m_EffectAtkInterval => 0.2f;
     private int m_EffectAtkHarm => 2;
 
-
+    public override int HarmBase => TableMgr.monsterBaseInfo[3,0];
+    public override int MaxBloodBase => TableMgr.monsterBaseInfo[3,1];
+    public override int DefenceBase => TableMgr.monsterBaseInfo[3,2];
     public override bool IsUpdateEnable => true;
 
     public override void InitData(int f_ChunkIndex = -1)

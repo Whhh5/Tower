@@ -8,8 +8,8 @@ public abstract class Entity_Hero_EnchanterBaseData : Entity_HeroBaseNewData
     public override int AtkRangeBase => 5;
     public new Entity_Hero_EnchanterBase EntityTarget => GetCom<Entity_Hero_EnchanterBase>();
 
-
-
+    public override int MaxBloodBase => TableMgr.EnchanterBlood;
+    public override int HarmBase => TableMgr.EnchanterAtk;
     public override void AttackBehavior()
     {
         base.AttackBehavior();

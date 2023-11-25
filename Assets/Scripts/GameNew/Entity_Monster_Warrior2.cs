@@ -8,7 +8,9 @@ using UnityEngine;
 public class Entity_Monster_Warrior2Data : Entity_Monster_WarriorBaseData
 {
     public override EAssetKey AssetPrefabID => EAssetKey.Entity_Monster_Warrior2;
-    public override int HarmBase => 50;
+    public override int HarmBase => TableMgr.monsterBaseInfo[1,0];
+    public override int MaxBloodBase => TableMgr.monsterBaseInfo[1,1];
+    public override int DefenceBase => TableMgr.monsterBaseInfo[1,2];
 
     public override bool IsUpdateEnable => true;
     private Entity_Monster_Boss1EffectData Effect = null;
@@ -19,7 +21,7 @@ public class Entity_Monster_Warrior2Data : Entity_Monster_WarriorBaseData
     private int m_EffectRadius => 1;
     private float m_EffectAtkInterval => 0.2f;
     private int m_EffectAtkHarm => 1;
-    public override int MaxBloodBase => 2000;
+
     public override void AttackBehavior()
     {
         base.AttackBehavior();

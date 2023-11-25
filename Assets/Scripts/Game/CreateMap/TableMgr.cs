@@ -3456,6 +3456,27 @@ public class TableMgr : Singleton<TableMgr>
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================
     //--
+    //法师
+    public static int EnchanterAtk = 120; //攻击
+    public static int EnchanterBlood = 500; //血量
+    //坦克
+    public static int MainTankBlood = 2000; //血量
+    public static int MainTankDefence = 70; //防御
+    //辅助
+    public static int SupplementaryAtk = 80 ;
+    public static int SupplementaryBlood = 500;
+    public static int SupplementaryDefence = 20;
+    //战士
+    public static int WarriorAtk = 160;
+    public static int WarriorBlood = 1000; 
+
+    //怪物基本属性 {攻击，生命，防御}
+    public static int[,] monsterBaseInfo =new int[4,3] {
+        {30,600,0}, //monster1
+        {50,2000,80}, //monster2
+        {120,2000,20}, //monster3
+        {120,20000,50}, //boss1
+    }; 
     private Dictionary<EMapLevelType, MapLevelInfo> m_LevelWaveInfos = new()
     {
         {
@@ -3473,23 +3494,23 @@ public class TableMgr : Singleton<TableMgr>
                         {
                             new()
                             {
-                                Index = new(1, 1)
+                                Index = new(0, 8)
                             },
                             new()
                             {
-                                Index = new(7, 5)
+                                Index = new(0, 5)
                             },
                             new()
                             {
-                                Index = new(7, 6)
+                                Index = new(1, 7)
                             },
                             new()
                             {
-                                Index = new(3, 15)
+                                Index = new(2, 7)
                             },
                             new()
                             {
-                                Index = new(1, 6)
+                                Index = new(1, 5)
                             },
                             new()
                             {
@@ -3497,11 +3518,23 @@ public class TableMgr : Singleton<TableMgr>
                             },
                             new()
                             {
-                                Index = new(3, 8)
+                                Index = new(6, 7)
                             },
                             new()
                             {
-                                Index = new(3, 5)
+                                Index = new(7, 6)
+                            },
+                            new()
+                            {
+                                Index = new(8, 6)
+                            },
+                            new()
+                            {
+                                Index = new(7, 7)
+                            },
+                            new()
+                            {
+                                Index = new(8, 8)
                             },
                         }
                     }
@@ -3512,7 +3545,7 @@ public class TableMgr : Singleton<TableMgr>
                         0,
                         new()
                         {
-                            StartIndex = 0,
+                            StartIndex = 144,
                             Quality = EQualityType.Quality1,
                         }
                     },
@@ -3520,7 +3553,7 @@ public class TableMgr : Singleton<TableMgr>
                         1,
                         new()
                         {
-                            StartIndex = 24,
+                            StartIndex = 120,
                             Quality = EQualityType.Quality1,
                         }
                     },
@@ -3528,7 +3561,7 @@ public class TableMgr : Singleton<TableMgr>
                         2,
                         new()
                         {
-                            StartIndex = 48,
+                            StartIndex = 96,
                             Quality = EQualityType.Quality1,
                         }
                     },
@@ -3544,7 +3577,7 @@ public class TableMgr : Singleton<TableMgr>
                         4,
                         new()
                         {
-                            StartIndex = 96,
+                            StartIndex = 48,
                             Quality = EQualityType.Quality1,
                         }
                     },
@@ -3560,52 +3593,17 @@ public class TableMgr : Singleton<TableMgr>
                             {
                                 new()
                                 {
-                                    StartIndex = 36,
+                                    StartIndex = 111,
                                     MonsterType = EHeroCardType.Monster_Default1,
                                     AttributeInfoOffset = new()
                                     {
                                         BloodRatio = 0,
-                                        HarmRatio = 0,
+                                        HarmRatio = 1.5f,
                                         AtkSpeedRatio = 0,
                                         DefenceRatio = 0,
                                     },
                                 },
-                                new()
-                                {
-                                    StartIndex = 108,
-                                    MonsterType = EHeroCardType.Monster_Default1,
-                                    AttributeInfoOffset = new()
-                                    {
-                                        BloodRatio = 0,
-                                        HarmRatio = 0,
-                                        AtkSpeedRatio = 0,
-                                        DefenceRatio = 0,
-                                    },
-                                },
-                                new()
-                                {
-                                    StartIndex = 84,
-                                    MonsterType = EHeroCardType.Monster_Default1,
-                                    AttributeInfoOffset = new()
-                                    {
-                                        BloodRatio = 0,
-                                        HarmRatio = 0,
-                                        AtkSpeedRatio = 0,
-                                        DefenceRatio = 0,
-                                    },
-                                },
-                                new()
-                                {
-                                    StartIndex = 133,
-                                    MonsterType = EHeroCardType.Monster_Default1,
-                                    AttributeInfoOffset = new()
-                                    {
-                                        BloodRatio = 0,
-                                        HarmRatio = 0,
-                                        AtkSpeedRatio = 0,
-                                        DefenceRatio = 0,
-                                    },
-                                },
+
                             }
                         }
                     },
@@ -3618,11 +3616,11 @@ public class TableMgr : Singleton<TableMgr>
                             {
                                 new()
                                 {
-                                    StartIndex = 62,
+                                    StartIndex = 190,
                                     MonsterType = EHeroCardType.Monster_Default1,
                                     AttributeInfoOffset = new()
                                     {
-                                        BloodRatio = 10,
+                                        BloodRatio = 0,
                                         HarmRatio = 0,
                                         AtkSpeedRatio = 0,
                                         DefenceRatio = 0,
@@ -3630,11 +3628,11 @@ public class TableMgr : Singleton<TableMgr>
                                 },
                                 new()
                                 {
-                                    StartIndex = 86,
+                                    StartIndex = 142,
                                     MonsterType = EHeroCardType.Monster_Default1,
                                     AttributeInfoOffset = new()
                                     {
-                                        BloodRatio = 10,
+                                        BloodRatio = 0,
                                         HarmRatio = 0,
                                         AtkSpeedRatio = 0,
                                         DefenceRatio = 0,
@@ -3642,11 +3640,83 @@ public class TableMgr : Singleton<TableMgr>
                                 },
                                 new()
                                 {
-                                    StartIndex = 110,
-                                    MonsterType = EHeroCardType.Monster_Default2,
+                                    StartIndex = 94,
+                                    MonsterType = EHeroCardType.Monster_Default1,
                                     AttributeInfoOffset = new()
                                     {
-                                        BloodRatio = 10,
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 46,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 44,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 92,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 140,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 188,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 186,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
                                         HarmRatio = 0,
                                         AtkSpeedRatio = 0,
                                         DefenceRatio = 0,
@@ -3655,10 +3725,34 @@ public class TableMgr : Singleton<TableMgr>
                                 new()
                                 {
                                     StartIndex = 138,
-                                    MonsterType = EHeroCardType.Monster_Default2,
+                                    MonsterType = EHeroCardType.Monster_Default1,
                                     AttributeInfoOffset = new()
                                     {
-                                        BloodRatio = 10,
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 90,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 42,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
                                         HarmRatio = 0,
                                         AtkSpeedRatio = 0,
                                         DefenceRatio = 0,
@@ -3694,23 +3788,23 @@ public class TableMgr : Singleton<TableMgr>
                         {
                             new()
                             {
-                                Index = new(1, 1)
+                                Index = new(0, 8)
                             },
                             new()
                             {
-                                Index = new(7, 5)
+                                Index = new(0, 5)
                             },
                             new()
                             {
-                                Index = new(7, 6)
+                                Index = new(1, 7)
                             },
                             new()
                             {
-                                Index = new(3, 15)
+                                Index = new(2, 7)
                             },
                             new()
                             {
-                                Index = new(1, 6)
+                                Index = new(1, 5)
                             },
                             new()
                             {
@@ -3718,11 +3812,23 @@ public class TableMgr : Singleton<TableMgr>
                             },
                             new()
                             {
-                                Index = new(3, 8)
+                                Index = new(6, 7)
                             },
                             new()
                             {
-                                Index = new(3, 5)
+                                Index = new(7, 6)
+                            },
+                            new()
+                            {
+                                Index = new(8, 6)
+                            },
+                            new()
+                            {
+                                Index = new(7, 7)
+                            },
+                            new()
+                            {
+                                Index = new(8, 8)
                             },
                         }
                     }
@@ -3733,7 +3839,7 @@ public class TableMgr : Singleton<TableMgr>
                         0,
                         new()
                         {
-                            StartIndex = 0,
+                            StartIndex = 144,
                             Quality = EQualityType.Quality1,
                         }
                     },
@@ -3741,7 +3847,7 @@ public class TableMgr : Singleton<TableMgr>
                         1,
                         new()
                         {
-                            StartIndex = 24,
+                            StartIndex = 120,
                             Quality = EQualityType.Quality1,
                         }
                     },
@@ -3749,7 +3855,7 @@ public class TableMgr : Singleton<TableMgr>
                         2,
                         new()
                         {
-                            StartIndex = 48,
+                            StartIndex = 96,
                             Quality = EQualityType.Quality1,
                         }
                     },
@@ -3765,7 +3871,7 @@ public class TableMgr : Singleton<TableMgr>
                         4,
                         new()
                         {
-                            StartIndex = 96,
+                            StartIndex = 48,
                             Quality = EQualityType.Quality1,
                         }
                     },
@@ -3781,24 +3887,14 @@ public class TableMgr : Singleton<TableMgr>
                             {
                                 new()
                                 {
-                                    StartIndex = 36,
+                                    StartIndex = 110,
                                     MonsterType = EHeroCardType.Monster_Default1,
                                 },
                                 new()
                                 {
                                     StartIndex = 108,
-                                    MonsterType = EHeroCardType.Monster_Default1,
-                                },
-                                new()
-                                {
-                                    StartIndex = 84,
-                                    MonsterType = EHeroCardType.Monster_Default1,
-                                },
-                                new()
-                                {
-                                    StartIndex = 133,
                                     MonsterType = EHeroCardType.Monster_Default2,
-                                },
+                                }
                             }
                         }
                     },
@@ -3811,23 +3907,63 @@ public class TableMgr : Singleton<TableMgr>
                             {
                                 new()
                                 {
-                                    StartIndex = 62,
+                                    StartIndex = 190,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 142,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 94,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 46,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 188,
                                     MonsterType = EHeroCardType.Monster_Default2,
                                 },
                                 new()
                                 {
-                                    StartIndex = 86,
+                                    StartIndex = 140,
                                     MonsterType = EHeroCardType.Monster_Default2,
                                 },
                                 new()
                                 {
-                                    StartIndex = 110,
+                                    StartIndex = 92,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 44,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 186,
                                     MonsterType = EHeroCardType.Monster_Default1,
                                 },
                                 new()
                                 {
                                     StartIndex = 138,
-                                    MonsterType = EHeroCardType.Monster_Default3,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 90,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 42,
+                                    MonsterType = EHeroCardType.Monster_Default1,
                                 },
                             }
                         }
@@ -3898,7 +4034,7 @@ public class TableMgr : Singleton<TableMgr>
                         0,
                         new()
                         {
-                            StartIndex = 0,
+                            StartIndex = 144,
                             Quality = EQualityType.Quality1,
                         }
                     },
@@ -3906,7 +4042,7 @@ public class TableMgr : Singleton<TableMgr>
                         1,
                         new()
                         {
-                            StartIndex = 24,
+                            StartIndex = 120,
                             Quality = EQualityType.Quality1,
                         }
                     },
@@ -3914,7 +4050,7 @@ public class TableMgr : Singleton<TableMgr>
                         2,
                         new()
                         {
-                            StartIndex = 48,
+                            StartIndex = 96,
                             Quality = EQualityType.Quality1,
                         }
                     },
@@ -3930,7 +4066,7 @@ public class TableMgr : Singleton<TableMgr>
                         4,
                         new()
                         {
-                            StartIndex = 96,
+                            StartIndex = 48,
                             Quality = EQualityType.Quality1,
                         }
                     },
@@ -3946,23 +4082,18 @@ public class TableMgr : Singleton<TableMgr>
                             {
                                 new()
                                 {
-                                    StartIndex = 36,
+                                    StartIndex = 153,
                                     MonsterType = EHeroCardType.Monster_Default1,
                                 },
                                 new()
                                 {
-                                    StartIndex = 108,
-                                    MonsterType = EHeroCardType.Monster_Default1,
-                                },
-                                new()
-                                {
-                                    StartIndex = 84,
+                                    StartIndex = 57,
                                     MonsterType = EHeroCardType.Monster_Default2,
                                 },
                                 new()
                                 {
-                                    StartIndex = 133,
-                                    MonsterType = EHeroCardType.Monster_Default1,
+                                    StartIndex = 105,
+                                    MonsterType = EHeroCardType.Monster_Default3,
                                 },
                             }
                         }
@@ -3976,22 +4107,47 @@ public class TableMgr : Singleton<TableMgr>
                             {
                                 new()
                                 {
-                                    StartIndex = 62,
-                                    MonsterType = EHeroCardType.Monster_Default2,
+                                    StartIndex = 156,
+                                    MonsterType = EHeroCardType.Monster_Default1,
                                 },
                                 new()
                                 {
-                                    StartIndex = 86,
+                                    StartIndex = 108,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 60,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 158,
                                     MonsterType = EHeroCardType.Monster_Default2,
                                 },
                                 new()
                                 {
                                     StartIndex = 110,
-                                    MonsterType = EHeroCardType.Monster_Default1,
+                                    MonsterType = EHeroCardType.Monster_Default2,
                                 },
                                 new()
                                 {
-                                    StartIndex = 138,
+                                    StartIndex = 62,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 160,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 112,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                },
+                                new()
+                                {
+                                    StartIndex = 64,
                                     MonsterType = EHeroCardType.Monster_Default3,
                                 },
                             }
@@ -4006,23 +4162,151 @@ public class TableMgr : Singleton<TableMgr>
                             {
                                 new()
                                 {
-                                    StartIndex = 64,
+                                    StartIndex = 186,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 138,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 90,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 42,
+                                    MonsterType = EHeroCardType.Monster_Default1,
+                                },
+                                new()
+                                {
+                                    StartIndex = 188,
                                     MonsterType = EHeroCardType.Monster_Default2,
                                 },
                                 new()
                                 {
-                                    StartIndex = 89,
-                                    MonsterType = EHeroCardType.Monster_Default3,
+                                    StartIndex = 140,
+                                    MonsterType = EHeroCardType.Monster_Default2,
                                 },
                                 new()
                                 {
-                                    StartIndex = 112,
-                                    MonsterType = EHeroCardType.Monster_Default3,
+                                    StartIndex = 92,
+                                    MonsterType = EHeroCardType.Monster_Default2,
                                 },
                                 new()
                                 {
-                                    StartIndex = 141,
-                                    MonsterType = EHeroCardType.Monster_Boss1,
+                                    StartIndex = 44,
+                                    MonsterType = EHeroCardType.Monster_Default2,
+                                },
+                                new()
+                                {
+                                    StartIndex = 190,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 142,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 94,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0.5f,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 46,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 215,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 167,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 119,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 71,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
+                                },
+                                new()
+                                {
+                                    StartIndex = 23,
+                                    MonsterType = EHeroCardType.Monster_Default3,
+                                    AttributeInfoOffset = new()
+                                    {
+                                        BloodRatio = 0,
+                                        HarmRatio = 0,
+                                        AtkSpeedRatio = 0,
+                                        DefenceRatio = 0,
+                                    },
                                 },
                             }
                         }
@@ -4093,7 +4377,7 @@ public class TableMgr : Singleton<TableMgr>
                         0,
                         new()
                         {
-                            StartIndex = 0,
+                            StartIndex = 144,
                             Quality = EQualityType.Quality1,
                         }
                     },
@@ -4101,7 +4385,7 @@ public class TableMgr : Singleton<TableMgr>
                         1,
                         new()
                         {
-                            StartIndex = 24,
+                            StartIndex = 120,
                             Quality = EQualityType.Quality1,
                         }
                     },
@@ -4109,7 +4393,7 @@ public class TableMgr : Singleton<TableMgr>
                         2,
                         new()
                         {
-                            StartIndex = 48,
+                            StartIndex = 96,
                             Quality = EQualityType.Quality1,
                         }
                     },
@@ -4125,7 +4409,7 @@ public class TableMgr : Singleton<TableMgr>
                         4,
                         new()
                         {
-                            StartIndex = 96,
+                            StartIndex = 48,
                             Quality = EQualityType.Quality1,
                         }
                     },
