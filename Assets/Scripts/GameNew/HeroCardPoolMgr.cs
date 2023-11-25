@@ -114,7 +114,6 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
         bgData.SetPosition(Vector3.zero);
         await ILoadPrefabAsync.LoadAsync(bgData);
 
-
         // 开始实例化
         await CreateWarSeatEntityAsync();
         await UniTask.Delay(1000);

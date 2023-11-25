@@ -58,7 +58,7 @@ public abstract class Entity_MonsterBaseNewData : WorldObjectBaseData
     public override void Death()
     {
         base.Death();
-
+        GTools.PlayerMgr.Increases(5);
         DOTween.To(() => 0.0f, slider =>
         {
             SetAllElementColorAlpha(1 - slider);

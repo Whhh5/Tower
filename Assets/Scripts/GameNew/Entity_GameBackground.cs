@@ -10,7 +10,7 @@ public class Entity_GameBackgroundData : UnityObjectData
     public override EAssetKey AssetPrefabID => EAssetKey.Entity_GameBackground;
     public override EWorldObjectType ObjectType => EWorldObjectType.None;
 }
-public class Entity_GameBackground : MonoBehaviour
+public class Entity_GameBackground : ObjectPoolBase
 {
 
 }

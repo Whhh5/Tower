@@ -55,7 +55,7 @@ MonoBehaviour:
       Data: 0
     - Name: IsPass
       Entry: 5
-      Data: true
+      Data: false
     - Name: RewardList
       Entry: 7
       Data: 3|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
@@ -88,7 +88,7 @@ MonoBehaviour:
       Data: 1
     - Name: IsPass
       Entry: 5
-      Data: true
+      Data: false
     - Name: RewardList
       Entry: 7
       Data: 5|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
@@ -121,7 +121,7 @@ MonoBehaviour:
       Data: 2
     - Name: IsPass
       Entry: 5
-      Data: true
+      Data: false
     - Name: RewardList
       Entry: 7
       Data: 7|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
@@ -154,7 +154,7 @@ MonoBehaviour:
       Data: 3
     - Name: IsPass
       Entry: 5
-      Data: true
+      Data: false
     - Name: RewardList
       Entry: 7
       Data: 9|System.Collections.Generic.List`1[[System.Int32, mscorlib]], mscorlib
