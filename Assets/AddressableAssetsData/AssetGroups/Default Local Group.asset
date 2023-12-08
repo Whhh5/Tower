@@ -91,10 +91,6 @@ MonoBehaviour:
     m_Address: UIGameLevel
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: 9ea68476a8cd2304a8b319e062983929
-    m_Address: UIHeroCardSelect
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   - m_GUID: 273b2a28b58714446a46931b645fc53b
     m_Address: UIGameMonster
     m_ReadOnly: 0
@@ -113,6 +109,14 @@ MonoBehaviour:
     m_SerializedLabels: []
   - m_GUID: 1fc20e5d52f75d240b7cd10645e90ad7
     m_Address: UIGameHelp
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 9ea68476a8cd2304a8b319e062983929
+    m_Address: UIHeroCardSelect
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: c6e2f9d948fc1d640ad60c963d79af84
+    m_Address: UISettingWindow
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

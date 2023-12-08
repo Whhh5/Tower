@@ -80,6 +80,29 @@ public class WorldWindowMgr : Singleton<WorldWindowMgr>
     //--
     //===============================----------------------========================================
     //-----------------------------                          --------------------------------------
+    //                                catalogue -- ÉËº¦Æ®×Ö Æª
+    //-----------------------------                          --------------------------------------
+    //===============================----------------------========================================
+    //--
+    public void CreateDamageHint(float f_Value, Vector3 f_WorldPos)
+    {
+        var effect = new UIDamageHintItemData();
+        effect.SetParent(m_Root);
+
+        var fontSize = Mathf.FloorToInt(Mathf.Clamp01((Mathf.Abs(f_Value) - 20) / 20) * 20 + 20);
+        effect.SetFontSize(fontSize);
+        effect.SetTMPText($"{f_Value}");
+
+        effect.SetPosition(f_WorldPos);
+        effect.SetFontColor(f_Value > 0 ? Color.green : Color.red);
+
+        GTools.RunUniTask(ILoadPrefabAsync.LoadAsync(effect));
+    }
+
+
+    //--
+    //===============================----------------------========================================
+    //-----------------------------                          --------------------------------------
     //                                catalogue -- ½ø¶ÈÌõ Æª
     //-----------------------------                          --------------------------------------
     //===============================----------------------========================================

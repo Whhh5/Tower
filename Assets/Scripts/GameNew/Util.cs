@@ -18,9 +18,13 @@ public enum EChildName
 
     Item_Point,
 
+
     Img_Quality,
     Img_Icon,
+    Img_Icon1,
+    Img_Icon2,
     Img_Vocational,
+    Img_Slider,
 
     Btn_Click,
     Btn_Close,

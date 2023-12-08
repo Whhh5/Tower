@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using DG.Tweening;
+using Unity.Jobs;
 
 public class UICardSelectData
 {
@@ -184,7 +185,7 @@ public class HeroResidueCountData
         Item.GetChildCom<TextMeshProUGUI>(EChildName.Txt_Count).text = $"{residueCount}/{MaxCount}";
     }
 }
-public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHandler
+public class UIHeroCardSelect : UIWindow
 {
     class LoopData
     {
@@ -200,7 +201,7 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
     [SerializeField]
     private HorizontalLayoutGroup m_MainLayoutGroup = null;
     private RectTransform MainListRect => m_MainLayoutGroup.GetComponent<RectTransform>();
-    private Vector3 MainListStartPos => new Vector3(0, -200, 0);
+    private Vector3 MainListStartPos => new(0, -230, 0);
     private int HeroPoolCount => GameDataMgr.HeroPoolCount;
 
     [SerializeField]
@@ -232,16 +233,10 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
     private Vector3 BtnGroupStartPos => new Vector3(0, 100, 0);
     [SerializeField]
     private RectTransform m_GameInfo = null;
-    private Vector3 GameInfostartPos => new Vector3(-230, 200, 0);
+    private Vector3 GameInfostartPos => new Vector3(-250, 150, 0);
 
     [SerializeField, Header("设置界面"), Space(30)]
-    private GameObject m_SettingWindow = null;
-    [SerializeField]
     private Button m_SettingBtn = null;
-    [SerializeField]
-    private Button m_SettingCloseBtn = null;
-    [SerializeField]
-    private RectTransform m_SettingBtnItem = null;
 
     [SerializeField, Header("阵型界面"), Space(30)]
     private Button m_FormationBtn = null;
@@ -249,6 +244,30 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
     [SerializeField, Header("帮助界面"), Space(30)]
     private Button m_GameHelpBtn = null;
 
+    private CreateMapNew CreateMapNew => GTools.CreateMapNew;
+
+    public override async UniTask AwakeAsync()
+    {
+        InitShowElement();
+        AwakeMonsterInfo();
+    }
+    public override async UniTask OnShowAsync()
+    {
+
+    }
+    protected override void Update()
+    {
+        base.Update();
+        UpdateGameView();
+        UpdateMonsterCountList();
+    }
+    public override async UniTask OnUnLoadAsync()
+    {
+        UnLoadGameView();
+        UnLoadMonsterInfo();
+        await base.OnUnLoadAsync();
+    }
+    #region GameView
     private class SettingData
     {
         public string name;
@@ -270,27 +289,30 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
             GameObject.Destroy(item.gameObject);
         }
     }
-    private Dictionary<int, SettingData> m_SettingFuncList = new()
+
+    private float m_CurTime = 0.0f;
+
+    private void UnLoadGameView()
     {
+        foreach (var item in m_CardList)
         {
-            1,
-            new()
-            {
-                name = "返回",
-                click = ()=>
-                {
-                    GameManager.ReturnSelectWindow();
-                    GameManager.SetGameScale(1);
-                },
-                item = null,
-            }
-        },
+            item.Value.CardInfo.OnDestroy();
+        }
+        m_CardList.Clear();
+        foreach (var item in m_HeroCardResidueList)
+        {
+            item.OnDestroy();
+        }
+        m_HeroCardResidueList.Clear();
+    }
 
-    };
-
-    public override async UniTask AwakeAsync()
+    private void InitShowElement()
     {
-        InitShowElement();
+        BtnGroupRect.anchoredPosition3D = BtnGroupStartPos;
+        MainListRect.anchoredPosition3D = MainListStartPos;
+        m_GameInfo.anchoredPosition3D = GameInfostartPos;
+
+
         GTools.AudioMgr.PlayBackground(EAudioType.Scene_Background);
         m_CardItem.gameObject.SetActive(false);
         m_ItemHeroCardResidueCount.gameObject.SetActive(false);
@@ -346,37 +368,36 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
             data.InitData(heroType, m_ItemHeroCardResidueCount);
             m_HeroCardResidueList.Add(data);
         }
-        // 初始化设置列表
-        m_SettingBtnItem.gameObject.SetActive(false);
-        foreach (var item in m_SettingFuncList)
-        {
-            item.Value.InitData(m_SettingBtnItem);
-        }
+
         m_SettingBtn.onClick.RemoveAllListeners();
-        m_SettingBtn.onClick.AddListener(() =>
+        m_SettingBtn.onClick.AddListener(async () =>
         {
-            m_SettingWindow.SetActive(true);
-            GameManager.SetGameScale(0);
+            await GTools.UIWindowManager.LoadWindowAsync<UISettingWindow>(EAssetName.UISettingWindow);
+
         });
         m_FormationBtn.onClick.RemoveAllListeners();
         m_FormationBtn.onClick.AddListener(async () =>
         {
             await UIWindowManager.Ins.LoadWindowAsync<UIFormationInfo>(EAssetName.UIFormationInfo);
         });
-        m_SettingCloseBtn.onClick.RemoveAllListeners();
-        m_SettingCloseBtn.onClick.AddListener(() =>
-        {
-            m_SettingWindow.SetActive(false);
-            GameManager.SetGameScale(1);
-        });
-        m_SettingWindow.SetActive(false);
     }
-
-    private float m_CurTime = 0.0f;
-    protected override void Update()
+    public void StartShowElement()
     {
-        base.Update();
+        GTools.AudioMgr.PlayAudio(EAudioType.Scene_GameStart);
+        DOTween.To(() => 0.0f, slider =>
+        {
+            var pos1 = Vector3.Lerp(BtnGroupStartPos, Vector3.zero, slider);
+            var pos2 = Vector3.Lerp(MainListStartPos, Vector3.zero, slider);
+            var pos3 = Vector3.Lerp(GameInfostartPos, Vector3.up * 150, slider);
 
+            BtnGroupRect.anchoredPosition3D = pos1;
+            MainListRect.anchoredPosition3D = pos2;
+            m_GameInfo.anchoredPosition3D = pos3;
+
+        }, 1.0f, 0.5f);
+    }
+    private void UpdateGameView()
+    {
         m_CurTime += Time.deltaTime;
         for (int i = 0; i < m_CardList.Count; i++)
         {
@@ -398,101 +419,258 @@ public class UIHeroCardSelect : UIWindow, IPointerEnterHandler, IPointerExitHand
             item.UpdateItemCount();
         }
 
-        var mapNewMgr = GTools.CreateMapNew;
         // 刷新金币数量
         m_CurGlodCount.text = $"{GTools.PlayerMgr.GetGoldCount()}";
 
         // 刷新当前怪物波数
-        m_CurMonsterWave.text = $"{mapNewMgr.GetCurWaveCount() + 1}/{mapNewMgr.GetMaxWaveCount()}";
+        m_CurMonsterWave.text = $"{CreateMapNew.GetCurWaveCount() + 1}/{CreateMapNew.GetMaxWaveCount()}";
 
         // 刷新当前怪物数量
-        m_CurWaveMonsterCount.text = $"{mapNewMgr.GetCurWaveMonsterActiveCount()}/{mapNewMgr.GetCurWaveMonsterCount()}";
+        m_CurWaveMonsterCount.text = $"{CreateMapNew.GetCurWaveMonsterActiveCount()}/{CreateMapNew.GetCurWaveMonsterCount()}";
 
         // 刷新当前剩余能量站数量
-        m_CurEnergyCount.text = $"{mapNewMgr.GetCurActiveEnergyCount()}/{mapNewMgr.GetCurMaxExergyCount()}";
+        m_CurEnergyCount.text = $"{CreateMapNew.GetCurActiveEnergyCount()}/{CreateMapNew.GetCurMaxExergyCount()}";
     }
-
-    public override async UniTask OnShowAsync()
-    {
-
-    }
-
-    public override async UniTask OnUnLoadAsync()
-    {
-        foreach (var item in m_CardList)
-        {
-            item.Value.CardInfo.OnDestroy();
-        }
-        m_CardList.Clear();
-        foreach (var item in m_HeroCardResidueList)
-        {
-            item.OnDestroy();
-        }
-        m_HeroCardResidueList.Clear();
-        foreach (var item in m_SettingFuncList)
-        {
-            item.Value.Destroy();
-        }
-        await base.OnUnLoadAsync();
-    }
-
-    private string DG_ID => $"asdasdasdasd";
-    private CanvasGroup HeroResidueRootGroup => m_HeroCardResidueRoot.GetComponent<CanvasGroup>();
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        DOTween.Kill(DG_ID);
-        var curAlpha = HeroResidueRootGroup.alpha;
-        var time = 1 - curAlpha;
-        DOTween.To(() => 0.0f, slider =>
-          {
-              var alpha = Mathf.Lerp(curAlpha, 1, slider);
-              HeroResidueRootGroup.alpha = alpha;
-              //m_BtnGroup.alpha = alpha;
-
-          }, 1.0f, time * 0.5f)
-            .SetId(DG_ID);
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        DOTween.Kill(DG_ID);
-        var curAlpha = HeroResidueRootGroup.alpha;
-        var time = curAlpha;
-        DOTween.To(() => 0.0f, slider =>
-        {
-            var alpha = Mathf.Lerp(curAlpha, 0, slider);
-            HeroResidueRootGroup.alpha = alpha;
-            //m_BtnGroup.alpha = alpha;
-
-        }, 1.0f, time * 0.2f)
-            .SetId(DG_ID);
-    }
-
-    private void InitShowElement()
-    {
-        BtnGroupRect.anchoredPosition3D = BtnGroupStartPos;
-        MainListRect.anchoredPosition3D = MainListStartPos;
-        m_GameInfo.anchoredPosition3D = GameInfostartPos;
-        HeroResidueRootGroup.alpha = 0;
-    }
-    public void StartShowElement()
-    {
-        GTools.AudioMgr.PlayAudio(EAudioType.Scene_GameStart);
-        DOTween.To(() => 0.0f, slider =>
-          {
-              var pos1 = Vector3.Lerp(BtnGroupStartPos, Vector3.zero, slider);
-              var pos2 = Vector3.Lerp(MainListStartPos, Vector3.zero, slider);
-              var pos3 = Vector3.Lerp(GameInfostartPos, Vector3.up * 200f, slider);
-
-              BtnGroupRect.anchoredPosition3D = pos1;
-              MainListRect.anchoredPosition3D = pos2;
-              m_GameInfo.anchoredPosition3D = pos3;
-
-          }, 1.0f, 0.5f);
-    }
-
     private void ReturnSelectWindow()
     {
 
     }
+    #endregion
+
+
+    #region MonsterInfo
+
+    private class MonsterWaveItem
+    {
+        private RectTransform m_Item = null;
+
+        public void Init(RectTransform f_Item)
+        {
+            m_Item = GameObject.Instantiate(f_Item, f_Item.parent);
+            m_Item.gameObject.SetActive(true);
+        }
+        public void SetActive(bool f_Active)
+        {
+            m_Item.gameObject.SetActive(f_Active);
+        }
+        public void SetItemSlider(float f_Value)
+        {
+            var slider = m_Item.GetChildCom<Image>(EChildName.Img_Slider);
+            slider.fillAmount = f_Value;
+        }
+        public void SetStatusColor(Color f_Color)
+        {
+            var point = m_Item.GetChildCom<RectTransform>(EChildName.Tran_Point);
+            var icon1 = point.GetChildCom<Image>(EChildName.Img_Icon1);
+            var icon2 = point.GetChildCom<Image>(EChildName.Img_Icon2);
+            icon1.color = icon2.color = f_Color;
+        }
+        public void UnLoad()
+        {
+            GameObject.Destroy(m_Item.gameObject);
+            m_Item = null;
+        }
+    }
+    private class MonsterIconItem
+    {
+        private RectTransform m_Item = null;
+
+        public void Init(RectTransform f_Item)
+        {
+            m_Item = GameObject.Instantiate(f_Item, f_Item.parent);
+            m_Item.gameObject.SetActive(true);
+        }
+        public void SetActive(bool f_Active)
+        {
+            m_Item.gameObject.SetActive(f_Active);
+        }
+        public void SetIconStatus(bool f_Status)
+        {
+            var slider = m_Item.GetChildCom<Image>(EChildName.Img_Icon);
+            slider.color = f_Status ? Color.white : Color.gray;
+        }
+        public void UnLoad()
+        {
+            GameObject.Destroy(m_Item.gameObject);
+            m_Item = null;
+        }
+    }
+
+    [SerializeField, Header("怪物信息顶部界面"), Space(30)]
+    private RectTransform m_UITopTipsRoot = null;
+    [SerializeField]
+    private RectTransform m_MonsterWaveInfoRoot = null;
+    [SerializeField]
+    private RectTransform m_MonsterWaveItem = null;
+    private Dictionary<int, MonsterWaveItem> m_MonsterWaveList = new();
+    [SerializeField]
+    private RectTransform m_MonsterCountRoot = null;
+    [SerializeField]
+    private RectTransform m_MonsterIconItem = null;
+    private Dictionary<int, MonsterIconItem> m_MonsterIconList = new();
+    private int m_LastWaveResidueMonsterCount = 0;
+    [SerializeField]
+    private TextMeshProUGUI m_Title = null;
+
+
+    private async void AwakeMonsterInfo()
+    {
+        m_LastWave = -1;
+        m_MonsterWaveItem.gameObject.SetActive(false);
+        m_MonsterIconItem.gameObject.SetActive(false);
+        //UpdateMonsterWaveList();
+        //UpdateMonsterIconList();
+        m_Title.text = GameDataMgr.Subject;
+
+        SetMonsterInfoAlpha(0);
+        var titleStartPos = new Vector3(0, 80, 0);
+        var titleToPos = Vector3.zero;
+        m_Title.GetComponent<RectTransform>().anchoredPosition3D = titleStartPos;
+
+
+        var startPos = new Vector3(0, 100, 0);
+        var toPos = Vector3.zero;
+        await UniTask.Delay(2000);
+        await DOTween.To(() => 0.0f, slider =>
+          {
+              var pos = Vector3.Lerp(startPos, toPos, slider);
+              m_UITopTipsRoot.anchoredPosition3D = pos;
+
+          }, 1.0f, 1.0f);
+
+       
+       
+        await DOTween.To(() => 0.0f, slider =>
+        {
+            var pos = Vector3.Lerp(titleStartPos, titleToPos, slider);
+            m_Title.GetComponent<RectTransform>().anchoredPosition3D = pos;
+
+        }, 1.0f, 1.0f);
+
+        await UniTask.Delay(500);
+
+        await DOTween.To(() => 0.0f, slider =>
+        {
+            SetMonsterInfoAlpha(slider);
+
+        }, 1.0f, 1.0f);
+
+        void SetMonsterInfoAlpha(float f_Alpha)
+        {
+            m_MonsterCountRoot.GetComponent<CanvasGroup>().alpha = f_Alpha;
+            m_MonsterWaveInfoRoot.GetComponent<CanvasGroup>().alpha = f_Alpha;
+        }
+    }
+    private void UpdateMonsterCountList()
+    {
+        //var monsterMaxWave = CreateMapNew.GetMaxWaveCount();
+        //var monsterCurWave = CreateMapNew.GetCurWaveCount() + 1;
+        UpdateMonsterWaveList();
+
+        //var monsterMaxCount = CreateMapNew.GetCurWaveMonsterCount();
+        //var monsterCurCount = CreateMapNew.GetCurWaveMonsterActiveCount();
+        UpdateMonsterIconList();
+
+
+        var energyMaxCount = CreateMapNew.GetCurMaxExergyCount();
+        var energyCurCount = CreateMapNew.GetCurActiveEnergyCount();
+
+    }
+    private void UpdateMonsterIconList()
+    {
+        var maxCount = CreateMapNew.GetMonsterCount();
+        var curCount = m_MonsterIconList.Count;
+        for (int i = curCount; i < maxCount; i++)
+        {
+            var data = new MonsterIconItem();
+            data.Init(m_MonsterIconItem);
+
+            m_MonsterIconList.Add(i, data);
+        }
+
+        for (int i = curCount; i < maxCount; i++)
+        {
+            var item = m_MonsterIconList[i];
+            item.SetActive(false);
+        }
+
+        var monsterCurCount = CreateMapNew.GetMonsterActiveCount();
+        for (int i = 0; i < maxCount; i++)
+        {
+            var item = m_MonsterIconList[i];
+            item.SetActive(true);
+            item.SetIconStatus(i < monsterCurCount);
+        }
+    }
+    private float m_TempSlider = 0.0f;
+    private float m_CurSliderValue = 0.0f;
+    private int m_LastWave = -1;
+    private void UpdateMonsterWaveList()
+    {
+        var maxCount = CreateMapNew.GetMaxWaveCount();
+        var curCount = m_MonsterWaveList.Count;
+        for (int i = curCount; i < maxCount; i++)
+        {
+            var data = new MonsterWaveItem();
+            data.Init(m_MonsterWaveItem);
+
+            m_MonsterWaveList.Add(i, data);
+        }
+
+        for (int i = curCount; i < maxCount; i++)
+        {
+            var item = m_MonsterWaveList[i];
+            item.SetActive(false);
+        }
+
+
+        var monsterCurWave = CreateMapNew.GetCurWaveCount();
+        for (int i = 0; i < maxCount; i++)
+        {
+            var item = m_MonsterWaveList[i];
+            var isPass = i < monsterCurWave + 1;
+            var slider = isPass ? 1.0f : 0.0f;
+            if (i == monsterCurWave + 1 && GTools.CreateMapNew.TryGetNextWaveTime(out var value))
+            {
+                var residueTime = value - Time.time;
+                var curWaveTime = GTools.CreateMapNew.GetCurWaveTime();
+                m_TempSlider = 1 - residueTime / curWaveTime;
+                if (m_LastWave != i)
+                {
+                    m_CurSliderValue = m_TempSlider;
+                    m_LastWave = i;
+                }
+                slider = Mathf.Lerp(m_CurSliderValue, m_TempSlider, Time.deltaTime * 2.0f);
+                m_CurSliderValue = slider;
+            }
+            item.SetItemSlider(slider);
+
+            var color = i < monsterCurWave ? Color.green : Color.red;
+            if (i == monsterCurWave)
+            {
+                color = Color.yellow;
+                color.a = Mathf.Sin(Mathf.PI * (Time.time % 1));
+            }
+            item.SetStatusColor(color);
+            item.SetActive(true);
+        }
+    }
+
+    private void UnLoadMonsterInfo()
+    {
+        foreach (var item in m_MonsterIconList)
+        {
+            item.Value.UnLoad();
+        }
+        m_MonsterIconList.Clear();
+        foreach (var item in m_MonsterWaveList)
+        {
+            item.Value.UnLoad();
+        }
+        m_MonsterWaveList.Clear();
+    }
+
+
+    #endregion
+
 }

@@ -7,8 +7,17 @@ using Cysharp.Threading.Tasks;
 
 public class CameraManager : MonoSingleton<CameraManager>
 {
-    private Vector3 StartPosition => new Vector3(13, 6, -100);
+    private Camera Camera => GetComponent<Camera>();
+    private Vector3 StartPosition => new(13, 5.2f, -100);
     private float MoveTime => 5.0f;
+    protected override void Awake()
+    {
+        base.Awake();
+
+        transform.position = StartPosition;
+
+        //Camera.orthographicSize = 10 * ((float)Screen.width / Screen.height) / (1920.0f / 1080.0f);
+    }
     public async void StartMove()
     {
         var curWaveTime = GTools.CreateMapNew.GetCurWaveTime();

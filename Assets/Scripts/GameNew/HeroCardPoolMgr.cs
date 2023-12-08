@@ -85,7 +85,7 @@ public class HeroCardPoolMgr : Singleton<HeroCardPoolMgr>, IUpdateBase
         {
             var root = new GameObject("Root_WarSeat");
             var tran = root.transform;
-            tran.SetPositionAndRotation(new Vector3(-0.5f, 2, 0), Quaternion.Euler(Vector3.zero));
+            tran.SetPositionAndRotation(new Vector3(-0.5f, 1, 0), Quaternion.Euler(Vector3.zero));
             m_Root = tran;
         }
         // 初始化备战席列表

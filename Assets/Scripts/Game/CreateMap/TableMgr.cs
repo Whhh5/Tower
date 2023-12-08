@@ -355,6 +355,7 @@ public enum EAssetKey
     Entity_Effect_AddBlood,
     Entity_GameBackground,
     Entity_Effect_GoldAdd,
+    UIDamageHintItem,
 
     Entity_Hero_Warrior1,
     Entity_Enchanter1,
@@ -1094,6 +1095,7 @@ public class WeatherEventInfo
 
 public class MapLevelInfo
 {
+    public string Subject;
     public Vector2Int MapWH;
     public Vector2 MapChunkSize;
     public Vector2 MapChunkInterval;
@@ -1229,6 +1231,7 @@ public class TableMgr : Singleton<TableMgr>
         { EAssetKey.Entity_Effect_AddBlood, "Prefabs/PerfabNew/Entity_Effect_AddBlood" },
         { EAssetKey.Entity_GameBackground, "Prefabs/PerfabNew/Entity_GameBackground" },
         { EAssetKey.Entity_Effect_GoldAdd, "Prefabs/PerfabNew/Entity_Effect_GoldAdd" },
+        { EAssetKey.UIDamageHintItem, "Prefabs/PerfabNew/UIDamageHintItem" },
         
 
 
@@ -3534,21 +3537,22 @@ public class TableMgr : Singleton<TableMgr>
     public static int SupplementaryDefence = 20;
     //战士
     public static int WarriorAtk = 100;
-    public static int WarriorBlood = 1000; 
+    public static int WarriorBlood = 1000;
 
     //怪物基本属性 {攻击，生命，防御}
-    public static int[,] monsterBaseInfo =new int[4,3] {
+    public static int[,] monsterBaseInfo = new int[4, 3] {
         {30,600,0}, //monster1
         {50,3000,80}, //monster2
         {120,2000,40}, //monster3
         {120,20000,50}, //boss1
-    }; 
+    };
     private Dictionary<EMapLevelType, MapLevelInfo> m_LevelWaveInfos = new()
     {
         {
             EMapLevelType.Level0,
             new()
             {
+                Subject = "抵御",
                 GameNewHelpInfo = EGameHelpType.Level0,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
@@ -3844,6 +3848,7 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level1,
             new()
             {
+                Subject = "抗衡",
                 GameNewHelpInfo = EGameHelpType.Level1,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
@@ -4008,6 +4013,7 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level2,
             new()
             {
+                Subject = "坚守",
                 GameNewHelpInfo = EGameHelpType.Level2,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
@@ -4132,7 +4138,7 @@ public class TableMgr : Singleton<TableMgr>
                             ActiveTime = 30.0f,
                             MonsterList = new()
                             {
-                                
+
                                 new()
                                 {
                                     StartIndex = 164,
@@ -4148,7 +4154,7 @@ public class TableMgr : Singleton<TableMgr>
                                     StartIndex = 116,
                                     MonsterType = EHeroCardType.Monster_Default3,
                                 },
-                                
+
                             }
                         }
                     },
@@ -4168,6 +4174,7 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level3,
             new()
             {
+                Subject = "守护",
                 GameNewHelpInfo = EGameHelpType.Level3,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
@@ -4333,7 +4340,8 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level4,
             new()
             {
-                GameNewHelpInfo = EGameHelpType.Level1,
+                Subject = "反击",
+                GameNewHelpInfo = EGameHelpType.None,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
@@ -4541,7 +4549,8 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level5,
             new()
             {
-                GameNewHelpInfo = EGameHelpType.Level2,
+                Subject = "使命",
+                GameNewHelpInfo = EGameHelpType.None,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
@@ -4885,6 +4894,8 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level6,
             new()
             {
+                Subject = "入侵",
+                GameNewHelpInfo = EGameHelpType.None,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),
@@ -5151,6 +5162,8 @@ public class TableMgr : Singleton<TableMgr>
             EMapLevelType.Level7,
             new()
             {
+                Subject = "抵达",
+                GameNewHelpInfo = EGameHelpType.None,
                 MapWH = new(9, 24),
                 MapChunkSize = new Vector2(Mathf.Sqrt(1 - 0.5f * 0.5f) * 2, 2),
                 MapChunkInterval = new(0, 0),

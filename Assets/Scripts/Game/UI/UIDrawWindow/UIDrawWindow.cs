@@ -49,7 +49,7 @@ public class UIDrawWindow : UIWindow
     private Vector2 m_StartPosition = Vector3.zero;
     private void OnMouseDown()
     {
-        Vector2 mousePos = Input.mousePosition;
+        Vector2 mousePos = UGUISystem.Ins.GetUGUIPosByMouse();
         m_ImgRoot.gameObject.SetActive(true);
         m_StartPosition = 
             m_LineImg.anchoredPosition = 
@@ -62,7 +62,7 @@ public class UIDrawWindow : UIWindow
     }
     private void OnMouseDrag()
     {
-        Vector2 mousePos = Input.mousePosition;
+        Vector2 mousePos = UGUISystem.Ins.GetUGUIPosByMouse();
         m_MouseImg.anchoredPosition = mousePos;
         var sizeX = Vector2.Distance(mousePos, m_StartPosition);
         m_LineImg.sizeDelta = new Vector2(sizeX, m_LineImg.sizeDelta.y);

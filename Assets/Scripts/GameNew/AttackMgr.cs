@@ -19,6 +19,7 @@ public class AttackMgr : Singleton<AttackMgr>
             var hitCondition = f_Target.IsHitConditoin();
             var damageValue = f_Value < 0 ? Mathf.Min(-1, f_Value + f_Target.CurDefence) : f_Value;
             string hintTex;
+            var value = 0;
             if (hitCondition.Result == EResult.Succeed)
             {
                 var data = new ChangeBloodData()
@@ -30,7 +31,7 @@ public class AttackMgr : Singleton<AttackMgr>
                 f_Target.ChangeBlood(data);
                 WorldWindowMgr.Ins.UpdateBloodHint(f_Target);
                 hintTex = $"{damageValue}";
-
+                value = damageValue;
 
                 f_Initiator.ExecuteGainAsync(EBuffView.Collect);
             }
@@ -56,7 +57,11 @@ public class AttackMgr : Singleton<AttackMgr>
             {
                 damageType = EDamageType.AddBlood;
             }
-            WorldMgr.Ins.DamageText(hintTex, damageType, f_Target.CentralPoint + new Vector3(xOffset, yOffset));
+            //WorldMgr.Ins.DamageText(hintTex, damageType, f_Target.CentralPoint + new Vector3(xOffset, yOffset));
+
+            var uguiPos = IUIUtil.GetUGUIPosByWorld(f_Target.WorldPosition, true);
+            var worldPos = IUIUtil.GetWorldPosBuyUGUIPos(uguiPos);
+            WorldWindowMgr.Ins.CreateDamageHint(damageValue, worldPos);
         }
     }
     public void PlayAttackEffect(Vector3 f_Position)

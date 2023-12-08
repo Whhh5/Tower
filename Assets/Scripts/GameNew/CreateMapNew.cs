@@ -334,6 +334,27 @@ public class CreateMapNew : Singleton<CreateMapNew>
         }
         return count;
     }
+    public int GetMonsterCount()
+    {
+        var count = 0;
+        foreach (var item in m_CurWaveMonsterList)
+        {
+            count += item.Value.Count;
+        }
+        return count;
+    }
+    public int GetMonsterActiveCount()
+    {
+        var count = 0;
+        foreach (var list in m_CurWaveMonsterList)
+        {
+            foreach (var item in list.Value)
+            {
+                count += GTools.UnityObjectIsVaild(item) ? 1 : 0;
+            }
+        }
+        return count;
+    }
     public void InitWaveCache()
     {
         CurWaveCount = -1;
